@@ -1,2 +1,0 @@
-# groupProject
-Group Project Braude
