@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import java.lang.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.shape.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.Line?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+
+<VBox minWidth="-Infinity" prefHeight="720.0" prefWidth="850.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.Controller">
+   <children>
+      <Text fill="#35d365" strokeType="OUTSIDE" strokeWidth="0.0" text="Prototype Task 2" wrappingWidth="650.8034267425537">
+         <font>
+            <Font name="Bodoni MT" size="46.0" />
+         </font>
+      </Text>
+      <TableView fx:id="tableView" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" onSort="#initializeTable" prefHeight="180.0">
+        <columns>
+          <TableColumn fx:id="idColumn" maxWidth="1.7976931348623157E308" prefWidth="130.0" text="Requested ID" />
+          <TableColumn fx:id="statusColumn" minWidth="0.0" prefWidth="130.0" text="Status" />
+        </columns>
+         <VBox.margin>
+            <Insets left="300.0" top="15.0" />
+         </VBox.margin>
+      </TableView>
+      <Pane prefHeight="16.0" prefWidth="652.0" />
+      <Line endX="760.0" endY="-0.707116961479187" opacity="0.25" startX="-100.0" />
+      <HBox prefHeight="420.0" prefWidth="659.0">
+         <children>
+            <VBox prefHeight="500.0" prefWidth="223.0">
+               <children>
+                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="INSERT" textAlignment="CENTER" wrappingWidth="180.90233612060547">
+                     <font>
+                        <Font name="Book Antiqua Bold" size="16.0" />
+                     </font>
+                     <VBox.margin>
+                        <Insets left="20.0" />
+                     </VBox.margin>
+                  </Text>
+                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Initiator name :" />
+                  <TextField fx:id="initiator_name" prefHeight="25.0" prefWidth="85.0" />
+                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="System num :" />
+                  <TextField fx:id="system_num" prefHeight="25.0" prefWidth="85.0" />
+                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Current status :" />
+                  <TextField fx:id="current_status" prefHeight="25.0" prefWidth="85.0" />
+                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Request description :" />
+                  <TextField fx:id="request_description" prefHeight="25.0" prefWidth="85.0" />
+                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Status :" />
+                  <TextField fx:id="status" prefHeight="25.0" prefWidth="85.0" />
+                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Handler name :" />
+                  <TextField fx:id="handler_name" prefHeight="25.0" prefWidth="85.0" />
+                  <Button fx:id="insert" mnemonicParsing="false" onAction="#buttonSetAction" prefHeight="25.0" prefWidth="104.0" text="Insert to table">
+                     <VBox.margin>
+                        <Insets left="49.0" top="8.0" />
+                     </VBox.margin></Button>
+                  <Pane prefHeight="65.0" prefWidth="185.0" />
+                  <TextArea fx:id="insert_answer" prefHeight="51.0" prefWidth="185.0" text="Insert succeeded/failed" />
+               </children>
+               <HBox.margin>
+                  <Insets left="40.0" />
+               </HBox.margin>
+            </VBox>
+            <VBox id="updateVbox" prefHeight="500.0" prefWidth="237.0" style="-fx-border-color: lightgray; -fx-border-style: none none none dashed;">
+               <children>
+                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="UPDATE" textAlignment="CENTER" wrappingWidth="198.23562622070312">
+                     <font>
+                        <Font name="Book Antiqua Bold" size="16.0" />
+                     </font>
+                     <VBox.margin>
+                        <Insets />
+                     </VBox.margin>
+                  </Text>
+                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="ID : " />
+                  <TextField fx:id="ID1" prefHeight="25.0" prefWidth="85.0" />
+                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Update status :" />
+                  <TextField fx:id="status1" prefHeight="25.0" prefWidth="85.0" />
+                  <Button fx:id="update" mnemonicParsing="false" onAction="#buttonUpdate" prefHeight="25.0" prefWidth="123.0" text="Update row in table">
+                     <VBox.margin>
+                        <Insets left="35.0" top="8.0" />
+                     </VBox.margin></Button>
+                  <Pane prefHeight="230.0" prefWidth="199.0" />
+                  <TextArea fx:id="update_answer" prefHeight="51.0" prefWidth="185.0" text="Update succeeded/failed" />
+               </children>
+               <HBox.margin>
+                  <Insets left="40.0" />
+               </HBox.margin>
+               <padding>
+                  <Insets left="40.0" />
+               </padding>
+            </VBox>
+            <VBox id="selectVbox" prefHeight="500.0" prefWidth="240.0" style="-fx-border-style: none none none dashed; -fx-border-color: lightgray;">
+               <children>
+                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="SELECT" textAlignment="CENTER" wrappingWidth="200.23568725585938">
+                     <font>
+                        <Font name="Book Antiqua Bold" size="16.0" />
+                     </font>
+                     <VBox.margin>
+                        <Insets />
+                     </VBox.margin>
+                  </Text>
+                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="ID :" />
+                  <TextField fx:id="ID2" prefHeight="25.0" prefWidth="85.0" />
+                  <Button fx:id="select" mnemonicParsing="false" onAction="#buttonSelect" prefHeight="25.0" prefWidth="139.0" text="Get with ID">
+                     <VBox.margin>
+                        <Insets bottom="8.0" left="30.0" top="8.0" />
+                     </VBox.margin></Button>
+                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Initiator name :" />
+                  <TextField fx:id="initiator_name1" prefHeight="25.0" prefWidth="85.0" />
+                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="System num :" />
+                  <TextField fx:id="system_num1" prefHeight="25.0" prefWidth="85.0" />
+                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Current status :" />
+                  <TextField fx:id="current_status1" prefHeight="0.0" prefWidth="111.0" />
+                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Request description :" />
+                  <TextField fx:id="request_description1" prefHeight="25.0" prefWidth="85.0" />
+                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Status :" />
+                  <TextField fx:id="status2" prefHeight="25.0" prefWidth="85.0" />
+                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Handler name :" />
+                  <TextField fx:id="handler_name1" prefHeight="25.0" prefWidth="85.0" />
+                  <Pane prefHeight="13.0" prefWidth="201.0" />
+                  <TextArea fx:id="select_answer" prefHeight="51.0" prefWidth="185.0" text="Select succeeded/failed" />
+               </children>
+               <HBox.margin>
+                  <Insets left="40.0" />
+               </HBox.margin>
+               <padding>
+                  <Insets left="40.0" />
+               </padding>
+            </VBox>
+            <Pane prefHeight="500.0" prefWidth="56.0" />
+         </children>
+         <VBox.margin>
+            <Insets top="7.0" />
+         </VBox.margin>
+      </HBox>
+   </children>
+</VBox>
