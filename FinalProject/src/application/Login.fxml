@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.text.Text?>
+
+
+<Pane xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.LoginController">
+   <children>
+      <SplitPane dividerPositions="0.16926503340757237" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" orientation="VERTICAL" prefHeight="900.0" prefWidth="1300.0">
+        <items>
+          <AnchorPane maxHeight="-Infinity" minHeight="0.0" minWidth="0.0" prefHeight="165.0" prefWidth="1298.0">
+               <children>
+                  <Button fx:id="login" layoutX="447.0" layoutY="59.0" mnemonicParsing="false" onAction="#loginFunc" text="Log In" />
+                  <TextField fx:id="userName" layoutX="73.0" layoutY="59.0" />
+                  <Text layoutX="89.0" layoutY="40.0" strokeType="OUTSIDE" strokeWidth="0.0" text="User Name" />
+                  <Text layoutX="272.0" layoutY="32.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Password" />
+                  <TextField fx:id="message" layoutX="162.0" layoutY="101.0" prefHeight="25.0" prefWidth="517.0" />
+                  <Text layoutX="73.0" layoutY="127.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Message:" />
+                  <PasswordField fx:id="password" layoutX="248.0" layoutY="59.0" />
+               </children>
+            </AnchorPane>
+            <HBox maxHeight="-Infinity" prefHeight="788.0" prefWidth="1298.0">
+               <children>
+                  <Pane prefHeight="200.0" prefWidth="200.0" />
+                  <Pane prefHeight="838.0" prefWidth="971.0" />
+                  <Pane prefHeight="838.0" prefWidth="233.0" />
+               </children>
+            </HBox>
+        </items>
+      </SplitPane>
+   </children>
+</Pane>
