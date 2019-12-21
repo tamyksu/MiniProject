@@ -1,6 +1,8 @@
 package application;
 
-public class userProcess {
+import java.sql.Date;
+
+public class UserProcess {
 	
 	private String requestId;
 	private String role;
@@ -11,7 +13,7 @@ public class userProcess {
 	private String explanaton;
 	private String notes;
 	private String status;
-	private String creation_date;
+	private Date creation_date;
 	private String handler_id;
 	private String process_stage;
 	private String current_stage_due_date;
@@ -69,10 +71,10 @@ public class userProcess {
 	public void setStatus(String status) {
 		this.status = status;
 	}
-	public String getCreation_date() {
+	public Date getCreation_date() {
 		return creation_date;
 	}
-	public void setCreation_date(String creation_date) {
+	public void setCreation_date(Date creation_date) {
 		this.creation_date = creation_date;
 	}
 	public String getHandler_id() {

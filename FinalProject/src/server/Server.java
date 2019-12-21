@@ -60,7 +60,7 @@ public class Server extends AbstractServer
 			e1.printStackTrace();
 		}
 	    try {
-	    	ArrayList<String> rs = DBConnector.accessToDB((ArrayList<String>) msg);
+	    	Object rs = DBConnector.accessToDB((ArrayList<String>) msg);
 	    	if(rs != null)	client.sendToClient(rs);
 	    	}
 		catch (ClassCastException e) {

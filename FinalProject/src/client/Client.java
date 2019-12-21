@@ -3,12 +3,20 @@ package client;
 import ocsf.client.*;
 import java.io.*;
 import java.util.ArrayList;
+import java.util.HashMap;
+
 import application.LoginController;
+import application.Processes;
 import application.ScreenController;
+import application.UserProcess;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 
 public class Client extends AbstractClient {
 	ArrayList<String> data = new ArrayList<String>();
 	private String name;
+	private Processes processes;
 	public static Client instance;
 
 	public Client(String host, int port) throws IOException {
@@ -30,7 +38,9 @@ public class Client extends AbstractClient {
 	 */
 	@SuppressWarnings("unchecked")
 	public void handleMessageFromServer(Object rs) {
-
+		if (rs instanceof Processes) {
+			this.processes = (Processes) rs;
+		}
 		if (rs instanceof ArrayList) {
 			ArrayList<String> result = (ArrayList<String>) rs;
 			switch (result.get(0)) {
@@ -41,6 +51,7 @@ public class Client extends AbstractClient {
 			case "correct match":
 				Client.getInstance().setName(result.get(1));
 				ScreenController.getScreenController().activate("processesMain");
+				getProcessesFromServer();
 				break;
 			case "Login failed, username and password did not match":
 				LoginController.getInstance().getMessageField()
@@ -50,7 +61,6 @@ public class Client extends AbstractClient {
 			default:
 				break;
 			}
-
 		} else {
 			System.out.println("Succeeded");
 		}
@@ -89,4 +99,23 @@ public class Client extends AbstractClient {
 		return name;
 	}
 
+	public Processes getProcesses() {
+		return processes;
+	}
+
+	public void setProcesses(Processes processes) {
+		this.processes = processes;
+	}
+
+	public void getProcessesFromServer() {
+		ArrayList<String> ar = new ArrayList<String>();
+		ar.add("get all related requests");
+		ar.add(name);
+		try {
+			sendToServer(ar);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
 }
