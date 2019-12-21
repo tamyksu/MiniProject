@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.lang.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.SplitPane?>
@@ -13,8 +17,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-
-<Pane xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.ControlerProcessMain">
+<Pane xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.ControllerProcessMain">
    <children>
       <SplitPane dividerPositions="0.07349665924276169" orientation="VERTICAL" prefHeight="900.0" prefWidth="1300.0">
          <items>
@@ -39,14 +42,14 @@
                         <TableColumn fx:id="IdColumn1" prefWidth="99.99995930989587" text="Role" />
                      </columns>
                   </TableView>
-                  <Button layoutX="383.0" layoutY="496.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="143.0" text="Freeze Process" />
-                  <Button layoutX="384.0" layoutY="449.0" mnemonicParsing="false" text="Send Extension Request" />
-                  <Button layoutX="129.0" layoutY="446.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="147.0" text="Evaluation" />
-                  <Button layoutX="383.0" layoutY="545.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="143.0" text="Defrost Process" />
-                  <Button layoutX="129.0" layoutY="493.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="147.0" text="Decision Making" />
-                  <Button layoutX="129.0" layoutY="529.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="147.0" text="Execution" />
-                  <Button layoutX="129.0" layoutY="570.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="147.0" text="Examination" />
-                  <Button layoutX="129.0" layoutY="615.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="147.0" text="Shut Down Process" />
+                  <Button fx:id="freeze_btn" layoutX="383.0" layoutY="496.0" mnemonicParsing="false" onAction="#freeze_click" prefHeight="25.0" prefWidth="143.0" text="Freeze Process" />
+                  <Button fx:id="extension_btn" layoutX="384.0" layoutY="449.0" mnemonicParsing="false" onAction="#extension_click" text="Send Extension Request" />
+                  <Button fx:id="evaluation_btn" layoutX="129.0" layoutY="446.0" mnemonicParsing="false" onAction="#evaluation_click" prefHeight="31.0" prefWidth="147.0" text="Evaluation" />
+                  <Button fx:id="defrost_btn" layoutX="383.0" layoutY="545.0" mnemonicParsing="false" onAction="#defrost_click" prefHeight="25.0" prefWidth="143.0" text="Defrost Process" />
+                  <Button fx:id="decision_btn" layoutX="129.0" layoutY="493.0" mnemonicParsing="false" onAction="#decision_click" prefHeight="31.0" prefWidth="147.0" text="Decision Making" />
+                  <Button fx:id="execution_btn" layoutX="129.0" layoutY="529.0" mnemonicParsing="false" onAction="#execution_click" prefHeight="31.0" prefWidth="147.0" text="Execution" />
+                  <Button fx:id="examination_btn" layoutX="129.0" layoutY="570.0" mnemonicParsing="false" onAction="#examination_click" prefHeight="31.0" prefWidth="147.0" text="Examination" />
+                  <Button fx:id="shutdown_btn" layoutX="129.0" layoutY="615.0" mnemonicParsing="false" onAction="#shutdown_click" prefHeight="31.0" prefWidth="147.0" text="Shut Down Process" />
                   <HBox layoutX="765.0" layoutY="80.0">
                      <children>
                         <VBox layoutX="709.0" layoutY="90.0" prefHeight="621.0" prefWidth="175.0">

@@ -43,7 +43,7 @@ public class DBConnector {
 		case "check login":
 			try {
 				
-				stmt = conn.prepareStatement("select * from users where id=?");	
+				stmt = conn.prepareStatement("select * from users where user_id=?");	
 				stmt.setString(1, data.get(1));
 				ResultSet rs = stmt.executeQuery();
 				if(rs.first() == false) {
@@ -78,8 +78,8 @@ public class DBConnector {
 					  + "SELECT users_requests.idProcess, users_requests.role, processes.* \r\n" + 
 						"FROM users_requests\r\n" + 
 						"INNER JOIN processes\r\n" + 
-						"ON users_requests.idProcess = processes.request_id"+
-						"WHERE users_requests.user=?");
+						"ON users_requests.process_id = processes.request_id"+
+						"WHERE users_requests.user_id=?");
 				stmt.setString(1, data.get(1));
 				ResultSet rs = stmt.executeQuery();				
 				if(rs.first() == false) {
