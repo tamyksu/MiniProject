@@ -58,6 +58,7 @@ public class Client extends AbstractClient {
 						.setText("Login failed, username and password did not match");
 
 				break;
+			//case "newRequest":	
 			default:
 				break;
 			}

@@ -18,6 +18,7 @@ public class Main extends Application {
 			ScreenController screenController = new ScreenController(scene);
 			screenController.addScreen("login", FXMLLoader.load(getClass().getResource( "/application/Login.fxml" )));
 			screenController.addScreen("processesMain", FXMLLoader.load(getClass().getResource( "/application/ProcessesMain.fxml" )));
+			screenController.addScreen("newRequestMain", FXMLLoader.load(getClass().getResource( "/application/NewRequestMain.fxml" )));
 			screenController.activate("login");
 	
 			

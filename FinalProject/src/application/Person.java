@@ -2,7 +2,7 @@ package application;
 
 public class Person {
 	
-	private String id;
+	private String id; // User ID
 	private String cs;
 
 	public Person(String id, String cs) {
