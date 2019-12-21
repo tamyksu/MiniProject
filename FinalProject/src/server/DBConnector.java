@@ -4,12 +4,6 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.HashMap;
-
-import application.Processes;
-import application.UserProcess;
-import sun.net.www.content.text.plain;
-
 import java.sql.ResultSet;
 public class DBConnector {
 	
@@ -40,7 +34,7 @@ public class DBConnector {
 			}
 			
 	
-	  protected static Object accessToDB(ArrayList<String> data)
+	  protected static ArrayList<String> accessToDB(ArrayList<String> data)
 	  {
 		
 		PreparedStatement stmt;
@@ -93,26 +87,7 @@ public class DBConnector {
 					return ar;
 				}
 				rs.previous();
-				HashMap<Integer, UserProcess> processesHashMap = new HashMap<Integer, UserProcess>();
-				while(rs.next()) {	
-					UserProcess process = new UserProcess();
-					process.setRole(rs.getString(2));
-					process.setIntiatorId(rs.getString(4));
-					process.setSystem_num(rs.getInt(5));
-					process.setProblem_description(rs.getString(6));
-					process.setRequest_description(rs.getString(7));
-					process.setExplanaton(rs.getString(8));
-					process.setNotes(rs.getString(9));
-					process.setStatus(rs.getString(10));
-					process.setCreation_date(rs.getDate(11));
-					process.setHandler_id(rs.getString(12));
-					process.setProcess_stage(rs.getString(13));
-					process.setCurrent_stage_due_date(rs.getString(14));
-					processesHashMap.put(rs.getInt(1), process);
-				}
-				Processes processes = new Processes();
-				processes.setMyProcess(processesHashMap);
-				return processes;
+				
 				
 
 			} catch (SQLException e) {

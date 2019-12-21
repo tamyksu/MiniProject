@@ -1,54 +1,56 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.shape.*?>
-<?import javafx.geometry.*?>
-<?import javafx.scene.text.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.image.*?>
 <?import java.lang.*?>
+<?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
 
-<Pane prefHeight="823.0" prefWidth="1298.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.ControlerProcessMain">
+<Pane xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.ControllerProcessMain">
    <children>
-    <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="0.0" minWidth="0.0" prefHeight="62.0" prefWidth="1298.0">
-         <children>
-            <Label layoutX="18.0" layoutY="11.0" prefHeight="26.0" prefWidth="62.0" text="ICM">
-               <font>
-                  <Font size="27.0" />
-               </font>
-            </Label>
-          <AnchorPane focusTraversable="true" layoutX="74.0" layoutY="18.0" minHeight="0.0" minWidth="0.0" prefHeight="68.0" prefWidth="127.0">
+      <SplitPane dividerPositions="0.07349665924276169" orientation="VERTICAL" prefHeight="900.0" prefWidth="1300.0">
+         <items>
+            <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="0.0" minWidth="0.0" prefHeight="62.0" prefWidth="1298.0">
+               <children>
+                  <Label layoutX="18.0" layoutY="11.0" prefHeight="26.0" prefWidth="62.0" text="ICM">
+                     <font>
+                        <Font size="27.0" />
+                     </font>
+                  </Label>
+               </children>
+            </AnchorPane>
+            <AnchorPane focusTraversable="true" minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
                <children>
                   <Button layoutX="22.0" layoutY="22.0" mnemonicParsing="false" text="Back" />
-                  <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#1f93ff00" height="582.0" layoutX="28.0" layoutY="82.0" opacity="0.14" stroke="BLACK" strokeType="INSIDE" width="680.0" />
-                  <Label layoutX="291.0" layoutY="85.0" text="Processes Table">
-                     <font>
-                        <Font name="System Bold" size="21.0" />
-                     </font>
-                  </Label>
-                  <TableView layoutX="48.0" layoutY="134.0" prefHeight="302.0" prefWidth="638.0">
-                    <columns>
-                      <TableColumn prefWidth="156.0" text="Process ID" />
-                      <TableColumn prefWidth="212.0" text="Information System" />
-                        <TableColumn prefWidth="134.0" text="Status" />
-                        <TableColumn prefWidth="134.0" text="Date" />
-                    </columns>
+                  <TableView fx:id="tableView" layoutX="45.0" layoutY="100.0" onSort="#initizlizeTable" prefHeight="302.0" prefWidth="637.0">
+                     <columns>
+                        <TableColumn fx:id="IdColumn" prefWidth="156.0" text="Request ID" />
+                        <TableColumn fx:id="InformationSystemColumn" prefWidth="212.0" text="Information System" />
+                        <TableColumn fx:id="StatusColumn" prefWidth="85.3333740234375" text="Status" />
+                        <TableColumn fx:id="DateColumn" prefWidth="81.3333740234375" text="Date" />
+                        <TableColumn fx:id="IdColumn1" prefWidth="99.99995930989587" text="Role" />
+                     </columns>
                   </TableView>
-                  <Button layoutX="387.0" layoutY="514.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="178.0" text="Freeze Process" />
-                  <Button layoutX="387.0" layoutY="483.0" mnemonicParsing="false" text="Send Extension Request" />
-                  <Button layoutX="132.0" layoutY="483.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="178.0" text="Evaluation" />
-                  <Button layoutX="387.0" layoutY="545.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="178.0" text="Defrost Process" />
-                  <Button layoutX="132.0" layoutY="514.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="178.0" text="Decision Making" />
-                  <Button layoutX="132.0" layoutY="545.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="178.0" text="Execution" />
-                  <Button layoutX="132.0" layoutY="576.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="178.0" text="Examination" />
-                  <Button layoutX="132.0" layoutY="607.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="178.0" text="Shut Down Process" />
-                  <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#1f93ff00" height="657.0" layoutX="750.0" layoutY="53.0" opacity="0.14" stroke="BLACK" strokeType="INSIDE" width="524.0" />
-                  <Label layoutX="914.0" layoutY="57.0" text="Process Information">
-                     <font>
-                        <Font name="System Bold" size="21.0" />
-                     </font>
-                  </Label>
-                  <HBox layoutX="766.0" layoutY="92.0" prefHeight="615.0" prefWidth="495.0">
+                  <Button fx:id="freeze_btn" layoutX="383.0" layoutY="496.0" mnemonicParsing="false" onAction="#freeze_click" prefHeight="25.0" prefWidth="143.0" text="Freeze Process" />
+                  <Button fx:id="extension_btn" layoutX="384.0" layoutY="449.0" mnemonicParsing="false" onAction="#extension_click" text="Send Extension Request" />
+                  <Button fx:id="evaluation_btn" layoutX="129.0" layoutY="446.0" mnemonicParsing="false" onAction="#evaluation_click" prefHeight="31.0" prefWidth="147.0" text="Evaluation" />
+                  <Button fx:id="defrost_btn" layoutX="383.0" layoutY="545.0" mnemonicParsing="false" onAction="#defrost_click" prefHeight="25.0" prefWidth="143.0" text="Defrost Process" />
+                  <Button fx:id="decision_btn" layoutX="129.0" layoutY="493.0" mnemonicParsing="false" onAction="#decision_click" prefHeight="31.0" prefWidth="147.0" text="Decision Making" />
+                  <Button fx:id="execution_btn" layoutX="129.0" layoutY="529.0" mnemonicParsing="false" onAction="#execution_click" prefHeight="31.0" prefWidth="147.0" text="Execution" />
+                  <Button fx:id="examination_btn" layoutX="129.0" layoutY="570.0" mnemonicParsing="false" onAction="#examination_click" prefHeight="31.0" prefWidth="147.0" text="Examination" />
+                  <Button fx:id="shutdown_btn" layoutX="129.0" layoutY="615.0" mnemonicParsing="false" onAction="#shutdown_click" prefHeight="31.0" prefWidth="147.0" text="Shut Down Process" />
+                  <HBox layoutX="765.0" layoutY="80.0">
                      <children>
                         <VBox layoutX="709.0" layoutY="90.0" prefHeight="621.0" prefWidth="175.0">
                            <children>
@@ -57,131 +59,102 @@
                                     <Font size="17.0" />
                                  </font>
                               </Label>
+                              <TextArea layoutX="10.0" layoutY="146.0" opacity="0.0" prefHeight="7.0" prefWidth="158.0" />
                               <Label layoutX="10.0" layoutY="10.0" text="Initiator Email:">
                                  <font>
                                     <Font size="17.0" />
                                  </font>
-                                 <VBox.margin>
-                                    <Insets top="7.0" />
-                                 </VBox.margin>
                               </Label>
+                              <TextArea layoutX="10.0" layoutY="36.0" opacity="0.0" prefHeight="7.0" prefWidth="158.0" />
                               <Label layoutX="10.0" layoutY="31.0" text="Initiator Profession:">
                                  <font>
                                     <Font size="17.0" />
                                  </font>
-                                 <VBox.margin>
-                                    <Insets top="7.0" />
-                                 </VBox.margin>
                               </Label>
+                              <TextArea layoutX="10.0" layoutY="70.0" opacity="0.0" prefHeight="7.0" prefWidth="158.0" />
                               <Label text="Information System:">
                                  <font>
                                     <Font size="17.0" />
                                  </font>
-                                 <VBox.margin>
-                                    <Insets top="7.0" />
-                                 </VBox.margin>
                               </Label>
+                              <TextArea opacity="0.0" prefHeight="7.0" prefWidth="158.0" />
                               <Label layoutX="10.0" layoutY="60.0" text="Current State:">
                                  <font>
                                     <Font size="17.0" />
                                  </font>
-                                 <VBox.margin>
-                                    <Insets top="7.0" />
-                                 </VBox.margin>
                               </Label>
+                              <TextArea opacity="0.0" prefHeight="46.0" prefWidth="158.0" />
                               <Label layoutX="10.0" layoutY="35.0" text="Requested Change:">
                                  <font>
                                     <Font size="16.0" />
                                  </font>
-                                 <VBox.margin>
-                                    <Insets top="46.0" />
-                                 </VBox.margin>
                               </Label>
+                              <TextArea layoutX="10.0" layoutY="36.0" opacity="0.0" prefHeight="44.0" prefWidth="158.0" />
                               <Label layoutX="10.0" layoutY="60.0" text="Explanation:">
                                  <font>
                                     <Font size="16.0" />
                                  </font>
-                                 <VBox.margin>
-                                    <Insets top="44.0" />
-                                 </VBox.margin>
                               </Label>
+                              <TextArea layoutX="10.0" layoutY="140.0" opacity="0.0" prefHeight="47.0" prefWidth="158.0" />
                               <Label layoutX="10.0" layoutY="85.0" text="Notes:">
                                  <font>
                                     <Font size="16.0" />
                                  </font>
-                                 <VBox.margin>
-                                    <Insets top="47.0" />
-                                 </VBox.margin>
                               </Label>
+                              <TextArea layoutX="10.0" layoutY="209.0" opacity="0.0" prefHeight="45.0" prefWidth="158.0" />
                               <Label layoutX="10.0" layoutY="135.0" text="Request Date:">
                                  <font>
                                     <Font size="16.0" />
                                  </font>
-                                 <VBox.margin>
-                                    <Insets top="46.0" />
-                                 </VBox.margin>
                               </Label>
+                              <TextArea layoutX="10.0" layoutY="281.0" opacity="0.0" prefHeight="7.0" prefWidth="158.0" />
                               <Label layoutX="10.0" layoutY="160.0" text="Request ID:">
                                  <font>
                                     <Font size="16.0" />
                                  </font>
-                                 <VBox.margin>
-                                    <Insets top="8.0" />
-                                 </VBox.margin>
                               </Label>
-                              <Label layoutX="10.0" layoutY="110.0" text="Documents:">
+                              <TextArea layoutX="10.0" layoutY="353.0" opacity="0.0" prefHeight="7.0" prefWidth="158.0" />
+                              <Label layoutX="10.0" layoutY="110.0" text="Associated Documents:">
                                  <font>
                                     <Font size="16.0" />
                                  </font>
-                                 <VBox.margin>
-                                    <Insets top="7.0" />
-                                 </VBox.margin>
                               </Label>
-                              <Label prefHeight="25.0" prefWidth="93.0" text="Status:">
+                              <TextArea layoutX="10.0" layoutY="482.0" opacity="0.0" prefHeight="33.0" prefWidth="158.0" />
+                              <Label fx:id="CurrentProcessStatus" prefHeight="25.0" prefWidth="165.0" text="Current Process Status:">
                                  <font>
                                     <Font size="16.0" />
                                  </font>
-                                 <VBox.margin>
-                                    <Insets top="38.0" />
-                                 </VBox.margin>
                               </Label>
-                              <Label prefHeight="25.0" prefWidth="175.0" text="Current Stage Due Time:">
+                              <TextArea layoutX="10.0" layoutY="514.0" opacity="0.0" prefHeight="7.0" prefWidth="158.0" />
+                              <Label fx:id="CurrentStageDueTime" prefHeight="25.0" prefWidth="175.0" text="Current Stage Due Time:">
                                  <font>
                                     <Font size="16.0" />
                                  </font>
-                                 <VBox.margin>
-                                    <Insets top="7.0" />
-                                 </VBox.margin>
                               </Label>
                            </children>
                         </VBox>
-                        <VBox layoutX="901.0" layoutY="88.0" prefHeight="610.0" prefWidth="320.0">
+                        <VBox layoutX="901.0" layoutY="90.0" prefHeight="610.0" prefWidth="320.0">
                            <children>
-                              <Label prefHeight="32.0" prefWidth="320.0" text="label" />
-                              <Label layoutX="10.0" layoutY="10.0" prefHeight="32.0" prefWidth="320.0" text="label" />
-                              <Label layoutX="10.0" layoutY="42.0" prefHeight="32.0" prefWidth="320.0" text="label" />
-                              <Label layoutX="10.0" layoutY="74.0" prefHeight="32.0" prefWidth="320.0" text="label" />
-                              <Label layoutX="10.0" layoutY="106.0" prefHeight="71.0" prefWidth="320.0" text="label">
-                                 <VBox.margin>
-                                    <Insets top="1.0" />
-                                 </VBox.margin>
-                              </Label>
-                              <Label layoutX="10.0" layoutY="138.0" prefHeight="71.0" prefWidth="320.0" text="label" />
-                              <Label layoutX="10.0" layoutY="209.0" prefHeight="71.0" prefWidth="320.0" text="label" />
-                              <Label layoutX="10.0" layoutY="280.0" prefHeight="71.0" prefWidth="320.0" text="label" />
-                              <Label layoutX="10.0" layoutY="106.0" prefHeight="32.0" prefWidth="320.0" text="label" />
-                              <Label layoutX="10.0" layoutY="422.0" prefHeight="32.0" prefWidth="320.0" text="label" />
-                              <Label layoutX="10.0" layoutY="454.0" prefHeight="62.0" prefWidth="320.0" text="label" />
-                              <Label layoutX="10.0" layoutY="106.0" prefHeight="32.0" prefWidth="320.0" text="label" />
-                              <Label layoutX="10.0" layoutY="548.0" prefHeight="32.0" prefWidth="320.0" text="label" />
+                              <TextArea fx:id="InitiatorName" layoutX="10.0" layoutY="10.0" prefHeight="32.0" prefWidth="219.0" text="&#10;" />
+                              <TextArea fx:id="InitiatorEmail" layoutX="10.0" layoutY="10.0" prefHeight="32.0" prefWidth="219.0" text="&#10;" />
+                              <TextArea fx:id="InitiatorProfession" layoutX="10.0" layoutY="42.0" prefHeight="32.0" prefWidth="219.0" text="&#10;" />
+                              <TextArea fx:id="InformationSystem" layoutX="10.0" layoutY="10.0" prefHeight="32.0" prefWidth="219.0" text="&#10;" />
+                              <TextArea fx:id="CurrentState" prefHeight="71.0" prefWidth="219.0" text=" &#10;" />
+                              <TextArea fx:id="RequestedChange" focusTraversable="false" layoutX="10.0" layoutY="41.0" prefHeight="71.0" prefWidth="219.0" text="&#10;" />
+                              <TextArea fx:id="Explanation" layoutX="10.0" layoutY="116.0" prefHeight="71.0" prefWidth="219.0" text="&#10;" />
+                              <TextArea fx:id="Notes" layoutX="10.0" layoutY="184.0" prefHeight="71.0" prefWidth="219.0" text="&#10;" />
+                              <TextArea fx:id="RequestDate" layoutX="10.0" layoutY="10.0" prefHeight="32.0" prefWidth="219.0" text="&#10;" />
+                              <TextArea fx:id="RequestID" layoutX="10.0" layoutY="326.0" prefHeight="32.0" prefWidth="219.0" text="&#10;" />
+                              <TextArea fx:id="AssociatedDocuments" layoutX="10.0" layoutY="358.0" prefHeight="62.0" prefWidth="219.0" text="&#10;" />
+                              <TextField />
+                              <TextField />
                            </children>
                         </VBox>
                      </children>
                   </HBox>
-                  <Button fx:id="newRequestBtn" layoutX="387.0" layoutY="607.0" mnemonicParsing="false" onAction="#newRequest" prefHeight="31.0" prefWidth="178.0" text="New Request" />
                </children>
             </AnchorPane>
-         </children>
-      </AnchorPane>
+         </items>
+      </SplitPane>
    </children>
 </Pane>
