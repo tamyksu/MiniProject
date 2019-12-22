@@ -4,9 +4,11 @@ package server;
 // license found at www.lloseng.com 
 
 import java.io.*;
-import java.util.*; 
+import java.util.*;
 
+import com.sun.org.apache.bcel.internal.generic.INSTANCEOF;
 
+import application.Request;
 import ocsf.server.*;
 
 /**
@@ -51,28 +53,33 @@ public class Server extends AbstractServer
    */
   public void handleMessageFromClient//4
     (Object msg, ConnectionToClient client)
-  	{
-	    System.out.println("Message received: " + msg + " from " + client);
-	    try {
-			client.sendToClient("sucess");//5
-		} catch (IOException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
-	    try {
-	    	Object rs = DBConnector.accessToDB((ArrayList<String>) msg);
-	    	if(rs != null)	client.sendToClient(rs);
-	    	}
-		catch (ClassCastException e) {
-			e.printStackTrace();
-		}
-	    catch (IOException q)
-	    {
-	    	
-	    }
-	   
-	    
+  {
+	  if(msg instanceof ArrayList<?>) {
+		  System.out.println("Message received: " + msg + " from " + client);
+		  try {
+			  client.sendToClient("Success");//5
+		  } catch (IOException e1) {
+			  // TODO Auto-generated catch block
+			  e1.printStackTrace();
+		  }
+		  try {
+			  Object rs = DBConnector.accessToDB((ArrayList<String>) msg);
+			  if(rs != null)	client.sendToClient(rs);
+		  }
+		  catch (ClassCastException e) {
+			  e.printStackTrace();
+		  }
+		  catch (IOException q)
+		  {
+
+		  }
 	  }
+	  if(msg instanceof Request) {
+		  System.out.println("Server can recive Request objects.");
+		  DBConnector.insertNewRequestToDB((Request) msg);
+	  }
+
+  }
 
   /**
    * This method overrides the one in the superclass.  Called

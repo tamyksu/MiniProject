@@ -4,6 +4,9 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.ArrayList;
+
+import application.Request;
+
 import java.sql.ResultSet;
 public class DBConnector {
 	
@@ -34,6 +37,33 @@ public class DBConnector {
 			}
 			
 	
+	  protected static boolean insertNewRequestToDB(Request nr) {
+		
+		  PreparedStatement stmt;
+		  try {
+			stmt = conn.prepareStatement("insert into icmdb.processes (initiator_id,system_num,"
+					+ "problem_description,"
+					+ "		request_description,explanaton,"
+					+ "notes,status1) values(?,?,?,?,?,?,?)");
+			stmt.setInt(1, 111);
+			stmt.setInt(2, nr.getInformationSystemNumber());
+			stmt.setString(3, nr.getProblemDescription());
+			stmt.setString(4, nr.getRequestDescription());
+			stmt.setString(5, nr.getExplanation());
+			stmt.setString(6, nr.getNotes());
+			stmt.setString(7, "Active");
+			stmt.executeUpdate();
+			System.out.println("Insert is working!!!");
+			return true;
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			System.out.println("SQL EXCEPTION!");
+		}
+		  
+		  
+		  return false;
+	  }
+	  
 	  protected static ArrayList<String> accessToDB(ArrayList<String> data)
 	  {
 		

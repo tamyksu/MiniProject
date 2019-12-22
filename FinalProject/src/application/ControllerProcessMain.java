@@ -100,7 +100,7 @@ public class ControllerProcessMain {
    
     @FXML
     void newRequest(ActionEvent event) {
-    	ScreenController.getScreenController().activate("newRequestMain");
+    	ScreenController.getScreenController().activate("newRequest");
     }
 
 	

@@ -1,5 +1,7 @@
 package application;
 
+
+import java.io.IOException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -13,10 +15,11 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
 
 public class NewRequestContoroller {
 
-	Client client;
+	
 	
 	
     @FXML
@@ -29,7 +32,7 @@ public class NewRequestContoroller {
     private TextArea notes;
 
     @FXML
-    private TextArea informationSystemNumber;
+    private TextField informationSystemNumber;
 
     @FXML
     private TextArea Documents;
@@ -46,24 +49,24 @@ public class NewRequestContoroller {
     	DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd/MM/yyyy"); // Date format
     	LocalDate localDate = LocalDate.now(); // Current Date
     	
-    	ArrayList<String> newRequestArrayList = new ArrayList<String>();
-    	newRequestArrayList.add("newRequest");
-    	newRequestArrayList.add(informationSystemNumber.getText());
-    	newRequestArrayList.add(ProblemDescription.getText());
-    	newRequestArrayList.add(requestDescription.getText());
-    	newRequestArrayList.add(explanation.getText());
-    	newRequestArrayList.add(notes.getText());
-    	newRequestArrayList.add(new String(dtf.format(localDate)));
+    	int sysNum = Integer.parseInt(informationSystemNumber.getText().toString());
+    	String probDesc = ProblemDescription.getText().toString();
+    	String reqDesc = requestDescription.getText().toString();
+    	String expla = explanation.getText().toString();
+    	String notes1 = notes.getText().toString();
     	
-    	client.handleMessageFromClientGUI(newRequestArrayList);
+    	Request nr = new Request(sysNum, probDesc, reqDesc, expla, notes1);
+    	System.out.println(nr.toString());
     	
-    	/*
-    	 * 
-    	 * 	Not Finished!!!
-    	 * 	To be continued...
-    	 * 
-    	 * 
-    	 */
+    	try {
+			Client.instance.sendToServer(nr);
+			
+			
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+    	
     }
 
 }

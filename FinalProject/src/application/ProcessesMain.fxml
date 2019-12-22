@@ -152,6 +152,7 @@
                         </VBox>
                      </children>
                   </HBox>
+                  <Button fx:id="newRequestBtn" layoutX="384.0" layoutY="615.0" mnemonicParsing="false" onAction="#newRequest" text="New Request" />
                </children>
             </AnchorPane>
          </items>
