@@ -4,9 +4,9 @@ package server;
 // license found at www.lloseng.com 
 
 import java.io.*;
-import java.util.*; 
+import java.util.*;
 
-
+import application.Processes;
 import ocsf.server.*;
 
 /**
@@ -53,15 +53,11 @@ public class Server extends AbstractServer
     (Object msg, ConnectionToClient client)
   	{
 	    System.out.println("Message received: " + msg + " from " + client);
+	   
 	    try {
-			client.sendToClient("sucess");//5
-		} catch (IOException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
-	    try {
-	    	Object rs = DBConnector.accessToDB((ArrayList<String>) msg);
-	    	if(rs != null)	client.sendToClient(rs);
+	    	Object rs = DBConnector.accessToDB(msg);
+	    	if(rs != null)	
+	    		client.sendToClient(rs);
 	    	}
 		catch (ClassCastException e) {
 			e.printStackTrace();

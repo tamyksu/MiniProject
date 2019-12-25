@@ -24,8 +24,9 @@ public class ScreenController {
         if(screenController == null)
         	screenController = this;
     }
-	public Scene getScene(String sceneName) {
-		return screenMap.get(sceneName).getScene();
+
+	public Scene getCurrentScene() {
+		return main;
 	}
 
 	public void addScreen(String name, Pane pane){
