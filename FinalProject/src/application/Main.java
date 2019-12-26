@@ -5,6 +5,7 @@ import javafx.stage.Stage;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.layout.BorderPane;
 
 public class Main extends Application {
 	@Override
@@ -18,7 +19,7 @@ public class Main extends Application {
 			ScreenController screenController = new ScreenController(scene);
 			screenController.addScreen("login", FXMLLoader.load(getClass().getResource( "/application/Login.fxml" )));
 			screenController.addScreen("processesMain", FXMLLoader.load(getClass().getResource( "/application/ProcessesMain.fxml" )));
-			screenController.activate("login");
+			screenController.activate("processesMain");
 	
 			
 		} catch(Exception e) {

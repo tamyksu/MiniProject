@@ -50,6 +50,7 @@ public class Client extends AbstractClient {
 
 			case "correct match":
 				Client.getInstance().setName(result.get(1));
+				LoginController.getInstance().getMessageField().setText("correct match");
 				ScreenController.getScreenController().activate("processesMain");
 				getProcessesFromServer();
 				break;

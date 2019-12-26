@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.lang.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.SplitPane?>
@@ -13,23 +17,22 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-
-<Pane xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.ControlerProcessMain">
+<Pane fx:id="idPaneUP" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.ControlerProcessMain">
    <children>
-      <SplitPane dividerPositions="0.07349665924276169" orientation="VERTICAL" prefHeight="900.0" prefWidth="1300.0">
+      <SplitPane dividerPositions="0.07349665924276169" orientation="VERTICAL" prefHeight="900.0" prefWidth="1400.0">
          <items>
-            <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="0.0" minWidth="0.0" prefHeight="62.0" prefWidth="1298.0">
+            <AnchorPane fx:id="idPaneUP" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="0.0" minWidth="0.0" prefHeight="62.0" prefWidth="1400.0">
                <children>
-                  <Label layoutX="18.0" layoutY="11.0" prefHeight="26.0" prefWidth="62.0" text="ICM">
+                  <Text fx:id="styleICM" fill="#8d8cc6" layoutX="520.0" layoutY="36.0" strokeType="OUTSIDE" strokeWidth="0.0" text="ICM" wrappingWidth="137.0">
                      <font>
-                        <Font size="27.0" />
+                        <Font size="21.0" />
                      </font>
-                  </Label>
+                  </Text>
                </children>
             </AnchorPane>
-            <AnchorPane focusTraversable="true" minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
+            <AnchorPane fx:id="idPane" focusTraversable="true" minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
                <children>
-                  <Button layoutX="22.0" layoutY="22.0" mnemonicParsing="false" text="Back" />
+                  <Button fx:id="idButton" layoutX="22.0" layoutY="22.0" mnemonicParsing="false" text="logout" />
                   <TableView fx:id="tableView" layoutX="45.0" layoutY="100.0" onSort="#initizlizeTable" prefHeight="302.0" prefWidth="637.0">
                      <columns>
                         <TableColumn fx:id="IdColumn" prefWidth="156.0" text="Request ID" />
@@ -39,91 +42,91 @@
                         <TableColumn fx:id="IdColumn1" prefWidth="99.99995930989587" text="Role" />
                      </columns>
                   </TableView>
-                  <Button layoutX="383.0" layoutY="496.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="143.0" text="Freeze Process" />
-                  <Button layoutX="384.0" layoutY="449.0" mnemonicParsing="false" text="Send Extension Request" />
-                  <Button layoutX="129.0" layoutY="446.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="147.0" text="Evaluation" />
-                  <Button layoutX="383.0" layoutY="545.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="143.0" text="Defrost Process" />
-                  <Button layoutX="129.0" layoutY="493.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="147.0" text="Decision Making" />
-                  <Button layoutX="129.0" layoutY="529.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="147.0" text="Execution" />
-                  <Button layoutX="129.0" layoutY="570.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="147.0" text="Examination" />
-                  <Button layoutX="129.0" layoutY="615.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="147.0" text="Shut Down Process" />
+                  <Button fx:id="idButton" layoutX="383.0" layoutY="496.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="143.0" text="Freeze Process" />
+                  <Button fx:id="idButton" layoutX="384.0" layoutY="449.0" mnemonicParsing="false" text="Send Extension Request" />
+                  <Button fx:id="idButton" layoutX="129.0" layoutY="446.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="147.0" text="Evaluation" />
+                  <Button fx:id="idButton" layoutX="383.0" layoutY="545.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="143.0" text="Defrost Process" />
+                  <Button fx:id="idButton" layoutX="129.0" layoutY="493.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="147.0" text="Decision Making" />
+                  <Button fx:id="idButton" layoutX="129.0" layoutY="529.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="147.0" text="Execution" />
+                  <Button fx:id="idButton" layoutX="129.0" layoutY="570.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="147.0" text="Examination" />
+                  <Button fx:id="idButton" layoutX="129.0" layoutY="615.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="147.0" text="Shut Down Process" />
                   <HBox layoutX="765.0" layoutY="80.0">
                      <children>
                         <VBox layoutX="709.0" layoutY="90.0" prefHeight="621.0" prefWidth="175.0">
                            <children>
-                              <Label text="Initiator Name:">
+                              <Label fx:id="textstyle" text="Initiator Name:">
                                  <font>
                                     <Font size="17.0" />
                                  </font>
                               </Label>
                               <TextArea layoutX="10.0" layoutY="146.0" opacity="0.0" prefHeight="7.0" prefWidth="158.0" />
-                              <Label layoutX="10.0" layoutY="10.0" text="Initiator Email:">
+                              <Label fx:id="textstyle" layoutX="10.0" layoutY="10.0" text="Initiator Email:">
                                  <font>
                                     <Font size="17.0" />
                                  </font>
                               </Label>
                               <TextArea layoutX="10.0" layoutY="36.0" opacity="0.0" prefHeight="7.0" prefWidth="158.0" />
-                              <Label layoutX="10.0" layoutY="31.0" text="Initiator Profession:">
+                              <Label fx:id="textstyle" layoutX="10.0" layoutY="31.0" text="Initiator Profession:">
                                  <font>
                                     <Font size="17.0" />
                                  </font>
                               </Label>
                               <TextArea layoutX="10.0" layoutY="70.0" opacity="0.0" prefHeight="7.0" prefWidth="158.0" />
-                              <Label text="Information System:">
+                              <Label fx:id="textstyle" text="Information System:">
                                  <font>
                                     <Font size="17.0" />
                                  </font>
                               </Label>
                               <TextArea opacity="0.0" prefHeight="7.0" prefWidth="158.0" />
-                              <Label layoutX="10.0" layoutY="60.0" text="Current State:">
+                              <Label fx:id="textstyle" layoutX="10.0" layoutY="60.0" text="Current State:">
                                  <font>
                                     <Font size="17.0" />
                                  </font>
                               </Label>
                               <TextArea opacity="0.0" prefHeight="46.0" prefWidth="158.0" />
-                              <Label layoutX="10.0" layoutY="35.0" text="Requested Change:">
+                              <Label fx:id="textstyle" layoutX="10.0" layoutY="35.0" text="Requested Change:">
                                  <font>
                                     <Font size="16.0" />
                                  </font>
                               </Label>
                               <TextArea layoutX="10.0" layoutY="36.0" opacity="0.0" prefHeight="44.0" prefWidth="158.0" />
-                              <Label layoutX="10.0" layoutY="60.0" text="Explanation:">
+                              <Label fx:id="textstyle" layoutX="10.0" layoutY="60.0" text="Explanation:">
                                  <font>
                                     <Font size="16.0" />
                                  </font>
                               </Label>
                               <TextArea layoutX="10.0" layoutY="140.0" opacity="0.0" prefHeight="47.0" prefWidth="158.0" />
-                              <Label layoutX="10.0" layoutY="85.0" text="Notes:">
+                              <Label fx:id="textstyle" layoutX="10.0" layoutY="85.0" text="Notes:">
                                  <font>
                                     <Font size="16.0" />
                                  </font>
                               </Label>
                               <TextArea layoutX="10.0" layoutY="209.0" opacity="0.0" prefHeight="45.0" prefWidth="158.0" />
-                              <Label layoutX="10.0" layoutY="135.0" text="Request Date:">
+                              <Label fx:id="textstyle" layoutX="10.0" layoutY="135.0" text="Request Date:">
                                  <font>
                                     <Font size="16.0" />
                                  </font>
                               </Label>
                               <TextArea layoutX="10.0" layoutY="281.0" opacity="0.0" prefHeight="7.0" prefWidth="158.0" />
-                              <Label layoutX="10.0" layoutY="160.0" text="Request ID:">
+                              <Label fx:id="textstyle" layoutX="10.0" layoutY="160.0" text="Request ID:">
                                  <font>
                                     <Font size="16.0" />
                                  </font>
                               </Label>
                               <TextArea layoutX="10.0" layoutY="353.0" opacity="0.0" prefHeight="7.0" prefWidth="158.0" />
-                              <Label layoutX="10.0" layoutY="110.0" text="Associated Documents:">
+                              <Label fx:id="textstyle" layoutX="10.0" layoutY="110.0" text="Associated Documents:">
                                  <font>
                                     <Font size="16.0" />
                                  </font>
                               </Label>
                               <TextArea layoutX="10.0" layoutY="482.0" opacity="0.0" prefHeight="33.0" prefWidth="158.0" />
-                              <Label fx:id="CurrentProcessStatus" prefHeight="25.0" prefWidth="165.0" text="Current Process Status:">
+                              <Label fx:id="textstyle" prefHeight="25.0" prefWidth="165.0" text="Current Process Status:">
                                  <font>
                                     <Font size="16.0" />
                                  </font>
                               </Label>
                               <TextArea layoutX="10.0" layoutY="514.0" opacity="0.0" prefHeight="7.0" prefWidth="158.0" />
-                              <Label fx:id="CurrentStageDueTime" prefHeight="25.0" prefWidth="175.0" text="Current Stage Due Time:">
+                              <Label fx:id="textstyle" prefHeight="25.0" prefWidth="175.0" text="Current Stage Due Time:">
                                  <font>
                                     <Font size="16.0" />
                                  </font>

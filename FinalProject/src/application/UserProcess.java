@@ -1,7 +1,7 @@
 package application;
 
 import java.sql.Date;
-
+//
 public class UserProcess {
 	
 	private String requestId;

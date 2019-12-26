@@ -1,6 +1,56 @@
-/* JavaFX CSS - Leave this comment until you have at least create one rule which uses -fx-Property */
 
-.updateVbox {
-	-fx-border-color: lightgray;
-	-fx-border-style: none none none dashed;
+#StyleLogin{
+	-fx-background-image: url("/application/3.jpg");
+	-fx-background-size: 100% 100%;
+}
+#login{
+	-fx-background-color: blue;
+	-fx-text-fill: white;
+}
+#styleName{
+	-fx-fill: white;
+}
+#stylePassword{
+	-fx-fill: white;
+}
+#styleMessage
+{
+	-fx-fill: white;
+}
+#styleICM
+{
+	-fx-fill: white;
+}
+#idPane{
+		-fx-background-image: url("/application/1.jpg");
+     	-fx-background-size: 100% 100%;
+}
+#color{
+	-fx-background-color: blue;
+}
+#idPaneUP{
+		-fx-background-image: url("/application/paneUP.jpg");
+}
+#idButton{
+-fx-background-image: url("/application/2.jpg");
+	-fx-text-fill: white;
+}
+#idButton:hover
+{
+	-fx-background-color: blue;
+}
+#textstyle{
+	-fx-text-fill: white;
+
+}
+
+#tableView{
+	-fx-background-image: url("/application/2.jpg");
+}
+#tableView:hover
+{
+	-fx-background-color: blue;
+}
+#InitiatorName{
+	-fx-background-image: url("/application/1.jpg");
 }
