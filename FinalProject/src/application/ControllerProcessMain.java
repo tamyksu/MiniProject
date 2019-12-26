@@ -14,9 +14,11 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.event.ActionEvent;
 
 
 public class ControllerProcessMain  implements Initializable{
+	public static ControllerProcessMain instance;
 
 	@FXML
     private TableView<Person> tableView;
@@ -36,8 +38,10 @@ public class ControllerProcessMain  implements Initializable{
     @FXML
     private TableColumn<Person, String> Role;
 
-  
-
+  	@FXML
+	private Button execution_btn;
+	@FXML
+	private Button evaluation_btn;
     @FXML
     private Label InitiatorName;
 
@@ -56,6 +60,11 @@ public class ControllerProcessMain  implements Initializable{
     @FXML
     private Label Explanation;
 
+	@FXML
+	private Button freeze_btn;
+
+	@FXML
+	private Button decision_btn;
     @FXML
     private Label Notes;
 
@@ -77,13 +86,28 @@ public class ControllerProcessMain  implements Initializable{
     @FXML
     private Button updateTable;
     
-	public static ControllerProcessMain instance;
+	@FXML
+	private Button shutdown_btn;
+
+	@FXML
+	private Button extension_btn;
+    
+	@FXML
+	private Button defrost_btn;
+
+	@FXML
+	private Button examination_btn;
 	
+	@FXML
+    private Button newRequestBtn;
 
 	public static void setInstance(ControllerProcessMain instance) {
 		ControllerProcessMain.instance = instance;
 	}
-	
+	 @FXML
+    void newRequest(ActionEvent event) {
+    	ScreenController.getScreenController().activate("newRequest");
+    }
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		instance = this;
@@ -144,6 +168,45 @@ public class ControllerProcessMain  implements Initializable{
 		RequestedChange.setText(process.getRequest_description());
 	}
 
+	@FXML
+	void freeze_click(ActionEvent event) {
+
+	}
+
+	@FXML
+	void extension_click(ActionEvent event) {
+
+	}
+
+	@FXML
+	void evaluation_click(ActionEvent event) {
+		ScreenController.getScreenController().activate("evaluation");
+	}
+
+	@FXML
+	void defrost_click(ActionEvent event) {
+
+	}
+
+	@FXML
+	void decision_click(ActionEvent event) {
+		ScreenController.getScreenController().activate("decisionMaking");
+	}
+
+	@FXML
+	void execution_click(ActionEvent event) {
+		ScreenController.getScreenController().activate("execution");
+	}
+
+	@FXML
+	void examination_click(ActionEvent event) {
+		ScreenController.getScreenController().activate("examination");
+	}
+
+	@FXML
+	void shutdown_click(ActionEvent event) {
+
+	}
 	@FXML
 	public void getTheUpdateProcessesFromDB() {
 		Client.getInstance().getProcessesFromServer();

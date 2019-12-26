@@ -2,5 +2,5 @@ package translator;
 
 public enum OptionsOfAction {
 
-	LOGIN, GETRELATEDREQUESTS
+	LOGIN, GETRELATEDREQUESTS, NEWREQUEST
 }

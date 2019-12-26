@@ -41,6 +41,9 @@ public class Client extends AbstractClient {
 		case GETRELATEDREQUESTS:
 			handlerMessageFromServerProcesses(result.getParmas());
 			break;
+		case NEWREQUEST:
+		
+			break;
 		default:
 			break;
 		}

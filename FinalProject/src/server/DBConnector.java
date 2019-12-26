@@ -4,7 +4,11 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.ArrayList;
+
+import javax.swing.text.StyledEditorKit.BoldAction;
+
 import translator.*;
+import application.Request;
 import java.sql.ResultSet;
 public class DBConnector {
 	
@@ -34,12 +38,40 @@ public class DBConnector {
 		        }
 			}
 			
-	
 	public static Object accessToDB(Object data) {
 		Translator translator =(Translator)data;
 		PreparedStatement stmt;
 		ArrayList<String> ar = new ArrayList<String>() ;
 		switch (translator.getRequest()) {
+		case NEWREQUEST:
+			Request nr = (Request) translator.getParmas().get(0);
+			  try {
+				stmt = conn.prepareStatement("insert into icmdb.processes (initiator_id,system_num,"
+						+ "problem_description,"
+						+ "		request_description,explanaton,"
+						+ "notes,status1) values(?,?,?,?,?,?,?)");
+				stmt.setInt(1, 111);
+				stmt.setInt(2, nr.getInformationSystemNumber());
+				stmt.setString(3, nr.getProblemDescription());
+				stmt.setString(4, nr.getRequestDescription());
+				stmt.setString(5, nr.getExplanation());
+				stmt.setString(6, nr.getNotes());
+				stmt.setString(7, "Active");
+				stmt.executeUpdate();
+				System.out.println("Insert is working!!!");
+				ArrayList<Boolean> success = new ArrayList<Boolean>();
+				success.add(new Boolean(true));
+				Translator answer = new Translator(OptionsOfAction.NEWREQUEST,success);
+				return answer;
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				System.out.println("SQL EXCEPTION!");
+			}
+			ArrayList<Boolean> failed = new ArrayList<Boolean>();
+			failed.add(new Boolean(false));
+			Translator answer = new Translator(OptionsOfAction.NEWREQUEST,failed);
+			return answer;
+			
 		case LOGIN:
 			try {
 				stmt = conn.prepareStatement("select * from users where user_id=? and password=?");	

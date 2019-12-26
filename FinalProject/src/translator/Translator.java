@@ -5,10 +5,6 @@ import java.util.ArrayList;
 
 public class Translator implements Serializable{
 
-
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 	private ArrayList<?> parmas;
 	private OptionsOfAction request;

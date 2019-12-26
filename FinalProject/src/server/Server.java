@@ -53,7 +53,6 @@ public class Server extends AbstractServer
     (Object msg, ConnectionToClient client)
   	{
 	    System.out.println("Message received: " + msg + " from " + client);
-	   
 	    try {
 	    	Object rs = DBConnector.accessToDB(msg);
 	    	if(rs != null)	
@@ -66,8 +65,6 @@ public class Server extends AbstractServer
 	    {
 	    	
 	    }
-	   
-	    
 	  }
 
   /**

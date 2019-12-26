@@ -9,7 +9,8 @@ public class ScreenController {
 	private static ScreenController screenController;
     private HashMap<String, Pane> screenMap = new HashMap<>();
     private Scene main;
-
+    private String lastScreen;
+    private String currentScreen;
     
     public static ScreenController getScreenController() {
 		return screenController;
@@ -39,6 +40,13 @@ public class ScreenController {
 
     public void activate(String name){
         main.setRoot( screenMap.get(name) );
+        lastScreen = currentScreen;
+        currentScreen = name;
     }
+
+	public String getLastScreen() {
+		return lastScreen;
+	}
+
     
 }
