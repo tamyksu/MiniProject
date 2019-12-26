@@ -1,6 +1,6 @@
 package application;
 
-
+//
 public class UserProcess {
 	private int    request_id;
 	private int    system_num;

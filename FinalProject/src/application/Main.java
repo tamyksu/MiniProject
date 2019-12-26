@@ -7,6 +7,7 @@ import javafx.stage.Stage;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.layout.BorderPane;
 
 public class Main extends Application {
 	
@@ -20,6 +21,7 @@ public class Main extends Application {
 			baseScene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
 			primaryStage.setScene(baseScene);
 			primaryStage.show();
+		
 			initializeScreenController(baseScene);
 			ScreenController.getScreenController().activate("login");
 	

@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.lang.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.PasswordField?>
 <?import javafx.scene.control.SplitPane?>
@@ -9,26 +13,52 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.text.Text?>
 
-
-<Pane xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.LoginController">
+<Pane xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.LoginController">
    <children>
-      <SplitPane dividerPositions="0.16926503340757237" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" orientation="VERTICAL" prefHeight="900.0" prefWidth="1300.0">
+      <SplitPane id="StyleLogin" dividerPositions="0.5" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" orientation="VERTICAL" prefHeight="900.0" prefWidth="1400.0">
         <items>
           <AnchorPane maxHeight="-Infinity" minHeight="0.0" minWidth="0.0" prefHeight="165.0" prefWidth="1298.0">
                <children>
-                  <Button fx:id="login" layoutX="447.0" layoutY="59.0" mnemonicParsing="false" onAction="#loginFunc" text="Log In" />
-                  <TextField fx:id="userName" layoutX="73.0" layoutY="59.0" />
-                  <Text layoutX="89.0" layoutY="40.0" strokeType="OUTSIDE" strokeWidth="0.0" text="User Name" />
-                  <Text layoutX="272.0" layoutY="32.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Password" />
-                  <TextField fx:id="message" layoutX="162.0" layoutY="101.0" prefHeight="25.0" prefWidth="517.0" />
-                  <Text layoutX="73.0" layoutY="127.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Message:" />
-                  <PasswordField fx:id="password" layoutX="248.0" layoutY="59.0" />
-               </children>
-            </AnchorPane>
+                  <Text fx:id="styleICM" fill="#8d8cc6" layoutX="512.0" layoutY="120.0" strokeType="OUTSIDE" strokeWidth="0.0" text="ICM" wrappingWidth="248.0970458984375">
+                     <font>
+                        <Font size="62.0" />
+                     </font>
+                  </Text>
+               </children></AnchorPane>
             <HBox maxHeight="-Infinity" prefHeight="788.0" prefWidth="1298.0">
                <children>
                   <Pane prefHeight="200.0" prefWidth="200.0" />
-                  <Pane prefHeight="838.0" prefWidth="971.0" />
+                  <Pane prefHeight="838.0" prefWidth="971.0">
+                     <children>
+                        <Text fx:id="styleName" layoutX="172.0" layoutY="291.0" strokeType="OUTSIDE" strokeWidth="0.0" text="User Name">
+                           <font>
+                              <Font size="18.0" />
+                           </font></Text>
+                        <Text fx:id="stylePassword" layoutX="179.0" layoutY="364.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Password">
+                           <font>
+                              <Font size="18.0" />
+                           </font></Text>
+                        <PasswordField fx:id="password" layoutX="281.0" layoutY="336.0">
+                           <font>
+                              <Font size="18.0" />
+                           </font></PasswordField>
+                        <TextField fx:id="userName" layoutX="281.0" layoutY="265.0">
+                           <font>
+                              <Font size="18.0" />
+                           </font></TextField>
+                        <Button fx:id="login" layoutX="552.0" layoutY="355.0" mnemonicParsing="false" onAction="#loginFunc" text="Log In">
+                           <font>
+                              <Font size="18.0" />
+                           </font></Button>
+                        <Text fx:id="styleMessage" layoutX="171.0" layoutY="458.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Message:" visible="false">
+                           <font>
+                              <Font size="18.0" />
+                           </font></Text>
+                        <TextField fx:id="message" layoutX="266.0" layoutY="430.0" prefHeight="25.0" prefWidth="517.0" visible="false">
+                           <font>
+                              <Font size="18.0" />
+                           </font></TextField>
+                     </children></Pane>
                   <Pane prefHeight="838.0" prefWidth="233.0" />
                </children>
             </HBox>
