@@ -6,12 +6,14 @@ import java.io.*;
 import java.util.ArrayList;
 import application.ControllerProcessMain;
 import application.LoginController;
+import application.NewRequestContoroller;
 import application.Processes;
 import application.ScreenController;
 import application.UserProcess;
+import javafx.scene.control.Alert.AlertType;
 
 public class Client extends AbstractClient {
-	private String name;
+	private String userID;
 	private Processes processes = new Processes();
 	public static Client instance;
 	
@@ -50,8 +52,8 @@ public class Client extends AbstractClient {
 	
 	}
 
-	private void setName(String name) {
-		this.name = name;
+	private void setName(String userID) {
+		this.userID = userID;
 	}
 
 	public void handleMessageFromClientGUI(Object message) {
@@ -72,8 +74,8 @@ public class Client extends AbstractClient {
 	}
 
 
-	public String getName() {
-		return name;
+	public String getUserID() {
+		return userID;
 	}
 
 	public Processes getProcesses() {
@@ -86,11 +88,12 @@ public class Client extends AbstractClient {
 	
 	public void getProcessesFromServer() {
 		ArrayList<String> ar = new ArrayList<String>();
-		ar.add(name);
+		ar.add(userID);
 		Translator translator = new Translator(OptionsOfAction.GETRELATEDREQUESTS, ar);
 		handleMessageFromClientGUI(translator);
 	}
 
+	
 	public void handlerMessageFromServerLogin(Object rs) {
 		@SuppressWarnings("unchecked")
 		ArrayList<String> result = (ArrayList<String>) rs;
@@ -112,34 +115,43 @@ public class Client extends AbstractClient {
 	@SuppressWarnings("unchecked")
 	public void handlerMessageFromServerProcesses(Object rs) {
 		
-    	ArrayList<ArrayList<?>> result = new ArrayList<ArrayList<?>>();
-		result = (ArrayList<ArrayList<?>>) rs ;
 		Processes processes = new Processes();
-		for (int i = 0; i < result.size(); i=i+2) {
-			UserProcess process = new UserProcess();
-			process.setRequest_id((int)result.get(i).get(0));
-			process.setRole((String)result.get(i+1).get(0));
-			process.setIntiatorId((String)result.get(i+1).get(1));
-			process.setSystem_num((int)result.get(i).get(1));
-			process.setProblem_description((String)result.get(i+1).get(2));
-			process.setRequest_description((String)result.get(i+1).get(3));
-			process.setExplanaton((String)result.get(i+1).get(4));
-			process.setNotes((String)result.get(i+1).get(5));
-			process.setStatus((String)result.get(i+1).get(6));
-			process.setCreation_date((String)result.get(i+1).get(7));
-			process.setHandler_id((String)result.get(i+1).get(8));
-			process.setProcess_stage((String)result.get(i+1).get(9));
-			process.setCurrent_stage_due_date((String)result.get(i+1).get(10));
-			process.setInitiatorFirstName((String)result.get(i+1).get(11));
-			process.setInitiatorLastName((String)result.get(i+1).get(12));
-			process.setEmail((String)result.get(i+1).get(13));
-			process.setDepartment((String)result.get(i+1).get(14));
-			processes.getMyProcess().put(new Integer((int)result.get(i).get(0)), process);
-			processes.getMyProcessesInArrayList().add(process);	
-		}
+    	ArrayList<ArrayList<?>> result = new ArrayList<ArrayList<?>>();	
+		result = (ArrayList<ArrayList<?>>) rs ;
+
+		if(!(result.get(0).get(0).toString().equals("No processes")))
+		{
+
+					
+//		if(! result.get(0).toString().equals("The user has no related process"))
+//		{
+			for (int i = 0; i < result.size(); i=i+2) {
+				UserProcess process = new UserProcess();
+				process.setRequest_id((int)result.get(i).get(0));
+				process.setRole((String)result.get(i+1).get(0));
+				process.setIntiatorId((String)result.get(i+1).get(1));
+				process.setSystem_num((int)result.get(i).get(1));
+				process.setProblem_description((String)result.get(i+1).get(2));
+				process.setRequest_description((String)result.get(i+1).get(3));
+				process.setExplanaton((String)result.get(i+1).get(4));
+				process.setNotes((String)result.get(i+1).get(5));
+				process.setStatus((String)result.get(i+1).get(6));
+				process.setCreation_date((String)result.get(i+1).get(7));
+				process.setHandler_id((String)result.get(i+1).get(8));
+				process.setProcess_stage((String)result.get(i+1).get(9));
+				process.setCurrent_stage_due_date((String)result.get(i+1).get(10));
+				process.setInitiatorFirstName((String)result.get(i+1).get(11));
+				process.setInitiatorLastName((String)result.get(i+1).get(12));
+				process.setEmail((String)result.get(i+1).get(13));
+				process.setDepartment((String)result.get(i+1).get(14));
+				processes.getMyProcess().put(new Integer((int)result.get(i).get(0)), process);
+				processes.getMyProcessesInArrayList().add(process);	
+			}
+//		}
 		this.processes=processes;
+		}
 		//sending all processes related to Controllers in order to set them in their table
-		ControllerProcessMain.getInstance().SetInTable(processes );
+		ControllerProcessMain.getInstance().SetInTable(processes);
 	}
 
 	

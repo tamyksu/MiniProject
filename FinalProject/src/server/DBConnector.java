@@ -4,9 +4,6 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.ArrayList;
-
-import javax.swing.text.StyledEditorKit.BoldAction;
-
 import translator.*;
 import application.Request;
 import java.sql.ResultSet;
@@ -111,8 +108,12 @@ public class DBConnector {
 				stmt.setString(1, (String) translator.getParmas().get(0));
 				ResultSet rs = stmt.executeQuery();		
 				if(rs.first() == false) {
-					ar.add("The user has no related process");
-					Translator newTranslator = new Translator(translator.getRequest(), ar);
+					ar.add("No processes");
+					ArrayList<ArrayList<?>> empty = new ArrayList<ArrayList<?>>();
+					empty.add(ar);
+					
+					Translator newTranslator = new Translator(translator.getRequest(), empty);
+					
 					return newTranslator;
 				}
 				rs.previous();
