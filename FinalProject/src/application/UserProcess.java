@@ -1,28 +1,26 @@
 package application;
 
-import java.sql.Date;
 //
 public class UserProcess {
-	
-	private String requestId;
+	private int    request_id;
+	private int    system_num;
 	private String role;
 	private String intiatorId;
-	private int    system_num;
 	private String problem_description;
 	private String request_description;
 	private String explanaton;
 	private String notes;
 	private String status;
-	private Date creation_date;
+	private String creation_date;
 	private String handler_id;
 	private String process_stage;
 	private String current_stage_due_date;
-	public String getRequestId() {
-		return requestId;
-	}
-	public void setRequestId(String requestId) {
-		this.requestId = requestId;
-	}
+	private String department;
+	private String email;
+	private String initiatorFirstName;
+	private String initiatorLastName;
+
+	
 	public String getRole() {
 		return role;
 	}
@@ -71,10 +69,10 @@ public class UserProcess {
 	public void setStatus(String status) {
 		this.status = status;
 	}
-	public Date getCreation_date() {
+	public String getCreation_date() {
 		return creation_date;
 	}
-	public void setCreation_date(Date creation_date) {
+	public void setCreation_date(String creation_date) {
 		this.creation_date = creation_date;
 	}
 	public String getHandler_id() {
@@ -96,6 +94,36 @@ public class UserProcess {
 		this.current_stage_due_date = current_stage_due_date;
 	}
 
-
+	public void setRequest_id(int request_id) {
+		this.request_id = request_id;
+	}
+	public int getRequest_id() {
+		return request_id;
+	}
+	public String getEmail() {
+		return email;
+	}
+	public void setEmail(String email) {
+		this.email = email;
+	}
+	public String getInitiatorFirstName() {
+		return initiatorFirstName;
+	}
+	public void setInitiatorFirstName(String initiatorFirstName) {
+		this.initiatorFirstName = initiatorFirstName;
+	}
+	public String getInitiatorLastName() {
+		return initiatorLastName;
+	}
+	public void setInitiatorLastName(String initiatorLastName) {
+		this.initiatorLastName = initiatorLastName;
+	}
+	public String getDepartment() {
+		return department;
+	}
+	public void setDepartment(String department) {
+		this.department = department;
+	}
+	
 
 }

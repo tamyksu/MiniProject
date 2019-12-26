@@ -1,5 +1,7 @@
 package application;
 	
+import java.io.IOException;
+
 import javafx.application.Application;
 import javafx.stage.Stage;
 import javafx.scene.Parent;
@@ -8,21 +10,40 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.layout.BorderPane;
 
 public class Main extends Application {
+	
 	@Override
 	public void start(Stage primaryStage) {
 		try {
-			Parent root = FXMLLoader.load(getClass().getResource("/application/amirIdea.fxml"));
-			Scene scene = new Scene(root, 600,500);
-			scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
-			primaryStage.setScene(scene);
+
+			
+			Parent root = FXMLLoader.load(getClass().getResource("/application/basePanel.fxml"));
+			Scene baseScene = new Scene(root, 1300,900);
+			baseScene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
+			primaryStage.setScene(baseScene);
 			primaryStage.show();
-			ScreenController screenController = new ScreenController(scene);
-			screenController.addScreen("login", FXMLLoader.load(getClass().getResource( "/application/Login.fxml" )));
-			screenController.addScreen("processesMain", FXMLLoader.load(getClass().getResource( "/application/ProcessesMain.fxml" )));
-			screenController.activate("processesMain");
+		
+			initializeScreenController(baseScene);
+			ScreenController.getScreenController().activate("login");
 	
 			
 		} catch(Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public void initializeScreenController(Scene baseScene)
+	{
+		new ScreenController(baseScene);
+
+		try {
+			ScreenController.getScreenController().addScreen("login", FXMLLoader.load(getClass().getResource("/application/Login.fxml")));
+			ScreenController.getScreenController().addScreen("processesMain", FXMLLoader.load(getClass().getResource("/application/ProcessesMain.fxml")));
+			ScreenController.getScreenController().addScreen("evaluation", FXMLLoader.load(getClass().getResource("/application/Evaluation.fxml")));
+			ScreenController.getScreenController().addScreen("decisionMaking", FXMLLoader.load(getClass().getResource("/application/DecisionMaking.fxml")));
+			ScreenController.getScreenController().addScreen("execution", FXMLLoader.load(getClass().getResource("/application/Execution.fxml")));
+			ScreenController.getScreenController().addScreen("newRequest", FXMLLoader.load(getClass().getResource("/application/NewRequestForm.fxml")));
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}

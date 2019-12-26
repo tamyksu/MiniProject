@@ -7,6 +7,8 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
+import translator.OptionsOfAction;
+import translator.Translator;
 import client.Client;
 
 public class LoginController {
@@ -45,12 +47,12 @@ public class LoginController {
 	@FXML
 	void loginFunc(ActionEvent event) {
 		ArrayList<String> check = new ArrayList<String>();
-		check.add("check login");
 		check.add(userName.getText());
 		check.add(password.getText());
 		password.clear();
 		userName.clear();
-		client.handleMessageFromClientGUI(check);
+		Translator translator = new Translator(OptionsOfAction.LOGIN, check);
+		client.handleMessageFromClientGUI(translator);
 	}
 	
 

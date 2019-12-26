@@ -4,12 +4,11 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.HashMap;
 
-import application.Processes;
-import application.UserProcess;
-import sun.net.www.content.text.plain;
+import javax.swing.text.StyledEditorKit.BoldAction;
 
+import translator.*;
+import application.Request;
 import java.sql.ResultSet;
 public class DBConnector {
 	
@@ -39,95 +38,157 @@ public class DBConnector {
 		        }
 			}
 			
-	
-	  protected static Object accessToDB(ArrayList<String> data)
-	  {
-		
+	public static Object accessToDB(Object data) {
+		Translator translator =(Translator)data;
 		PreparedStatement stmt;
-		ArrayList<String> ar=new ArrayList<String>();//return the result of the select query
-		switch (data.get(0)) {
-		case "check login":
+		ArrayList<String> ar = new ArrayList<String>() ;
+		switch (translator.getRequest()) {
+		case NEWREQUEST:
+			Request nr = (Request) translator.getParmas().get(0);
+			  try {
+				stmt = conn.prepareStatement("insert into icmdb.processes (initiator_id,system_num,"
+						+ "problem_description,"
+						+ "		request_description,explanaton,"
+						+ "notes,status1) values(?,?,?,?,?,?,?)");
+				stmt.setInt(1, 111);
+				stmt.setInt(2, nr.getInformationSystemNumber());
+				stmt.setString(3, nr.getProblemDescription());
+				stmt.setString(4, nr.getRequestDescription());
+				stmt.setString(5, nr.getExplanation());
+				stmt.setString(6, nr.getNotes());
+				stmt.setString(7, "Active");
+				stmt.executeUpdate();
+				System.out.println("Insert is working!!!");
+				ArrayList<Boolean> success = new ArrayList<Boolean>();
+				success.add(new Boolean(true));
+				Translator answer = new Translator(OptionsOfAction.NEWREQUEST,success);
+				return answer;
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				System.out.println("SQL EXCEPTION!");
+			}
+			ArrayList<Boolean> failed = new ArrayList<Boolean>();
+			failed.add(new Boolean(false));
+			Translator answer = new Translator(OptionsOfAction.NEWREQUEST,failed);
+			return answer;
+			
+		case LOGIN:
 			try {
-				
-				stmt = conn.prepareStatement("select * from users where user_id=?");	
-				stmt.setString(1, data.get(1));
+				stmt = conn.prepareStatement("select * from users where user_id=? and password=?");	
+				stmt.setString(1, (String) translator.getParmas().get(0));
+				stmt.setString(2, (String) translator.getParmas().get(1));
+
 				ResultSet rs = stmt.executeQuery();
 				if(rs.first() == false) {
-					ar.add("The username does not exist");
-					return ar;
+					ar.add("Login failed, username and password did not match");
+					Translator newTranslator = new Translator(translator.getRequest(), ar);
+					return newTranslator;
 				}
 				rs.previous();
 				while(rs.next())
 				{					    
 					    ar.add(rs.getString(1));
-					    ar.add(rs.getString(2));
 				}
-				if(ar.get(1).equals(data.get(2)) ) {
-					ArrayList<String> ans = new ArrayList<String>();
-					ans.add("correct match");
-					ans.add(ar.get(0));
-					return ans;
-				}
-				ar.clear();
-				ar.add(0, "Login failed, username and password did not match");
-				return ar;
+				ArrayList<String> ans = new ArrayList<String>();
+				ans.add("correct match");
+				ans.add(ar.get(0));
+				Translator newTranslator = new Translator(translator.getRequest(), ans);
+				return newTranslator;
 				}
 			catch (SQLException e) {
 				System.out.println("ERROR");
 				e.printStackTrace();} 
 			return null;
 			
-		case "get all related requests":
+		case GETRELATEDREQUESTS:
 			try {
-				
 				stmt = conn.prepareStatement(""
 					  + "SELECT users_requests.process_id, users_requests.role, processes.* \r\n" + 
 						"FROM users_requests\r\n" + 
 						"INNER JOIN processes\r\n" + 
 						"ON users_requests.process_id = processes.request_id\r\n"+
 						"WHERE users_requests.user_id=?");
-				stmt.setString(1, data.get(1));
-				ResultSet rs = stmt.executeQuery();				
+				stmt.setString(1, (String) translator.getParmas().get(0));
+				ResultSet rs = stmt.executeQuery();		
 				if(rs.first() == false) {
 					ar.add("The user has no related process");
-					return ar;
+					Translator newTranslator = new Translator(translator.getRequest(), ar);
+					return newTranslator;
 				}
 				rs.previous();
-				HashMap<Integer, UserProcess> processesHashMap = new HashMap<Integer, UserProcess>();
+				ArrayList<ArrayList<?>> processes = new ArrayList<ArrayList<?>>();
 				while(rs.next()) {	
-					UserProcess process = new UserProcess();
-					process.setRole(rs.getString(2));
-					process.setIntiatorId(rs.getString(4));
-					process.setSystem_num(rs.getInt(5));
-					process.setProblem_description(rs.getString(6));
-					process.setRequest_description(rs.getString(7));
-					process.setExplanaton(rs.getString(8));
-					process.setNotes(rs.getString(9));
-					process.setStatus(rs.getString(10));
-					process.setCreation_date(rs.getDate(11));
-					process.setHandler_id(rs.getString(12));
-					process.setProcess_stage(rs.getString(13));
-					process.setCurrent_stage_due_date(rs.getString(14));
-					processesHashMap.put(rs.getInt(1), process);
+					ArrayList<Integer> intArray= new ArrayList<Integer>();
+					ArrayList<String> stringArray= new ArrayList<String>();
+					intArray.add(rs.getInt(1));
+					stringArray.add(rs.getString(2));
+					stringArray.add(rs.getString(4));
+					intArray.add(rs.getInt(5));
+					stringArray.add(rs.getString(6));
+					stringArray.add(rs.getString(7));
+					stringArray.add(rs.getString(8));
+					stringArray.add(rs.getString(9));
+					stringArray.add(rs.getString(10));
+					stringArray.add(rs.getString(11));
+					stringArray.add(rs.getString(12));
+					stringArray.add(rs.getString(13));
+					stringArray.add(rs.getString(14));
+					ResultSet initiatorInfo = getInitiatorInfo(rs.getString(4));
+					if (initiatorInfo != null) {
+						while(initiatorInfo.next()) {
+							stringArray.add(initiatorInfo.getString(3));
+							stringArray.add(initiatorInfo.getString(4));
+							stringArray.add(initiatorInfo.getString(5));
+							stringArray.add(initiatorInfo.getString(6));
+						}
+					}
+					else {
+						return null;
+					}
+					processes.add(intArray);
+					processes.add(stringArray);
 				}
-				Processes processes = new Processes();
-				processes.setMyProcess(processesHashMap);
-				return processes;
-				
-
+				Translator newTranslator = new Translator(translator.getRequest(), processes);
+				return newTranslator;
 			} catch (SQLException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}	
-		
-			
 			break;
 		default:
 			System.out.println("default");
 			break;
 		}
+	return null;
+	}
+	
+	protected static ResultSet getInitiatorInfo(String initiatorId)  {
+		PreparedStatement stmt;
+		try {
+		stmt = conn.prepareStatement(""
+				  + "SELECT * FROM students\r\n" + 
+					"WHERE students.id=?");
+		stmt.setString(1, initiatorId);
+		ResultSet rs1 = stmt.executeQuery();
+		if(rs1.first() == false) {
+				PreparedStatement stmt1;
+				stmt1 = conn.prepareStatement(""
+						+ "SELECT * FROM workers\r\n" + 
+							"WHERE students.id=?");
+				stmt1.setString(1, initiatorId);
+				ResultSet rs2 = stmt.executeQuery();
+				if(rs2.first() == false) return null;
+				rs2.previous();
+				return rs2;
+			}
+		rs1.previous();
+		
+		return rs1;
+	
+		} catch (SQLException e) {
+			e.printStackTrace();
+			System.out.println("The SQL query of initiator info has faile;");
+		}
 		return null;
-			
-	  }
-
+	}
 }
