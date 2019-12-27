@@ -23,7 +23,7 @@
    <children>
       <SplitPane dividerPositions="0.07349665924276169" orientation="VERTICAL" prefHeight="900.0" prefWidth="1400.0">
         <items>
-          <AnchorPane fx:id="idp" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="0.0" minWidth="0.0" prefHeight="62.0" prefWidth="1400.0" />
+          <AnchorPane fx:id="idp" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="0.0" minWidth="0.0" prefHeight="62.0" prefWidth="1298.0" />
           <AnchorPane fx:id="idPane" focusTraversable="true" minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
                <children>
                   <Button layoutX="22.0" layoutY="22.0" mnemonicParsing="false" text="Back" />
