@@ -17,7 +17,7 @@ public class Main extends Application {
 
 			
 			Parent root = FXMLLoader.load(getClass().getResource("/application/basePanel.fxml"));
-			Scene baseScene = new Scene(root, 1300,900);
+			Scene baseScene = new Scene(root, 1500,1500);
 			baseScene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
 			primaryStage.setScene(baseScene);
 			primaryStage.show();
