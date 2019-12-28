@@ -210,6 +210,7 @@ public class DBConnector {
 	return null;
 	}
 	
+	//Another function aimed at getting the initiator information from the database
 	protected static ResultSet getInitiatorInfo(String initiatorId)  {
 		PreparedStatement stmt;
 		try {
