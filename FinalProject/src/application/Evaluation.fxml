@@ -10,9 +10,9 @@
 
 <Pane xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.EvaluationController">
    <children>
-      <SplitPane dividerPositions="0.5" orientation="VERTICAL" prefHeight="1500.0" prefWidth="1600">
+      <SplitPane dividerPositions="0.5" orientation="VERTICAL" prefHeight="1500.0" prefWidth="1500">
         <items>
-          <AnchorPane fx:id="idp" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="0.0" minWidth="0.0" prefHeight="62.0" prefWidth="1400.0">
+          <AnchorPane fx:id="idp" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="0.0" minWidth="0.0" prefHeight="62.0" prefWidth="1500.0">
                <children>
                   <Text fx:id="styleICM" fill="#8d8cc6" layoutX="517.0" layoutY="57.0" strokeType="OUTSIDE" strokeWidth="0.0" text="ICM" wrappingWidth="276.0970458984375">
                      <font>
