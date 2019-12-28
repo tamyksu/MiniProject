@@ -42,6 +42,7 @@ public class Main extends Application {
 			ScreenController.getScreenController().addScreen("decisionMaking", FXMLLoader.load(getClass().getResource("/application/DecisionMaking.fxml")));
 			ScreenController.getScreenController().addScreen("execution", FXMLLoader.load(getClass().getResource("/application/Execution.fxml")));
 			ScreenController.getScreenController().addScreen("newRequest", FXMLLoader.load(getClass().getResource("/application/NewRequestForm.fxml")));
+			ScreenController.getScreenController().addScreen("examination", FXMLLoader.load(getClass().getResource("/application/Examination.fxml")));
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
