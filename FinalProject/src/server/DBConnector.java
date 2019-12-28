@@ -43,18 +43,62 @@ public class DBConnector {
 		case NEWREQUEST:
 			Request nr = (Request) translator.getParmas().get(0);
 			  try {
+				  
+				// Add new request to processes table in the Data Base:
 				stmt = conn.prepareStatement("insert into icmdb.processes (initiator_id,system_num,"
 						+ "problem_description,"
 						+ "		request_description,explanaton,"
-						+ "notes,status1) values(?,?,?,?,?,?,?)");
-				stmt.setInt(1, 111);
+						+ "notes,status1, process_stage) values(?,?,?,?,?,?,?,?)");
+				stmt.setString(1, nr.getUserID());
 				stmt.setInt(2, nr.getInformationSystemNumber());
 				stmt.setString(3, nr.getProblemDescription());
 				stmt.setString(4, nr.getRequestDescription());
 				stmt.setString(5, nr.getExplanation());
 				stmt.setString(6, nr.getNotes());
 				stmt.setString(7, "Active");
+				stmt.setInt(8, 1);
 				stmt.executeUpdate();
+				
+				// Get the ID newly inserted request:
+				try {
+					PreparedStatement stmt2 = conn.prepareStatement("select request_id from processes where"
+							+ " initiator_id=? and system_num=? and "
+							+ "problem_description=? and request_description=? "
+							+ "and explanaton=? and notes=?");	
+					stmt2.setString(1, nr.getUserID());
+					stmt2.setInt(2, nr.getInformationSystemNumber());
+					stmt2.setString(3, nr.getProblemDescription());
+					stmt2.setString(4, nr.getRequestDescription());
+					stmt2.setString(5, nr.getExplanation());
+					stmt2.setString(6, nr.getNotes());
+
+					ResultSet rs = stmt2.executeQuery();
+					int processID=0;
+					while (rs.next()) { // get the processID from the Select query
+			               processID = rs.getInt("request_id");
+			               break;
+					 }
+					 System.out.println(processID);
+					 // Add the new request ID with it's initator' Id to users_request 
+					try {
+						PreparedStatement stmt3 = conn.prepareStatement("insert into  users_requests (user_id,process_id,"
+								+ "role)"
+								+ "values(?,?,?)");
+						stmt3.setString(1, nr.getUserID());
+						stmt3.setInt(2, processID);
+						stmt3.setString(3, "Initiator");
+						stmt3.executeUpdate();
+					}
+					catch (SQLException e) {
+						// TODO Auto-generated catch block
+						System.out.println("SQL EXCEPTION on 3rd query");
+					}
+				}
+				catch (SQLException e) {
+					// TODO Auto-generated catch block
+					System.out.println("SQL EXCEPTION!");
+				}
+				
 				System.out.println("Insert is working!!!");
 				ArrayList<Boolean> success = new ArrayList<Boolean>();
 				success.add(new Boolean(true));
@@ -91,6 +135,9 @@ public class DBConnector {
 				ans.add(ar.get(0));
 				Translator newTranslator = new Translator(translator.getRequest(), ans);
 				return newTranslator;
+				
+				
+				
 				}
 			catch (SQLException e) {
 				System.out.println("ERROR");

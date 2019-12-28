@@ -87,8 +87,8 @@
                      </children>
                   </VBox>
                   <Button layoutX="886.0" layoutY="508.0" mnemonicParsing="false" text="Upload Files" />
-                  <Button layoutX="492.0" layoutY="572.0" mnemonicParsing="false" text="Delete All" />
-                  <Button layoutX="22.0" layoutY="22.0" mnemonicParsing="false" text="Back" />
+                  <Button fx:id="deleteAllBtn" layoutX="492.0" layoutY="572.0" mnemonicParsing="false" onAction="#deleteAll" text="Delete All" />
+                  <Button fx:id="backBtn" layoutX="22.0" layoutY="22.0" mnemonicParsing="false" onAction="#backClick" text="Back" />
                   <Label fx:id="textstyle" layoutX="552.0" layoutY="115.0" text="New Request Form">
                      <font>
                         <Font name="System Bold" size="25.0" />

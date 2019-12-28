@@ -59,6 +59,24 @@ public class NewRequestContoroller {
     private ListView filesList;
     
     @FXML
+    private Button deleteAllBtn;
+    
+    @FXML
+    private Button backBtn;
+    
+    
+    @FXML
+    void deleteAll(ActionEvent event) {
+    	informationSystemNumber.clear();
+		ProblemDescription.clear();
+		requestDescription.clear();
+		explanation.clear();
+		notes.clear();
+		
+    }
+    
+    
+    @FXML
     void uploadFiles(ActionEvent event) {
 
     	FileChooser fc = new FileChooser();
@@ -95,7 +113,7 @@ public class NewRequestContoroller {
     		String expla = explanation.getText().toString();
     		String notes1 = notes.getText().toString();
 
-    		Request nr = new Request(sysNum, probDesc, reqDesc, expla, notes1);
+    		Request nr = new Request(Client.getInstance().getUserID(),sysNum, probDesc, reqDesc, expla, notes1);
     		//System.out.println(nr.toString());
     		ArrayList<Request> params = new ArrayList<Request>();
     		params.add(nr);
