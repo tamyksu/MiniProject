@@ -196,16 +196,48 @@ public class ControllerProcessMain implements Initializable {
 		case "supervisor":
 			fitSupervisor();
 			break;	
-		case "":
-			
+		case "appraiser":
+			fitAppraiser();
 			break;
+		case "Chairman":
+			fitChairman();
+			break;
+			
 		default:
 			break;
 		}
 		
 	}
+	//change button disability in accordance to appraiser
+	private void fitChairman() {
+		newRequestBtn.setDisable(false);
+		extension_btn.setDisable(true);
+		evaluation_btn.setDisable(false);
+		decision_btn.setDisable(false);
+		execution_btn.setDisable(true);
+		examination_btn.setDisable(false);
+		shutdown_btn.setDisable(true);
+		freeze_btn.setDisable(true);
+		defrost_btn.setDisable(false);		
+	}
+
+	//change button disability in accordance to appraiser
+	private void fitAppraiser() {
+		newRequestBtn.setDisable(false);
+		extension_btn.setDisable(true);
+		evaluation_btn.setDisable(false);
+		decision_btn.setDisable(false);
+		execution_btn.setDisable(true);
+		examination_btn.setDisable(false);
+		shutdown_btn.setDisable(true);
+		freeze_btn.setDisable(true);
+		defrost_btn.setDisable(false);			
+	}
+
 	//change button disability in accordance to supervisor
 	private void fitSupervisor() {
+		newRequestBtn.setDisable(false);
+		extension_btn.setDisable(true);
 		evaluation_btn.setDisable(false);
 		decision_btn.setDisable(false);
 		execution_btn.setDisable(true);
@@ -216,18 +248,22 @@ public class ControllerProcessMain implements Initializable {
 	}
 
 	private void fitManager() {
-		evaluation_btn.setDisable(false);
-		decision_btn.setDisable(false);
+		newRequestBtn.setDisable(false);
+		extension_btn.setDisable(true);
+		evaluation_btn.setDisable(true);
+		decision_btn.setDisable(true);
 		execution_btn.setDisable(true);
-		examination_btn.setDisable(false);
+		examination_btn.setDisable(true);
 		shutdown_btn.setDisable(true);
 		freeze_btn.setDisable(true);
-		defrost_btn.setDisable(false);		
+		defrost_btn.setDisable(true);		
 	}
 
 	//Suitable for the initiator of the process the buttons allowed
 
 	private void fitInitiator() {
+		newRequestBtn.setDisable(false);
+		extension_btn.setDisable(true);
 		evaluation_btn.setDisable(true);
 		decision_btn.setDisable(true);
 		execution_btn.setDisable(true);
