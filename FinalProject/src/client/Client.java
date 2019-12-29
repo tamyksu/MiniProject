@@ -6,7 +6,6 @@ import java.io.*;
 import java.util.ArrayList;
 import application.ControllerProcessMain;
 import application.LoginController;
-import application.NewRequestContoroller;
 import application.Processes;
 import application.ScreenController;
 import application.UserProcess;
@@ -57,6 +56,18 @@ public class Client extends AbstractClient {
 		this.userID = userID;
 	}
 
+	
+	public void handleMessageFromClientGUINewRequest(Object message) {
+		try {
+			super.
+			sendToServer(message);
+		} catch (IOException e) {
+			System.out.println("Could not insert new request");
+			quit();
+		}
+	}
+	
+	
 	public void handleMessageFromClientGUI(Object message) {
 		try {
 			sendToServer(message);

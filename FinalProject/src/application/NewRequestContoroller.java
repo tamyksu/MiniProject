@@ -1,7 +1,8 @@
 package application;
 
-
+import java.io.BufferedInputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -11,6 +12,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+
 
 
 import client.Client;
@@ -64,7 +66,10 @@ public class NewRequestContoroller {
     @FXML
     private Button backBtn;
     
-    
+    /**
+     * Delete all the fields in the form
+     * @param event
+     */
     @FXML
     void deleteAll(ActionEvent event) {
     	informationSystemNumber.clear();
@@ -72,10 +77,14 @@ public class NewRequestContoroller {
 		requestDescription.clear();
 		explanation.clear();
 		notes.clear();
+		filesList.getItems().clear();
 		
     }
     
-    
+    /**
+     * Upload files from the user's computer
+     * @param event
+     */
     @FXML
     void uploadFiles(ActionEvent event) {
 
@@ -93,19 +102,22 @@ public class NewRequestContoroller {
     	
     }
     
-    
+    /**
+     * Back to the previous page
+     * @param event
+     */
     @FXML
     void backClick(ActionEvent event) {
     	ScreenController.getScreenController().activate(ScreenController.getScreenController().getLastScreen());
     }
 
     
-    
+    /**
+     * Send a new Change request to the Data Base (through the server)
+     * @param event
+     */
     @FXML
     void sendRequest(ActionEvent event) {
-    	
-    	DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd/MM/yyyy"); // Date format
-    	LocalDate localDate = LocalDate.now(); // Current Date
 		if(formCheck()) {
     		int sysNum = Integer.parseInt(informationSystemNumber.getText().toString());
     		String probDesc = ProblemDescription.getText().toString();
@@ -114,11 +126,17 @@ public class NewRequestContoroller {
     		String notes1 = notes.getText().toString();
 
     		Request nr = new Request(Client.getInstance().getUserID(),sysNum, probDesc, reqDesc, expla, notes1);
-    		//System.out.println(nr.toString());
-    		ArrayList<Request> params = new ArrayList<Request>();
+    		
+    		ArrayList<Object> params = new ArrayList<Object>();
     		params.add(nr);
+
+    		
+    		// **************************************************************** Send Files
+    	
+    		// **************************************************************** End of Send Files
+    		
     		Translator translator = new Translator(OptionsOfAction.NEWREQUEST, params);
-    		client/*Client.getInstance()*/.handleMessageFromClientGUI(translator);
+    		client/*Client.getInstance()*/.handleMessageFromClientGUINewRequest(translator);
     	}
     }
     
@@ -151,6 +169,13 @@ public class NewRequestContoroller {
     	return true;
     }
     
+    
+
+  /**
+   * Check if a number that came out of a String is a valid number
+   * @param strNum
+   * @return true/false
+   */
     public static boolean isNumeric(String strNum) {
         if (strNum == null) {
             return false;
