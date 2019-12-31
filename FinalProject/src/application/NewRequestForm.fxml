@@ -86,7 +86,7 @@
             </VBox>
             <Button layoutX="886.0" layoutY="508.0" mnemonicParsing="false" text="Upload Files" />
             <Button layoutX="484.0" layoutY="604.0" mnemonicParsing="false" text="Delete All" />
-            <Button layoutX="22.0" layoutY="22.0" mnemonicParsing="false" text="Back" />
+            <Button fx:id="back_clk" layoutX="22.0" layoutY="22.0" mnemonicParsing="false" onAction="#back_click" text="Back" />
             <Label layoutX="552.0" layoutY="115.0" text="New Request Form">
                <font>
                   <Font name="System Bold" size="25.0" />
