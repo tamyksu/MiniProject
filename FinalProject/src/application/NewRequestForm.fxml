@@ -10,7 +10,7 @@
 
 <Pane prefHeight="722.0" prefWidth="1231.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.NewRequestContoroller">
    <children>
-      <SplitPane dividerPositions="0.5" orientation="VERTICAL" prefHeight="730.0" prefWidth="1400.0">
+      <SplitPane dividerPositions="0.5" orientation="VERTICAL" prefHeight="730.0" prefWidth="1500.0">
         <items>
           <AnchorPane fx:id="idp" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="0.0" minWidth="0.0" prefHeight="74.0" prefWidth="1500.0">
                <children>
