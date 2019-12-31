@@ -25,11 +25,16 @@
 		-fx-background-image: url("/application/1.jpg");
      	-fx-background-size: 100% 100%;
 }
+
 #color{
 	-fx-background-color: blue;
 }
-#idPaneUP{
+#idp{
 		-fx-background-image: url("/application/paneUP.jpg");
+}
+.button{
+	-fx-background-image: url("/application/2.jpg");
+	-fx-text-fill: white;
 }
 #idButton{
 -fx-background-image: url("/application/2.jpg");
@@ -41,6 +46,7 @@
 }
 #textstyle{
 	-fx-text-fill: white;
+	
 
 }
 

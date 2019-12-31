@@ -49,7 +49,7 @@ public class Server extends AbstractServer
    * @param msg The message received from the client.
    * @param client The connection from which the message originated.
    */
-  public void handleMessageFromClient//4
+  public void handleMessageFromClient
     (Object msg, ConnectionToClient client)
   	{
 	    System.out.println("Message received: " + msg + " from " + client);

@@ -10,69 +10,94 @@
 
 <Pane prefHeight="722.0" prefWidth="1231.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.NewRequestContoroller">
    <children>
-    <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="0.0" minWidth="0.0" prefHeight="62.0" prefWidth="1298.0">
-         <children>
-            <Label layoutX="18.0" layoutY="11.0" prefHeight="26.0" prefWidth="62.0" text="ICM">
-               <font>
-                  <Font size="27.0" />
-               </font>
-            </Label>
-         </children>
-      </AnchorPane>
-    <AnchorPane focusTraversable="true" layoutX="29.0" layoutY="45.0" minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
-         <children>
-            <Rectangle arcHeight="5.0" arcWidth="5.0" fill="WHITE" height="559.0" layoutX="297.0" layoutY="103.0" opacity="0.14" stroke="BLACK" strokeType="INSIDE" width="704.0" />
-            <VBox layoutX="322.0" layoutY="178.0" prefHeight="392.0" prefWidth="158.0">
+      <SplitPane dividerPositions="0.5" orientation="VERTICAL" prefHeight="730.0" prefWidth="1500.0">
+        <items>
+          <AnchorPane fx:id="idp" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="0.0" minWidth="0.0" prefHeight="74.0" prefWidth="1500.0">
                <children>
-                  <Label text="Information System:">
+                  <Text fx:id="styleICM" fill="#8d8cc6" layoutX="552.0" layoutY="53.0" strokeType="OUTSIDE" strokeWidth="0.0" text="ICM" textAlignment="CENTER" wrappingWidth="276.0970458984375">
                      <font>
-                        <Font size="17.0" />
+                        <Font size="41.0" />
                      </font>
-                     <VBox.margin>
-                        <Insets top="3.0" />
-                     </VBox.margin>
-                  </Label>
-                  <Label layoutX="10.0" layoutY="60.0" text="Problem Description:">
-                     <font>
-                        <Font size="17.0" />
-                     </font>
-                     <VBox.margin>
-                        <Insets top="8.0" />
-                     </VBox.margin>
-                  </Label>
-                  <Label layoutX="10.0" layoutY="35.0" text="Request Description:">
-                     <font>
-                        <Font size="16.0" />
-                     </font>
-                     <VBox.margin>
-                        <Insets top="45.0" />
-                     </VBox.margin>
-                  </Label>
-                  <Label layoutX="10.0" layoutY="189.0" text="Explanation:">
-                     <font>
-                        <Font size="16.0" />
-                     </font>
-                     <VBox.margin>
-                        <Insets top="45.0" />
-                     </VBox.margin>
-                  </Label>
-                  <Label layoutX="10.0" layoutY="85.0" text="Notes:">
-                     <font>
-                        <Font size="16.0" />
-                     </font>
-                     <VBox.margin>
-                        <Insets top="46.0" />
-                     </VBox.margin>
-                  </Label>
-                  <Label layoutX="10.0" layoutY="110.0" text="Documents:">
-                     <font>
-                        <Font size="16.0" />
-                     </font>
-                     <VBox.margin>
-                        <Insets top="46.0" />
-                     </VBox.margin>
-                  </Label>
+                  </Text>
                </children>
+            </AnchorPane>
+          <AnchorPane fx:id="idPane" focusTraversable="true" minHeight="0.0" minWidth="0.0" prefHeight="360.0" prefWidth="396.0">
+               <children>
+                  <Rectangle arcHeight="5.0" arcWidth="5.0" fill="WHITE" height="371.0" layoutX="483.0" layoutY="184.0" opacity="0.14" stroke="BLACK" strokeType="INSIDE" width="393.0" />
+                  <VBox layoutX="322.0" layoutY="178.0" prefHeight="392.0" prefWidth="158.0">
+                     <children>
+                        <Label fx:id="textstyle" text="Information System:">
+                           <font>
+                              <Font size="17.0" />
+                           </font>
+                           <VBox.margin>
+                              <Insets top="3.0" />
+                           </VBox.margin>
+                        </Label>
+                        <Label fx:id="textstyle" layoutX="10.0" layoutY="60.0" text="Problem Description:">
+                           <font>
+                              <Font size="17.0" />
+                           </font>
+                           <VBox.margin>
+                              <Insets top="8.0" />
+                           </VBox.margin>
+                        </Label>
+                        <Label fx:id="textstyle" layoutX="10.0" layoutY="35.0" text="Request Description:">
+                           <font>
+                              <Font size="16.0" />
+                           </font>
+                           <VBox.margin>
+                              <Insets top="45.0" />
+                           </VBox.margin>
+                        </Label>
+                        <Label fx:id="textstyle" layoutX="10.0" layoutY="189.0" text="Explanation:">
+                           <font>
+                              <Font size="16.0" />
+                           </font>
+                           <VBox.margin>
+                              <Insets top="45.0" />
+                           </VBox.margin>
+                        </Label>
+                        <Label fx:id="textstyle" layoutX="10.0" layoutY="85.0" text="Notes:">
+                           <font>
+                              <Font size="16.0" />
+                           </font>
+                           <VBox.margin>
+                              <Insets top="46.0" />
+                           </VBox.margin>
+                        </Label>
+                        <Label fx:id="textstyle" layoutX="10.0" layoutY="110.0" text="Documents:">
+                           <font>
+                              <Font size="16.0" />
+                           </font>
+                           <VBox.margin>
+                              <Insets top="46.0" />
+                           </VBox.margin>
+                        </Label>
+                     </children>
+                  </VBox>
+                  <VBox layoutX="484.0" layoutY="180.0" prefHeight="392.0" prefWidth="393.0">
+                     <children>
+                        <TextField fx:id="informationSystemNumber" />
+                        <TextArea fx:id="ProblemDescription" prefHeight="71.0" prefWidth="219.0" text="&#10;" />
+                        <TextArea fx:id="requestDescription" focusTraversable="false" layoutX="10.0" layoutY="41.0" prefHeight="71.0" prefWidth="219.0" />
+                        <TextArea fx:id="explanation" layoutX="10.0" layoutY="184.0" prefHeight="71.0" prefWidth="219.0" text="&#10;" />
+                        <TextArea fx:id="notes" layoutX="10.0" layoutY="184.0" prefHeight="71.0" prefWidth="219.0" text="&#10;" />
+                        <ListView fx:id="filesList" prefHeight="77.0" prefWidth="393.0" />
+                     </children>
+                  </VBox>
+                  <Button fx:id="uploadFilesBtn" layoutX="886.0" layoutY="508.0" mnemonicParsing="false" onAction="#uploadFiles" text="Upload Files" />
+                  <Button fx:id="deleteAllBtn" layoutX="484.0" layoutY="580.0" mnemonicParsing="false" onAction="#deleteAll" text="Delete All" />
+                  <Button fx:id="backBtn" layoutX="22.0" layoutY="22.0" mnemonicParsing="false" onAction="#backClick" text="Back" />
+                  <Label fx:id="textstyle" layoutX="552.0" layoutY="115.0" text="New Request Form">
+                     <font>
+                        <Font name="System Bold" size="25.0" />
+                     </font>
+                  </Label>
+                  <Button fx:id="sendRequestBtn" layoutX="775.0" layoutY="580.0" mnemonicParsing="false" onAction="#sendRequest" text="Send Request" />
+                  <Button layoutX="1161.0" layoutY="2.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="98.0" text="Log out" />
+               </children>
+<<<<<<< HEAD
             </VBox>
             <VBox layoutX="484.0" layoutY="180.0" prefHeight="392.0" prefWidth="393.0">
                <children>
@@ -95,5 +120,10 @@
             <Button fx:id="sendRequestBtn" layoutX="728.0" layoutY="604.0" mnemonicParsing="false" onAction="#sendRequest" text="Send Request" />
          </children>
       </AnchorPane>
+=======
+            </AnchorPane>
+        </items>
+      </SplitPane>
+>>>>>>> 018cf6ad3f0a7f294d16d51f46ac32c88afe98a1
    </children>
 </Pane>
