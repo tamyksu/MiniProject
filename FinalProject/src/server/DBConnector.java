@@ -95,40 +95,23 @@ public class DBConnector {
 						stmt3.setString(3, "Initiator");
 						stmt3.executeUpdate();
 
-
-
-						try{
-
-							File newFile = new File ("C:\\example.txt");
-							System.out.println("file existance: " + newFile.exists());
-
-
-
-							FileInputStream fis = new FileInputStream(newFile);
-
-							try {
-
-
-								PreparedStatement stmt4=conn.prepareStatement("insert into icmdb.files (request_id, file) values(?,?)"); 
-								stmt4.setInt(1,processID);
-								stmt4.setBinaryStream(2, fis);
-
-								stmt4.executeUpdate();
-								stmt4.close();
-								System.out.println("File inserted to DB");
-							}
-							catch (Exception e) {
-								System.out.println("problems");
-							}
-
-							fis.close();
-						}
-						catch (Exception e) {
-							System.out.println("Error send (Files)msg) to Server");
-						}
-
-
-
+						
+						// ***************************** Recieve Files from Client and insert them to Data Base
+						 
+						/*
+						 *  PreparedStatement ps=conn.prepareStatement("insert into icmdb.files (request_id, file) values(?,?)"); 
+					        ps.setInt(1,1);
+					        ps.setBinaryStream(2, fis);
+					       
+					        ps.executeUpdate();
+						    ps.close();
+						 */
+						
+						
+						
+						
+						// ***************************** End of Recieve Files from Client and insert them to Data Base 
+						
 					}
 					catch (SQLException e) {
 						// TODO Auto-generated catch block
