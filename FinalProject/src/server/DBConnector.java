@@ -1,4 +1,8 @@
 package server;
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -8,33 +12,33 @@ import translator.*;
 import application.Request;
 import java.sql.ResultSet;
 public class DBConnector {
-	
-	  private static Connection conn;
-	
-	  protected static void establishDBConnection() {
-			try 
-			{
-		      Class.forName("com.mysql.cj.jdbc.Driver").newInstance();
-		      System.out.println("Driver definition succeed");
-		    } 
-			catch (Exception ex) {
-		  	/* handle the error*/
-		  	 System.out.println("Driver definition failed");
-		  	}
-			
-			try 
-		    {
-		        conn = DriverManager.getConnection("jdbc:mysql://localhost/icmdb?serverTimezone=IST","root","Aa123456");
-		        System.out.println("SQL connection succeed");
-		        
-		 	} catch (SQLException ex) 
-		 	    {/* handle any errors*/
-		        System.out.println("SQLException: " + ex.getMessage());
-		        System.out.println("SQLState: " + ex.getSQLState());
-		        System.out.println("VendorError: " + ex.getErrorCode());
-		        }
-			}
-			
+
+	private static Connection conn;
+
+	protected static void establishDBConnection() {
+		try 
+		{
+			Class.forName("com.mysql.cj.jdbc.Driver").newInstance();
+			System.out.println("Driver definition succeed");
+		} 
+		catch (Exception ex) {
+			/* handle the error*/
+			System.out.println("Driver definition failed");
+		}
+
+		try 
+		{
+			conn = DriverManager.getConnection("jdbc:mysql://localhost/icmdb?serverTimezone=IST","root","Aa123456");
+			System.out.println("SQL connection succeed");
+
+		} catch (SQLException ex) 
+		{/* handle any errors*/
+			System.out.println("SQLException: " + ex.getMessage());
+			System.out.println("SQLState: " + ex.getSQLState());
+			System.out.println("VendorError: " + ex.getErrorCode());
+		}
+	}
+
 	public static Object accessToDB(Object data) {
 		Translator translator =(Translator)data;
 		PreparedStatement stmt;
@@ -42,19 +46,100 @@ public class DBConnector {
 		switch (translator.getRequest()) {
 		case NEWREQUEST:
 			Request nr = (Request) translator.getParmas().get(0);
-			  try {
+			try {
+				
+				// Add new request to processes table in the Data Base:
+				java.sql.Date date = new java.sql.Date(new java.util.Date().getTime()); // Current Date
 				stmt = conn.prepareStatement("insert into icmdb.processes (initiator_id,system_num,"
 						+ "problem_description,"
 						+ "		request_description,explanaton,"
-						+ "notes,status1) values(?,?,?,?,?,?,?)");
-				stmt.setInt(1, 111);
+						+ "notes,status1,creation_date, process_stage) values(?,?,?,?,?,?,?,?,?)");
+				stmt.setString(1, nr.getUserID());
 				stmt.setInt(2, nr.getInformationSystemNumber());
 				stmt.setString(3, nr.getProblemDescription());
 				stmt.setString(4, nr.getRequestDescription());
 				stmt.setString(5, nr.getExplanation());
 				stmt.setString(6, nr.getNotes());
 				stmt.setString(7, "Active");
+				stmt.setDate(8, date);
+				stmt.setInt(9, 1);
 				stmt.executeUpdate();
+
+				// Get the ID newly inserted request:
+				try {
+					PreparedStatement stmt2 = conn.prepareStatement("select request_id from processes where"
+							+ " initiator_id=? and system_num=? and "
+							+ "problem_description=? and request_description=? "
+							+ "and explanaton=? and notes=?");	
+					stmt2.setString(1, nr.getUserID());
+					stmt2.setInt(2, nr.getInformationSystemNumber());
+					stmt2.setString(3, nr.getProblemDescription());
+					stmt2.setString(4, nr.getRequestDescription());
+					stmt2.setString(5, nr.getExplanation());
+					stmt2.setString(6, nr.getNotes());
+
+					ResultSet rs = stmt2.executeQuery();
+					int processID=0;
+					while (rs.next()) { // get the processID from the Select query
+						processID = rs.getInt("request_id");
+						break;
+					}
+					System.out.println(processID);
+					// Add the new request ID with it's initator' Id to users_request 
+					try {
+						PreparedStatement stmt3 = conn.prepareStatement("insert into  users_requests (user_id,process_id,"
+								+ "role)"
+								+ "values(?,?,?)");
+						stmt3.setString(1, nr.getUserID());
+						stmt3.setInt(2, processID);
+						stmt3.setString(3, "Initiator");
+						stmt3.executeUpdate();
+
+
+
+						try{
+
+							File newFile = new File ("C:\\example.txt");
+							System.out.println("file existance: " + newFile.exists());
+
+
+
+							FileInputStream fis = new FileInputStream(newFile);
+
+							try {
+
+
+								PreparedStatement stmt4=conn.prepareStatement("insert into icmdb.files (request_id, file) values(?,?)"); 
+								stmt4.setInt(1,processID);
+								stmt4.setBinaryStream(2, fis);
+
+								stmt4.executeUpdate();
+								stmt4.close();
+								System.out.println("File inserted to DB");
+							}
+							catch (Exception e) {
+								System.out.println("problems");
+							}
+
+							fis.close();
+						}
+						catch (Exception e) {
+							System.out.println("Error send (Files)msg) to Server");
+						}
+
+
+
+					}
+					catch (SQLException e) {
+						// TODO Auto-generated catch block
+						System.out.println("SQL EXCEPTION on 3rd query");
+					}
+				}
+				catch (SQLException e) {
+					// TODO Auto-generated catch block
+					System.out.println("SQL EXCEPTION!");
+				}
+
 				System.out.println("Insert is working!!!");
 				ArrayList<Boolean> success = new ArrayList<Boolean>();
 				success.add(new Boolean(true));
@@ -68,7 +153,7 @@ public class DBConnector {
 			failed.add(new Boolean(false));
 			Translator answer = new Translator(OptionsOfAction.NEWREQUEST,failed);
 			return answer;
-			
+
 		case LOGIN:
 			try {
 				stmt = conn.prepareStatement("select * from users where user_id=? and password=?");	
@@ -84,23 +169,26 @@ public class DBConnector {
 				rs.previous();
 				while(rs.next())
 				{					    
-					    ar.add(rs.getString(1));
+					ar.add(rs.getString(1));
 				}
 				ArrayList<String> ans = new ArrayList<String>();
 				ans.add("correct match");
 				ans.add(ar.get(0));
 				Translator newTranslator = new Translator(translator.getRequest(), ans);
 				return newTranslator;
-				}
+
+
+
+			}
 			catch (SQLException e) {
 				System.out.println("ERROR");
 				e.printStackTrace();} 
 			return null;
-			
+
 		case GETRELATEDREQUESTS:
 			try {
 				stmt = conn.prepareStatement(""
-					  + "SELECT users_requests.process_id, users_requests.role, processes.* \r\n" + 
+						+ "SELECT users_requests.process_id, users_requests.role, processes.* \r\n" + 
 						"FROM users_requests\r\n" + 
 						"INNER JOIN processes\r\n" + 
 						"ON users_requests.process_id = processes.request_id\r\n"+
@@ -111,9 +199,9 @@ public class DBConnector {
 					ar.add("No processes");
 					ArrayList<ArrayList<?>> empty = new ArrayList<ArrayList<?>>();
 					empty.add(ar);
-					
+
 					Translator newTranslator = new Translator(translator.getRequest(), empty);
-					
+
 					return newTranslator;
 				}
 				rs.previous();
@@ -160,32 +248,33 @@ public class DBConnector {
 			System.out.println("default");
 			break;
 		}
-	return null;
+		return null;
 	}
-	
+
+	//Another function aimed at getting the initiator information from the database
 	protected static ResultSet getInitiatorInfo(String initiatorId)  {
 		PreparedStatement stmt;
 		try {
-		stmt = conn.prepareStatement(""
-				  + "SELECT * FROM students\r\n" + 
+			stmt = conn.prepareStatement(""
+					+ "SELECT * FROM students\r\n" + 
 					"WHERE students.id=?");
-		stmt.setString(1, initiatorId);
-		ResultSet rs1 = stmt.executeQuery();
-		if(rs1.first() == false) {
+			stmt.setString(1, initiatorId);
+			ResultSet rs1 = stmt.executeQuery();
+			if(rs1.first() == false) {
 				PreparedStatement stmt1;
 				stmt1 = conn.prepareStatement(""
 						+ "SELECT * FROM workers\r\n" + 
-							"WHERE students.id=?");
+						"WHERE students.id=?");
 				stmt1.setString(1, initiatorId);
 				ResultSet rs2 = stmt.executeQuery();
 				if(rs2.first() == false) return null;
 				rs2.previous();
 				return rs2;
 			}
-		rs1.previous();
-		
-		return rs1;
-	
+			rs1.previous();
+
+			return rs1;
+
 		} catch (SQLException e) {
 			e.printStackTrace();
 			System.out.println("The SQL query of initiator info has faile;");

@@ -153,7 +153,8 @@ public class ControllerProcessMain implements Initializable {
 		this.tableView.setItems(data);
 		setInfo();
 	}
-
+	//Identifies that you clicked on a process row in the table and invokes the function 
+	//"updateFieldsOfRequestMarked" to match the table to the process
 	public void setInfo() {
 		tableView.setRowFactory(tv -> {
 			TableRow<Person> row = new TableRow<>();
@@ -165,7 +166,7 @@ public class ControllerProcessMain implements Initializable {
 			return row;
 		});
 	}
-
+	//Updates the relevant fields by the process that is specified in the process table
 	public void updateFieldsOfRequestMarked(Person person) {
 		UserProcess process = Client.getInstance().getProcesses().getMyProcess().get(person.getRequestId());
 		InitiatorName.setText(process.getIntiatorId());
@@ -180,7 +181,100 @@ public class ControllerProcessMain implements Initializable {
 //		Documents.setText//
 		currentStatus.setText(process.getStatus());
 		RequestedChange.setText(process.getRequest_description());
+		ButtonAdjustment(process.getRole());	
 	}
+
+	//The function responsible for matching buttons to the process is indicated in the table
+	private void ButtonAdjustment(String userRole) {
+		switch (userRole) {
+		case "initiator":
+			fitInitiator();
+			break;
+		case "manager":
+			fitManager();
+			break;
+		case "supervisor":
+			fitSupervisor();
+			break;	
+		case "appraiser":
+			fitAppraiser();
+			break;
+		case "Chairman":
+			fitChairman();
+			break;
+			
+		default:
+			break;
+		}
+		
+	}
+	//change button disability in accordance to appraiser
+	private void fitChairman() {
+		newRequestBtn.setDisable(false);
+		extension_btn.setDisable(true);
+		evaluation_btn.setDisable(false);
+		decision_btn.setDisable(false);
+		execution_btn.setDisable(true);
+		examination_btn.setDisable(false);
+		shutdown_btn.setDisable(true);
+		freeze_btn.setDisable(true);
+		defrost_btn.setDisable(false);		
+	}
+
+	//change button disability in accordance to appraiser
+	private void fitAppraiser() {
+		newRequestBtn.setDisable(false);
+		extension_btn.setDisable(true);
+		evaluation_btn.setDisable(false);
+		decision_btn.setDisable(false);
+		execution_btn.setDisable(true);
+		examination_btn.setDisable(false);
+		shutdown_btn.setDisable(true);
+		freeze_btn.setDisable(true);
+		defrost_btn.setDisable(false);			
+	}
+
+	//change button disability in accordance to supervisor
+	private void fitSupervisor() {
+		newRequestBtn.setDisable(false);
+		extension_btn.setDisable(true);
+		evaluation_btn.setDisable(false);
+		decision_btn.setDisable(false);
+		execution_btn.setDisable(true);
+		examination_btn.setDisable(false);
+		shutdown_btn.setDisable(true);
+		freeze_btn.setDisable(true);
+		defrost_btn.setDisable(false);	
+	}
+
+	private void fitManager() {
+		newRequestBtn.setDisable(false);
+		extension_btn.setDisable(true);
+		evaluation_btn.setDisable(true);
+		decision_btn.setDisable(true);
+		execution_btn.setDisable(true);
+		examination_btn.setDisable(true);
+		shutdown_btn.setDisable(true);
+		freeze_btn.setDisable(true);
+		defrost_btn.setDisable(true);		
+	}
+
+	//Suitable for the initiator of the process the buttons allowed
+
+	private void fitInitiator() {
+		newRequestBtn.setDisable(false);
+		extension_btn.setDisable(true);
+		evaluation_btn.setDisable(true);
+		decision_btn.setDisable(true);
+		execution_btn.setDisable(true);
+		examination_btn.setDisable(true);
+		shutdown_btn.setDisable(true);
+		freeze_btn.setDisable(true);
+		defrost_btn.setDisable(true);
+		
+	}
+	
+	
 
 	@FXML
 	void freeze_click(ActionEvent event) {

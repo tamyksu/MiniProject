@@ -7,6 +7,7 @@ import java.util.Date;
 
 public class Request implements Serializable {
 	
+	private String userID;
 	private int informationSystemNumber;
 	private String ProblemDescription;
 	private String requestDescription;
@@ -16,11 +17,12 @@ public class Request implements Serializable {
 	
 	
 	/* ********************   Constructor   ******************** */
-	public Request(int informationSystemNumber, String problemDescription, String requestDescription,
+	public Request(String userId ,int informationSystemNumber, String problemDescription, String requestDescription,
 			String explanation, String notes) {
 		super();
+		this.userID = userId;
 		this.informationSystemNumber = informationSystemNumber;
-		ProblemDescription = problemDescription;
+		this.ProblemDescription = problemDescription;
 		this.requestDescription = requestDescription;
 		this.explanation = explanation;
 		this.notes = notes;
@@ -86,6 +88,17 @@ public class Request implements Serializable {
 	public void setCurrentDate(Date currentDate) {
 		this.currentDate = currentDate;
 	}
+	
+
+	public String getUserID() {
+		return userID;
+	}
+
+
+	public void setUserID(String userID) {
+		this.userID = userID;
+	}
+
 
 	/* ********************   toString   ******************** */
 	@Override

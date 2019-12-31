@@ -6,7 +6,6 @@ import java.io.*;
 import java.util.ArrayList;
 import application.ControllerProcessMain;
 import application.LoginController;
-import application.NewRequestContoroller;
 import application.Processes;
 import application.ScreenController;
 import application.UserProcess;
@@ -34,6 +33,7 @@ public class Client extends AbstractClient {
 	 *
 	 * @param msg The message from the server.
 	 */
+	
 	public void handleMessageFromServer(Object rs) {
 		Translator result = (Translator)rs; 
 		switch (result.getRequest()) {
@@ -56,6 +56,18 @@ public class Client extends AbstractClient {
 		this.userID = userID;
 	}
 
+	
+	public void handleMessageFromClientGUINewRequest(Object message) {
+		try {
+			super.
+			sendToServer(message);
+		} catch (IOException e) {
+			System.out.println("Could not insert new request");
+			quit();
+		}
+	}
+	
+	
 	public void handleMessageFromClientGUI(Object message) {
 		try {
 			sendToServer(message);
@@ -85,7 +97,7 @@ public class Client extends AbstractClient {
 	public void setProcesses(Processes processes) {
 		this.processes = processes;
 	}
-	
+	//get the processes related this client
 	public void getProcessesFromServer() {
 		ArrayList<String> ar = new ArrayList<String>();
 		ar.add(userID);
@@ -93,7 +105,7 @@ public class Client extends AbstractClient {
 		handleMessageFromClientGUI(translator);
 	}
 
-	
+	//In case we want to tell you, what is the server's answer regarding the client's connection experience
 	public void handlerMessageFromServerLogin(Object rs) {
 		@SuppressWarnings("unchecked")
 		ArrayList<String> result = (ArrayList<String>) rs;
@@ -112,19 +124,15 @@ public class Client extends AbstractClient {
 		}
 	}
 
+	//In case we got processes to display from this database, this function will make sure to save them to the client
+	//and also send them to the tag on the appropriate screen
 	@SuppressWarnings("unchecked")
 	public void handlerMessageFromServerProcesses(Object rs) {
-		
 		Processes processes = new Processes();
     	ArrayList<ArrayList<?>> result = new ArrayList<ArrayList<?>>();	
 		result = (ArrayList<ArrayList<?>>) rs ;
-
 		if(!(result.get(0).get(0).toString().equals("No processes")))
 		{
-
-					
-//		if(! result.get(0).toString().equals("The user has no related process"))
-//		{
 			for (int i = 0; i < result.size(); i=i+2) {
 				UserProcess process = new UserProcess();
 				process.setRequest_id((int)result.get(i).get(0));
@@ -147,10 +155,9 @@ public class Client extends AbstractClient {
 				processes.getMyProcess().put(new Integer((int)result.get(i).get(0)), process);
 				processes.getMyProcessesInArrayList().add(process);	
 			}
-//		}
 		this.processes=processes;
 		}
-		//sending all processes related to Controllers in order to set them in their table
+		//send processes information to specific controller
 		ControllerProcessMain.getInstance().SetInTable(processes);
 	}
 

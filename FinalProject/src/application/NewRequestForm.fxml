@@ -83,18 +83,18 @@
                         <TextArea fx:id="requestDescription" focusTraversable="false" layoutX="10.0" layoutY="41.0" prefHeight="71.0" prefWidth="219.0" />
                         <TextArea fx:id="explanation" layoutX="10.0" layoutY="184.0" prefHeight="71.0" prefWidth="219.0" text="&#10;" />
                         <TextArea fx:id="notes" layoutX="10.0" layoutY="184.0" prefHeight="71.0" prefWidth="219.0" text="&#10;" />
-                        <TextArea fx:id="Documents" layoutX="10.0" layoutY="358.0" prefHeight="62.0" prefWidth="219.0" text="&#10;" />
+                        <ListView fx:id="filesList" prefHeight="77.0" prefWidth="393.0" />
                      </children>
                   </VBox>
-                  <Button layoutX="886.0" layoutY="508.0" mnemonicParsing="false" text="Upload Files" />
-                  <Button layoutX="492.0" layoutY="572.0" mnemonicParsing="false" text="Delete All" />
-                  <Button layoutX="22.0" layoutY="22.0" mnemonicParsing="false" text="Back" />
+                  <Button fx:id="uploadFilesBtn" layoutX="886.0" layoutY="508.0" mnemonicParsing="false" onAction="#uploadFiles" text="Upload Files" />
+                  <Button fx:id="deleteAllBtn" layoutX="484.0" layoutY="580.0" mnemonicParsing="false" onAction="#deleteAll" text="Delete All" />
+                  <Button fx:id="backBtn" layoutX="22.0" layoutY="22.0" mnemonicParsing="false" onAction="#backClick" text="Back" />
                   <Label fx:id="textstyle" layoutX="552.0" layoutY="115.0" text="New Request Form">
                      <font>
                         <Font name="System Bold" size="25.0" />
                      </font>
                   </Label>
-                  <Button fx:id="sendRequestBtn" layoutX="788.0" layoutY="572.0" mnemonicParsing="false" onAction="#sendRequest" text="Send Request" />
+                  <Button fx:id="sendRequestBtn" layoutX="775.0" layoutY="580.0" mnemonicParsing="false" onAction="#sendRequest" text="Send Request" />
                   <Button layoutX="1161.0" layoutY="2.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="98.0" text="Log out" />
                </children>
             </AnchorPane>
