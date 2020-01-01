@@ -97,8 +97,33 @@
                   <Button fx:id="sendRequestBtn" layoutX="775.0" layoutY="580.0" mnemonicParsing="false" onAction="#sendRequest" text="Send Request" />
                   <Button layoutX="1161.0" layoutY="2.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="98.0" text="Log out" />
                </children>
+<<<<<<< HEAD
+            </VBox>
+            <VBox layoutX="484.0" layoutY="180.0" prefHeight="392.0" prefWidth="393.0">
+               <children>
+                  <TextField fx:id="informationSystemNumber" />
+                  <TextArea fx:id="ProblemDescription" prefHeight="71.0" prefWidth="219.0" text="&#10;" />
+                  <TextArea fx:id="requestDescription" focusTraversable="false" layoutX="10.0" layoutY="41.0" prefHeight="71.0" prefWidth="219.0" />
+                  <TextArea fx:id="explanation" layoutX="10.0" layoutY="184.0" prefHeight="71.0" prefWidth="219.0" text="&#10;" />
+                  <TextArea fx:id="notes" layoutX="10.0" layoutY="184.0" prefHeight="71.0" prefWidth="219.0" text="&#10;" />
+                  <TextArea fx:id="Documents" layoutX="10.0" layoutY="358.0" prefHeight="62.0" prefWidth="219.0" text="&#10;" />
+               </children>
+            </VBox>
+            <Button layoutX="886.0" layoutY="508.0" mnemonicParsing="false" text="Upload Files" />
+            <Button layoutX="484.0" layoutY="604.0" mnemonicParsing="false" text="Delete All" />
+            <Button fx:id="back_clk" layoutX="22.0" layoutY="22.0" mnemonicParsing="false" onAction="#back_click" text="Back" />
+            <Label layoutX="552.0" layoutY="115.0" text="New Request Form">
+               <font>
+                  <Font name="System Bold" size="25.0" />
+               </font>
+            </Label>
+            <Button fx:id="sendRequestBtn" layoutX="728.0" layoutY="604.0" mnemonicParsing="false" onAction="#sendRequest" text="Send Request" />
+         </children>
+      </AnchorPane>
+=======
             </AnchorPane>
         </items>
       </SplitPane>
+>>>>>>> 018cf6ad3f0a7f294d16d51f46ac32c88afe98a1
    </children>
 </Pane>
