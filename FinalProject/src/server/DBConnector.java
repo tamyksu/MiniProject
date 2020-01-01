@@ -154,14 +154,26 @@ public class DBConnector {
 				{					    
 					ar.add(rs.getString(1));
 				}
+				stmt = conn.prepareStatement("select role from permanent_roles where user_id=?");	
+				stmt.setString(1, ar.get(0));
+				ResultSet rs1 = stmt.executeQuery();
+				if(rs1.first() != false) {
+					ArrayList<String> ans = new ArrayList<String>();
+					if(rs1.getString(1) == "Supervisor") {
+						ans.add("Supervisor");
+					}
+					else if(rs1.getString(1) == "Manager") {
+						ans.add("Manager");
+					}
+					ans.add(ar.get(0));
+					Translator newTranslator = new Translator(translator.getRequest(), ans);
+					return newTranslator;
+				}
 				ArrayList<String> ans = new ArrayList<String>();
 				ans.add("correct match");
 				ans.add(ar.get(0));
 				Translator newTranslator = new Translator(translator.getRequest(), ans);
 				return newTranslator;
-
-
-
 			}
 			catch (SQLException e) {
 				System.out.println("ERROR");

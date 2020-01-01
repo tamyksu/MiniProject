@@ -97,7 +97,7 @@
                   <Button fx:id="sendRequestBtn" layoutX="775.0" layoutY="580.0" mnemonicParsing="false" onAction="#sendRequest" text="Send Request" />
                   <Button layoutX="1161.0" layoutY="2.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="98.0" text="Log out" />
                </children>
-<<<<<<< HEAD
+
             </VBox>
             <VBox layoutX="484.0" layoutY="180.0" prefHeight="392.0" prefWidth="393.0">
                <children>

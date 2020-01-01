@@ -14,6 +14,7 @@ import javafx.scene.control.Alert.AlertType;
 public class Client extends AbstractClient {
 	private String userID;
 	private Processes processes = new Processes();
+	private String role="";
 	public static Client instance;
 	
 	public Client(String host, int port) throws IOException {
@@ -115,6 +116,17 @@ public class Client extends AbstractClient {
 			ScreenController.getScreenController().activate("processesMain");
 			getProcessesFromServer();
 			break;
+		case "Supervisor":
+			Client.getInstance().setName(result.get(1));
+			this.setRule(result.get(0));
+			ScreenController.getScreenController().activate("ProcessesMain");
+			getProcessesFromServer();
+			break;
+		case "Manager":
+//			Client.getInstance().setName(result.get(1));
+//			ScreenController.getScreenController().activate("Supervisor_ProcessesMain");
+//			getProcessesFromServer();
+			break;
 		case "Login failed, username and password did not match":
 			LoginController.getInstance().getMessageField()
 					.setText("Login failed, username and password did not match");
@@ -122,6 +134,10 @@ public class Client extends AbstractClient {
 		default:
 			break;
 		}
+	}
+
+	private void setRule(String role) {
+		this.setRole(role);		
 	}
 
 	//In case we got processes to display from this database, this function will make sure to save them to the client
@@ -159,6 +175,14 @@ public class Client extends AbstractClient {
 		}
 		//send processes information to specific controller
 		ControllerProcessMain.getInstance().SetInTable(processes);
+	}
+
+	public String getRole() {
+		return role;
+	}
+
+	public void setRole(String role) {
+		this.role = role;
 	}
 
 	
