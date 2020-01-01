@@ -2,13 +2,16 @@ package server;
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import translator.*;
+import application.MyFile;
 import application.Request;
 import java.sql.ResultSet;
 public class DBConnector {
@@ -43,8 +46,17 @@ public class DBConnector {
 		Translator translator =(Translator)data;
 		PreparedStatement stmt;
 		ArrayList<String> ar = new ArrayList<String>() ;
+		
+		
+		
+		
 		switch (translator.getRequest()) {
 		case NEWREQUEST:
+			
+			ArrayList<Boolean> failed = new ArrayList<Boolean>();
+			ArrayList<Boolean> success = new ArrayList<Boolean>();
+			Translator answer;
+			
 			Request nr = (Request) translator.getParmas().get(0);
 			try {
 				
@@ -97,45 +109,106 @@ public class DBConnector {
 
 						
 						// ***************************** Recieve Files from Client and insert them to Data Base
-						 
+
 						/*
 						 *  PreparedStatement ps=conn.prepareStatement("insert into icmdb.files (request_id, file) values(?,?)"); 
 					        ps.setInt(1,1);
 					        ps.setBinaryStream(2, fis);
-					       
+
 					        ps.executeUpdate();
 						    ps.close();
 						 */
-						
-						
-						
-						
+						ArrayList<MyFile> filesToServer = (ArrayList<MyFile>) translator.getParmas().get(1);
+
+						// Add every file from client to the Data Base
+						for(int i=0;i<filesToServer.size();i++) {
+							try {
+								
+								MyFile myfile = filesToServer.get(i);
+								String newFileName = ".\\Files_Server_Recieved\\"+processID+"_"+myfile.getFileName();
+
+								FileOutputStream fos = new FileOutputStream(newFileName);
+								BufferedOutputStream bos = new BufferedOutputStream(fos);
+
+								try {
+
+									PreparedStatement stmt4 =conn.prepareStatement("insert into icmdb.files (request_id, file) values(?,?)"); 
+									stmt4.setInt(1,processID);
+									stmt4.setString(2, newFileName);
+									
+									
+									
+									/*PreparedStatement stmt4 =conn.prepareStatement("insert into icmdb.files (request_id, file) values(?,?)"); 
+									stmt4.setInt(1,processID);
+									stmt4.setBytes(2, myfile.mybytearray);
+									// The File is saved as array of bytes in the database
+									// BLOB*/
+									
+									stmt4.executeUpdate();
+									stmt4.close();
+									
+									/* The following code can save another version of the file in 
+									 * the project's directory:*/
+									bos.write(myfile.mybytearray, 0, myfile.getSize());
+									bos.flush();
+									fos.flush();
+									
+								}
+								catch (SQLException e) {
+									// TODO Auto-generated catch block
+									System.out.println("SQL EXCEPTION: Can't insert the file");
+									failed.add(new Boolean(false));
+									answer = new Translator(OptionsOfAction.NEWREQUEST,failed);
+									return answer;
+								} catch (IOException e) {
+									// TODO Auto-generated catch block
+									e.printStackTrace();
+								}
+							}
+							
+							catch (FileNotFoundException e) {
+								// TODO Auto-generated catch block
+								System.out.println("Error while sacing file");
+								failed.add(new Boolean(false));
+								answer = new Translator(OptionsOfAction.NEWREQUEST,failed);
+								return answer;
+							}
+						}
+
+
+
 						// ***************************** End of Recieve Files from Client and insert them to Data Base 
-						
+
 					}
 					catch (SQLException e) {
 						// TODO Auto-generated catch block
 						System.out.println("SQL EXCEPTION on 3rd query");
+						failed.add(new Boolean(false));
+						answer = new Translator(OptionsOfAction.NEWREQUEST,failed);
+						return answer;
 					}
 				}
 				catch (SQLException e) {
 					// TODO Auto-generated catch block
 					System.out.println("SQL EXCEPTION!");
+					failed.add(new Boolean(false));
+					answer = new Translator(OptionsOfAction.NEWREQUEST,failed);
+					return answer;
+					
 				}
 
 				System.out.println("Insert is working!!!");
-				ArrayList<Boolean> success = new ArrayList<Boolean>();
+				
 				success.add(new Boolean(true));
-				Translator answer = new Translator(OptionsOfAction.NEWREQUEST,success);
+				answer = new Translator(OptionsOfAction.NEWREQUEST,success);
 				return answer;
 			} catch (SQLException e) {
 				// TODO Auto-generated catch block
 				System.out.println("SQL EXCEPTION!");
+				failed.add(new Boolean(false));
+				answer = new Translator(OptionsOfAction.NEWREQUEST,failed);
+				return answer;
 			}
-			ArrayList<Boolean> failed = new ArrayList<Boolean>();
-			failed.add(new Boolean(false));
-			Translator answer = new Translator(OptionsOfAction.NEWREQUEST,failed);
-			return answer;
 
 		case LOGIN:
 			try {

@@ -30,8 +30,7 @@ import translator.Translator;
 
 public class NewRequestContoroller {
 
-	
-	Client client = Client.getInstance();
+	private static NewRequestContoroller instance;
 	
     @FXML
     private Button sendRequestBtn;
@@ -59,12 +58,13 @@ public class NewRequestContoroller {
     
     @FXML
     private ListView filesList;
-    
+    private List listOfFilesNames;
     @FXML
     private Button deleteAllBtn;
     
     @FXML
     private Button backBtn;
+    
     
     /**
      * Delete all the fields in the form
@@ -72,13 +72,16 @@ public class NewRequestContoroller {
      */
     @FXML
     void deleteAll(ActionEvent event) {
+    	deleteAll();
+    }
+    
+    void deleteAll() {
     	informationSystemNumber.clear();
 		ProblemDescription.clear();
 		requestDescription.clear();
 		explanation.clear();
 		notes.clear();
 		filesList.getItems().clear();
-		
     }
     
     /**
@@ -87,13 +90,14 @@ public class NewRequestContoroller {
      */
     @FXML
     void uploadFiles(ActionEvent event) {
-
-    	FileChooser fc = new FileChooser();
-    	List<File> selectedFiles = fc.showOpenMultipleDialog(null);
+    	listOfFilesNames = new ArrayList<String>(); // List of the names of the selected files
+    	FileChooser fc = new FileChooser(); // File chooser
+    	List<File> selectedFiles = fc.showOpenMultipleDialog(null); // List if the selected files
     	
     	if(selectedFiles != null) {
     		for(int i = 0; i<selectedFiles.size();i++) {
     			filesList.getItems().add(selectedFiles.get(i).getAbsolutePath());
+    			listOfFilesNames.add(selectedFiles.get(i).getName());
     		}
     	}
     	else {
@@ -119,6 +123,7 @@ public class NewRequestContoroller {
     @FXML
     void sendRequest(ActionEvent event) {
 		if(formCheck()) {
+			instance = this;
     		int sysNum = Integer.parseInt(informationSystemNumber.getText().toString());
     		String probDesc = ProblemDescription.getText().toString();
     		String reqDesc = requestDescription.getText().toString();
@@ -132,13 +137,39 @@ public class NewRequestContoroller {
 
     		
     		// **************************************************************** Send Files
-    	
+    		int numberOfFiles = filesList.getItems().size();
+    		
+        	System.out.println(numberOfFiles);
+        	ArrayList<MyFile> filesToServer = new ArrayList<MyFile>();
+        	for(int i=0;i<numberOfFiles;i++) {
+        		MyFile msg= new MyFile(Client.getInstance().getUserID()+"_"+listOfFilesNames.get(i));
+        		  String LocalfilePath=filesList.getItems().get(i).toString();
+        		  try{
+
+        			      File newFile = new File (LocalfilePath);      
+        			      byte [] mybytearray  = new byte [(int)newFile.length()];
+        			      FileInputStream fis = new FileInputStream(newFile);
+        			      BufferedInputStream bis = new BufferedInputStream(fis);			  
+        			      
+        			      msg.initArray(mybytearray.length);
+        			      msg.setSize(mybytearray.length);
+        			      
+        			      bis.read(msg.getMybytearray(),0,mybytearray.length);
+        			      //filesToServer.add(msg);	
+        			      filesToServer.add(msg);
+        			    }
+        			catch (Exception e) {
+        				System.out.println("Error: Can't send files to Server");
+        			}
+        	}
+    		
+    		params.add(filesToServer);
     		
     		
     		// **************************************************************** End of Send Files
     		
     		Translator translator = new Translator(OptionsOfAction.NEWREQUEST, params);
-    		client/*Client.getInstance()*/.handleMessageFromClientGUINewRequest(translator);
+    		Client.getInstance().handleMessageFromClientGUI(translator);
     	}
     }
     
@@ -171,7 +202,16 @@ public class NewRequestContoroller {
     	return true;
     }
     
+    public void showSeccessAlert() {
+    	System.out.println("Good Alert 2");
+    	new Alert(AlertType.CONFIRMATION, "Your request was recieved.").show();
+    	System.out.println("Good Alert 2");
+    	deleteAll();
+    }
     
+    public void showFailureAlert() {
+    	new Alert(AlertType.ERROR, "Your request could not be recieved, please try again.").show();
+    }
 
   /**
    * Check if a number that came out of a String is a valid number
@@ -189,4 +229,10 @@ public class NewRequestContoroller {
         }
         return true;
     }
+    
+    public static NewRequestContoroller getInstance() {
+    	return instance;
+    }
+    
+    
 }
