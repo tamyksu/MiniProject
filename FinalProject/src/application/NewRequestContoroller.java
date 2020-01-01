@@ -203,9 +203,9 @@ public class NewRequestContoroller {
     }
     
     public void showSeccessAlert() {
-    	System.out.println("Good Alert 2");
+    	//System.out.println("Good Alert 1");
     	new Alert(AlertType.CONFIRMATION, "Your request was recieved.").show();
-    	System.out.println("Good Alert 2");
+    	//System.out.println("Good Alert 2");
     	deleteAll();
     }
     
