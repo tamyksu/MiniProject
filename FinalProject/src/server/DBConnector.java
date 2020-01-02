@@ -209,7 +209,75 @@ public class DBConnector {
 				answer = new Translator(OptionsOfAction.NEWREQUEST,failed);
 				return answer;
 			}
+			
+		case SELECTCHAIRMAN:
+		
+			try {
+				stmt = conn.prepareStatement("select first_name, last_name, id from icmdb.workers "
+						+ "where( id NOT IN(select user_id from icmdb.users_requests))"
+						+ "AND id NOT IN (select user_id from icmdb.permanent_roles)");
+				ResultSet rs = stmt.executeQuery();
+				String nameWorker;
+				if(rs.first() == false) {
+					ar.add("Select chairman failled");
+					Translator newTranslator = new Translator(translator.getRequest(), ar);
+					return newTranslator;
+				}
+				rs.previous();
+				while (rs.next()) { // get the processID from the Select query
+					ar.add( new String(rs.getString(1)));
+					ar.add( new String(rs.getString(2)));
+					ar.add( new String(rs.getString(3)));
+				}
+			
+				Translator newTranslator = new Translator(translator.getRequest(), ar);
+				return newTranslator;
+				
+				}
+			catch (SQLException e) {
+					// TODO Auto-generated catch block
+					System.out.println("SQL EXCEPTION SELECTCHAIRMAN!");
+			}
+		
+/*********************************************UPDATEPERMANENT*********************************************************/		
+		case UPDATEPERMANENT:
+		try {
+			stmt = conn.prepareStatement("insert into icmdb.permanent_roles (user_id,role) values(?,?)");
+			stmt.setString(1, (String) translator.getParmas().get(0));
+			stmt.setString(2, (String) translator.getParmas().get(1));
+			
+			System.out.println((String) translator.getParmas().get(0));
 
+			System.out.println((String) translator.getParmas().get(1));
+
+			stmt.executeUpdate();
+			stmt = conn.prepareStatement("select first_name, last_name from icmdb.workers "
+					+ "inner join icmdb.permanent_roles ON icmdb.workers.id=icmdb.permanent_roles.user_id "
+					+ "and icmdb.permanent_roles.role = ? ");
+			stmt.setString(1, (String) translator.getParmas().get(1));
+			ResultSet rs = stmt.executeQuery();
+	
+			if(rs.first() == false) {
+				ar.add("Select chairman failled");
+				Translator newTranslator = new Translator(translator.getRequest(), ar);
+				return newTranslator;
+			}
+			rs.previous();
+			while (rs.next()) { // get the processID from the Select query
+				ar.add( new String(rs.getString(1)));//name
+				ar.add( new String(rs.getString(2)));//last name
+				ar.add( (String) translator.getParmas().get(1));//role
+				
+			}
+		
+			Translator newTranslator = new Translator(translator.getRequest(), ar);
+			return newTranslator;
+			
+		}
+		catch(SQLException e) {
+			System.out.println("SQL Exception: Failed UPDATEPERMANENT ");
+		}
+/*************************************************LOGIN***************************************************************/
 		case LOGIN:
 			try {
 				stmt = conn.prepareStatement("select * from users where user_id=? and password=?");	
@@ -371,4 +439,5 @@ public class DBConnector {
 		}
 		return null;
 	}
+	
 }

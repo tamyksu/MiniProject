@@ -36,6 +36,7 @@ public class Main extends Application {
 		new ScreenController(baseScene);
 
 		try {
+
 			ScreenController.getScreenController().addScreen("login", FXMLLoader.load(getClass().getResource("/application/Login.fxml")));
 			ScreenController.getScreenController().addScreen("processesMain", FXMLLoader.load(getClass().getResource("/application/ProcessesMain.fxml")));
 			ScreenController.getScreenController().addScreen("evaluation", FXMLLoader.load(getClass().getResource("/application/Evaluation.fxml")));
@@ -43,6 +44,9 @@ public class Main extends Application {
 			ScreenController.getScreenController().addScreen("execution", FXMLLoader.load(getClass().getResource("/application/Execution.fxml")));
 			ScreenController.getScreenController().addScreen("newRequest", FXMLLoader.load(getClass().getResource("/application/NewRequestForm.fxml")));
 			ScreenController.getScreenController().addScreen("examination", FXMLLoader.load(getClass().getResource("/application/Examination.fxml")));
+			ScreenController.getScreenController().addScreen("supervisor_processesMain", FXMLLoader.load(getClass().getResource("/application/Supervisor_processesMain.fxml")));
+			ScreenController.getScreenController().addScreen("staffMain", FXMLLoader.load(getClass().getResource("/application/StaffMain.fxml")));
+
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

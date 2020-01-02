@@ -48,7 +48,7 @@
                         <TableColumn fx:id="Role" prefWidth="154.0" text="Role" />
                     </columns>
                   </TableView>
-                  <Button fx:id="freeze_btn" layoutX="384.0" layoutY="460.0" mnemonicParsing="false" onAction="#freeze_click" prefHeight="31.0" prefWidth="175.0" text="Freeze Process" />
+                  <Button fx:id="director_btn" layoutX="384.0" layoutY="460.0" mnemonicParsing="false" onAction="#director_click" prefHeight="31.0" prefWidth="175.0" text="Diresctor" />
                   <Button fx:id="extension_btn" layoutX="384.0" layoutY="429.0" mnemonicParsing="false" onAction="#extension_click" prefHeight="32.0" prefWidth="175.0" text="Send Extension Request" />
                   <Button fx:id="evaluation_btn" layoutX="129.0" layoutY="429.0" mnemonicParsing="false" onAction="#evaluation_click" prefHeight="31.0" prefWidth="178.0" text="Evaluation" />
                   <Button fx:id="defrost_btn" layoutX="384.0" layoutY="491.0" mnemonicParsing="false" onAction="#defrost_click" prefHeight="31.0" prefWidth="175.0" text="Defrost Process" />

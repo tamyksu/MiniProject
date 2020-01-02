@@ -12,6 +12,7 @@ import application.LoginController;
 import application.NewRequestContoroller;
 import application.Processes;
 import application.ScreenController;
+import application.StaffMainController;
 import application.UserProcess;
 import javafx.scene.control.Alert.AlertType;
 
@@ -50,10 +51,23 @@ public class Client extends AbstractClient {
 		case NEWREQUEST:
 			handlerMessageFromServerNewRequest(result.getParmas());
 			break;
+		case SELECTCHAIRMAN:
+			handlerMessageFromServerSelectChairMan(result.getParmas());
+			break;
+		case UPDATEPERMANENT:
+			handlerMessageFromServerUpdatePermanent(result.getParmas());
 		default:
 			break;
 		}
 	
+	}
+	public void handlerMessageFromServerSelectChairMan(Object message)
+	{
+		ArrayList<String> arr= (ArrayList<String>)message;
+		System.out.println(arr+"!");
+		StaffMainController.instance.setDataChairMan(arr);
+		
+		
 	}
 
 	private void setName(String userID) {
@@ -97,7 +111,14 @@ public class Client extends AbstractClient {
 		Translator translator = new Translator(OptionsOfAction.GETRELATEDREQUESTS, ar);
 		handleMessageFromClientGUI(translator);
 	}
-
+/******************************************************************************************************/
+	public void handlerMessageFromServerUpdatePermanent(Object message){
+		
+		ArrayList<String> arr= (ArrayList<String>)message;
+		System.out.println(arr+"!");
+		StaffMainController.instance.printMessage(arr);///
+	}
+	
 	
 	public void handlerMessageFromServerNewRequest(Object rs) {
 		ArrayList<Boolean> result = (ArrayList<Boolean>) rs;
