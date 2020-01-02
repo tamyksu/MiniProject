@@ -214,7 +214,7 @@ public class DBConnector {
 		
 			try {
 				stmt = conn.prepareStatement("select first_name, last_name, id from icmdb.workers "
-						+ "where( id NOT IN(select user_id from icmdb.users_requests))"
+						+ "where( id SNOT IN(select user_id from icmdb.users_requests))"
 						+ "AND id NOT IN (select user_id from icmdb.permanent_roles)");
 				ResultSet rs = stmt.executeQuery();
 				String nameWorker;
