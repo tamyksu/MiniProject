@@ -278,8 +278,10 @@ public class ControllerProcessMain implements Initializable {
 	
 
 	@FXML
-	void freeze_click(ActionEvent event) {
-
+	void director_click(ActionEvent event) {
+		ScreenController.getScreenController().activate("staffMain");
+		StaffMainController.instance.getChairManData();
+		
 	}
 
 	@FXML
@@ -325,7 +327,20 @@ public class ControllerProcessMain implements Initializable {
 
 	@FXML
 	public void getTheUpdateProcessesFromDB() {
-		Client.getInstance().getProcessesFromServer();
+		switch (Client.getInstance().getRole()) {
+		case "Supervisor":
+			Client.getInstance().getAllProcessesFromServer();
+			break;
+		case "Manager":
+			Client.getInstance().getAllProcessesFromServer();
+			break;
+		default:
+			Client.getInstance().getProcessesFromServer();
+			break;
+		}
+			
+			
+			
 	}
 	
 	public int getSelectedRowNumber()

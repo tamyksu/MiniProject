@@ -309,6 +309,56 @@ public class DBConnector {
 				System.out.println("Catch SET_EVALUATION_OR_EXECUTION_DUE_TIME");
 			}
 			break;
+		case GETALLPROCESSES:
+			try {
+				stmt = conn.prepareStatement("SELECT * FROM processes;");
+				ResultSet rs = stmt.executeQuery();		
+				if(rs.first() == false) {
+					ar.add("No processes");
+					ArrayList<ArrayList<?>> empty = new ArrayList<ArrayList<?>>();
+					empty.add(ar);
+					Translator newTranslator = new Translator(translator.getRequest(), empty);
+					return newTranslator;
+				}
+				rs.previous();
+				ArrayList<ArrayList<?>> processes = new ArrayList<ArrayList<?>>();
+				while(rs.next()) {	
+					ArrayList<Integer> intArray= new ArrayList<Integer>();
+					ArrayList<String> stringArray= new ArrayList<String>();
+					intArray.add(rs.getInt(1));
+					stringArray.add(rs.getString(2));
+					intArray.add(rs.getInt(3));
+					stringArray.add(rs.getString(4));
+					stringArray.add(rs.getString(5));
+					stringArray.add(rs.getString(6));
+					stringArray.add(rs.getString(7));
+					stringArray.add(rs.getString(8));
+					stringArray.add(rs.getString(9));
+					stringArray.add(rs.getString(10));
+					stringArray.add(rs.getString(11));
+					stringArray.add(rs.getString(12));
+					ResultSet initiatorInfo = getInitiatorInfo(rs.getString(2));
+					if (initiatorInfo != null) {
+						while(initiatorInfo.next()) {
+							stringArray.add(initiatorInfo.getString(3));
+							stringArray.add(initiatorInfo.getString(4));
+							stringArray.add(initiatorInfo.getString(5));
+							stringArray.add(initiatorInfo.getString(6));
+						}
+					}
+					else {
+						return null;
+					}
+					processes.add(intArray);
+					processes.add(stringArray);
+				}
+				Translator newTranslator = new Translator(translator.getRequest(), processes);
+				return newTranslator;
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}	
+			break;
 		default:
 			System.out.println("default");
 			break;
