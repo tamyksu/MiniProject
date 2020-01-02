@@ -7,55 +7,71 @@
 <?import java.lang.*?>
 <?import javafx.scene.layout.*?>
 
-<SplitPane dividerPositions="0.07349665924276169" orientation="VERTICAL" prefHeight="900.0" prefWidth="1300.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
-  <items>
-    <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="0.0" minWidth="0.0" prefHeight="62.0" prefWidth="1298.0">
-         <children>
-            <Label layoutX="18.0" layoutY="11.0" prefHeight="26.0" prefWidth="62.0" text="ICM">
-               <font>
-                  <Font size="27.0" />
-               </font>
-            </Label>
-         </children>
-      </AnchorPane>
-    <AnchorPane focusTraversable="true" minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
-         <children>
-            <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#1f93ff00" height="190.0" layoutX="-278.0" layoutY="493.0" opacity="0.18" stroke="BLACK" strokeType="INSIDE" width="340.0" x="300.0" />
-            <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#1f93ff00" height="227.0" layoutX="26.0" layoutY="202.0" opacity="0.18" stroke="BLACK" strokeType="INSIDE" width="1247.0" />
-            <Button layoutX="22.0" layoutY="22.0" mnemonicParsing="false" text="Back" />
-            <Button layoutX="1166.0" layoutY="773.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="107.0" text="Apply" />
-            <Button layoutX="1073.0" layoutY="773.0" mnemonicParsing="false" prefHeight="7.0" prefWidth="64.0" text="Cancel" />
-            <Button layoutX="1023.0" layoutY="381.0" mnemonicParsing="false" text="Appoint Changes Control Board" />
-            <ComboBox layoutX="62.0" layoutY="303.0" prefHeight="31.0" prefWidth="295.0" />
-            <Label layoutX="512.0" layoutY="203.0" text="Appoint Changes Control Board">
-               <font>
-                  <Font name="System Bold" size="18.0" />
-               </font></Label>
-            <Label layoutX="172.0" layoutY="269.0" text="Chairman:">
-               <font>
-                  <Font size="17.0" />
-               </font></Label>
-            <Label layoutX="990.0" layoutY="269.0" text="#2 Information Engineer:">
-               <font>
-                  <Font size="17.0" />
-               </font></Label>
-            <ComboBox layoutX="492.0" layoutY="303.0" prefHeight="31.0" prefWidth="295.0" />
-            <Label layoutX="547.0" layoutY="269.0" text="#1 Information Engineer:">
-               <font>
-                  <Font size="17.0" />
-               </font></Label>
-            <ComboBox layoutX="935.0" layoutY="303.0" prefHeight="31.0" prefWidth="295.0" />
-            <Label layoutX="110.0" layoutY="495.0" text="Appoint Supervisor">
-               <font>
-                  <Font name="System Bold" size="18.0" />
-               </font></Label>
-            <Label layoutX="151.0" layoutY="540.0" text="Supervisor:">
-               <font>
-                  <Font size="17.0" />
-               </font></Label>
-            <ComboBox layoutX="47.0" layoutY="575.0" prefHeight="31.0" prefWidth="295.0" />
-            <Button layoutX="200.0" layoutY="636.0" mnemonicParsing="false" text="Appoint Supervisor" />
-         </children>
-      </AnchorPane>
-  </items>
-</SplitPane>
+<Pane xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.StaffMainController">
+   <children>
+      <SplitPane dividerPositions="0.07349665924276169" orientation="VERTICAL" prefHeight="900.0" prefWidth="1300.0">
+        <items>
+          <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="0.0" minWidth="0.0" prefHeight="62.0" prefWidth="1298.0">
+               <children>
+                  <Label layoutX="18.0" layoutY="11.0" prefHeight="26.0" prefWidth="62.0" text="ICM">
+                     <font>
+                        <Font size="27.0" />
+                     </font>
+                  </Label>
+               </children>
+            </AnchorPane>
+          <AnchorPane focusTraversable="true" minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
+               <children>
+                  <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#1f93ff00" height="190.0" layoutX="-278.0" layoutY="493.0" opacity="0.18" stroke="BLACK" strokeType="INSIDE" width="340.0" x="300.0" />
+                  <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#1f93ff00" height="227.0" layoutX="6.0" layoutY="221.0" opacity="0.18" stroke="BLACK" strokeType="INSIDE" width="1247.0" />
+                  <Button fx:id="back_btn" layoutX="22.0" layoutY="22.0" mnemonicParsing="false" onAction="#back_click" text="Back" />
+                  <Button fx:id="Appoint_secondIE" layoutX="982.0" layoutY="357.0" mnemonicParsing="false" onAction="#AppointsecondIEclick" text="Appoint #2 Information Engineer:" />
+                  <ComboBox fx:id="chairman_comboBox" layoutX="62.0" layoutY="303.0" prefHeight="31.0" prefWidth="295.0" promptText="Select Chairman" />
+                  <Label layoutX="444.0" layoutY="183.0" text="Appoint Changes Control Board">
+                     <font>
+                        <Font name="System Bold" size="18.0" />
+                     </font>
+                  </Label>
+                  <Label layoutX="172.0" layoutY="269.0" text="Chairman:">
+                     <font>
+                        <Font size="17.0" />
+                     </font>
+                  </Label>
+                  <Label layoutX="990.0" layoutY="269.0" text="#2 Information Engineer:">
+                     <font>
+                        <Font size="17.0" />
+                     </font>
+                  </Label>
+                  <ComboBox fx:id="firstIE_comboBox" layoutX="492.0" layoutY="303.0" prefHeight="31.0" prefWidth="295.0" promptText="Select  Information Engineer:" />
+                  <Label layoutX="547.0" layoutY="269.0" text="#1 Information Engineer:">
+                     <font>
+                        <Font size="17.0" />
+                     </font>
+                  </Label>
+                  <ComboBox fx:id="secondIE_comboBox" layoutX="935.0" layoutY="303.0" prefHeight="31.0" prefWidth="295.0" promptText="Select  Information Engineer:" />
+                  <Label layoutX="110.0" layoutY="495.0" text="Appoint Supervisor">
+                     <font>
+                        <Font name="System Bold" size="18.0" />
+                     </font>
+                  </Label>
+                  <Label layoutX="151.0" layoutY="540.0" text="Supervisor:">
+                     <font>
+                        <Font size="17.0" />
+                     </font>
+                  </Label>
+                  <ComboBox fx:id="supervisor_comboBox" layoutX="47.0" layoutY="575.0" prefHeight="31.0" prefWidth="295.0" />
+                  <Button fx:id="AppointSupervisor" layoutX="200.0" layoutY="636.0" mnemonicParsing="false" onAction="#AppointSupervisor_click" text="Appoint Supervisor" />
+                  <Button fx:id="log_out_btn" layoutX="1116.0" layoutY="22.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="148.0" text="Log out" />
+                  <Button fx:id="Appoint_Chiarman" layoutX="116.0" layoutY="357.0" mnemonicParsing="false" onAction="#Appoint_Chiarman_click" text="Appoint Chiarman" />
+                  <Button fx:id="Appoint_firstIE" layoutX="552.0" layoutY="357.0" mnemonicParsing="false" onAction="#AppointfirstIEclick" text="Appoint #1 Information Engineer:" />
+                  <Text fx:id="print_message" fill="#0b23bf" layoutX="390.0" layoutY="443.0" strokeType="OUTSIDE" strokeWidth="0.0" visible="false" wrappingWidth="409.13671875">
+                     <font>
+                        <Font size="15.0" />
+                     </font>
+                  </Text>
+               </children>
+            </AnchorPane>
+        </items>
+      </SplitPane>
+   </children>
+</Pane>

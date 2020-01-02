@@ -12,6 +12,7 @@ import application.LoginController;
 import application.NewRequestContoroller;
 import application.Processes;
 import application.ScreenController;
+import application.StaffMainController;
 import application.UserProcess;
 import javafx.scene.control.Alert.AlertType;
 
@@ -54,13 +55,24 @@ public class Client extends AbstractClient {
 		case GETALLPROCESSES:
 			handlerMessageFromServerGetAllProcesses(result.getParmas());
 			break;
+		case SELECTCHAIRMAN:
+			handlerMessageFromServerSelectChairMan(result.getParmas());
+			break;
+		case UPDATEPERMANENT:
+			handlerMessageFromServerUpdatePermanent(result.getParmas());
 		default:
 			break;
 		}
 	
 	}
-
-	
+	public void handlerMessageFromServerSelectChairMan(Object message)
+	{
+		ArrayList<String> arr= (ArrayList<String>)message;
+		System.out.println(arr+"!");
+		StaffMainController.instance.setDataChairMan(arr);
+		
+		
+	}
 
 	private void setName(String userID) {
 		this.userID = userID;
@@ -96,6 +108,22 @@ public class Client extends AbstractClient {
 	public void setProcesses(Processes processes) {
 		this.processes = processes;
 	}
+
+	//get the processes related this client
+	public void getProcessesFromServer() {
+		ArrayList<String> ar = new ArrayList<String>();
+		ar.add(userID);
+		Translator translator = new Translator(OptionsOfAction.GETRELATEDREQUESTS, ar);
+		handleMessageFromClientGUI(translator);
+	}
+/******************************************************************************************************/
+	public void handlerMessageFromServerUpdatePermanent(Object message){
+		
+		ArrayList<String> arr= (ArrayList<String>)message;
+		System.out.println(arr+"!");
+		StaffMainController.instance.printMessage(arr);///
+	}
+	
 	
 	public void handlerMessageFromServerNewRequest(Object rs) {
 		ArrayList<Boolean> result = (ArrayList<Boolean>) rs;
@@ -145,14 +173,6 @@ public class Client extends AbstractClient {
 		ar.add(userID);
 		Translator translator = new Translator(OptionsOfAction.GETALLPROCESSES, ar);
 		handleMessageFromClientGUI(translator);		
-	}
-
-	//get the processes related this client
-	public void getProcessesFromServer() {
-		ArrayList<String> ar = new ArrayList<String>();
-		ar.add(userID);
-		Translator translator = new Translator(OptionsOfAction.GETRELATEDREQUESTS, ar);
-		handleMessageFromClientGUI(translator);
 	}
 	
 	private void setRule(String role) {

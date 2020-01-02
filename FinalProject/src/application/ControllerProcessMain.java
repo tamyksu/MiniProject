@@ -277,8 +277,10 @@ public class ControllerProcessMain implements Initializable {
 	
 
 	@FXML
-	void freeze_click(ActionEvent event) {
-
+	void director_click(ActionEvent event) {
+		ScreenController.getScreenController().activate("staffMain");
+		StaffMainController.instance.getChairManData();
+		
 	}
 
 	@FXML
