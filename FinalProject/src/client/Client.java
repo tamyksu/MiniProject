@@ -4,8 +4,12 @@ import translator.OptionsOfAction;
 import translator.Translator;
 import java.io.*;
 import java.util.ArrayList;
+
+import com.mysql.cj.xdevapi.Result;
+
 import application.ControllerProcessMain;
 import application.LoginController;
+import application.NewRequestContoroller;
 import application.Processes;
 import application.ScreenController;
 import application.StaffMainController;
@@ -45,7 +49,7 @@ public class Client extends AbstractClient {
 			handlerMessageFromServerProcesses(result.getParmas());
 			break;
 		case NEWREQUEST:
-		
+			handlerMessageFromServerNewRequest(result.getParmas());
 			break;
 		case SELECTCHAIRMAN:
 			handlerMessageFromServerSelectChairMan(result.getParmas());
@@ -66,24 +70,13 @@ public class Client extends AbstractClient {
 	private void setName(String userID) {
 		this.userID = userID;
 	}
-
-	
-	public void handleMessageFromClientGUINewRequest(Object message) {
-		try {
-			super.
-			sendToServer(message);
-		} catch (IOException e) {
-			System.out.println("Could not insert new request");
-			quit();
-		}
-	}
 	
 	
 	public void handleMessageFromClientGUI(Object message) {
 		try {
 			sendToServer(message);
 		} catch (IOException e) {
-			System.out.println("Could not send massage to server");
+			System.out.println("Could not perform action to server");
 			quit();
 		}
 	}
@@ -116,6 +109,20 @@ public class Client extends AbstractClient {
 		handleMessageFromClientGUI(translator);
 	}
 
+	
+	public void handlerMessageFromServerNewRequest(Object rs) {
+		ArrayList<Boolean> result = (ArrayList<Boolean>) rs;
+		
+		if(result.get(0).booleanValue()==true) {
+			
+			NewRequestContoroller.getInstance().showSeccessAlert();
+		}
+		else {
+			
+			NewRequestContoroller.getInstance().showFailureAlert();
+		}
+	}
+	
 	//In case we want to tell you, what is the server's answer regarding the client's connection experience
 	public void handlerMessageFromServerLogin(Object rs) {
 		@SuppressWarnings("unchecked")

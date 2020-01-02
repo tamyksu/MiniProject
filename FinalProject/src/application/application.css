@@ -53,6 +53,10 @@
 
 }
 
+.brightText{
+	-fx-text-fill: lightGray;
+}
+
 #tableView{
 	-fx-background-image: url("/application/2.jpg");
 }
