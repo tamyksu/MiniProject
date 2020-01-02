@@ -83,7 +83,7 @@ public class NewRequestContoroller implements Initializable {
     }
     
     public void deleteAll() {
-    	informationSystemNumber.clear();
+
 		ProblemDescription.clear();
 		requestDescription.clear();
 		explanation.clear();
@@ -151,7 +151,7 @@ public class NewRequestContoroller implements Initializable {
     		// **************************************************************** Send Files
     		int numberOfFiles = filesList.getItems().size();
     		
-        	System.out.println(numberOfFiles);
+        	//System.out.println(numberOfFiles);
         	ArrayList<MyFile> filesToServer = new ArrayList<MyFile>();
         	for(int i=0;i<numberOfFiles;i++) {
         		MyFile msg= new MyFile(Client.getInstance().getUserID()+"_"+listOfFilesNames.get(i));
@@ -268,6 +268,8 @@ public class NewRequestContoroller implements Initializable {
 		initializeComboBox();
 		
 	}
+	
+	
 	public void initializeComboBox() {
 		
 		listForComboBox = new ArrayList<InformationSystem>();

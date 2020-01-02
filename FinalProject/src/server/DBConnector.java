@@ -2,7 +2,6 @@ package server;
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.sql.Connection;
@@ -11,7 +10,6 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import translator.*;
-import application.InformationSystem;
 import application.MyFile;
 import application.Request;
 import java.sql.ResultSet;
@@ -44,13 +42,9 @@ public class DBConnector {
 	}
 
 	public static Object accessToDB(Object data) {
-		Translator translator =(Translator)data;
+		Translator translator = (Translator) data;
 		PreparedStatement stmt;
 		ArrayList<String> ar = new ArrayList<String>() ;
-		
-		
-		
-		
 		switch (translator.getRequest()) {
 		case NEWREQUEST:
 
@@ -60,7 +54,7 @@ public class DBConnector {
 
 			Request nr = (Request) translator.getParmas().get(0);
 			try {
-
+				
 				// Add new request to processes table in the Data Base:
 				java.sql.Date date = new java.sql.Date(new java.util.Date().getTime()); // Current Date
 				stmt = conn.prepareStatement("insert into icmdb.processes (initiator_id,system_num,"
@@ -109,7 +103,7 @@ public class DBConnector {
 				stmt3.executeUpdate();
 
 
-				// ***************************** Recieve Files from Client and insert them to Data Base
+				// ***************************** Receive Files from Client and insert them to Data Base
 
 				ArrayList<MyFile> filesToServer = (ArrayList<MyFile>) translator.getParmas().get(1);
 

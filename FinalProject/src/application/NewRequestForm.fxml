@@ -10,7 +10,7 @@
 
 <Pane prefHeight="722.0" prefWidth="1231.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.NewRequestContoroller">
    <children>
-      <SplitPane dividerPositions="0.5" orientation="VERTICAL" prefHeight="730.0" prefWidth="1500.0">
+      <SplitPane dividerPositions="0.5" orientation="VERTICAL" prefHeight="730.0" prefWidth="1237.0">
         <items>
           <AnchorPane fx:id="idp" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="0.0" minWidth="0.0" prefHeight="74.0" prefWidth="1500.0">
                <children>
@@ -33,7 +33,6 @@
                   </Label>
                   <Button fx:id="sendRequestBtn" layoutX="587.0" layoutY="487.0" mnemonicParsing="false" onAction="#sendRequest" text="Send Request" />
                   <Button layoutX="973.0" layoutY="-42.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="98.0" text="Log out" />
-                  <TextField fx:id="informationSystemNumber" layoutX="828.0" layoutY="143.0" prefHeight="31.0" prefWidth="177.0" />
                   <Label fx:id="textstyle" layoutX="128.0" layoutY="75.0" text="*Information System:">
                      <font>
                         <Font size="17.0" />
