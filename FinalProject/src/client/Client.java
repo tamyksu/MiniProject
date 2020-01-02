@@ -8,6 +8,7 @@ import application.ControllerProcessMain;
 import application.LoginController;
 import application.Processes;
 import application.ScreenController;
+import application.StaffMainController;
 import application.UserProcess;
 import javafx.scene.control.Alert.AlertType;
 
@@ -46,10 +47,20 @@ public class Client extends AbstractClient {
 		case NEWREQUEST:
 		
 			break;
+		case SELECTCHAIRMAN:
+			handlerMessageFromServerSelectChairMan(result.getParmas());
 		default:
 			break;
 		}
 	
+	}
+	public void handlerMessageFromServerSelectChairMan(Object message)
+	{
+		ArrayList<String> arr= (ArrayList<String>)message;
+		System.out.println(arr+"!");
+		StaffMainController.instance.setDataChairMan(arr);
+		
+		
 	}
 
 	private void setName(String userID) {
