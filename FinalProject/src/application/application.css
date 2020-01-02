@@ -36,6 +36,9 @@
 	-fx-background-image: url("/application/2.jpg");
 	-fx-text-fill: white;
 }
+.brightText{
+	-fx-text-fill: white;
+}
 #idButton{
 -fx-background-image: url("/application/2.jpg");
 	-fx-text-fill: white;
