@@ -243,14 +243,44 @@ public class DBConnector {
 
 		case GETRELATEDREQUESTS:
 			try {
+				
+				String userID = (String) translator.getParmas().get(0);
+
+				ResultSet rs;
+				
+				//check if this a super user
+				stmt = conn.prepareStatement("SELECT permanent_roles.role\r\n" + 
+						"FROM permanent_roles \r\n"+
+						"WHERE permanent_roles.user_id=?");
+				stmt.setString(1, userID);
+				
+				rs = stmt.executeQuery();
+				if(rs.first() != false) {
+					if(rs.getString(1).toString().equals("Supervisor"))	//if this is supervisor 
+					{
+						//then get *all* of the processes
+						stmt = conn.prepareStatement(""
+								+ "SELECT users_requests.process_id, users_requests.role, processes.* \r\n" + 
+								"FROM users_requests\r\n"+
+								"INNER JOIN processes\r\n" + 
+								"ON users_requests.process_id = processes.request_id");
+						
+						rs = stmt.executeQuery();				
+					}
+				}
+				else
+				{
+				//get only the processes that related to this user
 				stmt = conn.prepareStatement(""
 						+ "SELECT users_requests.process_id, users_requests.role, processes.* \r\n" + 
 						"FROM users_requests\r\n" + 
 						"INNER JOIN processes\r\n" + 
 						"ON users_requests.process_id = processes.request_id\r\n"+
 						"WHERE users_requests.user_id=?");
-				stmt.setString(1, (String) translator.getParmas().get(0));
-				ResultSet rs = stmt.executeQuery();		
+				stmt.setString(1, userID);
+				rs = stmt.executeQuery();
+
+				}
 				if(rs.first() == false) {
 					ar.add("No processes");
 					ArrayList<ArrayList<?>> empty = new ArrayList<ArrayList<?>>();
@@ -260,6 +290,8 @@ public class DBConnector {
 
 					return newTranslator;
 				}
+				
+				//decode the result and send it back to the client
 				rs.previous();
 				ArrayList<ArrayList<?>> processes = new ArrayList<ArrayList<?>>();
 				while(rs.next()) {	
@@ -300,6 +332,8 @@ public class DBConnector {
 				e.printStackTrace();
 			}	
 			break;
+			
+			
 		default:
 			System.out.println("default");
 			break;
