@@ -53,6 +53,9 @@ public class Client extends AbstractClient {
 			break;
 		case SELECTCHAIRMAN:
 			handlerMessageFromServerSelectChairMan(result.getParmas());
+			break;
+		case UPDATEPERMANENT:
+			handlerMessageFromServerUpdatePermanent(result.getParmas());
 		default:
 			break;
 		}
@@ -108,7 +111,14 @@ public class Client extends AbstractClient {
 		Translator translator = new Translator(OptionsOfAction.GETRELATEDREQUESTS, ar);
 		handleMessageFromClientGUI(translator);
 	}
-
+/******************************************************************************************************/
+	public void handlerMessageFromServerUpdatePermanent(Object message){
+		
+		ArrayList<String> arr= (ArrayList<String>)message;
+		System.out.println(arr+"!");
+		StaffMainController.instance.printMessage(arr);///
+	}
+	
 	
 	public void handlerMessageFromServerNewRequest(Object rs) {
 		ArrayList<Boolean> result = (ArrayList<Boolean>) rs;
