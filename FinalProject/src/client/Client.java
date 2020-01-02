@@ -8,11 +8,13 @@ import java.util.ArrayList;
 import com.mysql.cj.xdevapi.Result;
 
 import application.ControllerProcessMain;
+import application.InformationSystem;
 import application.LoginController;
 import application.NewRequestContoroller;
 import application.Processes;
 import application.ScreenController;
 import application.UserProcess;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 
 public class Client extends AbstractClient {
@@ -50,6 +52,8 @@ public class Client extends AbstractClient {
 		case NEWREQUEST:
 			handlerMessageFromServerNewRequest(result.getParmas());
 			break;
+		case GETALLINFORMATIONSYSTEMS:
+			//fillListForComboBox(result.getParmas());
 		default:
 			break;
 		}
@@ -98,17 +102,16 @@ public class Client extends AbstractClient {
 		handleMessageFromClientGUI(translator);
 	}
 
-	
+	// Handle in case a New Request was received in the database
 	public void handlerMessageFromServerNewRequest(Object rs) {
+		@SuppressWarnings("unchecked")
 		ArrayList<Boolean> result = (ArrayList<Boolean>) rs;
 		
 		if(result.get(0).booleanValue()==true) {
-			
-			NewRequestContoroller.getInstance().showSeccessAlert();
+			NewRequestContoroller.getInstance().setAnswerFromServer(true);
 		}
 		else {
-			
-			NewRequestContoroller.getInstance().showFailureAlert();
+			NewRequestContoroller.getInstance().setAnswerFromServer(false);
 		}
 	}
 	

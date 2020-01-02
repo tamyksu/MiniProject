@@ -163,22 +163,22 @@
                         </VBox>
                         <VBox layoutX="901.0" layoutY="88.0" prefHeight="607.0" prefWidth="200.0">
                            <children>
-                              <Label fx:id="InitiatorName" styleClass="brightText" prefHeight="32.0" prefWidth="320.0" text="label" />
-                              <Label fx:id="InitiatorEmail" styleClass="brightText" layoutX="10.0" layoutY="10.0" prefHeight="32.0" prefWidth="320.0" text="label" />
-                              <Label fx:id="InformationSystem" styleClass="brightText" layoutX="10.0" layoutY="74.0" prefHeight="32.0" prefWidth="320.0" text="label" />
-                              <Label fx:id="CurrentState" styleClass="brightText" layoutX="10.0" layoutY="106.0" prefHeight="71.0" prefWidth="320.0" text="label">
+                              <Label fx:id="InitiatorName" prefHeight="32.0" prefWidth="320.0" styleClass="brightText" text="-" />
+                              <Label fx:id="InitiatorEmail" layoutX="10.0" layoutY="10.0" prefHeight="32.0" prefWidth="320.0" styleClass="brightText" text="-" />
+                              <Label fx:id="InformationSystem" layoutX="10.0" layoutY="74.0" prefHeight="32.0" prefWidth="320.0" styleClass="brightText" text="-" />
+                              <Label fx:id="CurrentState" layoutX="10.0" layoutY="106.0" prefHeight="71.0" prefWidth="320.0" styleClass="brightText" text="-">
                                  <VBox.margin>
                                     <Insets top="1.0" />
                                  </VBox.margin>
                               </Label>
-                              <Label fx:id="RequestedChange" styleClass="brightText" layoutX="10.0" layoutY="138.0" prefHeight="71.0" prefWidth="320.0" text="label" />
-                              <Label fx:id="Explanation" styleClass="brightText" layoutX="10.0" layoutY="209.0" prefHeight="71.0" prefWidth="320.0" text="label" />
-                              <Label fx:id="Notes" styleClass="brightText" layoutX="10.0" layoutY="280.0" prefHeight="71.0" prefWidth="320.0" text="label" />
-                              <Label fx:id="RequestDate" styleClass="brightText" layoutX="10.0" layoutY="106.0" prefHeight="32.0" prefWidth="320.0" text="label" />
-                              <Label fx:id="RequestID" styleClass="brightText" layoutX="10.0" layoutY="422.0" prefHeight="32.0" prefWidth="320.0" text="label" />
-                              <Label fx:id="Documents" styleClass="brightText" layoutX="10.0" layoutY="454.0" prefHeight="62.0" prefWidth="320.0" text="label" />
-                              <Label fx:id="currentStatus" styleClass="brightText" layoutX="10.0" layoutY="106.0" prefHeight="32.0" prefWidth="320.0" text="label" />
-                              <Label fx:id="CurrentStageDueTime" styleClass="brightText" layoutX="10.0" layoutY="548.0" prefHeight="32.0" prefWidth="320.0" text="label" />
+                              <Label fx:id="RequestedChange" layoutX="10.0" layoutY="138.0" prefHeight="71.0" prefWidth="320.0" styleClass="brightText" text="-" />
+                              <Label fx:id="Explanation" layoutX="10.0" layoutY="209.0" prefHeight="71.0" prefWidth="320.0" styleClass="brightText" text="-" />
+                              <Label fx:id="Notes" layoutX="10.0" layoutY="280.0" prefHeight="71.0" prefWidth="320.0" styleClass="brightText" text="-" />
+                              <Label fx:id="RequestDate" layoutX="10.0" layoutY="106.0" prefHeight="32.0" prefWidth="320.0" styleClass="brightText" text="-" />
+                              <Label fx:id="RequestID" layoutX="10.0" layoutY="422.0" prefHeight="32.0" prefWidth="320.0" styleClass="brightText" text="-" />
+                              <Label fx:id="Documents" layoutX="10.0" layoutY="454.0" prefHeight="62.0" prefWidth="320.0" styleClass="brightText" text="-" />
+                              <Label fx:id="currentStatus" layoutX="10.0" layoutY="106.0" prefHeight="32.0" prefWidth="320.0" styleClass="brightText" text="-" />
+                              <Label fx:id="CurrentStageDueTime" layoutX="10.0" layoutY="548.0" prefHeight="32.0" prefWidth="320.0" styleClass="brightText" text="-" />
                            </children>
                         </VBox>
                      </children>

@@ -23,79 +23,54 @@
             </AnchorPane>
           <AnchorPane fx:id="idPane" focusTraversable="true" minHeight="0.0" minWidth="0.0" prefHeight="360.0" prefWidth="396.0">
                <children>
-                  <Rectangle arcHeight="5.0" arcWidth="5.0" fill="WHITE" height="371.0" layoutX="483.0" layoutY="184.0" opacity="0.14" stroke="BLACK" strokeType="INSIDE" width="393.0" />
-                  <VBox layoutX="322.0" layoutY="178.0" prefHeight="392.0" prefWidth="158.0">
-                     <children>
-                        <Label fx:id="textstyle" text="Information System:">
-                           <font>
-                              <Font size="17.0" />
-                           </font>
-                           <VBox.margin>
-                              <Insets top="3.0" />
-                           </VBox.margin>
-                        </Label>
-                        <Label fx:id="textstyle" layoutX="10.0" layoutY="60.0" text="Problem Description:">
-                           <font>
-                              <Font size="17.0" />
-                           </font>
-                           <VBox.margin>
-                              <Insets top="8.0" />
-                           </VBox.margin>
-                        </Label>
-                        <Label fx:id="textstyle" layoutX="10.0" layoutY="35.0" text="Request Description:">
-                           <font>
-                              <Font size="16.0" />
-                           </font>
-                           <VBox.margin>
-                              <Insets top="45.0" />
-                           </VBox.margin>
-                        </Label>
-                        <Label fx:id="textstyle" layoutX="10.0" layoutY="189.0" text="Explanation:">
-                           <font>
-                              <Font size="16.0" />
-                           </font>
-                           <VBox.margin>
-                              <Insets top="45.0" />
-                           </VBox.margin>
-                        </Label>
-                        <Label fx:id="textstyle" layoutX="10.0" layoutY="85.0" text="Notes:">
-                           <font>
-                              <Font size="16.0" />
-                           </font>
-                           <VBox.margin>
-                              <Insets top="46.0" />
-                           </VBox.margin>
-                        </Label>
-                        <Label fx:id="textstyle" layoutX="10.0" layoutY="110.0" text="Documents:">
-                           <font>
-                              <Font size="16.0" />
-                           </font>
-                           <VBox.margin>
-                              <Insets top="46.0" />
-                           </VBox.margin>
-                        </Label>
-                     </children>
-                  </VBox>
-                  <VBox layoutX="484.0" layoutY="180.0" prefHeight="392.0" prefWidth="393.0">
-                     <children>
-                        <TextField fx:id="informationSystemNumber" />
-                        <TextArea fx:id="ProblemDescription" prefHeight="71.0" prefWidth="219.0" text="&#10;" />
-                        <TextArea fx:id="requestDescription" focusTraversable="false" layoutX="10.0" layoutY="41.0" prefHeight="71.0" prefWidth="219.0" />
-                        <TextArea fx:id="explanation" layoutX="10.0" layoutY="184.0" prefHeight="71.0" prefWidth="219.0" text="&#10;" />
-                        <TextArea fx:id="notes" layoutX="10.0" layoutY="184.0" prefHeight="71.0" prefWidth="219.0" text="&#10;" />
-                        <ListView fx:id="filesList" prefHeight="77.0" prefWidth="393.0" />
-                     </children>
-                  </VBox>
-                  <Button fx:id="uploadFilesBtn" layoutX="886.0" layoutY="508.0" mnemonicParsing="false" onAction="#uploadFiles" text="Upload Files" />
-                  <Button fx:id="deleteAllBtn" layoutX="484.0" layoutY="580.0" mnemonicParsing="false" onAction="#deleteAll" text="Delete All" />
+                  <Button fx:id="uploadFilesBtn" layoutX="711.0" layoutY="391.0" mnemonicParsing="false" onAction="#uploadFiles" text="Upload Files" />
+                  <Button fx:id="deleteAllBtn" layoutX="314.0" layoutY="487.0" mnemonicParsing="false" onAction="#deleteAll" text="Delete All" />
                   <Button fx:id="backBtn" layoutX="22.0" layoutY="22.0" mnemonicParsing="false" onAction="#backClick" text="Back" />
-                  <Label fx:id="textstyle" layoutX="552.0" layoutY="115.0" text="New Request Form">
+                  <Label fx:id="textstyle" layoutX="394.0" layoutY="20.0" text="New Request Form">
                      <font>
                         <Font name="System Bold" size="25.0" />
                      </font>
                   </Label>
-                  <Button fx:id="sendRequestBtn" layoutX="775.0" layoutY="580.0" mnemonicParsing="false" onAction="#sendRequest" text="Send Request" />
-                  <Button layoutX="1161.0" layoutY="2.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="98.0" text="Log out" />
+                  <Button fx:id="sendRequestBtn" layoutX="587.0" layoutY="487.0" mnemonicParsing="false" onAction="#sendRequest" text="Send Request" />
+                  <Button layoutX="973.0" layoutY="-42.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="98.0" text="Log out" />
+                  <TextField fx:id="informationSystemNumber" layoutX="828.0" layoutY="143.0" prefHeight="31.0" prefWidth="177.0" />
+                  <Label fx:id="textstyle" layoutX="128.0" layoutY="75.0" text="*Information System:">
+                     <font>
+                        <Font size="17.0" />
+                     </font>
+                  </Label>
+                  <Label fx:id="textstyle" layoutX="128.0" layoutY="107.0" text="*Problem Description:">
+                     <font>
+                        <Font size="17.0" />
+                     </font>
+                  </Label>
+                  <TextArea fx:id="ProblemDescription" layoutX="314.0" layoutY="107.0" prefHeight="71.0" prefWidth="382.0" text="&#10;" />
+                  <TextArea fx:id="requestDescription" focusTraversable="false" layoutX="314.0" layoutY="178.0" prefHeight="71.0" prefWidth="382.0" />
+                  <TextArea fx:id="explanation" layoutX="314.0" layoutY="249.0" prefHeight="71.0" prefWidth="382.0" text="&#10;" />
+                  <TextArea fx:id="notes" layoutX="314.0" layoutY="320.0" prefHeight="71.0" prefWidth="382.0" text="&#10;" />
+                  <ListView fx:id="filesList" layoutX="314.0" layoutY="391.0" prefHeight="77.0" prefWidth="382.0" />
+                  <Label fx:id="textstyle" layoutX="128.0" layoutY="249.0" text="*Explanation:">
+                     <font>
+                        <Font size="16.0" />
+                     </font>
+                  </Label>
+                  <Label fx:id="textstyle" layoutX="128.0" layoutY="320.0" text="Notes:">
+                     <font>
+                        <Font size="16.0" />
+                     </font>
+                  </Label>
+                  <Label fx:id="textstyle" layoutX="128.0" layoutY="394.0" text="Documents:">
+                     <font>
+                        <Font size="16.0" />
+                     </font>
+                  </Label>
+                  <Label fx:id="textstyle" layoutX="128.0" layoutY="178.0" text="*Request Description:">
+                     <font>
+                        <Font size="16.0" />
+                     </font>
+                  </Label>
+                  <Label layoutX="66.0" layoutY="468.0" text="* Must fill properly" textFill="WHITE" />
+                  <ComboBox fx:id="systemsCombobox" layoutX="314.0" layoutY="72.0" prefHeight="31.0" prefWidth="382.0" />
                </children>
             </AnchorPane>
         </items>

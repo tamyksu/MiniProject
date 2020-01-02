@@ -4,6 +4,7 @@ import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.net.URL;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -12,15 +13,17 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-
-
+import java.util.ResourceBundle;
 
 import client.Client;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
@@ -28,7 +31,7 @@ import javafx.stage.FileChooser;
 import translator.OptionsOfAction;
 import translator.Translator;
 
-public class NewRequestContoroller {
+public class NewRequestContoroller implements Initializable {
 
 	private static NewRequestContoroller instance;
 	
@@ -58,6 +61,7 @@ public class NewRequestContoroller {
     
     @FXML
     private ListView filesList;
+    
     private List listOfFilesNames;
     @FXML
     private Button deleteAllBtn;
@@ -65,6 +69,9 @@ public class NewRequestContoroller {
     @FXML
     private Button backBtn;
     
+    @FXML
+    private ComboBox<String> systemsCombobox;
+    private ArrayList<InformationSystem> listForComboBox;
     
     /**
      * Delete all the fields in the form
@@ -75,7 +82,7 @@ public class NewRequestContoroller {
     	deleteAll();
     }
     
-    void deleteAll() {
+    public void deleteAll() {
     	informationSystemNumber.clear();
 		ProblemDescription.clear();
 		requestDescription.clear();
@@ -83,6 +90,8 @@ public class NewRequestContoroller {
 		notes.clear();
 		filesList.getItems().clear();
     }
+    
+    private boolean answerFromServer;
     
     /**
      * Upload files from the user's computer
@@ -123,9 +132,12 @@ public class NewRequestContoroller {
     @FXML
     void sendRequest(ActionEvent event) {
 		if(formCheck()) {
-			instance = this;
-    		int sysNum = Integer.parseInt(informationSystemNumber.getText().toString());
-    		String probDesc = ProblemDescription.getText().toString();
+			//instance=this;
+    		//int sysNum = Integer.parseInt(informationSystemNumber.getText().toString());
+			
+			String sysName = systemsCombobox.getSelectionModel().getSelectedItem().toString();
+			int sysNum = getInfoSysNumber(sysName);
+			String probDesc = ProblemDescription.getText().toString();
     		String reqDesc = requestDescription.getText().toString();
     		String expla = explanation.getText().toString();
     		String notes1 = notes.getText().toString();
@@ -170,6 +182,17 @@ public class NewRequestContoroller {
     		
     		Translator translator = new Translator(OptionsOfAction.NEWREQUEST, params);
     		Client.getInstance().handleMessageFromClientGUI(translator);
+    		
+    		try { Thread.sleep(1000); } catch (InterruptedException e) {System.out.println("Can't Sleep");}
+    		
+    		if(answerFromServer==true) {
+    			showSeccessAlert();
+    		}
+    		else {
+    			showFailureAlert();
+    		}
+    		
+    		
     	}
     }
     
@@ -178,13 +201,11 @@ public class NewRequestContoroller {
      * @return  true/false
      */
     public boolean formCheck() {
-
     	// if any of the TextAreas/Textfields is empty:
-    	if(informationSystemNumber.getText().trim().isEmpty() || ProblemDescription.getText().trim().isEmpty()
+    	if(/*informationSystemNumber.getText().trim().isEmpty() || */ProblemDescription.getText().trim().isEmpty()
     			|| requestDescription.getText().trim().isEmpty() ||
-    			explanation.getText().trim().isEmpty() ||
-    			notes.getText().trim().isEmpty()) {
-    		//frame=new JFrame();  
+    			explanation.getText().trim().isEmpty() /*||
+    			notes.getText().trim().isEmpty()*/) {
 
     		new Alert(AlertType.ERROR, "You must fill all the details!").show();
     		
@@ -192,21 +213,21 @@ public class NewRequestContoroller {
     	}
 
     	//if Information System Number is not a valid number
-    	if(!isNumeric(informationSystemNumber.getText().toString())) {
+    	/*if(!isNumeric(informationSystemNumber.getText().toString())) {
     		 
 
     		new Alert(AlertType.ERROR, "Information System must be a valid number!").show();
     		return false;
-    	}
+    	}*/
 
     	return true;
     }
     
     public void showSeccessAlert() {
-    	//System.out.println("Good Alert 1");
-    	new Alert(AlertType.CONFIRMATION, "Your request was recieved.").show();
-    	//System.out.println("Good Alert 2");
     	deleteAll();
+    	Alert alert =new Alert(AlertType.INFORMATION, "Your request was received.");
+    	alert.setTitle("Request Received!");
+    	alert.show();
     }
     
     public void showFailureAlert() {
@@ -230,9 +251,54 @@ public class NewRequestContoroller {
         return true;
     }
     
+    
     public static NewRequestContoroller getInstance() {
     	return instance;
+    	
     }
+    
+    public void setAnswerFromServer(boolean answer) {
+    	this.answerFromServer = answer;
+    }
+    
+	@Override
+	public void initialize(URL location, ResourceBundle resources) {
+		instance=this;
+		this.answerFromServer = false;
+		initializeComboBox();
+		
+	}
+	public void initializeComboBox() {
+		
+		listForComboBox = new ArrayList<InformationSystem>();
+		listForComboBox.add(new InformationSystem(1, "Information Website"));
+		listForComboBox.add(new InformationSystem(2, "Moodle"));
+		listForComboBox.add(new InformationSystem(3, "Library Website"));
+		listForComboBox.add(new InformationSystem(4, "Class Computers"));
+		listForComboBox.add(new InformationSystem(5, "Laboratory Computers"));
+		listForComboBox.add(new InformationSystem(6, "Computer Farm"));
+		listForComboBox.add(new InformationSystem(7, "College Website"));
+		
+		for(InformationSystem i:listForComboBox) {
+			systemsCombobox.getItems().add(i.getInfomationSystemName());
+		}
+		
+	}
+	
+	public int getInfoSysNumber(String infoSysName) {
+		for(InformationSystem i:listForComboBox) {
+			if(infoSysName.equals(i.getInfomationSystemName())) {
+				return i.getInfomationSystemNumber();
+			}
+		}
+		return 0;
+	}
+	
+	public void printList() {
+		for(InformationSystem i:listForComboBox) {
+			System.out.println(i.toString());
+		}
+	}
     
     
 }
