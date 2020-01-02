@@ -62,7 +62,7 @@ public class StaffMainController implements Initializable{
 	// Event Listener on Button[#back_btn].onAction
 	@FXML
 	public void back_click(ActionEvent event) {
-   // 	ScreenController.getScreenController().activate(ScreenController.getScreenController().getLastScreen());
+    	ScreenController.getScreenController().activate(ScreenController.getScreenController().getLastScreen());
 	}
 	// Event Listener on Button[#AppointCangesControlBoard].onAction
 	@FXML

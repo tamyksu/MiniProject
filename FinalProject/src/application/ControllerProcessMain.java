@@ -112,6 +112,7 @@ public class ControllerProcessMain implements Initializable {
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		instance = this;
+		initializeButtons();
 	}
 
 	public static ControllerProcessMain getInstance() {
@@ -204,6 +205,8 @@ public class ControllerProcessMain implements Initializable {
 			break;
 			
 		default:
+			//disable all
+			initializeButtons();
 			break;
 		}
 		
@@ -216,9 +219,7 @@ public class ControllerProcessMain implements Initializable {
 		decision_btn.setDisable(false);
 		execution_btn.setDisable(true);
 		examination_btn.setDisable(false);
-		shutdown_btn.setDisable(true);
-		freeze_btn.setDisable(true);
-		defrost_btn.setDisable(false);		
+		shutdown_btn.setDisable(true);	
 	}
 
 	//change button disability in accordance to appraiser
@@ -229,9 +230,7 @@ public class ControllerProcessMain implements Initializable {
 		decision_btn.setDisable(false);
 		execution_btn.setDisable(true);
 		examination_btn.setDisable(false);
-		shutdown_btn.setDisable(true);
-		freeze_btn.setDisable(true);
-		defrost_btn.setDisable(false);			
+		shutdown_btn.setDisable(true);		
 	}
 
 	//change button disability in accordance to supervisor
@@ -243,8 +242,6 @@ public class ControllerProcessMain implements Initializable {
 		execution_btn.setDisable(true);
 		examination_btn.setDisable(false);
 		shutdown_btn.setDisable(true);
-		freeze_btn.setDisable(true);
-		defrost_btn.setDisable(false);	
 	}
 
 	private void fitManager() {
@@ -254,9 +251,7 @@ public class ControllerProcessMain implements Initializable {
 		decision_btn.setDisable(true);
 		execution_btn.setDisable(true);
 		examination_btn.setDisable(true);
-		shutdown_btn.setDisable(true);
-		freeze_btn.setDisable(true);
-		defrost_btn.setDisable(true);		
+		shutdown_btn.setDisable(true);	
 	}
 
 	//Suitable for the initiator of the process the buttons allowed
@@ -269,9 +264,18 @@ public class ControllerProcessMain implements Initializable {
 		execution_btn.setDisable(true);
 		examination_btn.setDisable(true);
 		shutdown_btn.setDisable(true);
-		freeze_btn.setDisable(true);
-		defrost_btn.setDisable(true);
 		
+	}
+	
+	//disable all buttons on startup (before choosing a process from the table)
+	private void initializeButtons() {
+		newRequestBtn.setDisable(true);
+		extension_btn.setDisable(true);
+		evaluation_btn.setDisable(true);
+		decision_btn.setDisable(true);
+		execution_btn.setDisable(true);
+		examination_btn.setDisable(true);
+		shutdown_btn.setDisable(true);
 	}
 	
 	
