@@ -227,6 +227,88 @@ public class DBConnector {
 				e.printStackTrace();
 			}	
 			break;
+			
+		case GET_APPRAISER_AND_PERFORMANCE_LEADER_CB_DATA:
+			System.out.println("made it1");
+			try {
+
+				stmt = conn.prepareStatement("SELECT id, first_name, last_name\r\n" + 
+						"FROM icmdb.workers\r\n" + 
+						"LEFT JOIN icmdb.users_requests\r\n" + 
+						"ON users_requests.user_id = workers.id\r\n" + 
+						"WHERE (id NOT IN (SELECT user_id\r\n" + 
+						"							FROM icmdb.users_requests\r\n" + 
+						"							WHERE process_id = ?) "
+						+ "							OR id NOT IN (SELECT users_requests.user_id FROM icmdb.users_requests)) "
+						+ "AND id NOT IN (SELECT user_id FROM icmdb.permanent_roles)");
+				
+				
+				stmt.setInt(1, (int)translator.getParmas().get(0));
+				ResultSet rs = stmt.executeQuery();		
+				System.out.println("made it2");
+
+				if(rs.first() == false) {
+					System.out.println("No appraisers or performance leaders to appoint");
+					ar.add("No Appraisers To Appoint");
+					ArrayList<ArrayList<?>> empty = new ArrayList<ArrayList<?>>();
+					empty.add(ar);
+
+					Translator newTranslator = new Translator(translator.getRequest(), empty);
+
+					return newTranslator;
+				}
+				rs.previous();
+				System.out.println("Yes appraisers or performance leaders");
+
+				ArrayList<String> workersWithoutRole = new ArrayList<String>();
+				while(rs.next()) {	
+					workersWithoutRole.add(rs.getString(1));
+					workersWithoutRole.add(rs.getString(2));
+					workersWithoutRole.add(rs.getString(3));
+				}
+				System.out.println("workersWithoutRole:");
+				System.out.println(workersWithoutRole);
+				Translator newTranslator = new Translator(translator.getRequest(), workersWithoutRole);
+				return newTranslator;
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				System.out.println("Catch");
+				e.printStackTrace();
+			}
+			break;
+		case APPOINT_APPRAISER_OR_PERFORMANCE_LEADER:
+
+				try {
+					stmt = conn.prepareStatement("INSERT INTO users_requests(user_id, process_id, role)" +
+				"VALUES (?, ?, ?)");
+					stmt.setString(1, translator.getParmas().get(0).toString());
+					stmt.setInt(2, (int)translator.getParmas().get(1));
+					stmt.setString(3, translator.getParmas().get(2).toString());
+					
+					stmt.executeUpdate();
+					
+					System.out.println("APPOINT_APPRAISER_OR_PERFORMANCE_LEADER Insert is working");
+				}
+				catch (SQLException e) {
+					// TODO Auto-generated catch block
+					System.out.println("SQL EXCEPTION on APPOINT_APPRAISER_OR_PERFORMANCE_LEADER");
+				}
+			break;
+		case SET_EVALUATION_OR_EXECUTION_DUE_TIME:
+			try {
+				stmt = conn.prepareStatement("UPDATE icmdb.processes SET current_stage_due_date = ? "
+						+ "WHERE request_id = ?");
+				
+				stmt.setString(1, translator.getParmas().get(1).toString());
+				stmt.setInt(2, (int)translator.getParmas().get(0));
+				
+				stmt.executeUpdate();
+			}
+			catch(SQLException e) {
+				 //TODO Auto-generated catch block
+				System.out.println("Catch SET_EVALUATION_OR_EXECUTION_DUE_TIME");
+			}
+			break;
 		default:
 			System.out.println("default");
 			break;

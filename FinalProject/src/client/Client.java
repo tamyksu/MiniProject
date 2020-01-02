@@ -8,6 +8,7 @@ import application.ControllerProcessMain;
 import application.LoginController;
 import application.Processes;
 import application.ScreenController;
+import application.Supervisor_ProcessMain_Controller;
 import application.UserProcess;
 import javafx.scene.control.Alert.AlertType;
 
@@ -45,6 +46,9 @@ public class Client extends AbstractClient {
 			break;
 		case NEWREQUEST:
 		
+			break;
+		case GET_APPRAISER_AND_PERFORMANCE_LEADER_CB_DATA:
+			handlerMessageFromServerAppointAppraiser(result.getParmas());
 			break;
 		default:
 			break;
@@ -162,4 +166,13 @@ public class Client extends AbstractClient {
 	}
 
 	
+	public void handlerMessageFromServerAppointAppraiser(Object rs) {
+		ArrayList <String> result = (ArrayList<String>) rs;
+		
+		System.out.println("YESSS");
+		System.out.println(result);
+		
+		Supervisor_ProcessMain_Controller.instance.setAppraiserOrPerformanceLeaderDataInCB(result);
+
+	}
 }
