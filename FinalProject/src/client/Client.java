@@ -19,6 +19,7 @@ import javafx.scene.control.Alert.AlertType;
 public class Client extends AbstractClient {
 	private String userID;
 	private Processes processes = new Processes();
+	private String role="";
 	public static Client instance;
 	
 	public Client(String host, int port) throws IOException {
@@ -50,6 +51,9 @@ public class Client extends AbstractClient {
 			break;
 		case NEWREQUEST:
 			handlerMessageFromServerNewRequest(result.getParmas());
+			break;
+		case GETALLPROCESSES:
+			handlerMessageFromServerGetAllProcesses(result.getParmas());
 			break;
 		case SELECTCHAIRMAN:
 			handlerMessageFromServerSelectChairMan(result.getParmas());
@@ -104,6 +108,7 @@ public class Client extends AbstractClient {
 	public void setProcesses(Processes processes) {
 		this.processes = processes;
 	}
+
 	//get the processes related this client
 	public void getProcessesFromServer() {
 		ArrayList<String> ar = new ArrayList<String>();
@@ -143,6 +148,17 @@ public class Client extends AbstractClient {
 			ScreenController.getScreenController().activate("processesMain");
 			getProcessesFromServer();
 			break;
+		case "Supervisor":
+			Client.getInstance().setName(result.get(1));
+			this.setRule(result.get(0));
+			ScreenController.getScreenController().activate("processesMain");
+			getAllProcessesFromServer();
+			break;
+		case "Manager":
+//			Client.getInstance().setName(result.get(1));
+//			ScreenController.getScreenController().activate("Supervisor_ProcessesMain");
+//			getProcessesFromServer();
+			break;
 		case "Login failed, username and password did not match":
 			LoginController.getInstance().getMessageField()
 					.setText("Login failed, username and password did not match");
@@ -150,6 +166,17 @@ public class Client extends AbstractClient {
 		default:
 			break;
 		}
+	}
+
+	public void getAllProcessesFromServer() {
+		ArrayList<String> ar = new ArrayList<String>();
+		ar.add(userID);
+		Translator translator = new Translator(OptionsOfAction.GETALLPROCESSES, ar);
+		handleMessageFromClientGUI(translator);		
+	}
+	
+	private void setRule(String role) {
+		this.setRole(role);		
 	}
 
 	//In case we got processes to display from this database, this function will make sure to save them to the client
@@ -187,6 +214,54 @@ public class Client extends AbstractClient {
 		}
 		//send processes information to specific controller
 		ControllerProcessMain.getInstance().SetInTable(processes);
+	}
+	
+	//function related to supervisor. get all the process exist 
+	@SuppressWarnings("unchecked")
+	private void handlerMessageFromServerGetAllProcesses(ArrayList<?> rs) {
+		Processes processes = new Processes();
+    	ArrayList<ArrayList<?>> result = new ArrayList<ArrayList<?>>();	
+		result = (ArrayList<ArrayList<?>>) rs ;
+		if(!(result.get(0).get(0).toString().equals("No processes")))
+		{
+			for (int i = 0; i < result.size(); i=i+2) {                                                                         
+				UserProcess process = new UserProcess();
+				//Get values from intarray	
+				process.setRequest_id((int)result.get(i).get(0));
+				process.setSystem_num((int)result.get(i).get(1));
+				//Get values from string array
+				process.setRole("Supervisor");
+				process.setIntiatorId((String)result.get(i+1).get(0));
+				process.setProblem_description((String)result.get(i+1).get(1));
+				process.setRequest_description((String)result.get(i+1).get(2));
+				process.setExplanaton((String)result.get(i+1).get(3));
+				process.setNotes((String)result.get(i+1).get(4));
+				process.setStatus((String)result.get(i+1).get(5));
+				process.setCreation_date((String)result.get(i+1).get(6));
+				process.setHandler_id((String)result.get(i+1).get(7));
+				process.setProcess_stage((String)result.get(i+1).get(8));
+				process.setCurrent_stage_due_date((String)result.get(i+1).get(9));
+				
+				
+				process.setInitiatorFirstName((String)result.get(i+1).get(10));
+				process.setInitiatorLastName((String)result.get(i+1).get(11));
+				process.setEmail((String)result.get(i+1).get(12));
+				process.setDepartment((String)result.get(i+1).get(13));
+				processes.getMyProcess().put(new Integer((int)result.get(i).get(0)), process);
+				processes.getMyProcessesInArrayList().add(process);	
+			}
+		this.processes=processes;
+		}
+		//send processes information to specific controller
+		ControllerProcessMain.getInstance().SetInTable(processes);		
+	}
+	
+	public String getRole() {
+		return role;
+	}
+
+	public void setRole(String role) {
+		this.role = role;
 	}
 
 	
