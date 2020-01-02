@@ -52,7 +52,7 @@ public class DBConnector {
 		
 		switch (translator.getRequest()) {
 		case NEWREQUEST:
-			
+		
 			ArrayList<Boolean> failed = new ArrayList<Boolean>();
 			ArrayList<Boolean> success = new ArrayList<Boolean>();
 			Translator answer;
@@ -231,11 +231,13 @@ public class DBConnector {
 				stmt.setString(1, ar.get(0));
 				ResultSet rs1 = stmt.executeQuery();
 				if(rs1.first() != false) {
+					rs1.previous();
+					rs1.next();
 					ArrayList<String> ans = new ArrayList<String>();
-					if(rs1.getString(1) == "Supervisor") {
+					if(rs1.getString(1).equals("Supervisor") ) {
 						ans.add("Supervisor");
 					}
-					else if(rs1.getString(1) == "Manager") {
+					else if(rs1.getString(1).equals( "Manager") ){
 						ans.add("Manager");
 					}
 					ans.add(ar.get(0));
@@ -312,6 +314,58 @@ public class DBConnector {
 				e.printStackTrace();
 			}	
 			break;
+			
+		case GETALLPROCESSES:
+			try {
+				stmt = conn.prepareStatement("SELECT * FROM processes;");
+				ResultSet rs = stmt.executeQuery();		
+				if(rs.first() == false) {
+					ar.add("No processes");
+					ArrayList<ArrayList<?>> empty = new ArrayList<ArrayList<?>>();
+					empty.add(ar);
+					Translator newTranslator = new Translator(translator.getRequest(), empty);
+					return newTranslator;
+				}
+				rs.previous();
+				ArrayList<ArrayList<?>> processes = new ArrayList<ArrayList<?>>();
+				while(rs.next()) {	
+					ArrayList<Integer> intArray= new ArrayList<Integer>();
+					ArrayList<String> stringArray= new ArrayList<String>();
+					intArray.add(rs.getInt(1));
+					stringArray.add(rs.getString(2));
+					intArray.add(rs.getInt(3));
+					stringArray.add(rs.getString(4));
+					stringArray.add(rs.getString(5));
+					stringArray.add(rs.getString(6));
+					stringArray.add(rs.getString(7));
+					stringArray.add(rs.getString(8));
+					stringArray.add(rs.getString(9));
+					stringArray.add(rs.getString(10));
+					stringArray.add(rs.getString(11));
+					stringArray.add(rs.getString(12));
+					ResultSet initiatorInfo = getInitiatorInfo(rs.getString(2));
+					if (initiatorInfo != null) {
+						while(initiatorInfo.next()) {
+							stringArray.add(initiatorInfo.getString(3));
+							stringArray.add(initiatorInfo.getString(4));
+							stringArray.add(initiatorInfo.getString(5));
+							stringArray.add(initiatorInfo.getString(6));
+						}
+					}
+					else {
+						return null;
+					}
+					processes.add(intArray);
+					processes.add(stringArray);
+				}
+				Translator newTranslator = new Translator(translator.getRequest(), processes);
+				return newTranslator;
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}	
+			break;
+
 		default:
 			System.out.println("default");
 			break;
@@ -330,11 +384,9 @@ public class DBConnector {
 			ResultSet rs1 = stmt.executeQuery();
 			if(rs1.first() == false) {
 				PreparedStatement stmt1;
-				stmt1 = conn.prepareStatement(""
-						+ "SELECT * FROM workers\r\n" + 
-						"WHERE students.id=?");
+				stmt1 = conn.prepareStatement("SELECT * FROM icmdb.workers where id=?");
 				stmt1.setString(1, initiatorId);
-				ResultSet rs2 = stmt.executeQuery();
+				ResultSet rs2 = stmt1.executeQuery();
 				if(rs2.first() == false) return null;
 				rs2.previous();
 				return rs2;
