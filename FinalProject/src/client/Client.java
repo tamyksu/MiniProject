@@ -5,7 +5,6 @@ import translator.Translator;
 import java.io.*;
 import java.util.ArrayList;
 import application.ControllerProcessMain;
-import application.InformationSystem;
 import application.LoginController;
 import application.NewRequestContoroller;
 import application.Processes;
@@ -13,7 +12,6 @@ import application.ScreenController;
 import application.StaffMainController;
 import application.Supervisor_ProcessMain_Controller;
 import application.UserProcess;
-import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 
 public class Client extends AbstractClient {
