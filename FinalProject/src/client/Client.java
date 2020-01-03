@@ -4,22 +4,20 @@ import translator.OptionsOfAction;
 import translator.Translator;
 import java.io.*;
 import java.util.ArrayList;
-
-import com.mysql.cj.xdevapi.Result;
-
 import application.ControllerProcessMain;
 import application.LoginController;
 import application.NewRequestContoroller;
 import application.Processes;
 import application.ScreenController;
 import application.StaffMainController;
+import application.Supervisor_ProcessMain_Controller;
 import application.UserProcess;
 import javafx.scene.control.Alert.AlertType;
 
 public class Client extends AbstractClient {
 	private String userID;
 	private Processes processes = new Processes();
-	private String role="";
+	private String role = "";
 	public static Client instance;
 	
 	public Client(String host, int port) throws IOException {
@@ -52,14 +50,11 @@ public class Client extends AbstractClient {
 		case NEWREQUEST:
 			handlerMessageFromServerNewRequest(result.getParmas());
 			break;
-		case GETALLPROCESSES:
-			handlerMessageFromServerGetAllProcesses(result.getParmas());
+		case GET_APPRAISER_AND_PERFORMANCE_LEADER_CB_DATA:
+			handlerMessageFromServerAppointAppraiser(result.getParmas());
 			break;
-		case SELECTCHAIRMAN:
-			handlerMessageFromServerSelectChairMan(result.getParmas());
-			break;
-		case UPDATEPERMANENT:
-			handlerMessageFromServerUpdatePermanent(result.getParmas());
+		case GETALLINFORMATIONSYSTEMS:
+			//fillListForComboBox(result.getParmas());
 		default:
 			break;
 		}
@@ -77,13 +72,13 @@ public class Client extends AbstractClient {
 	private void setName(String userID) {
 		this.userID = userID;
 	}
-	
+
 	
 	public void handleMessageFromClientGUI(Object message) {
 		try {
 			sendToServer(message);
 		} catch (IOException e) {
-			System.out.println("Could not perform action to server");
+			System.out.println("Could not send massage to server");
 			quit();
 		}
 	}
@@ -108,7 +103,6 @@ public class Client extends AbstractClient {
 	public void setProcesses(Processes processes) {
 		this.processes = processes;
 	}
-
 	//get the processes related this client
 	public void getProcessesFromServer() {
 		ArrayList<String> ar = new ArrayList<String>();
@@ -116,6 +110,10 @@ public class Client extends AbstractClient {
 		Translator translator = new Translator(OptionsOfAction.GETRELATEDREQUESTS, ar);
 		handleMessageFromClientGUI(translator);
 	}
+
+
+	// Handle in case a New Request was received in the database
+
 /******************************************************************************************************/
 	public void handlerMessageFromServerUpdatePermanent(Object message){
 		
@@ -125,16 +123,16 @@ public class Client extends AbstractClient {
 	}
 	
 	
+
 	public void handlerMessageFromServerNewRequest(Object rs) {
+		@SuppressWarnings("unchecked")
 		ArrayList<Boolean> result = (ArrayList<Boolean>) rs;
 		
 		if(result.get(0).booleanValue()==true) {
-			
-			NewRequestContoroller.getInstance().showSeccessAlert();
+			NewRequestContoroller.getInstance().setAnswerFromServer(true);
 		}
 		else {
-			
-			NewRequestContoroller.getInstance().showFailureAlert();
+			NewRequestContoroller.getInstance().setAnswerFromServer(false);
 		}
 	}
 	
@@ -265,4 +263,13 @@ public class Client extends AbstractClient {
 	}
 
 	
+	public void handlerMessageFromServerAppointAppraiser(Object rs) {
+		ArrayList <String> result = (ArrayList<String>) rs;
+		
+		System.out.println("YESSS");
+		System.out.println(result);
+		
+		Supervisor_ProcessMain_Controller.instance.setAppraiserOrPerformanceLeaderDataInCB(result);
+
+	}
 }

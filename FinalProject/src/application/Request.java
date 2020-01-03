@@ -13,7 +13,6 @@ public class Request implements Serializable {
 	private String requestDescription;
 	private String explanation;
 	private String notes;
-	private Date currentDate;
 	
 	
 	/* ********************   Constructor   ******************** */
@@ -79,17 +78,6 @@ public class Request implements Serializable {
 		this.notes = notes;
 	}
 
-
-	public Date getCurrentDate() {
-		return currentDate;
-	}
-
-
-	public void setCurrentDate(Date currentDate) {
-		this.currentDate = currentDate;
-	}
-	
-
 	public String getUserID() {
 		return userID;
 	}
@@ -105,7 +93,7 @@ public class Request implements Serializable {
 	public String toString() {
 		return "Request [informationSystemNumber=" + informationSystemNumber + ", ProblemDescription="
 				+ ProblemDescription + ", requestDescription=" + requestDescription + ", explanation=" + explanation
-				+ ", notes=" + notes + ", currentDate=" + currentDate + "]";
+				+ ", notes=" + notes + "]";
 	}
 	
 	
