@@ -99,6 +99,13 @@ public class ControllerProcessMain implements Initializable {
 
 	@FXML
 	private Button newRequestBtn;
+	
+	@FXML
+	private Button supervisor_mode_btn;
+	
+	@FXML
+	private Button director_btn;
+	
 
 	public static void setInstance(ControllerProcessMain instance) {
 		ControllerProcessMain.instance = instance;
@@ -220,7 +227,10 @@ public class ControllerProcessMain implements Initializable {
 		decision_btn.setDisable(false);
 		execution_btn.setDisable(true);
 		examination_btn.setDisable(false);
-		shutdown_btn.setDisable(true);	
+		shutdown_btn.setDisable(true);
+		supervisor_mode_btn.setDisable(true);
+		director_btn.setDisable(true);
+		defrost_btn.setDisable(true);
 	}
 
 	//change button disability in accordance to appraiser
@@ -231,7 +241,10 @@ public class ControllerProcessMain implements Initializable {
 		decision_btn.setDisable(false);
 		execution_btn.setDisable(true);
 		examination_btn.setDisable(false);
-		shutdown_btn.setDisable(true);		
+		shutdown_btn.setDisable(true);
+		supervisor_mode_btn.setDisable(true);
+		director_btn.setDisable(true);
+		defrost_btn.setDisable(true);
 	}
 
 	//change button disability in accordance to supervisor
@@ -243,6 +256,9 @@ public class ControllerProcessMain implements Initializable {
 		execution_btn.setDisable(true);
 		examination_btn.setDisable(false);
 		shutdown_btn.setDisable(true);
+		supervisor_mode_btn.setDisable(false);
+		director_btn.setDisable(true);
+		defrost_btn.setDisable(true);
 	}
 
 	private void fitManager() {
@@ -252,7 +268,10 @@ public class ControllerProcessMain implements Initializable {
 		decision_btn.setDisable(true);
 		execution_btn.setDisable(true);
 		examination_btn.setDisable(true);
-		shutdown_btn.setDisable(true);	
+		shutdown_btn.setDisable(true);
+		supervisor_mode_btn.setDisable(true);
+		director_btn.setDisable(false);
+		defrost_btn.setDisable(false);
 	}
 
 	//Suitable for the initiator of the process the buttons allowed
@@ -265,7 +284,9 @@ public class ControllerProcessMain implements Initializable {
 		execution_btn.setDisable(true);
 		examination_btn.setDisable(true);
 		shutdown_btn.setDisable(true);
-		
+		supervisor_mode_btn.setDisable(true);
+		director_btn.setDisable(true);
+		defrost_btn.setDisable(true);
 	}
 	
 	//disable all buttons on startup (before choosing a process from the table)
@@ -277,6 +298,9 @@ public class ControllerProcessMain implements Initializable {
 		execution_btn.setDisable(true);
 		examination_btn.setDisable(true);
 		shutdown_btn.setDisable(true);
+		supervisor_mode_btn.setDisable(true);
+		director_btn.setDisable(true);
+		defrost_btn.setDisable(true);
 	}
 	
 	
@@ -341,15 +365,17 @@ public class ControllerProcessMain implements Initializable {
 		default:
 			Client.getInstance().getProcessesFromServer();
 			break;
-		}
-			
-			
+		}		
 			
 	}
 	
 	public int getSelectedRowNumber()
 	{
-		return tableView.getSelectionModel().getSelectedItem().getRequestId();
+		//check if a row is selected in the processes table
+		if(tableView.getSelectionModel().getSelectedItem() == null)
+			return -1;
+		else
+			return tableView.getSelectionModel().getSelectedItem().getRequestId();
 	}
 
 }

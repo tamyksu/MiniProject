@@ -71,10 +71,30 @@ public class Supervisor_ProcessMain_Controller implements Initializable{
 		instance = this;
 	}
     
+    @FXML
+    void freeze_process_btn_click(ActionEvent event) {
+    	ArrayList <Object> arr = new ArrayList<Object>();
+    	
+    	arr.add(2);//process/request id
+    	arr.add(due_time_text.getText());
+    	
+    	Translator translator = new Translator(OptionsOfAction.FREEZE_PROCESS, arr);
+    	client.handleMessageFromClientGUI(translator);
+    }
+
+    @FXML
+    void shut_down_process_btn_click(ActionEvent event) {
+
+    }
+    
     public void getAppraiserOrPerformanceLeaderCBData()
     {
     	int processID = ControllerProcessMain.instance.getSelectedRowNumber();//needs rows in the processes table
-
+    	
+    	//if no process was selected
+    	if(processID == -1)
+    		return;
+    	
     	if(appraiser1_performance2_flag == 3)
     	{
     		appoint_appraiser_comboBox.setDisable(true);
@@ -142,7 +162,7 @@ public class Supervisor_ProcessMain_Controller implements Initializable{
 
     }
     
-    public void appointAppraiserOrPerformanceLeader(ActionEvent e)
+    public void appointAppraiserOrPerformanceLeader_click(ActionEvent e)
     {
     	int processID = ControllerProcessMain.instance.getSelectedRowNumber();
     	String chosenID;
@@ -194,7 +214,7 @@ public class Supervisor_ProcessMain_Controller implements Initializable{
     
     }
     
-    public void ApproveDueTimeRequest(ActionEvent e)
+    public void ApproveDueTimeRequest_click(ActionEvent e)
     {
     	//int processID = ControllerProcessMain.instance.getSelectedRowNumber();
 
@@ -207,7 +227,7 @@ public class Supervisor_ProcessMain_Controller implements Initializable{
     	client.handleMessageFromClientGUI(translator);
     }
     
-    public void DeclineDueTimeRequest(ActionEvent e)
+    public void DeclineDueTimeRequest_click(ActionEvent e)
     {
     	Alert alert = new Alert(AlertType.INFORMATION);
     	

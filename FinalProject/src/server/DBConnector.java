@@ -42,9 +42,12 @@ public class DBConnector {
 	}
 
 	public static Object accessToDB(Object data) {
+		
 		Translator translator = (Translator) data;
+		//Declare a PreparedStatement to be used in the following switch cases:
 		PreparedStatement stmt;
 		ArrayList<String> ar = new ArrayList<String>() ;
+		
 		switch (translator.getRequest()) {
 		case NEWREQUEST:
 
@@ -239,6 +242,18 @@ public class DBConnector {
 				e.printStackTrace();
 			}	
 			break;
+		case FREEZE_PROCESS:
+			try {
+				stmt = conn.prepareStatement(""
+						+ "UPDATE processes SET status1='Suspended' WHERE request_id=?");
+				stmt.setString(1, (String) translator.getParmas().get(0));
+
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			break;
+			
 		default:
 			System.out.println("default");
 			break;
