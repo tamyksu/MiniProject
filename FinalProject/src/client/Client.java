@@ -50,11 +50,14 @@ public class Client extends AbstractClient {
 		case NEWREQUEST:
 			handlerMessageFromServerNewRequest(result.getParmas());
 			break;
-		case GET_APPRAISER_AND_PERFORMANCE_LEADER_CB_DATA:
-			handlerMessageFromServerAppointAppraiser(result.getParmas());
+		case GETALLPROCESSES:
+			handlerMessageFromServerGetAllProcesses(result.getParmas());
 			break;
-		case GETALLINFORMATIONSYSTEMS:
-			//fillListForComboBox(result.getParmas());
+		case SELECTCHAIRMAN:
+			handlerMessageFromServerSelectChairMan(result.getParmas());
+			break;
+		case UPDATEPERMANENT:
+			handlerMessageFromServerUpdatePermanent(result.getParmas());
 		default:
 			break;
 		}
@@ -65,8 +68,6 @@ public class Client extends AbstractClient {
 		ArrayList<String> arr= (ArrayList<String>)message;
 		System.out.println(arr+"!");
 		StaffMainController.instance.setDataChairMan(arr);
-		
-		
 	}
 
 	private void setName(String userID) {
@@ -123,16 +124,19 @@ public class Client extends AbstractClient {
 	}
 	
 	
-
+	// Handle in case a New Request was received in the database
 	public void handlerMessageFromServerNewRequest(Object rs) {
 		@SuppressWarnings("unchecked")
 		ArrayList<Boolean> result = (ArrayList<Boolean>) rs;
 		
 		if(result.get(0).booleanValue()==true) {
 			NewRequestContoroller.getInstance().setAnswerFromServer(true);
+			NewRequestContoroller.getInstance().showSeccessAlert();
 		}
 		else {
 			NewRequestContoroller.getInstance().setAnswerFromServer(false);
+			NewRequestContoroller.getInstance().showFailureAlert();
+
 		}
 	}
 	
@@ -270,6 +274,5 @@ public class Client extends AbstractClient {
 		System.out.println(result);
 		
 		Supervisor_ProcessMain_Controller.instance.setAppraiserOrPerformanceLeaderDataInCB(result);
-
 	}
 }
