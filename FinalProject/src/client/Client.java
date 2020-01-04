@@ -56,20 +56,39 @@ public class Client extends AbstractClient {
 			break;
 		case UPDATEPERMANENT:
 			handlerMessageFromServerUpdatePermanent(result.getParmas());
+			break;
+		case DELETEPERMANENT:
+			handlerMessageFromServerDELETEPERMANENT(result.getParmas());
+			break;
+		case checkDB:
+			handlerMessageFromServercheckDB(result.getParmas());
 		default:
 			break;
 		}
 	
 	}
+	/******************************************handlerMessageFromServerSelectChairMan************************************************************/
 	public void handlerMessageFromServerSelectChairMan(Object message)
 	{
 		ArrayList<String> arr= (ArrayList<String>)message;
-		System.out.println(arr+"!");
+		
 		StaffMainController.instance.setDataChairMan(arr);
 		
 		
 	}
+	public void handlerMessageFromServercheckDB(Object message)
+	{
+	ArrayList<String> arr= (ArrayList<String>)message;
+		
+		StaffMainController.instance.checkApoint(arr);
+	}
 
+ public void handlerMessageFromServerDELETEPERMANENT(Object message){
+		ArrayList<String> arr= (ArrayList<String>)message;
+	
+		StaffMainController.instance.SET_DELETEPERMANENT(arr);
+		
+	}
 	private void setName(String userID) {
 		this.userID = userID;
 	}
@@ -105,20 +124,21 @@ public class Client extends AbstractClient {
 		this.processes = processes;
 	}
 	//get the processes related this client
+	/*******************************************getProcessesFromServer*******************************************************/
 	public void getProcessesFromServer() {
 		ArrayList<String> ar = new ArrayList<String>();
 		ar.add(userID);
 		Translator translator = new Translator(OptionsOfAction.GETRELATEDREQUESTS, ar);
 		handleMessageFromClientGUI(translator);
 	}
-/******************************************************************************************************/
+/*******************************************handlerMessageFromServerUpdatePermanent***********************************************************/
 	public void handlerMessageFromServerUpdatePermanent(Object message){
 		
 		ArrayList<String> arr= (ArrayList<String>)message;
-		System.out.println(arr+"!");
-		StaffMainController.instance.printMessage(arr);///
-	}
 	
+		StaffMainController.instance.printMessage(arr);
+	}
+/*****************************************handlerMessageFromServerNewRequest*************************************************************/	
 	
 	public void handlerMessageFromServerNewRequest(Object rs) {
 		ArrayList<Boolean> result = (ArrayList<Boolean>) rs;
@@ -132,7 +152,7 @@ public class Client extends AbstractClient {
 			NewRequestContoroller.getInstance().showFailureAlert();
 		}
 	}
-	
+/*********************************************handlerMessageFromServerLogin*************************************************/	
 	//In case we want to tell you, what is the server's answer regarding the client's connection experience
 	public void handlerMessageFromServerLogin(Object rs) {
 		@SuppressWarnings("unchecked")
@@ -155,6 +175,7 @@ public class Client extends AbstractClient {
 	//In case we got processes to display from this database, this function will make sure to save them to the client
 	//and also send them to the tag on the appropriate screen
 	@SuppressWarnings("unchecked")
+	/*****************************************handlerMessageFromServerProcesses*****************************************************/
 	public void handlerMessageFromServerProcesses(Object rs) {
 		Processes processes = new Processes();
     	ArrayList<ArrayList<?>> result = new ArrayList<ArrayList<?>>();	
