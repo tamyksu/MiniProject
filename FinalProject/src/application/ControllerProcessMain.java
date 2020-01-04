@@ -181,7 +181,8 @@ public class ControllerProcessMain implements Initializable {
 //		Documents.setText//
 		currentStatus.setText(process.getStatus());
 		RequestedChange.setText(process.getRequest_description());
-		ButtonAdjustment(process.getRole());	
+		ButtonAdjustment(process.getRole());
+		Supervisor_ProcessMain_Controller.instance.initializeFlag(process.getProcess_stage());//to initiate the flag
 	}
 
 	//The function responsible for matching buttons to the process is indicated in the table
@@ -314,13 +315,37 @@ public class ControllerProcessMain implements Initializable {
 	}
 
 	@FXML
+	void supervisorMode_click(ActionEvent event) {
+		ScreenController.getScreenController().activate("supervisor_processesMain");
+		Supervisor_ProcessMain_Controller.instance.getAppraiserOrPerformanceLeaderCBData();
+	}
+	
+	@FXML
 	void shutdown_click(ActionEvent event) {
 
 	}
 
 	@FXML
 	public void getTheUpdateProcessesFromDB() {
-		Client.getInstance().getProcessesFromServer();
+		switch (Client.getInstance().getRole()) {
+		case "Supervisor":
+			Client.getInstance().getAllProcessesFromServer();
+			break;
+		case "Manager":
+			Client.getInstance().getAllProcessesFromServer();
+			break;
+		default:
+			Client.getInstance().getProcessesFromServer();
+			break;
+		}
+			
+			
+			
+	}
+	
+	public int getSelectedRowNumber()
+	{
+		return tableView.getSelectionModel().getSelectedItem().getRequestId();
 	}
 
 }
