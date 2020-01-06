@@ -49,11 +49,11 @@ public class DBConnector {
 		
 		switch (translator.getRequest()) {
 		case NEWREQUEST:
-		
+
 			ArrayList<Boolean> failed = new ArrayList<Boolean>();
 			ArrayList<Boolean> success = new ArrayList<Boolean>();
 			Translator answer;
-			
+
 			Request nr = (Request) translator.getParmas().get(0);
 			try {
 				
@@ -75,143 +75,89 @@ public class DBConnector {
 				stmt.executeUpdate();
 
 				// Get the ID newly inserted request:
-				try {
-					PreparedStatement stmt2 = conn.prepareStatement("select request_id from processes where"
-							+ " initiator_id=? and system_num=? and "
-							+ "problem_description=? and request_description=? "
-							+ "and explanaton=? and notes=?");	
-					stmt2.setString(1, nr.getUserID());
-					stmt2.setInt(2, nr.getInformationSystemNumber());
-					stmt2.setString(3, nr.getProblemDescription());
-					stmt2.setString(4, nr.getRequestDescription());
-					stmt2.setString(5, nr.getExplanation());
-					stmt2.setString(6, nr.getNotes());
 
-					ResultSet rs = stmt2.executeQuery();
-					int processID=0;
-					while (rs.next()) { // get the processID from the Select query
-						processID = rs.getInt("request_id");
-						break;
-					}
-					System.out.println(processID);
-					// Add the new request ID with it's initator' Id to users_request 
-					try {
-						PreparedStatement stmt3 = conn.prepareStatement("insert into  users_requests (user_id,process_id,"
-								+ "role)"
-								+ "values(?,?,?)");
-						stmt3.setString(1, nr.getUserID());
-						stmt3.setInt(2, processID);
-						stmt3.setString(3, "Initiator");
-						stmt3.executeUpdate();
+				PreparedStatement stmt2 = conn.prepareStatement("select request_id from processes where"
+						+ " initiator_id=? and system_num=? and "
+						+ "problem_description=? and request_description=? "
+						+ "and explanaton=? and notes=?");	
+				stmt2.setString(1, nr.getUserID());
+				stmt2.setInt(2, nr.getInformationSystemNumber());
+				stmt2.setString(3, nr.getProblemDescription());
+				stmt2.setString(4, nr.getRequestDescription());
+				stmt2.setString(5, nr.getExplanation());
+				stmt2.setString(6, nr.getNotes());
+
+				ResultSet rs = stmt2.executeQuery();
+				int processID=0;
+				while (rs.next()) { // get the processID from the Select query
+					processID = rs.getInt("request_id");
+					break;
+				}
+				
+				// Add the new request ID with it's initator' Id to users_request 
 
 						
-						// ***************************** Recieve Files from Client and insert them to Data Base
-
-						/*
-						 *  PreparedStatement ps=conn.prepareStatement("insert into icmdb.files (request_id, file) values(?,?)"); 
-					        ps.setInt(1,1);
-					        ps.setBinaryStream(2, fis);
-
-					        ps.executeUpdate();
-						    ps.close();
-						 */
-						ArrayList<MyFile> filesToServer = (ArrayList<MyFile>) translator.getParmas().get(1);
-
-						// Add every file from client to the Data Base
-						for(int i=0;i<filesToServer.size();i++) {
-							try {
-								
-								MyFile myfile = filesToServer.get(i);
-								String newFileName = ".\\Files_Server_Recieved\\"+processID+"_"+myfile.getFileName();
-
-								FileOutputStream fos = new FileOutputStream(newFileName);
-								BufferedOutputStream bos = new BufferedOutputStream(fos);
-
-								try {
-
-									PreparedStatement stmt4 =conn.prepareStatement("insert into icmdb.files (request_id, file) values(?,?)"); 
-									stmt4.setInt(1,processID);
-									stmt4.setString(2, newFileName);
-									
-									
-									
-									/*PreparedStatement stmt4 =conn.prepareStatement("insert into icmdb.files (request_id, file) values(?,?)"); 
-									stmt4.setInt(1,processID);
-									stmt4.setBytes(2, myfile.mybytearray);
-									// The File is saved as array of bytes in the database
-									// BLOB*/
-									
-									stmt4.executeUpdate();
-									stmt4.close();
-									
-									/* The following code can save another version of the file in 
-									 * the project's directory:*/
-									bos.write(myfile.mybytearray, 0, myfile.getSize());
-									bos.flush();
-									fos.flush();
-									
-								}
-								catch (SQLException e) {
-									// TODO Auto-generated catch block
-									System.out.println("SQL EXCEPTION: Can't insert the file");
-									failed.add(new Boolean(false));
-									answer = new Translator(OptionsOfAction.NEWREQUEST,failed);
-									return answer;
-								} catch (IOException e) {
-									// TODO Auto-generated catch block
-									e.printStackTrace();
-								}
-							}
-							
-							catch (FileNotFoundException e) {
-								// TODO Auto-generated catch block
-								System.out.println("Error while sacing file");
-								failed.add(new Boolean(false));
-								answer = new Translator(OptionsOfAction.NEWREQUEST,failed);
-								return answer;
-							}
-						}
+				// ***************************** Recieve Files from Client and insert them to Data Base
+				PreparedStatement stmt3 = conn.prepareStatement("insert into  users_requests (user_id,process_id,"
+						+ "role)"
+						+ "values(?,?,?)");
+				stmt3.setString(1, nr.getUserID());
+				stmt3.setInt(2, processID);
+				stmt3.setString(3, "Initiator");
+				stmt3.executeUpdate();
 
 
+				// ***************************** Receive Files from Client and insert them to Data Base
 
-						// ***************************** End of Recieve Files from Client and insert them to Data Base 
+				ArrayList<MyFile> filesToServer = (ArrayList<MyFile>) translator.getParmas().get(1);
 
-					}
-					catch (SQLException e) {
-						// TODO Auto-generated catch block
-						System.out.println("SQL EXCEPTION on 3rd query");
-						failed.add(new Boolean(false));
-						answer = new Translator(OptionsOfAction.NEWREQUEST,failed);
-						return answer;
-					}
-				}
-				catch (SQLException e) {
-					// TODO Auto-generated catch block
-					System.out.println("SQL EXCEPTION!");
-					failed.add(new Boolean(false));
-					answer = new Translator(OptionsOfAction.NEWREQUEST,failed);
-					return answer;
-					
+				// Add every file from client to the Data Base
+				for(int i=0;i<filesToServer.size();i++) {
+
+
+					MyFile myfile = filesToServer.get(i);
+					String newFileNamePath = ".\\Files_Server_Recieved\\"+processID+"_"+myfile.getFileName();
+
+					FileOutputStream fos = new FileOutputStream(newFileNamePath);
+					BufferedOutputStream bos = new BufferedOutputStream(fos);
+
+					PreparedStatement stmt4 =conn.prepareStatement("insert into icmdb.files (request_id, user_id ,file) values(?,?,?)"); 
+					stmt4.setInt(1,processID);
+					stmt4.setString(2, nr.getUserID().toString());
+					stmt4.setString(3, newFileNamePath);
+
+					stmt4.executeUpdate();
+					stmt4.close();
+
+					/* The following code can save another version of the file in 
+					 * the project's directory:*/
+					bos.write(myfile.mybytearray, 0, myfile.getSize());
+					bos.flush();
+					fos.flush();
 				}
 
-				System.out.println("Insert is working!!!");
-				
+				// ***************************** End of Receive Files from Client and insert them to Data Base 
+
 				success.add(new Boolean(true));
 				answer = new Translator(OptionsOfAction.NEWREQUEST,success);
 				return answer;
+
 			} catch (SQLException e) {
 				// TODO Auto-generated catch block
 				System.out.println("SQL EXCEPTION!");
 				failed.add(new Boolean(false));
 				answer = new Translator(OptionsOfAction.NEWREQUEST,failed);
 				return answer;
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
-			
+	/***************************************SELECTCHAIRMAN***********************************************/		
 		case SELECTCHAIRMAN:
 		
 			try {
 				stmt = conn.prepareStatement("select first_name, last_name, id from icmdb.workers "
-						+ "where( id SNOT IN(select user_id from icmdb.users_requests))"
+						+ "where( id NOT IN(select user_id from icmdb.users_requests))"
 						+ "AND id NOT IN (select user_id from icmdb.permanent_roles)");
 				ResultSet rs = stmt.executeQuery();
 				String nameWorker;
@@ -235,6 +181,62 @@ public class DBConnector {
 					// TODO Auto-generated catch block
 					System.out.println("SQL EXCEPTION SELECTCHAIRMAN!");
 			}
+	/*****************************************checkDB********************************************************/	
+		case checkDB:
+			try {
+			System.out.println("checkDB");
+			stmt = conn.prepareStatement("SELECT count(*) FROM icmdb.permanent_roles where role=? ");
+			stmt.setString(1, (String) translator.getParmas().get(0).toString());
+			ResultSet rs = stmt.executeQuery();
+			rs.next();
+			int j = rs.getInt(1);	
+			System.out.println(j);
+			
+			ar.add( new String(rs.getString(1)));//result if 1 or 0
+			ar.add((String)translator.getParmas().get(0).toString());//role
+			Translator newTranslator = new Translator(translator.getRequest(), ar);
+			return newTranslator;
+			}
+			catch(SQLException e)
+			{
+				System.out.println("SQL EXCEPTION checkDB!");
+			}
+			break;
+			
+		case DELETEPERMANENT:
+			try {
+				System.out.println("here :)");
+				stmt = conn.prepareStatement("delete from icmdb.permanent_roles where role=? ");
+				stmt.setString(1, (String) translator.getParmas().get(0).toString());
+				System.out.println("almost" + translator.getParmas().get(0) + " :)");
+				stmt.executeUpdate();	
+				System.out.println("deketed" + translator.getParmas().get(0) + " :)");
+				ar.add((String) translator.getParmas().get(0));//put the role
+				/*if(rs.first() == false) {
+					ar.add("Select chairman failled");
+					Translator newTranslator = new Translator(translator.getRequest(), ar);
+					return newTranslator;
+				}
+		
+				rs.previous();
+				while (rs.next()) { // get the processID from the Select query
+					ar.add( new String(rs.getString(1)));
+					ar.add( new String(rs.getString(2)));
+					
+				}
+				
+			*/
+				Translator newTranslator = new Translator(translator.getRequest(), ar);
+				return newTranslator;
+			
+			}
+			catch(SQLException e)
+			{
+				System.out.println("SQL EXCEPTION DELETEPERMANENT!");
+				
+			}
+			break;
+				
 		
 /*********************************************UPDATEPERMANENT*********************************************************/		
 		case UPDATEPERMANENT:
@@ -242,10 +244,7 @@ public class DBConnector {
 			stmt = conn.prepareStatement("insert into icmdb.permanent_roles (user_id,role) values(?,?)");
 			stmt.setString(1, (String) translator.getParmas().get(0));
 			stmt.setString(2, (String) translator.getParmas().get(1));
-			
-			System.out.println((String) translator.getParmas().get(0));
-
-			System.out.println((String) translator.getParmas().get(1));
+			System.out.println("id "+translator.getParmas().get(0));
 
 			stmt.executeUpdate();
 			stmt = conn.prepareStatement("select first_name, last_name from icmdb.workers "
@@ -274,6 +273,8 @@ public class DBConnector {
 		catch(SQLException e) {
 			System.out.println("SQL Exception: Failed UPDATEPERMANENT ");
 		}
+		break;
+			
 /*************************************************LOGIN***************************************************************/
 		case LOGIN:
 			try {
@@ -314,8 +315,6 @@ public class DBConnector {
 				ans.add(ar.get(0));
 				Translator newTranslator = new Translator(translator.getRequest(), ans);
 				return newTranslator;
-
-
 
 			}
 			catch (SQLException e) {
@@ -451,7 +450,9 @@ public class DBConnector {
 			ResultSet rs1 = stmt.executeQuery();
 			if(rs1.first() == false) {
 				PreparedStatement stmt1;
-				stmt1 = conn.prepareStatement("SELECT * FROM icmdb.workers where id=?");
+				stmt1 = conn.prepareStatement(""
+						+ "SELECT * FROM workers\r\n" + 
+						"WHERE workers.id=?");
 				stmt1.setString(1, initiatorId);
 				ResultSet rs2 = stmt1.executeQuery();
 				if(rs2.first() == false) return null;

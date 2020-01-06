@@ -53,33 +53,59 @@ public class Client extends AbstractClient {
 		case GETALLPROCESSES:
 			handlerMessageFromServerGetAllProcesses(result.getParmas());
 			break;
+		case GET_APPRAISER_AND_PERFORMANCE_LEADER_CB_DATA:
+			handlerMessageFromServerAppointAppraiser(result.getParmas());
+			break;
+		case GETALLINFORMATIONSYSTEMS:
+			//fillListForComboBox(result.getParmas());	
 		case SELECTCHAIRMAN:
 			handlerMessageFromServerSelectChairMan(result.getParmas());
 			break;
 		case UPDATEPERMANENT:
 			handlerMessageFromServerUpdatePermanent(result.getParmas());
+			break;
+		case DELETEPERMANENT:
+			handlerMessageFromServerDELETEPERMANENT(result.getParmas());
+			break;
+		case checkDB:
+			handlerMessageFromServercheckDB(result.getParmas());
+			break;
 		default:
 			break;
 		}
 	
 	}
+	/******************************************handlerMessageFromServerSelectChairMan************************************************************/
 	public void handlerMessageFromServerSelectChairMan(Object message)
 	{
 		ArrayList<String> arr= (ArrayList<String>)message;
-		System.out.println(arr+"!");
+		
 		StaffMainController.instance.setDataChairMan(arr);
 	}
+	public void handlerMessageFromServercheckDB(Object message)
+	{
+	ArrayList<String> arr= (ArrayList<String>)message;
+		
+		StaffMainController.instance.checkApoint(arr);
+	}
 
+ public void handlerMessageFromServerDELETEPERMANENT(Object message){
+		ArrayList<String> arr= (ArrayList<String>)message;
+	
+		StaffMainController.instance.SET_DELETEPERMANENT(arr);
+		
+	}
 	private void setName(String userID) {
 		this.userID = userID;
 	}
 
 	
+	
 	public void handleMessageFromClientGUI(Object message) {
 		try {
 			sendToServer(message);
 		} catch (IOException e) {
-			System.out.println("Could not send massage to server");
+			System.out.println("Could not perform action to server");
 			quit();
 		}
 	}
@@ -105,41 +131,36 @@ public class Client extends AbstractClient {
 		this.processes = processes;
 	}
 	//get the processes related this client
+	/*******************************************getProcessesFromServer*******************************************************/
 	public void getProcessesFromServer() {
 		ArrayList<String> ar = new ArrayList<String>();
 		ar.add(userID);
 		Translator translator = new Translator(OptionsOfAction.GETRELATEDREQUESTS, ar);
 		handleMessageFromClientGUI(translator);
 	}
-
-
-	// Handle in case a New Request was received in the database
-
-/******************************************************************************************************/
+/*******************************************handlerMessageFromServerUpdatePermanent***********************************************************/
 	public void handlerMessageFromServerUpdatePermanent(Object message){
 		
 		ArrayList<String> arr= (ArrayList<String>)message;
-		System.out.println(arr+"!");
-		StaffMainController.instance.printMessage(arr);///
+	
+		StaffMainController.instance.printMessage(arr);
 	}
+/*****************************************handlerMessageFromServerNewRequest*************************************************************/	
 	
 	
 	// Handle in case a New Request was received in the database
 	public void handlerMessageFromServerNewRequest(Object rs) {
-		@SuppressWarnings("unchecked")
+	@SuppressWarnings("unchecked")
 		ArrayList<Boolean> result = (ArrayList<Boolean>) rs;
 		
 		if(result.get(0).booleanValue()==true) {
 			NewRequestContoroller.getInstance().setAnswerFromServer(true);
-			NewRequestContoroller.getInstance().showSeccessAlert();
 		}
 		else {
 			NewRequestContoroller.getInstance().setAnswerFromServer(false);
-			NewRequestContoroller.getInstance().showFailureAlert();
-
 		}
 	}
-	
+/*********************************************handlerMessageFromServerLogin*************************************************/	
 	//In case we want to tell you, what is the server's answer regarding the client's connection experience
 	public void handlerMessageFromServerLogin(Object rs) {
 		@SuppressWarnings("unchecked")
@@ -161,6 +182,7 @@ public class Client extends AbstractClient {
 //			ScreenController.getScreenController().activate("Supervisor_ProcessesMain");
 //			getProcessesFromServer();
 			break;
+	
 		case "Login failed, username and password did not match":
 			LoginController.getInstance().getMessageField()
 					.setText("Login failed, username and password did not match");
@@ -184,6 +206,7 @@ public class Client extends AbstractClient {
 	//In case we got processes to display from this database, this function will make sure to save them to the client
 	//and also send them to the tag on the appropriate screen
 	@SuppressWarnings("unchecked")
+	/*****************************************handlerMessageFromServerProcesses*****************************************************/
 	public void handlerMessageFromServerProcesses(Object rs) {
 		Processes processes = new Processes();
     	ArrayList<ArrayList<?>> result = new ArrayList<ArrayList<?>>();	
@@ -217,7 +240,7 @@ public class Client extends AbstractClient {
 		//send processes information to specific controller
 		ControllerProcessMain.getInstance().SetInTable(processes);
 	}
-	
+
 	//function related to supervisor. get all the process exist 
 	@SuppressWarnings("unchecked")
 	private void handlerMessageFromServerGetAllProcesses(ArrayList<?> rs) {
@@ -274,5 +297,6 @@ public class Client extends AbstractClient {
 		System.out.println(result);
 		
 		Supervisor_ProcessMain_Controller.instance.setAppraiserOrPerformanceLeaderDataInCB(result);
+
 	}
 }

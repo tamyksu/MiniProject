@@ -195,7 +195,7 @@ public class ControllerProcessMain implements Initializable {
 
 	//The function responsible for matching buttons to the process is indicated in the table
 	private void ButtonAdjustment(String userRole) {
-		switch (userRole) {
+		switch (userRole.toLowerCase()) {
 		case "initiator":
 			fitInitiator();
 			break;
@@ -208,7 +208,7 @@ public class ControllerProcessMain implements Initializable {
 		case "appraiser":
 			fitAppraiser();
 			break;
-		case "Chairman":
+		case "chairman":
 			fitChairman();
 			break;
 			
