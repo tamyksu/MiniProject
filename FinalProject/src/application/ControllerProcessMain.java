@@ -16,6 +16,8 @@ import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.cell.PropertyValueFactory;
+import translator.OptionsOfAction;
+import translator.Translator;
 import javafx.event.ActionEvent;
 
 public class ControllerProcessMain implements Initializable {
@@ -60,9 +62,6 @@ public class ControllerProcessMain implements Initializable {
 
 	@FXML
 	private Label Explanation;
-
-	@FXML
-	private Button freeze_btn;
 
 	@FXML
 	private Button decision_btn;
@@ -188,10 +187,12 @@ public class ControllerProcessMain implements Initializable {
 		Notes.setText(process.getNotes());
 		RequestDate.setText(process.getCreation_date());
 		RequestID.setText("" + process.getRequest_id());
-//		Documents.setText//
 		currentStatus.setText(process.getStatus());
 		RequestedChange.setText(process.getRequest_description());
-		ButtonAdjustment(process.getRole());
+		if(process.getRole().toLowerCase().equals("supervisor") || process.getRole().toLowerCase().equals("manager"))
+			ButtonAdjustmentSuperUser(process.getRole(), process.getStatus());
+		else
+			ButtonAdjustment(process.getRole());
 		Supervisor_ProcessMain_Controller.instance.initializeChosenProcessScreen(process.getProcess_stage());//to initiate the flag
 	}
 
@@ -202,12 +203,6 @@ public class ControllerProcessMain implements Initializable {
 		case "initiator":
 			fitInitiator();
 			break;
-		case "manager":
-			fitManager();
-			break;
-		case "supervisor":
-			fitSupervisor();
-			break;	
 		case "appraiser":
 			fitAppraiser();
 			break;
@@ -222,6 +217,32 @@ public class ControllerProcessMain implements Initializable {
 		}
 		
 	}
+	
+	//The function responsible for matching buttons to the process is indicated in the table
+	public void ButtonAdjustmentSuperUser(String userRole, String processStatus) {
+		
+		switch (userRole.toLowerCase())
+		{
+			case "manager":
+				if(processStatus.toLowerCase().equals("suspended") || processStatus.toLowerCase().equals("shutdown"))
+					fitManagerDisabled();
+				else
+					fitManager();
+				break;
+			case "supervisor":
+				if(processStatus.toLowerCase().equals("suspended") || processStatus.toLowerCase().equals("shutdown"))
+					fitSupervisorDisabled();
+				else
+					fitSupervisor();
+				break;	
+		
+			default:
+				break;
+		}
+	
+		
+	}
+	
 	//change button disability in accordance to appraiser
 	private void fitChairman() {
 		newRequestBtn.setDisable(false);
@@ -274,7 +295,7 @@ public class ControllerProcessMain implements Initializable {
 		shutdown_btn.setDisable(true);
 		supervisor_mode_btn.setDisable(true);
 		director_btn.setDisable(false);
-		defrost_btn.setDisable(false);
+		defrost_btn.setDisable(true);
 	}
 
 	//Suitable for the initiator of the process the buttons allowed
@@ -292,8 +313,37 @@ public class ControllerProcessMain implements Initializable {
 		defrost_btn.setDisable(true);
 	}
 	
+	private void fitManagerDisabled()
+	{
+		newRequestBtn.setDisable(false);
+		extension_btn.setDisable(true);
+		evaluation_btn.setDisable(true);
+		decision_btn.setDisable(true);
+		execution_btn.setDisable(true);
+		examination_btn.setDisable(true);
+		shutdown_btn.setDisable(false);
+		supervisor_mode_btn.setDisable(false);
+		director_btn.setDisable(false);
+		defrost_btn.setDisable(false);
+	}
+	
+	private void fitSupervisorDisabled() 
+	{
+		newRequestBtn.setDisable(false);
+		extension_btn.setDisable(true);
+		evaluation_btn.setDisable(true);
+		decision_btn.setDisable(true);
+		execution_btn.setDisable(true);
+		examination_btn.setDisable(true);
+		shutdown_btn.setDisable(false);
+		supervisor_mode_btn.setDisable(false);
+		director_btn.setDisable(true);
+		defrost_btn.setDisable(false);
+	}
+	
 	//disable all buttons on startup (before choosing a process from the table)
-	private void initializeButtons() {
+	private void initializeButtons() 
+	{
 		newRequestBtn.setDisable(true);
 		extension_btn.setDisable(true);
 		evaluation_btn.setDisable(true);
@@ -327,7 +377,13 @@ public class ControllerProcessMain implements Initializable {
 
 	@FXML
 	void defrost_click(ActionEvent event) {
-
+		
+		ArrayList<Object> processInfo = new ArrayList<Object>();
+		
+		processInfo.add(RequestID.getText());
+		
+		Translator translator = new Translator(OptionsOfAction.DEFROST_PROCESS, processInfo);
+		Client.getInstance().handleMessageFromClientGUI(translator);
 	}
 
 	@FXML
@@ -359,7 +415,12 @@ public class ControllerProcessMain implements Initializable {
 	
 	@FXML
 	void shutdown_click(ActionEvent event) {
-
+		ArrayList<Object> processInfo = new ArrayList<Object>();
+		
+		processInfo.add(RequestID.getText());
+		
+		Translator translator = new Translator(OptionsOfAction.SHUTDOWN_PROCESS, processInfo);
+		Client.getInstance().handleMessageFromClientGUI(translator);
 	}
 
 	@FXML
@@ -374,7 +435,7 @@ public class ControllerProcessMain implements Initializable {
 		default:
 			Client.getInstance().getProcessesFromServer();
 			break;
-		}		
+		}
 			
 	}
 	
@@ -398,6 +459,11 @@ public class ControllerProcessMain implements Initializable {
             alert.showAndWait();
             return -1;
     	}
+	}
+	
+	public String getRequestID()
+	{
+		return this.RequestID.getText();
 	}
 
 }

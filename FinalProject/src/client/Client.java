@@ -12,6 +12,7 @@ import application.ScreenController;
 import application.StaffMainController;
 import application.Supervisor_ProcessMain_Controller;
 import application.UserProcess;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 
 public class Client extends AbstractClient {
@@ -73,11 +74,25 @@ public class Client extends AbstractClient {
 		case checkDB:
 			handlerMessageFromServercheckDB(result.getParmas());
 			break;
+		case DEFROST_PROCESS:
+			handleMessageFromServerDefrostProcess(result.getParmas());
 		default:
 			break;
 		}
 	
 	}
+	private void handleMessageFromServerDefrostProcess(Object message) {
+		ArrayList<String> arr= (ArrayList<String>) message;
+		
+		if(arr.get(0).equals("Succesfully Defrosted"))
+		{
+			ControllerProcessMain.getInstance().getTheUpdateProcessesFromDB();
+			ControllerProcessMain.getInstance().ButtonAdjustmentSuperUser(this.role, ControllerProcessMain.getInstance().getRequestID());
+		}
+		else
+			new Alert(AlertType.ERROR,"There was an issue to defrost this process").show();
+	}
+
 	/******************************************handlerMessageFromServerSelectChairMan************************************************************/
 	public void handlerMessageFromServerSelectChairMan(Object message)
 	{
@@ -194,9 +209,10 @@ public class Client extends AbstractClient {
 			getAllProcessesFromServer();
 			break;
 		case "Manager":
-//			Client.getInstance().setName(result.get(1));
-//			ScreenController.getScreenController().activate("Supervisor_ProcessesMain");
-//			getProcessesFromServer();
+			Client.getInstance().setName(result.get(1));
+			this.setRule(result.get(0));
+			ScreenController.getScreenController().activate("processesMain");
+			getAllProcessesFromServer();
 			break;
 	
 		case "Login failed, username and password did not match":
@@ -270,7 +286,8 @@ public class Client extends AbstractClient {
 				process.setRequest_id((int)result.get(i).get(0));
 				process.setSystem_num((int)result.get(i).get(1));
 				//Get values from string array
-				process.setRole("Supervisor");
+				process.setRole(Client.getInstance().getRole());
+				//process.setRole((String)result.get(i+1).get(0));
 				process.setIntiatorId((String)result.get(i+1).get(0));
 				process.setProblem_description((String)result.get(i+1).get(1));
 				process.setRequest_description((String)result.get(i+1).get(2));
