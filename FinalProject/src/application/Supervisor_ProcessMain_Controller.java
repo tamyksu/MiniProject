@@ -87,6 +87,22 @@ public class Supervisor_ProcessMain_Controller implements Initializable{
 		instance = this;
 	}
     
+    @FXML
+    void freeze_process_btn_click(ActionEvent event) {
+    	ArrayList <Object> arr = new ArrayList<Object>();
+    	
+    	arr.add(2);//process/request id
+    	arr.add(due_time_text.getText());
+    	
+    	Translator translator = new Translator(OptionsOfAction.FREEZE_PROCESS, arr);
+    	client.handleMessageFromClientGUI(translator);
+    }
+    
+    @FXML
+    void shut_down_process_btn_click(ActionEvent event) {
+
+    }
+    
     public void getAppraiserOrPerformanceLeaderCBData()
     {
     	int processID;

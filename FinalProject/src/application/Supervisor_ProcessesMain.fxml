@@ -27,8 +27,8 @@
                   <Pane layoutY="589.0" prefHeight="203.0" prefWidth="778.0" />
                   <Button fx:id="back_btn" layoutX="22.0" layoutY="22.0" mnemonicParsing="false" onAction="#back_click" text="Back" />
                   <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#1f93ff00" height="534.0" layoutX="-12.0" layoutY="53.0" opacity="0.14" stroke="BLACK" strokeType="INSIDE" width="708.0" />
-                  <Button fx:id="freeze_process_btn" layoutX="464.0" layoutY="225.0" mnemonicParsing="false" prefHeight="32.0" prefWidth="175.0" text="Freeze Process" />
-                  <Button fx:id="shut_down_process_btn" layoutX="463.0" layoutY="194.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="178.0" text="Shut Down Process" />
+                  <Button fx:id="freeze_process_btn" layoutX="464.0" layoutY="225.0" mnemonicParsing="false" onAction="#freeze_process_btn_click" prefHeight="32.0" prefWidth="175.0" text="Freeze Process" />
+                  <Button fx:id="shut_down_process_btn" layoutX="463.0" layoutY="194.0" mnemonicParsing="false" onAction="#shut_down_process_btn_click" prefHeight="31.0" prefWidth="178.0" text="Shut Down Process" />
                   <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#1f93ff00" height="657.0" layoutX="750.0" layoutY="53.0" opacity="0.14" stroke="BLACK" strokeType="INSIDE" width="524.0" />
                   <Label layoutX="914.0" layoutY="57.0" text="Process Information">
                      <font>
@@ -167,11 +167,29 @@
                   </HBox>
                   <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#1f93ff00" height="221.0" layoutX="22.0" layoutY="368.0" opacity="0.14" stroke="BLACK" strokeType="INSIDE" width="676.0" />
                   <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#1f93ff00" height="107.0" layoutX="21.0" layoutY="258.0" opacity="0.14" stroke="BLACK" strokeType="INSIDE" width="676.0" />
+<<<<<<< HEAD
                   <ComboBox fx:id="appoint_appraiser_comboBox" layoutX="55.0" layoutY="483.0" prefHeight="31.0" prefWidth="212.0" />
                   <Button fx:id="appoint_appraiser_btn" layoutX="92.0" layoutY="533.0" mnemonicParsing="false" onAction="#appointAppraiserOrPerformanceLeader" text="Appoint Appraiser" />
                   <Button fx:id="appoint_performance_leader_btn" layoutX="444.0" layoutY="533.0" mnemonicParsing="false" onAction="#appointAppraiserOrPerformanceLeader" text="Appoint Performence Leader" />
                   <ComboBox fx:id="appoint_performance_leader_comboBox" layoutX="443.0" layoutY="483.0" prefHeight="31.0" prefWidth="212.0" />
                   <Label layoutX="288.0" layoutY="370.0" text="Appoint Staff">
+=======
+                  <Label layoutX="114.0" layoutY="413.0" prefHeight="26.0" prefWidth="103.0" text="Appraiser:">
+                     <font>
+                        <Font size="17.0" />
+                     </font>
+                  </Label>
+                  <ComboBox fx:id="appoint_appraiser_comboBox" layoutX="72.0" layoutY="442.0" prefHeight="31.0" prefWidth="212.0" />
+                  <Button fx:id="appoint_appraiser_btn" layoutX="109.0" layoutY="492.0" mnemonicParsing="false" onAction="#appointAppraiserOrPerformanceLeader_click" text="Appoint Appraiser" />
+                  <Button fx:id="appoint_performance_leader_btn" layoutX="441.0" layoutY="492.0" mnemonicParsing="false" onAction="#appointAppraiserOrPerformanceLeader_click" text="Appoint Performence Leader" />
+                  <ComboBox fx:id="appoint_performance_leader_comboBox" layoutX="444.0" layoutY="442.0" prefHeight="31.0" prefWidth="195.0" />
+                  <Label layoutX="464.0" layoutY="413.0" text="Performence Leader:">
+                     <font>
+                        <Font size="17.0" />
+                     </font>
+                  </Label>
+                  <Label layoutX="270.0" layoutY="398.0" text="Appoint Staff">
+>>>>>>> 32fb67db45f010162ed37a84527ea80a3540544d
                      <font>
                         <Font name="System Bold" size="21.0" />
                      </font>
@@ -181,10 +199,15 @@
                         <Font name="System Bold" size="21.0" />
                      </font>
                   </Label>
-                  <Button fx:id="approve_due_time_request_btn" layoutX="79.0" layoutY="311.0" mnemonicParsing="false" onAction="#ApproveDueTimeRequest" prefHeight="32.0" prefWidth="175.0" text="approve due time request" textAlignment="CENTER" />
+                  <Button fx:id="approve_due_time_request_btn" layoutX="79.0" layoutY="311.0" mnemonicParsing="false" onAction="#ApproveDueTimeRequest_click" prefHeight="32.0" prefWidth="175.0" text="approve due time request" textAlignment="CENTER" />
                   <TextField fx:id="due_time_text" layoutX="276.0" layoutY="311.0" prefHeight="32.0" prefWidth="134.0" />
+<<<<<<< HEAD
                   <Button fx:id="add_extension__time_btn" layoutX="11.0" layoutY="131.0" mnemonicParsing="false" onAction="#addDueTimeExtension" prefHeight="32.0" prefWidth="175.0" text="Add extension time" />
                   <Button fx:id="decline_due_time_request_btn" layoutX="433.0" layoutY="311.0" mnemonicParsing="false" onAction="#DeclineDueTimeRequest" prefHeight="32.0" prefWidth="175.0" text="decline due time request" textAlignment="CENTER" />
+=======
+                  <Button fx:id="add_extension__time_btn" layoutX="11.0" layoutY="131.0" mnemonicParsing="false" prefHeight="32.0" prefWidth="175.0" text="Add extention time" />
+                  <Button fx:id="decline_due_time_request_btn" layoutX="433.0" layoutY="311.0" mnemonicParsing="false" onAction="#DeclineDueTimeRequest_click" prefHeight="32.0" prefWidth="175.0" text="decline due time request" textAlignment="CENTER" />
+>>>>>>> 32fb67db45f010162ed37a84527ea80a3540544d
                   <Label layoutX="271.0" layoutY="258.0" prefHeight="39.0" prefWidth="212.0" text="Stage due time">
                      <font>
                         <Font name="System Bold" size="21.0" />

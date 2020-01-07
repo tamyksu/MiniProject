@@ -48,7 +48,7 @@
                         <TableColumn fx:id="Role" prefWidth="154.0" text="Role" />
                     </columns>
                   </TableView>
-                  <Button fx:id="director_btn" layoutX="384.0" layoutY="460.0" mnemonicParsing="false" onAction="#director_click" prefHeight="31.0" prefWidth="175.0" text="Diresctor" />
+                  <Button fx:id="director_btn" layoutX="384.0" layoutY="460.0" mnemonicParsing="false" onAction="#director_click" prefHeight="31.0" prefWidth="175.0" text="Director" />
                   <Button fx:id="extension_btn" layoutX="384.0" layoutY="429.0" mnemonicParsing="false" onAction="#extension_click" prefHeight="32.0" prefWidth="175.0" text="Send Extension Request" />
                   <Button fx:id="evaluation_btn" layoutX="129.0" layoutY="429.0" mnemonicParsing="false" onAction="#evaluation_click" prefHeight="31.0" prefWidth="178.0" text="Evaluation" />
                   <Button fx:id="defrost_btn" layoutX="384.0" layoutY="491.0" mnemonicParsing="false" onAction="#defrost_click" prefHeight="31.0" prefWidth="175.0" text="Defrost Process" />
@@ -163,22 +163,22 @@
                         </VBox>
                         <VBox layoutX="901.0" layoutY="88.0" prefHeight="607.0" prefWidth="200.0">
                            <children>
-                              <Label fx:id="InitiatorName" styleClass="brightText" prefHeight="32.0" prefWidth="320.0" text="label" />
-                              <Label fx:id="InitiatorEmail" styleClass="brightText" layoutX="10.0" layoutY="10.0" prefHeight="32.0" prefWidth="320.0" text="label" />
-                              <Label fx:id="InformationSystem" styleClass="brightText" layoutX="10.0" layoutY="74.0" prefHeight="32.0" prefWidth="320.0" text="label" />
-                              <Label fx:id="CurrentState" styleClass="brightText" layoutX="10.0" layoutY="106.0" prefHeight="71.0" prefWidth="320.0" text="label">
+                              <Label fx:id="InitiatorName" prefHeight="32.0" prefWidth="320.0" styleClass="brightText" text="-" />
+                              <Label fx:id="InitiatorEmail" layoutX="10.0" layoutY="10.0" prefHeight="32.0" prefWidth="320.0" styleClass="brightText" text="-" />
+                              <Label fx:id="InformationSystem" layoutX="10.0" layoutY="74.0" prefHeight="32.0" prefWidth="320.0" styleClass="brightText" text="-" />
+                              <Label fx:id="CurrentState" layoutX="10.0" layoutY="106.0" prefHeight="71.0" prefWidth="320.0" styleClass="brightText" text="-">
                                  <VBox.margin>
                                     <Insets top="1.0" />
                                  </VBox.margin>
                               </Label>
-                              <Label fx:id="RequestedChange" styleClass="brightText" layoutX="10.0" layoutY="138.0" prefHeight="71.0" prefWidth="320.0" text="label" />
-                              <Label fx:id="Explanation" styleClass="brightText" layoutX="10.0" layoutY="209.0" prefHeight="71.0" prefWidth="320.0" text="label" />
-                              <Label fx:id="Notes" styleClass="brightText" layoutX="10.0" layoutY="280.0" prefHeight="71.0" prefWidth="320.0" text="label" />
-                              <Label fx:id="RequestDate" styleClass="brightText" layoutX="10.0" layoutY="106.0" prefHeight="32.0" prefWidth="320.0" text="label" />
-                              <Label fx:id="RequestID" styleClass="brightText" layoutX="10.0" layoutY="422.0" prefHeight="32.0" prefWidth="320.0" text="label" />
-                              <Label fx:id="Documents" styleClass="brightText" layoutX="10.0" layoutY="454.0" prefHeight="62.0" prefWidth="320.0" text="label" />
-                              <Label fx:id="currentStatus" styleClass="brightText" layoutX="10.0" layoutY="106.0" prefHeight="32.0" prefWidth="320.0" text="label" />
-                              <Label fx:id="CurrentStageDueTime" styleClass="brightText" layoutX="10.0" layoutY="548.0" prefHeight="32.0" prefWidth="320.0" text="label" />
+                              <Label fx:id="RequestedChange" layoutX="10.0" layoutY="138.0" prefHeight="71.0" prefWidth="320.0" styleClass="brightText" text="-" />
+                              <Label fx:id="Explanation" layoutX="10.0" layoutY="209.0" prefHeight="71.0" prefWidth="320.0" styleClass="brightText" text="-" />
+                              <Label fx:id="Notes" layoutX="10.0" layoutY="280.0" prefHeight="71.0" prefWidth="320.0" styleClass="brightText" text="-" />
+                              <Label fx:id="RequestDate" layoutX="10.0" layoutY="106.0" prefHeight="32.0" prefWidth="320.0" styleClass="brightText" text="-" />
+                              <Label fx:id="RequestID" layoutX="10.0" layoutY="422.0" prefHeight="32.0" prefWidth="320.0" styleClass="brightText" text="-" />
+                              <Label fx:id="Documents" layoutX="10.0" layoutY="454.0" prefHeight="62.0" prefWidth="320.0" styleClass="brightText" text="-" />
+                              <Label fx:id="currentStatus" layoutX="10.0" layoutY="106.0" prefHeight="32.0" prefWidth="320.0" styleClass="brightText" text="-" />
+                              <Label fx:id="CurrentStageDueTime" layoutX="10.0" layoutY="548.0" prefHeight="32.0" prefWidth="320.0" styleClass="brightText" text="-" />
                            </children>
                         </VBox>
                      </children>
@@ -186,7 +186,7 @@
                   <Button fx:id="updateTable" layoutX="130.0" layoutY="401.0" mnemonicParsing="false" onAction="#getTheUpdateProcessesFromDB" prefHeight="31.0" prefWidth="178.0" text="Update Table" />
                   <Button fx:id="newRequestBtn" layoutX="384.0" layoutY="397.0" mnemonicParsing="false" onAction="#newRequest" prefHeight="32.0" prefWidth="175.0" text="New Request" />
                   <Button layoutX="1282.0" layoutY="10.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="86.0" text="log out" />
-                  <Button fx:id="Ssupervisor_mode_btn" layoutX="429.0" layoutY="547.0" mnemonicParsing="false" onAction="#supervisorMode_click" text="Supervisor Mode" />
+                  <Button fx:id="supervisor_mode_btn" layoutX="429.0" layoutY="547.0" mnemonicParsing="false" onAction="#supervisorMode_click" text="Supervisor Mode" />
                </children>
             </AnchorPane>
         </items>

@@ -99,6 +99,13 @@ public class ControllerProcessMain implements Initializable {
 
 	@FXML
 	private Button newRequestBtn;
+	
+	@FXML
+	private Button supervisor_mode_btn;
+	
+	@FXML
+	private Button director_btn;
+	
 
 	public static void setInstance(ControllerProcessMain instance) {
 		ControllerProcessMain.instance = instance;
@@ -112,6 +119,7 @@ public class ControllerProcessMain implements Initializable {
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		instance = this;
+		initializeButtons();
 	}
 
 	public static ControllerProcessMain getInstance() {
@@ -187,7 +195,7 @@ public class ControllerProcessMain implements Initializable {
 
 	//The function responsible for matching buttons to the process is indicated in the table
 	private void ButtonAdjustment(String userRole) {
-		switch (userRole) {
+		switch (userRole.toLowerCase()) {
 		case "initiator":
 			fitInitiator();
 			break;
@@ -200,11 +208,13 @@ public class ControllerProcessMain implements Initializable {
 		case "appraiser":
 			fitAppraiser();
 			break;
-		case "Chairman":
+		case "chairman":
 			fitChairman();
 			break;
 			
 		default:
+			//disable all
+			initializeButtons();
 			break;
 		}
 		
@@ -218,8 +228,9 @@ public class ControllerProcessMain implements Initializable {
 		execution_btn.setDisable(true);
 		examination_btn.setDisable(false);
 		shutdown_btn.setDisable(true);
-		freeze_btn.setDisable(true);
-		defrost_btn.setDisable(false);		
+		supervisor_mode_btn.setDisable(true);
+		director_btn.setDisable(true);
+		defrost_btn.setDisable(true);
 	}
 
 	//change button disability in accordance to appraiser
@@ -231,8 +242,9 @@ public class ControllerProcessMain implements Initializable {
 		execution_btn.setDisable(true);
 		examination_btn.setDisable(false);
 		shutdown_btn.setDisable(true);
-		freeze_btn.setDisable(true);
-		defrost_btn.setDisable(false);			
+		supervisor_mode_btn.setDisable(true);
+		director_btn.setDisable(true);
+		defrost_btn.setDisable(true);
 	}
 
 	//change button disability in accordance to supervisor
@@ -244,8 +256,9 @@ public class ControllerProcessMain implements Initializable {
 		execution_btn.setDisable(true);
 		examination_btn.setDisable(false);
 		shutdown_btn.setDisable(true);
-		freeze_btn.setDisable(true);
-		defrost_btn.setDisable(false);	
+		supervisor_mode_btn.setDisable(false);
+		director_btn.setDisable(true);
+		defrost_btn.setDisable(true);
 	}
 
 	private void fitManager() {
@@ -256,8 +269,9 @@ public class ControllerProcessMain implements Initializable {
 		execution_btn.setDisable(true);
 		examination_btn.setDisable(true);
 		shutdown_btn.setDisable(true);
-		freeze_btn.setDisable(true);
-		defrost_btn.setDisable(true);		
+		supervisor_mode_btn.setDisable(true);
+		director_btn.setDisable(false);
+		defrost_btn.setDisable(false);
 	}
 
 	//Suitable for the initiator of the process the buttons allowed
@@ -270,9 +284,23 @@ public class ControllerProcessMain implements Initializable {
 		execution_btn.setDisable(true);
 		examination_btn.setDisable(true);
 		shutdown_btn.setDisable(true);
-		freeze_btn.setDisable(true);
+		supervisor_mode_btn.setDisable(true);
+		director_btn.setDisable(true);
 		defrost_btn.setDisable(true);
-		
+	}
+	
+	//disable all buttons on startup (before choosing a process from the table)
+	private void initializeButtons() {
+		newRequestBtn.setDisable(true);
+		extension_btn.setDisable(true);
+		evaluation_btn.setDisable(true);
+		decision_btn.setDisable(true);
+		execution_btn.setDisable(true);
+		examination_btn.setDisable(true);
+		shutdown_btn.setDisable(true);
+		supervisor_mode_btn.setDisable(true);
+		director_btn.setDisable(true);
+		defrost_btn.setDisable(true);
 	}
 	
 	
@@ -338,15 +366,17 @@ public class ControllerProcessMain implements Initializable {
 		default:
 			Client.getInstance().getProcessesFromServer();
 			break;
-		}
-			
-			
+		}		
 			
 	}
 	
 	public int getSelectedRowNumber()
 	{
-		return tableView.getSelectionModel().getSelectedItem().getRequestId();
+		//check if a row is selected in the processes table
+		if(tableView.getSelectionModel().getSelectedItem() == null)
+			return -1;
+		else
+			return tableView.getSelectionModel().getSelectedItem().getRequestId();
 	}
 
 }
