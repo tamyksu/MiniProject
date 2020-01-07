@@ -4,12 +4,14 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import translator.*;
+import application.MyFile;
 import application.Request;
 import application.UserProcess;
 import client.Client;
@@ -51,6 +53,11 @@ public class DBConnector {
 		ArrayList<String> ar = new ArrayList<String>() ;
 		switch (translator.getRequest()) {
 		case NEWREQUEST:
+
+			ArrayList<Boolean> failed = new ArrayList<Boolean>();
+			ArrayList<Boolean> success = new ArrayList<Boolean>();
+			Translator answer;
+
 			Request nr = (Request) translator.getParmas().get(0);
 			try {
 				
@@ -72,6 +79,7 @@ public class DBConnector {
 				stmt.executeUpdate();
 
 				// Get the ID newly inserted request:
+
 				PreparedStatement stmt2 = conn.prepareStatement("select request_id from processes where"
 						+ " initiator_id=? and system_num=? and "
 						+ "problem_description=? and request_description=? "
@@ -93,7 +101,7 @@ public class DBConnector {
 				// Add the new request ID with it's initator' Id to users_request 
 
 						
-				// ***************************** Recieve Files from Client and insert them to Data Base
+	// ***************************** Recieve Files from Client and insert them to Data Base
 				PreparedStatement stmt3 = conn.prepareStatement("insert into  users_requests (user_id,process_id,"
 						+ "role)"
 						+ "values(?,?,?)");
@@ -144,9 +152,9 @@ public class DBConnector {
 				failed.add(new Boolean(false));
 				answer = new Translator(OptionsOfAction.NEWREQUEST,failed);
 				return answer;
-			} catch (IOException e) {
+			} catch (IOException ex) {
 				// TODO Auto-generated catch block
-				e.printStackTrace();
+				ex.printStackTrace();
 			}
 	/***************************************SELECTCHAIRMAN***********************************************/		
 		case SELECTCHAIRMAN:
@@ -173,7 +181,7 @@ public class DBConnector {
 				return newTranslator;
 				
 				}
-			catch (SQLException e) {
+			catch (SQLException ex) {
 					// TODO Auto-generated catch block
 					System.out.println("SQL EXCEPTION SELECTCHAIRMAN!");
 			}
