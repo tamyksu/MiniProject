@@ -13,7 +13,10 @@ import java.util.ArrayList;
 import translator.*;
 import application.MyFile;
 import application.Request;
+import application.UserProcess;
+import client.Client;
 import java.sql.ResultSet;
+
 public class DBConnector {
 
 	private static Connection conn;
@@ -148,9 +151,9 @@ public class DBConnector {
 				failed.add(new Boolean(false));
 				answer = new Translator(OptionsOfAction.NEWREQUEST,failed);
 				return answer;
-			} catch (IOException e) {
+			} catch (IOException ex) {
 				// TODO Auto-generated catch block
-				e.printStackTrace();
+				ex.printStackTrace();
 			}
 	/***************************************SELECTCHAIRMAN***********************************************/		
 		case SELECTCHAIRMAN:
@@ -177,7 +180,7 @@ public class DBConnector {
 				return newTranslator;
 				
 				}
-			catch (SQLException e) {
+			catch (SQLException ex) {
 					// TODO Auto-generated catch block
 					System.out.println("SQL EXCEPTION SELECTCHAIRMAN!");
 			}
@@ -276,6 +279,7 @@ public class DBConnector {
 		break;
 			
 /*************************************************LOGIN***************************************************************/
+
 		case LOGIN:
 			try {
 				stmt = conn.prepareStatement("select * from users where user_id=? and password=?");	
@@ -381,6 +385,133 @@ public class DBConnector {
 				e.printStackTrace();
 			}	
 			break;
+			
+		case GET_APPRAISER_AND_PERFORMANCE_LEADER_CB_DATA:
+			System.out.println("made it1");
+			try {
+
+				stmt = conn.prepareStatement("SELECT DISTINCT id, first_name, last_name\r\n" + 
+						"FROM icmdb.workers\r\n" + 
+						"LEFT JOIN icmdb.users_requests\r\n" + 
+						"ON users_requests.user_id = workers.id\r\n" + 
+						"WHERE (id NOT IN (SELECT user_id\r\n" + 
+						"							FROM icmdb.users_requests\r\n" + 
+						"							WHERE process_id = ?) "
+						+ "							OR id NOT IN (SELECT users_requests.user_id FROM icmdb.users_requests)) "
+						+ "AND id NOT IN (SELECT user_id FROM icmdb.permanent_roles)");
+				
+				
+				stmt.setInt(1, (int)translator.getParmas().get(0));
+				ResultSet rs = stmt.executeQuery();		
+				System.out.println("made it2");
+
+				if(rs.first() == false) {
+					System.out.println("No appraisers or performance leaders to appoint");
+					ar.add("No Appraisers To Appoint");
+					ArrayList<ArrayList<?>> empty = new ArrayList<ArrayList<?>>();
+					empty.add(ar);
+
+					Translator newTranslator = new Translator(translator.getRequest(), empty);
+
+					return newTranslator;
+				}
+				rs.previous();
+				System.out.println("Yes appraisers or performance leaders");
+
+				ArrayList<String> workersWithoutRole = new ArrayList<String>();
+				while(rs.next()) {	
+					workersWithoutRole.add(rs.getString(1));
+					workersWithoutRole.add(rs.getString(2));
+					workersWithoutRole.add(rs.getString(3));
+				}
+				System.out.println("workersWithoutRole:");
+				System.out.println(workersWithoutRole);
+				Translator newTranslator = new Translator(translator.getRequest(), workersWithoutRole);
+				return newTranslator;
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				System.out.println("Catch");
+				e.printStackTrace();
+			}
+			break;
+		case APPOINT_APPRAISER_OR_PERFORMANCE_LEADER:
+				
+				try {
+					stmt = conn.prepareStatement("INSERT INTO users_requests(user_id, process_id, role)" +
+				"VALUES (?, ?, ?)");
+					stmt.setString(1, translator.getParmas().get(0).toString());
+					stmt.setInt(2, (int)translator.getParmas().get(1));
+					stmt.setString(3, translator.getParmas().get(2).toString());
+					
+					stmt.executeUpdate();
+					
+					System.out.println("APPOINT_APPRAISER_OR_PERFORMANCE_LEADER Insert is working");
+					setNextStage((int)translator.getParmas().get(1));
+				}
+				catch (SQLException e) {
+					// TODO Auto-generated catch block
+					System.out.println("SQL EXCEPTION on APPOINT_APPRAISER_OR_PERFORMANCE_LEADER");
+				}
+			break;
+		case SET_EVALUATION_OR_EXECUTION_DUE_TIME:
+			try {
+				stmt = conn.prepareStatement("UPDATE icmdb.processes SET current_stage_due_date = ? "
+						+ "WHERE request_id = ?");
+				
+				stmt.setString(1, translator.getParmas().get(1).toString());
+				stmt.setInt(2, (int)translator.getParmas().get(0));
+				
+				stmt.executeUpdate();
+				setNextStage((int)translator.getParmas().get(0));
+			}
+			catch(SQLException e) {
+				 //TODO Auto-generated catch block
+				System.out.println("Catch SET_EVALUATION_OR_EXECUTION_DUE_TIME");
+			}
+			break;
+		case ADD_EVALUATION_OR_EXECUTION_EXTENSION_TIME:
+			try {
+				stmt = conn.prepareStatement("SELECT current_stage_due_date FROM icmdb.processes WHERE request_id = ?");
+				stmt.setInt(1, (int)translator.getParmas().get(0));
+				
+				ResultSet rs = stmt.executeQuery();		
+				
+				//System.out.println("HERE 1");
+				
+				if(rs.first() == false) {
+					System.out.println("No Process Was Found");
+					return null;
+				}
+				//System.out.println("SSSS");
+				rs.previous();
+
+				String currentDueTime="";
+				//System.out.println("HERE 2");
+
+				while(rs.next()) {
+					currentDueTime = rs.getString(1);
+					}
+				System.out.println(currentDueTime);
+				int newDueTime = Integer.parseInt(currentDueTime);
+				
+				newDueTime += (int)translator.getParmas().get(1);
+				
+				stmt = conn.prepareStatement("UPDATE icmdb.processes SET current_stage_due_date = ? "
+						+ "WHERE request_id = ?");
+				
+				stmt.setString(1, String.valueOf(newDueTime).toString());
+				stmt.setInt(2, (int)translator.getParmas().get(0));
+				
+				stmt.executeUpdate();
+				System.out.println("Due Time Update Was Succeeded!");
+			}
+			catch(SQLException e) {
+				 //TODO Auto-generated catch block
+				System.out.println("Catch ADD_EVALUATION_OR_EXECUTION_EXTENSION_TIME");
+			}
+			
+			break;
+			
 		case GETALLPROCESSES:
 			try {
 				stmt = conn.prepareStatement("SELECT * FROM processes;");
@@ -431,6 +562,46 @@ public class DBConnector {
 				e.printStackTrace();
 			}	
 			break;
+			
+		case GET_APPRAISER_AND_PERFORMANCE_LEADER_OF_PROC:
+			try {
+				System.out.println("GET_APPRAISER_AND_PERFORMANCE_LEADER_OF_PROC 1");
+				stmt = conn.prepareStatement("SELECT first_name, last_name, id, role\r\n" + 
+						"FROM icmdb.workers\r\n" + 
+						"		JOIN icmdb.users_requests ON id = user_id\r\n" + 
+						"						WHERE (role = 'Appraiser' OR role = 'Performance Leader')\r\n" + 
+						"						AND process_id = ?	");
+				stmt.setInt(1, (int)translator.getParmas().get(0));
+				
+				ResultSet rs = stmt.executeQuery();	
+				System.out.println("GET_APPRAISER_AND_PERFORMANCE_LEADER_OF_PROC 2");
+				if(rs.first() == false) {
+					System.out.println("GET_APPRAISER_AND_PERFORMANCE_LEADER_OF_PROC - No employees were found");
+					ar.add("No employees were found");
+					ArrayList<ArrayList<?>> empty = new ArrayList<ArrayList<?>>();
+					empty.add(ar);
+					Translator newTranslator = new Translator(translator.getRequest(), empty);
+					return newTranslator;
+				}
+				rs.previous();
+				ArrayList<Object> processes = new ArrayList<Object>();
+			
+				processes.add(String.valueOf((int)translator.getParmas().get(0)));
+				
+				while(rs.next()) {	
+					processes.add(rs.getString(1));
+					processes.add(rs.getString(2));
+					processes.add(rs.getString(4));
+				}
+				System.out.println("OMG");
+				System.out.println(processes);
+				Translator newTranslator = new Translator(translator.getRequest(), processes);
+				return newTranslator;
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				System.out.println("SQL Exception GET_APPRAISER_AND_PERFORMANCE_LEADER_OF_PROC");
+			}	
+			break;	
 			
 		case DEFROST_PROCESS:
 		{
@@ -501,5 +672,48 @@ public class DBConnector {
 			System.out.println("The SQL query of initiator info has faile;");
 		}
 		return null;
+	}
+	
+	private static void setNextStage(int procID)
+	{
+		PreparedStatement stmt;
+		String strProcStage;
+		int numProcStage;
+		
+		System.out.println("procID: " + procID);
+		try {
+			stmt = conn.prepareStatement("SELECT process_stage FROM icmdb.processes\r\n" + 
+					"					WHERE request_id = ?");
+			
+			stmt.setInt(1, procID);
+			
+			ResultSet rs = stmt.executeQuery();	
+			System.out.println("SET NEXT STAGE 1");
+			if(rs.first() == false) {
+				System.out.println("setNextStage() Failed - There is no process ID %d" + procID);
+				return;
+			}
+			
+			strProcStage = rs.getString(1);
+			System.out.println("strProcStage = " + strProcStage);
+			
+			numProcStage = Integer.parseInt(strProcStage);
+			numProcStage++;
+			strProcStage = String.valueOf(numProcStage);
+			
+			stmt = conn.prepareStatement("UPDATE icmdb.processes SET process_stage = ? WHERE request_id = ?");
+		
+			stmt.setString(1, strProcStage);
+			stmt.setInt(2, procID);
+			
+			stmt.executeUpdate();
+			System.out.println("strProcStage++ = " + strProcStage);
+			
+			System.out.println("update process stage succeeded");
+			
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			System.out.println("SQL Exception setNextStage()");
+		}	
 	}
 }

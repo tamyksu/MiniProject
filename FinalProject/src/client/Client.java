@@ -57,6 +57,9 @@ public class Client extends AbstractClient {
 		case GET_APPRAISER_AND_PERFORMANCE_LEADER_CB_DATA:
 			handlerMessageFromServerAppointAppraiser(result.getParmas());
 			break;
+		case GET_APPRAISER_AND_PERFORMANCE_LEADER_OF_PROC:
+			handlerMessageFromServerGetAppOrPLofProc(result.getParmas());
+			break;
 		case GETALLINFORMATIONSYSTEMS:
 			//fillListForComboBox(result.getParmas());	
 		case SELECTCHAIRMAN:
@@ -94,9 +97,10 @@ public class Client extends AbstractClient {
 	public void handlerMessageFromServerSelectChairMan(Object message)
 	{
 		ArrayList<String> arr= (ArrayList<String>)message;
-		
-		StaffMainController.instance.setDataChairMan(arr);
+	
+		StaffMainController.instance.setDataChairMan(arr);	
 	}
+
 	public void handlerMessageFromServercheckDB(Object message)
 	{
 	ArrayList<String> arr= (ArrayList<String>)message;
@@ -104,23 +108,34 @@ public class Client extends AbstractClient {
 		StaffMainController.instance.checkApoint(arr);
 	}
 
- public void handlerMessageFromServerDELETEPERMANENT(Object message){
+	public void handlerMessageFromServerDELETEPERMANENT(Object message){
 		ArrayList<String> arr= (ArrayList<String>)message;
 	
 		StaffMainController.instance.SET_DELETEPERMANENT(arr);
 		
 	}
+
 	private void setName(String userID) {
 		this.userID = userID;
 	}
 
+	
+	public void handleMessageFromClientGUINewRequest(Object message) {
+		try {
+			super.
+			sendToServer(message);
+		} catch (IOException e) {
+			System.out.println("Could not insert new request");
+			quit();
+		}
+	}
 	
 	
 	public void handleMessageFromClientGUI(Object message) {
 		try {
 			sendToServer(message);
 		} catch (IOException e) {
-			System.out.println("Could not perform action to server");
+			System.out.println("Could not send massage to server");
 			quit();
 		}
 	}
@@ -157,10 +172,10 @@ public class Client extends AbstractClient {
 	public void handlerMessageFromServerUpdatePermanent(Object message){
 		
 		ArrayList<String> arr= (ArrayList<String>)message;
-	
-		StaffMainController.instance.printMessage(arr);
+		
+		StaffMainController.instance.printMessage(arr);///
 	}
-/*****************************************handlerMessageFromServerNewRequest*************************************************************/	
+	/*****************************************handlerMessageFromServerNewRequest*************************************************************/	
 	
 	
 	// Handle in case a New Request was received in the database
@@ -175,7 +190,7 @@ public class Client extends AbstractClient {
 			NewRequestContoroller.getInstance().setAnswerFromServer(false);
 		}
 	}
-/*********************************************handlerMessageFromServerLogin*************************************************/	
+	
 	//In case we want to tell you, what is the server's answer regarding the client's connection experience
 	public void handlerMessageFromServerLogin(Object rs) {
 		@SuppressWarnings("unchecked")
@@ -222,7 +237,6 @@ public class Client extends AbstractClient {
 	//In case we got processes to display from this database, this function will make sure to save them to the client
 	//and also send them to the tag on the appropriate screen
 	@SuppressWarnings("unchecked")
-	/*****************************************handlerMessageFromServerProcesses*****************************************************/
 	public void handlerMessageFromServerProcesses(Object rs) {
 		Processes processes = new Processes();
     	ArrayList<ArrayList<?>> result = new ArrayList<ArrayList<?>>();	
@@ -256,7 +270,7 @@ public class Client extends AbstractClient {
 		//send processes information to specific controller
 		ControllerProcessMain.getInstance().SetInTable(processes);
 	}
-
+	
 	//function related to supervisor. get all the process exist 
 	@SuppressWarnings("unchecked")
 	private void handlerMessageFromServerGetAllProcesses(ArrayList<?> rs) {
@@ -315,5 +329,33 @@ public class Client extends AbstractClient {
 		
 		Supervisor_ProcessMain_Controller.instance.setAppraiserOrPerformanceLeaderDataInCB(result);
 
+	}
+	
+	public void handlerMessageFromServerGetAppOrPLofProc(Object rs)
+	{
+		ArrayList <String> names = (ArrayList<String>)rs;
+		ArrayList <String> fullNames = new ArrayList <String>();
+		int procID = Integer.parseInt(names.get(0));
+		
+		if(names.size() == 4)//must be Appraiser because you can't have Performance LeaderL without Appraiser
+		{
+			fullNames.add(new String (names.get(1) + " " + names.get(2)));
+		}
+		if(names.size() == 7)
+		{
+			if(names.get(3).compareTo("Appraiser") == 0)
+			{
+				fullNames.add(new String (names.get(1) + " " + names.get(2)));//appraiser
+				fullNames.add(new String (names.get(4) + " " + names.get(5)));//performance leader
+			}
+			else
+			{
+				fullNames.add(new String (names.get(4) + " " + names.get(5)));//appraiser
+				fullNames.add(new String (names.get(1) + " " + names.get(2)));//performance leader
+			}
+		}
+		
+		System.out.println("Client full names: " + fullNames);
+		Supervisor_ProcessMain_Controller.instance.setAppraiserAndPerformanceLeaderLabels(fullNames);
 	}
 }
