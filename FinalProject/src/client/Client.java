@@ -53,6 +53,9 @@ public class Client extends AbstractClient {
 		case GET_APPRAISER_AND_PERFORMANCE_LEADER_CB_DATA:
 			handlerMessageFromServerAppointAppraiser(result.getParmas());
 			break;
+		case GET_APPRAISER_AND_PERFORMANCE_LEADER_OF_PROC:
+			handlerMessageFromServerGetAppOrPLofProc(result.getParmas());
+			break;
 		default:
 			break;
 		}
@@ -276,5 +279,33 @@ public class Client extends AbstractClient {
 		
 		Supervisor_ProcessMain_Controller.instance.setAppraiserOrPerformanceLeaderDataInCB(result);
 
+	}
+	
+	public void handlerMessageFromServerGetAppOrPLofProc(Object rs)
+	{
+		ArrayList <String> names = (ArrayList<String>)rs;
+		ArrayList <String> fullNames = new ArrayList <String>();
+		int procID = Integer.parseInt(names.get(0));
+		
+		if(names.size() == 4)//must be Appraiser because you can't have Performance LeaderL without Appraiser
+		{
+			fullNames.add(new String (names.get(1) + " " + names.get(2)));
+		}
+		if(names.size() == 7)
+		{
+			if(names.get(3).compareTo("Appraiser") == 0)
+			{
+				fullNames.add(new String (names.get(1) + " " + names.get(2)));//appraiser
+				fullNames.add(new String (names.get(4) + " " + names.get(5)));//performance leader
+			}
+			else
+			{
+				fullNames.add(new String (names.get(4) + " " + names.get(5)));//appraiser
+				fullNames.add(new String (names.get(1) + " " + names.get(2)));//performance leader
+			}
+		}
+		
+		System.out.println("Client full names: " + fullNames);
+		Supervisor_ProcessMain_Controller.instance.setAppraiserAndPerformanceLeaderLabels(fullNames);
 	}
 }

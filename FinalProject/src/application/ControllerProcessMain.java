@@ -182,7 +182,7 @@ public class ControllerProcessMain implements Initializable {
 		currentStatus.setText(process.getStatus());
 		RequestedChange.setText(process.getRequest_description());
 		ButtonAdjustment(process.getRole());
-		Supervisor_ProcessMain_Controller.instance.initializeFlag(process.getProcess_stage());//to initiate the flag
+		Supervisor_ProcessMain_Controller.instance.initializeChosenProcessScreen(process.getProcess_stage());//to initiate the flag
 	}
 
 	//The function responsible for matching buttons to the process is indicated in the table
@@ -318,6 +318,7 @@ public class ControllerProcessMain implements Initializable {
 	void supervisorMode_click(ActionEvent event) {
 		ScreenController.getScreenController().activate("supervisor_processesMain");
 		Supervisor_ProcessMain_Controller.instance.getAppraiserOrPerformanceLeaderCBData();
+		Supervisor_ProcessMain_Controller.instance.getAppraiserAndPerformanceLeaderLabels();
 	}
 	
 	@FXML
