@@ -180,6 +180,7 @@ public class Client extends AbstractClient {
 	public void handlerMessageFromServerLogin(Object rs) {
 		@SuppressWarnings("unchecked")
 		ArrayList<String> result = (ArrayList<String>) rs;
+		
 		switch (result.get(0)) {
 		case "correct match":
 			Client.getInstance().setName(result.get(1));

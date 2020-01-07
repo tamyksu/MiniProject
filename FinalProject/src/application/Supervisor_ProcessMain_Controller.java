@@ -453,4 +453,5 @@ public class Supervisor_ProcessMain_Controller implements Initializable{
     	ScreenController.getScreenController().activate(ScreenController.getScreenController().getLastScreen());
     	ControllerProcessMain.instance.getTheUpdateProcessesFromDB();
     }
+    
 }
