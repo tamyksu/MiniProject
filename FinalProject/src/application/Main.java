@@ -31,6 +31,13 @@ public class Main extends Application {
 		}
 	}
 	
+	@Override
+	public void stop() throws Exception {
+		// TODO Auto-generated method stub
+		super.stop();
+		System.exit(0);
+	}
+	
 	public void initializeScreenController(Scene baseScene)
 	{
 		new ScreenController(baseScene);

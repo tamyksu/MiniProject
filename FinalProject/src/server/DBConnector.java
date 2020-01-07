@@ -210,7 +210,7 @@ public class DBConnector {
 				stmt.setString(1, (String) translator.getParmas().get(0).toString());
 				System.out.println("almost" + translator.getParmas().get(0) + " :)");
 				stmt.executeUpdate();	
-				System.out.println("deketed" + translator.getParmas().get(0) + " :)");
+				System.out.println("deleted" + translator.getParmas().get(0) + " :)");
 				ar.add((String) translator.getParmas().get(0));//put the role
 				/*if(rs.first() == false) {
 					ar.add("Select chairman failled");
@@ -303,7 +303,7 @@ public class DBConnector {
 					if(rs1.getString(1).equals("Supervisor") ) {
 						ans.add("Supervisor");
 					}
-					else if(rs1.getString(1).equals( "Manager") ){
+					else if(rs1.getString(1).equals("Manager") ){
 						ans.add("Manager");
 					}
 					ans.add(ar.get(0));
@@ -432,11 +432,44 @@ public class DBConnector {
 			}	
 			break;
 			
+		case DEFROST_PROCESS:
+		{
+			try {
+				stmt = conn.prepareStatement("UPDATE processes SET status1='Active' WHERE request_id=?");
+				stmt.setString(1, (String) translator.getParmas().get(0));
+
+				int rs = stmt.executeUpdate();
+				
+				if(rs == 1)
+				{
+					ar.add("Succesfully Defrosted");
+					return new Translator(translator.getRequest(),ar);
+				}
+				else
+				{
+					ar.add("Failed To Defrosted");
+				}
+				
+				return new Translator(translator.getRequest(),ar);
+
+
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				
+				ar.add("SQL Error");
+				return new Translator(translator.getRequest(),ar);
+
+			}
+
+		}
+		
 		default:
 			System.out.println("default");
 			break;
 		}
 		return null;
+
 	}
 
 	//Another function aimed at getting the initiator information from the database
