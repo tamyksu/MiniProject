@@ -62,7 +62,8 @@ public class Client extends AbstractClient {
 			break;
 		case GETALLINFORMATIONSYSTEMS:
 			//fillListForComboBox(result.getParmas());	
-		case SELECTCHAIRMAN:
+			break;
+		case INITIALIZE_COMBO_BOX:
 			handlerMessageFromServerSelectChairMan(result.getParmas());
 			break;
 		case UPDATEPERMANENT:
@@ -71,9 +72,15 @@ public class Client extends AbstractClient {
 		case DELETEPERMANENT:
 			handlerMessageFromServerDELETEPERMANENT(result.getParmas());
 			break;
+		case CURRENT_IN_ROLE:
+			handlerMessageFromServerCURRENT_IN_ROLE(result.getParmas());
+			break;
 		case checkDB:
 			handlerMessageFromServercheckDB(result.getParmas());
 			break;
+		case checkNAMEParmenent:
+			handlerMessageFromServercheckNAMEParmenent(result.getParmas());
+		break;
 		case DEFROST_PROCESS:
 			handleMessageFromServerDefrostProcess(result.getParmas());
 		default:
@@ -81,7 +88,7 @@ public class Client extends AbstractClient {
 		}
 	
 	}
-	private void handleMessageFromServerDefrostProcess(Object message) {
+		private void handleMessageFromServerDefrostProcess(Object message) {
 		ArrayList<String> arr= (ArrayList<String>) message;
 		
 		if(arr.get(0).equals("Succesfully Defrosted"))
@@ -92,33 +99,69 @@ public class Client extends AbstractClient {
 		else
 			new Alert(AlertType.ERROR,"There was an issue to defrost this process").show();
 	}
-
+	
+	public void handlerMessageFromServercheckNAMEParmenent(Object message)
+	{
+		ArrayList<String> arr= (ArrayList<String>)message;
+		System.out.println("just go to func"+arr.get(0));
+		StaffMainController.instance.check_if_this_man_available(arr);
+		
+	}
 	/******************************************handlerMessageFromServerSelectChairMan************************************************************/
 	public void handlerMessageFromServerSelectChairMan(Object message)
 	{
 		ArrayList<String> arr= (ArrayList<String>)message;
-	
-		StaffMainController.instance.setDataChairMan(arr);	
+		
+		StaffMainController.instance.setDataChairMan(arr);
+		
+		
 	}
-
+	
+	
+	
+	public void handlerMessageFromServerCURRENT_IN_ROLE(Object message)
+	{
+		ArrayList<String> arr= (ArrayList<String>)message;
+		
+		if(arr.get(2).equals("ChairMan"))
+		arr.add("2");///its make it index 3
+		else if(arr.get(2).equals("Supervisor"))
+			arr.add("3");
+		else if(arr.get(2).equals("Information Engineer-1"))
+			arr.add("4");
+		else if(arr.get(2).equals("Information Engineer-2"))
+			arr.add("5");
+		
+	
+		StaffMainController.instance.printMessage1(arr);
+	}
 	public void handlerMessageFromServercheckDB(Object message)
 	{
 	ArrayList<String> arr= (ArrayList<String>)message;
+	//System.out.println(arr.get(2)+"checkkkkkkkkkkkkk");
+	System.out.println("in option: "+arr.get(2)+" this place empty if it 0 :"+arr.get(0)+" in role "+ arr.get(1));
+	
+		if(arr.get(2).equals("1"))//first thing
+		{
+			
+		StaffMainController.instance.afterSet(arr);
+		}	
+		else //chair man check in parmenent
+	{
 		
-		StaffMainController.instance.checkApoint(arr);
+			StaffMainController.instance.checkApoint(arr);
+	}		
 	}
 
-	public void handlerMessageFromServerDELETEPERMANENT(Object message){
+ public void handlerMessageFromServerDELETEPERMANENT(Object message){
 		ArrayList<String> arr= (ArrayList<String>)message;
 	
 		StaffMainController.instance.SET_DELETEPERMANENT(arr);
 		
 	}
-
 	private void setName(String userID) {
 		this.userID = userID;
 	}
-
 	
 	public void handleMessageFromClientGUINewRequest(Object message) {
 		try {
@@ -129,13 +172,12 @@ public class Client extends AbstractClient {
 			quit();
 		}
 	}
-	
-	
 	public void handleMessageFromClientGUI(Object message) {
 		try {
 			sendToServer(message);
 		} catch (IOException e) {
-			System.out.println("Could not send massage to server");
+			System.out.println("Could not perform action to server");
+		//	System.out.println(e.getMessage());
 			quit();
 		}
 	}
@@ -170,15 +212,26 @@ public class Client extends AbstractClient {
 	}
 /*******************************************handlerMessageFromServerUpdatePermanent***********************************************************/
 	public void handlerMessageFromServerUpdatePermanent(Object message){
-		
 		ArrayList<String> arr= (ArrayList<String>)message;
+		System.out.println("update permanent");
 		
-		StaffMainController.instance.printMessage(arr);///
+		
+		if(arr.get(2).equals("ChairMan"))
+			arr.add("2");///its make it index 3
+			else if(arr.get(2).equals("Supervisor"))
+				arr.add("3");
+			else if(arr.get(2).equals("Information Engineer-1"))
+				arr.add("4");
+			else if(arr.get(2).equals("Information Engineer-2"))
+				arr.add("5");
+	
+		arr.add("7");
+	
+		System.out.println("handlerMessageFromServerUpdatePermanent"+arr.get(0));
+		StaffMainController.instance.printMessage(arr);
 	}
-	/*****************************************handlerMessageFromServerNewRequest*************************************************************/	
+/*****************************************handlerMessageFromServerNewRequest*************************************************************/	
 	
-	
-	// Handle in case a New Request was received in the database
 	public void handlerMessageFromServerNewRequest(Object rs) {
 	@SuppressWarnings("unchecked")
 		ArrayList<Boolean> result = (ArrayList<Boolean>) rs;
@@ -190,7 +243,7 @@ public class Client extends AbstractClient {
 			NewRequestContoroller.getInstance().setAnswerFromServer(false);
 		}
 	}
-	
+/*********************************************handlerMessageFromServerLogin*************************************************/	
 	//In case we want to tell you, what is the server's answer regarding the client's connection experience
 	public void handlerMessageFromServerLogin(Object rs) {
 		@SuppressWarnings("unchecked")
@@ -239,6 +292,7 @@ public class Client extends AbstractClient {
 	//In case we got processes to display from this database, this function will make sure to save them to the client
 	//and also send them to the tag on the appropriate screen
 	@SuppressWarnings("unchecked")
+	/*****************************************handlerMessageFromServerProcesses*****************************************************/
 	public void handlerMessageFromServerProcesses(Object rs) {
 		Processes processes = new Processes();
     	ArrayList<ArrayList<?>> result = new ArrayList<ArrayList<?>>();	
@@ -273,7 +327,7 @@ public class Client extends AbstractClient {
 		//send processes information to specific controller
 		ControllerProcessMain.getInstance().SetInTable(processes);
 	}
-	
+
 	//function related to supervisor. get all the process exist 
 	@SuppressWarnings("unchecked")
 	private void handlerMessageFromServerGetAllProcesses(ArrayList<?> rs) {
