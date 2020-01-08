@@ -12,6 +12,7 @@ import application.ScreenController;
 import application.StaffMainController;
 import application.Supervisor_ProcessMain_Controller;
 import application.UserProcess;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 
 public class Client extends AbstractClient {
@@ -50,8 +51,14 @@ public class Client extends AbstractClient {
 		case NEWREQUEST:
 			handlerMessageFromServerNewRequest(result.getParmas());
 			break;
-			case GET_APPRAISER_AND_PERFORMANCE_LEADER_CB_DATA:
+		case GETALLPROCESSES:
+			handlerMessageFromServerGetAllProcesses(result.getParmas());
+			break;
+		case GET_APPRAISER_AND_PERFORMANCE_LEADER_CB_DATA:
 			handlerMessageFromServerAppointAppraiser(result.getParmas());
+			break;
+		case GET_APPRAISER_AND_PERFORMANCE_LEADER_OF_PROC:
+			handlerMessageFromServerGetAppOrPLofProc(result.getParmas());
 			break;
 		case GETALLINFORMATIONSYSTEMS:
 			//fillListForComboBox(result.getParmas());	
@@ -73,10 +80,24 @@ public class Client extends AbstractClient {
 			break;
 		case checkNAMEParmenent:
 			handlerMessageFromServercheckNAMEParmenent(result.getParmas());
+		break;
+		case DEFROST_PROCESS:
+			handleMessageFromServerDefrostProcess(result.getParmas());
 		default:
 			break;
 		}
 	
+	}
+		private void handleMessageFromServerDefrostProcess(Object message) {
+		ArrayList<String> arr= (ArrayList<String>) message;
+		
+		if(arr.get(0).equals("Succesfully Defrosted"))
+		{
+			ControllerProcessMain.getInstance().getTheUpdateProcessesFromDB();
+			ControllerProcessMain.getInstance().ButtonAdjustmentSuperUser(this.role, ControllerProcessMain.getInstance().getRequestID());
+		}
+		else
+			new Alert(AlertType.ERROR,"There was an issue to defrost this process").show();
 	}
 	
 	public void handlerMessageFromServercheckNAMEParmenent(Object message)
@@ -142,13 +163,21 @@ public class Client extends AbstractClient {
 		this.userID = userID;
 	}
 	
-	
+	public void handleMessageFromClientGUINewRequest(Object message) {
+		try {
+			super.
+			sendToServer(message);
+		} catch (IOException e) {
+			System.out.println("Could not insert new request");
+			quit();
+		}
+	}
 	public void handleMessageFromClientGUI(Object message) {
 		try {
 			sendToServer(message);
 		} catch (IOException e) {
 			System.out.println("Could not perform action to server");
-			System.out.println(e.getMessage());
+		//	System.out.println(e.getMessage());
 			quit();
 		}
 	}
@@ -232,9 +261,10 @@ public class Client extends AbstractClient {
 			getAllProcessesFromServer();
 			break;
 		case "Manager":
-//			Client.getInstance().setName(result.get(1));
-//			ScreenController.getScreenController().activate("Supervisor_ProcessesMain");
-//			getProcessesFromServer();
+			Client.getInstance().setName(result.get(1));
+			this.setRule(result.get(0));
+			ScreenController.getScreenController().activate("processesMain");
+			getAllProcessesFromServer();
 			break;
 	
 		case "Login failed, username and password did not match":
@@ -245,8 +275,8 @@ public class Client extends AbstractClient {
 			break;
 		}
 	}
-	
-		public void getAllProcessesFromServer() {
+
+	public void getAllProcessesFromServer() {
 		ArrayList<String> ar = new ArrayList<String>();
 		ar.add(userID);
 		Translator translator = new Translator(OptionsOfAction.GETALLPROCESSES, ar);
@@ -309,7 +339,8 @@ public class Client extends AbstractClient {
 				process.setRequest_id((int)result.get(i).get(0));
 				process.setSystem_num((int)result.get(i).get(1));
 				//Get values from string array
-				process.setRole("Supervisor");
+				process.setRole(Client.getInstance().getRole());
+				//process.setRole((String)result.get(i+1).get(0));
 				process.setIntiatorId((String)result.get(i+1).get(0));
 				process.setProblem_description((String)result.get(i+1).get(1));
 				process.setRequest_description((String)result.get(i+1).get(2));
@@ -352,5 +383,33 @@ public class Client extends AbstractClient {
 		
 		Supervisor_ProcessMain_Controller.instance.setAppraiserOrPerformanceLeaderDataInCB(result);
 
+	}
+	
+	public void handlerMessageFromServerGetAppOrPLofProc(Object rs)
+	{
+		ArrayList <String> names = (ArrayList<String>)rs;
+		ArrayList <String> fullNames = new ArrayList <String>();
+		int procID = Integer.parseInt(names.get(0));
+		
+		if(names.size() == 4)//must be Appraiser because you can't have Performance LeaderL without Appraiser
+		{
+			fullNames.add(new String (names.get(1) + " " + names.get(2)));
+		}
+		if(names.size() == 7)
+		{
+			if(names.get(3).compareTo("Appraiser") == 0)
+			{
+				fullNames.add(new String (names.get(1) + " " + names.get(2)));//appraiser
+				fullNames.add(new String (names.get(4) + " " + names.get(5)));//performance leader
+			}
+			else
+			{
+				fullNames.add(new String (names.get(4) + " " + names.get(5)));//appraiser
+				fullNames.add(new String (names.get(1) + " " + names.get(2)));//performance leader
+			}
+		}
+		
+		System.out.println("Client full names: " + fullNames);
+		Supervisor_ProcessMain_Controller.instance.setAppraiserAndPerformanceLeaderLabels(fullNames);
 	}
 }

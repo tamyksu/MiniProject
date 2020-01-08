@@ -14,6 +14,8 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
+import translator.OptionsOfAction;
+import translator.Translator;
 import javafx.event.ActionEvent;
 
 public class ControllerProcessMain implements Initializable {
@@ -60,9 +62,6 @@ public class ControllerProcessMain implements Initializable {
 	private Label Explanation;
 
 	@FXML
-	private Button freeze_btn;
-
-	@FXML
 	private Button decision_btn;
 	@FXML
 	private Label Notes;
@@ -99,6 +98,13 @@ public class ControllerProcessMain implements Initializable {
 
 	@FXML
 	private Button newRequestBtn;
+	
+	@FXML
+	private Button supervisor_mode_btn;
+	
+	@FXML
+	private Button director_btn;
+	
 
 	public static void setInstance(ControllerProcessMain instance) {
 		ControllerProcessMain.instance = instance;
@@ -112,6 +118,7 @@ public class ControllerProcessMain implements Initializable {
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		instance = this;
+		initializeButtons();
 	}
 
 	public static ControllerProcessMain getInstance() {
@@ -178,37 +185,61 @@ public class ControllerProcessMain implements Initializable {
 		Notes.setText(process.getNotes());
 		RequestDate.setText(process.getCreation_date());
 		RequestID.setText("" + process.getRequest_id());
-//		Documents.setText//
 		currentStatus.setText(process.getStatus());
 		RequestedChange.setText(process.getRequest_description());
-		ButtonAdjustment(process.getRole());
-		Supervisor_ProcessMain_Controller.instance.initializeFlag(process.getProcess_stage());//to initiate the flag
+		if(process.getRole().toLowerCase().equals("supervisor") || process.getRole().toLowerCase().equals("manager"))
+			ButtonAdjustmentSuperUser(process.getRole(), process.getStatus());
+		else
+			ButtonAdjustment(process.getRole());
+		Supervisor_ProcessMain_Controller.instance.initializeChosenProcessScreen(process.getProcess_stage());//to initiate the flag
 	}
 
 	//The function responsible for matching buttons to the process is indicated in the table
 	private void ButtonAdjustment(String userRole) {
-		switch (userRole) {
+		switch (userRole.toLowerCase()) {
 		case "initiator":
 			fitInitiator();
 			break;
-		case "manager":
-			fitManager();
-			break;
-		case "supervisor":
-			fitSupervisor();
-			break;	
 		case "appraiser":
 			fitAppraiser();
 			break;
-		case "Chairman":
+		case "chairman":
 			fitChairman();
 			break;
 			
 		default:
+			//disable all
+			initializeButtons();
 			break;
 		}
 		
 	}
+	
+	//The function responsible for matching buttons to the process is indicated in the table
+	public void ButtonAdjustmentSuperUser(String userRole, String processStatus) {
+		
+		switch (userRole.toLowerCase())
+		{
+			case "manager":
+				if(processStatus.toLowerCase().equals("suspended") || processStatus.toLowerCase().equals("shutdown"))
+					fitManagerDisabled();
+				else
+					fitManager();
+				break;
+			case "supervisor":
+				if(processStatus.toLowerCase().equals("suspended") || processStatus.toLowerCase().equals("shutdown"))
+					fitSupervisorDisabled();
+				else
+					fitSupervisor();
+				break;	
+		
+			default:
+				break;
+		}
+	
+		
+	}
+	
 	//change button disability in accordance to appraiser
 	private void fitChairman() {
 		newRequestBtn.setDisable(false);
@@ -218,8 +249,9 @@ public class ControllerProcessMain implements Initializable {
 		execution_btn.setDisable(true);
 		examination_btn.setDisable(false);
 		shutdown_btn.setDisable(true);
-		freeze_btn.setDisable(true);
-		defrost_btn.setDisable(false);		
+		supervisor_mode_btn.setDisable(true);
+		director_btn.setDisable(true);
+		defrost_btn.setDisable(true);
 	}
 
 	//change button disability in accordance to appraiser
@@ -231,8 +263,9 @@ public class ControllerProcessMain implements Initializable {
 		execution_btn.setDisable(true);
 		examination_btn.setDisable(false);
 		shutdown_btn.setDisable(true);
-		freeze_btn.setDisable(true);
-		defrost_btn.setDisable(false);			
+		supervisor_mode_btn.setDisable(true);
+		director_btn.setDisable(true);
+		defrost_btn.setDisable(true);
 	}
 
 	//change button disability in accordance to supervisor
@@ -244,8 +277,9 @@ public class ControllerProcessMain implements Initializable {
 		execution_btn.setDisable(true);
 		examination_btn.setDisable(false);
 		shutdown_btn.setDisable(true);
-		freeze_btn.setDisable(true);
-		defrost_btn.setDisable(false);	
+		supervisor_mode_btn.setDisable(false);
+		director_btn.setDisable(true);
+		defrost_btn.setDisable(true);
 	}
 
 	private void fitManager() {
@@ -256,8 +290,9 @@ public class ControllerProcessMain implements Initializable {
 		execution_btn.setDisable(true);
 		examination_btn.setDisable(true);
 		shutdown_btn.setDisable(true);
-		freeze_btn.setDisable(true);
-		defrost_btn.setDisable(true);		
+		supervisor_mode_btn.setDisable(true);
+		director_btn.setDisable(false);
+		defrost_btn.setDisable(true);
 	}
 
 	//Suitable for the initiator of the process the buttons allowed
@@ -270,9 +305,52 @@ public class ControllerProcessMain implements Initializable {
 		execution_btn.setDisable(true);
 		examination_btn.setDisable(true);
 		shutdown_btn.setDisable(true);
-		freeze_btn.setDisable(true);
+		supervisor_mode_btn.setDisable(true);
+		director_btn.setDisable(true);
 		defrost_btn.setDisable(true);
-		
+	}
+	
+	private void fitManagerDisabled()
+	{
+		newRequestBtn.setDisable(false);
+		extension_btn.setDisable(true);
+		evaluation_btn.setDisable(true);
+		decision_btn.setDisable(true);
+		execution_btn.setDisable(true);
+		examination_btn.setDisable(true);
+		shutdown_btn.setDisable(false);
+		supervisor_mode_btn.setDisable(false);
+		director_btn.setDisable(false);
+		defrost_btn.setDisable(false);
+	}
+	
+	private void fitSupervisorDisabled() 
+	{
+		newRequestBtn.setDisable(false);
+		extension_btn.setDisable(true);
+		evaluation_btn.setDisable(true);
+		decision_btn.setDisable(true);
+		execution_btn.setDisable(true);
+		examination_btn.setDisable(true);
+		shutdown_btn.setDisable(false);
+		supervisor_mode_btn.setDisable(false);
+		director_btn.setDisable(true);
+		defrost_btn.setDisable(false);
+	}
+	
+	//disable all buttons on startup (before choosing a process from the table)
+	private void initializeButtons() 
+	{
+		newRequestBtn.setDisable(true);
+		extension_btn.setDisable(true);
+		evaluation_btn.setDisable(true);
+		decision_btn.setDisable(true);
+		execution_btn.setDisable(true);
+		examination_btn.setDisable(true);
+		shutdown_btn.setDisable(true);
+		supervisor_mode_btn.setDisable(true);
+		director_btn.setDisable(true);
+		defrost_btn.setDisable(true);
 	}
 	
 	
@@ -296,7 +374,13 @@ public class ControllerProcessMain implements Initializable {
 
 	@FXML
 	void defrost_click(ActionEvent event) {
-
+		
+		ArrayList<Object> processInfo = new ArrayList<Object>();
+		
+		processInfo.add(RequestID.getText());
+		
+		Translator translator = new Translator(OptionsOfAction.DEFROST_PROCESS, processInfo);
+		Client.getInstance().handleMessageFromClientGUI(translator);
 	}
 
 	@FXML
@@ -318,11 +402,17 @@ public class ControllerProcessMain implements Initializable {
 	void supervisorMode_click(ActionEvent event) {
 		ScreenController.getScreenController().activate("supervisor_processesMain");
 		Supervisor_ProcessMain_Controller.instance.getAppraiserOrPerformanceLeaderCBData();
+		Supervisor_ProcessMain_Controller.instance.getAppraiserAndPerformanceLeaderLabels();
 	}
 	
 	@FXML
 	void shutdown_click(ActionEvent event) {
-
+		ArrayList<Object> processInfo = new ArrayList<Object>();
+		
+		processInfo.add(RequestID.getText());
+		
+		Translator translator = new Translator(OptionsOfAction.SHUTDOWN_PROCESS, processInfo);
+		Client.getInstance().handleMessageFromClientGUI(translator);
 	}
 
 	@FXML
@@ -339,13 +429,20 @@ public class ControllerProcessMain implements Initializable {
 			break;
 		}
 			
-			
-			
 	}
 	
 	public int getSelectedRowNumber()
 	{
-		return tableView.getSelectionModel().getSelectedItem().getRequestId();
+		//check if a row is selected in the processes table
+		if(tableView.getSelectionModel().getSelectedItem() == null)
+			return -1;
+		else
+			return tableView.getSelectionModel().getSelectedItem().getRequestId();
+	}
+	
+	public String getRequestID()
+	{
+		return this.RequestID.getText();
 	}
 
 }

@@ -31,9 +31,9 @@ import javafx.stage.FileChooser;
 import translator.OptionsOfAction;
 import translator.Translator;
 
-public class NewRequestContoroller implements Initializable {
+public class NewRequestController implements Initializable {
 
-	private static NewRequestContoroller instance;
+	private static NewRequestController instance;
 	
     @FXML
     private Button sendRequestBtn;
@@ -252,7 +252,7 @@ public class NewRequestContoroller implements Initializable {
     }
     
     
-    public static NewRequestContoroller getInstance() {
+    public static NewRequestController getInstance() {
     	return instance;
     	
     }
@@ -273,13 +273,15 @@ public class NewRequestContoroller implements Initializable {
 	public void initializeComboBox() {
 		
 		listForComboBox = new ArrayList<InformationSystem>();
-		listForComboBox.add(new InformationSystem(1, "Information Website"));
-		listForComboBox.add(new InformationSystem(2, "Moodle"));
-		listForComboBox.add(new InformationSystem(3, "Library Website"));
-		listForComboBox.add(new InformationSystem(4, "Class Computers"));
-		listForComboBox.add(new InformationSystem(5, "Laboratory Computers"));
-		listForComboBox.add(new InformationSystem(6, "Computer Farm"));
-		listForComboBox.add(new InformationSystem(7, "College Website"));
+		listForComboBox.add(new InformationSystem(1, "Information for Students Website"));
+		listForComboBox.add(new InformationSystem(2, "Information for Lecturers Website"));
+		listForComboBox.add(new InformationSystem(3, "Information for Workers Website"));
+		listForComboBox.add(new InformationSystem(4, "Moodle"));
+		listForComboBox.add(new InformationSystem(5, "Library Website"));
+		listForComboBox.add(new InformationSystem(6, "Class Computers"));
+		listForComboBox.add(new InformationSystem(7, "Laboratory Computers"));
+		listForComboBox.add(new InformationSystem(8, "Computer Farm"));
+		listForComboBox.add(new InformationSystem(9, "College Website"));
 		
 		for(InformationSystem i:listForComboBox) {
 			systemsCombobox.getItems().add(i.getInfomationSystemName());
