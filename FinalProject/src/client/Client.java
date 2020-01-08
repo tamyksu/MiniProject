@@ -6,7 +6,7 @@ import java.io.*;
 import java.util.ArrayList;
 import application.ControllerProcessMain;
 import application.LoginController;
-import application.NewRequestContoroller;
+import application.NewRequestController;
 import application.Processes;
 import application.ScreenController;
 import application.StaffMainController;
@@ -237,10 +237,10 @@ public class Client extends AbstractClient {
 		ArrayList<Boolean> result = (ArrayList<Boolean>) rs;
 		
 		if(result.get(0).booleanValue()==true) {
-			NewRequestContoroller.getInstance().setAnswerFromServer(true);
+			NewRequestController.getInstance().setAnswerFromServer(true);
 		}
 		else {
-			NewRequestContoroller.getInstance().setAnswerFromServer(false);
+			NewRequestController.getInstance().setAnswerFromServer(false);
 		}
 	}
 /*********************************************handlerMessageFromServerLogin*************************************************/	

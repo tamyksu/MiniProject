@@ -502,7 +502,7 @@ System.out.println("id "+translator.getParmas().get(0));
 					stmt.executeUpdate();
 					
 					System.out.println("APPOINT_APPRAISER_OR_PERFORMANCE_LEADER Insert is working");
-					setNextStage((int)translator.getParmas().get(1));
+					setNextStageByOne((int)translator.getParmas().get(1));
 				}
 				catch (SQLException e) {
 					// TODO Auto-generated catch block
@@ -518,7 +518,7 @@ System.out.println("id "+translator.getParmas().get(0));
 				stmt.setInt(2, (int)translator.getParmas().get(0));
 				
 				stmt.executeUpdate();
-				setNextStage((int)translator.getParmas().get(0));
+				setNextStageByOne((int)translator.getParmas().get(0));
 			}
 			catch(SQLException e) {
 				 //TODO Auto-generated catch block
@@ -694,7 +694,34 @@ System.out.println("id "+translator.getParmas().get(0));
 
 		}
 		case INSERT_FAILURE_REPORT:
+			try {
+				stmt = conn.prepareStatement("insert into icmdb.failure_reports "
+						+ "(failure_report_id,request_id, failure_explanation) "
+						+ "values(?,?,?)");
+						
+				stmt.setInt(1, (int)translator.getParmas().get(0));
+				stmt.setInt(2, (int)translator.getParmas().get(1));
+				stmt.setString(3, translator.getParmas().get(2).toString());
+				
+				stmt.executeUpdate();
+				setNextStageByInput((int)translator.getParmas().get(1), "7");
+			}
+		 catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 			
+			System.out.println("INSERT_FAILURE_REPORT: SQL EXCEPTION");
+
+		}
+			
+			break;
+			
+		case EXAMINATION_COMPLETED:
+			setNextStageByOne((int)translator.getParmas().get(0));
+			break;
+			
+		case FILL_FAILURE_REPORT_CLICK:
+			setNextStageByInput((int)translator.getParmas().get(0), "11.5");
 			break;
 		default:
 			System.out.println("default");
@@ -735,11 +762,11 @@ System.out.println("id "+translator.getParmas().get(0));
 		return null;
 	}
 	
-	private static void setNextStage(int procID)
+	private static void setNextStageByOne(int procID)//for the "approve" buttons
 	{
 		PreparedStatement stmt;
-		String strProcStage;
-		int numProcStage;
+		String procStage;
+		String nextProcStage = "";
 		
 		System.out.println("procID: " + procID);
 		try {
@@ -755,26 +782,91 @@ System.out.println("id "+translator.getParmas().get(0));
 				return;
 			}
 			
-			strProcStage = rs.getString(1);
-			System.out.println("strProcStage = " + strProcStage);
+			procStage = rs.getString(1);
+			System.out.println("strProcStage = " + procStage);
 			
-			numProcStage = Integer.parseInt(strProcStage);
-			numProcStage++;
-			strProcStage = String.valueOf(numProcStage);
+			switch(procStage)
+			{
+			case "1":
+				nextProcStage = "2";
+				break;
+			case "2":
+			case "2.5":
+				nextProcStage = "3";
+				break;
+			case "3":
+				nextProcStage = "4";
+			case "4":
+				nextProcStage = "5";
+				break;
+			case "5":
+				nextProcStage = "6";
+				break;
+			case "6":
+				nextProcStage = "7";
+				break;
+			case "7":
+			case "7.5":
+				nextProcStage = "8";
+				break;
+			case "8":
+				nextProcStage = "9";
+				break;
+			case "9":
+				nextProcStage = "10";
+				break;
+			case "10":
+				nextProcStage = "11";
+				break;
+			case "11":
+			case "11.5":
+				nextProcStage = "12";
+				break;
+			case "12":
+				nextProcStage = "13";
+				break;
+				default:
+					break;
+			}
+			
 			
 			stmt = conn.prepareStatement("UPDATE icmdb.processes SET process_stage = ? WHERE request_id = ?");
 		
-			stmt.setString(1, strProcStage);
+			stmt.setString(1, nextProcStage);
 			stmt.setInt(2, procID);
 			
 			stmt.executeUpdate();
-			System.out.println("strProcStage++ = " + strProcStage);
+			System.out.println("procStage++ = " + nextProcStage);
 			
-			System.out.println("update process stage succeeded");
+			System.out.println("update process stage by one succeeded");
 			
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			System.out.println("SQL Exception setNextStage()");
 		}	
+	}
+	
+	private static void setNextStageByInput(int procID, String nextStage)//for the non "approve" buttons
+	{
+		try
+		{
+			PreparedStatement stmt;
+			
+			stmt = conn.prepareStatement("UPDATE icmdb.processes SET process_stage = ? WHERE request_id = ?");
+			
+			stmt.setString(1, nextStage);
+			stmt.setInt(2, procID);
+			
+			stmt.executeUpdate();
+			
+			System.out.println("update process stage by input succeeded");
+
+		}
+		
+		catch (SQLException e) {
+		// TODO Auto-generated catch block
+		System.out.println("SQL Exception setNextStageByInput()");
+		}	
+		
 	}
 }

@@ -98,6 +98,8 @@ public class ExaminationController implements Initializable{
     @FXML
     void back_click(ActionEvent event) {
     	ScreenController.getScreenController().activate(ScreenController.getScreenController().getLastScreen());
+    	ControllerProcessMain.instance.getTheUpdateProcessesFromDB();
+    	
     	request_id_textbox.clear();
     	failure_explanation.clear();
     	
@@ -109,11 +111,11 @@ public class ExaminationController implements Initializable{
     @FXML
     void submit_failure_report_click(ActionEvent event) {
     	ArrayList<Object> check = new ArrayList<Object>();
-    	int requesrID;
+    	int requestID;
     	
     	try
     	{
-    		requesrID = Integer.parseInt(request_id_textbox.getText());
+    		requestID = Integer.parseInt(request_id_textbox.getText());
     	}
     	catch(NumberFormatException ex)
     	{
@@ -129,10 +131,11 @@ public class ExaminationController implements Initializable{
             return;
     	}
     	
-    	if(failure_explanation.hasProperties() == false)
+    	if(failure_explanation.getText().compareTo("") == 0)
     	{
     		System.out.println("failure_explanation text is empty");
-    		
+    		failure_explanation.clear();
+
     		Alert alert = new Alert(AlertType.INFORMATION);
         	
         	alert.setTitle("ALERT");
@@ -142,12 +145,16 @@ public class ExaminationController implements Initializable{
             return;
     	}
     	
-    	check.add(request_id_textbox.getText());
+    	check.add(requestID);
     	check.add(this.processID);
 		check.add(failure_explanation.getText());
 		
 		request_id_textbox.clear();
     	failure_explanation.clear();
+    	
+    	request_id_textbox.setDisable(true);
+    	failure_explanation.setDisable(true);
+    	submit_failure_report_btn.setDisable(true);
     	
 		Translator translator = new Translator(OptionsOfAction.INSERT_FAILURE_REPORT, check);
 		client.handleMessageFromClientGUI(translator);
@@ -159,12 +166,26 @@ public class ExaminationController implements Initializable{
     	request_id_textbox.setDisable(false);
     	failure_explanation.setDisable(false);
     	submit_failure_report_btn.setDisable(false);
+    	examination_completed_btn.setDisable(true);
+    	
+    	ArrayList<Object> check = new ArrayList<Object>();
+    	
+    	check.add(this.processID);
+    	Translator translator = new Translator(OptionsOfAction.FILL_FAILURE_REPORT_CLICK, check);
+		client.handleMessageFromClientGUI(translator);
     }
 
 
     @FXML
     void examination_completed_click(ActionEvent event) {
-
+    	
+    	examination_completed_btn.setDisable(true);
+    	
+    	ArrayList<Object> check = new ArrayList<Object>();
+    	check.add(this.processID);
+    	
+    	Translator translator = new Translator(OptionsOfAction.EXAMINATION_COMPLETED, check);
+		client.handleMessageFromClientGUI(translator);
     }
     
     void setProcessID(int id)
