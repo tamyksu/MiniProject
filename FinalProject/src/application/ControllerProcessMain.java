@@ -194,6 +194,7 @@ public class ControllerProcessMain implements Initializable {
 		else
 			ButtonAdjustment(process.getRole());
 		Supervisor_ProcessMain_Controller.instance.initializeChosenProcessScreen(process.getProcess_stage());//to initiate the flag
+		ExaminationController.instance.initializeChosenProcessScreen(process.getProcess_stage());
 	}
 
 	//The function responsible for matching buttons to the process is indicated in the table
@@ -220,7 +221,7 @@ public class ControllerProcessMain implements Initializable {
 	
 	//The function responsible for matching buttons to the process is indicated in the table
 	public void ButtonAdjustmentSuperUser(String userRole, String processStatus) {
-		
+		System.out.println("ButtonAdjustmentSuperUser: userRole = " + userRole);
 		switch (userRole.toLowerCase())
 		{
 			case "manager":
@@ -372,6 +373,10 @@ public class ControllerProcessMain implements Initializable {
 
 	@FXML
 	void evaluation_click(ActionEvent event) {
+		int proc = getSelectedRowNumber();
+		
+		if(proc == -1)
+			return;
 		ScreenController.getScreenController().activate("evaluation");
 	}
 
@@ -388,11 +393,19 @@ public class ControllerProcessMain implements Initializable {
 
 	@FXML
 	void decision_click(ActionEvent event) {
+		int proc = getSelectedRowNumber();
+		
+		if(proc == -1)
+			return;
 		ScreenController.getScreenController().activate("decisionMaking");
 	}
 
 	@FXML
 	void execution_click(ActionEvent event) {
+		int proc = getSelectedRowNumber();
+		
+		if(proc == -1)
+			return;
 		ScreenController.getScreenController().activate("execution");
 	}
 
@@ -428,12 +441,15 @@ public class ControllerProcessMain implements Initializable {
 		switch (Client.getInstance().getRole()) {
 		case "Supervisor":
 			Client.getInstance().getAllProcessesFromServer();
+			fitSupervisor();
 			break;
 		case "Manager":
 			Client.getInstance().getAllProcessesFromServer();
+			fitManager();
 			break;
 		default:
 			Client.getInstance().getProcessesFromServer();
+			initializeButtons();
 			break;
 		}
 			

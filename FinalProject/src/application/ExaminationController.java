@@ -22,6 +22,8 @@ public class ExaminationController implements Initializable{
 	
 	Client client = Client.getInstance();
 	
+	private int process_stage = 1;
+	
 	private int processID;
 	
     @FXML
@@ -47,6 +49,51 @@ public class ExaminationController implements Initializable{
    		instance = this;
    	}
     
+    public void initializeChosenProcessScreen(String processStage)
+    {
+    	System.out.println("ExaminationController: initializeChosenProcessScreen: Stage: " + processStage);
+    	if(processStage == null)
+    		return;
+    	
+    	try
+    	{
+    		this.process_stage = Integer.parseInt(processStage);
+        	
+    	}
+    	catch(NumberFormatException e)
+    	{
+    		double temp = Double.parseDouble(processStage);
+    		this.process_stage = (int)temp;
+    	}
+    	
+    	switch(processStage)
+    	{
+    	case "11":
+    		examination_completed_btn.setDisable(false);
+        	fill_failure_report_btn.setDisable(false);
+        	failure_explanation.setDisable(true);
+        	request_id_textbox.setDisable(true);
+        	submit_failure_report_btn.setDisable(true);
+    		break;
+    		
+    	case "11.5":
+    		examination_completed_btn.setDisable(true);
+        	fill_failure_report_btn.setDisable(false);
+        	failure_explanation.setDisable(false);
+        	request_id_textbox.setDisable(false);
+        	submit_failure_report_btn.setDisable(false);
+    		break;
+    		
+    	default:
+    		examination_completed_btn.setDisable(true);
+    	    fill_failure_report_btn.setDisable(true);
+    	    failure_explanation.setDisable(true);
+    	    request_id_textbox.setDisable(true);
+    	    submit_failure_report_btn.setDisable(true);
+    		break;
+    	}
+    	
+    }
     
     @FXML
     void back_click(ActionEvent event) {
@@ -62,10 +109,47 @@ public class ExaminationController implements Initializable{
     @FXML
     void submit_failure_report_click(ActionEvent event) {
     	ArrayList<Object> check = new ArrayList<Object>();
+    	int requesrID;
     	
-    	check.add(request_id_textbox);
-		check.add(this.processID);
-		Translator translator = new Translator(OptionsOfAction.GET_APPRAISER_AND_PERFORMANCE_LEADER_CB_DATA, check);
+    	try
+    	{
+    		requesrID = Integer.parseInt(request_id_textbox.getText());
+    	}
+    	catch(NumberFormatException ex)
+    	{
+    		System.out.println("Wrong input");
+    		
+    		Alert alert = new Alert(AlertType.INFORMATION);
+        	
+    		request_id_textbox.clear();
+        	alert.setTitle("ALERT");
+            alert.setHeaderText("NO FAILURE REPORT ID WAS SET");
+            alert.setContentText("Please insert a valid ID");
+            alert.showAndWait();
+            return;
+    	}
+    	
+    	if(failure_explanation.hasProperties() == false)
+    	{
+    		System.out.println("failure_explanation text is empty");
+    		
+    		Alert alert = new Alert(AlertType.INFORMATION);
+        	
+        	alert.setTitle("ALERT");
+            alert.setHeaderText("NO FAILURE REPORT EXPLANATION WAS SET");
+            alert.setContentText("Please insert an explanation");
+            alert.showAndWait();
+            return;
+    	}
+    	
+    	check.add(request_id_textbox.getText());
+    	check.add(this.processID);
+		check.add(failure_explanation.getText());
+		
+		request_id_textbox.clear();
+    	failure_explanation.clear();
+    	
+		Translator translator = new Translator(OptionsOfAction.INSERT_FAILURE_REPORT, check);
 		client.handleMessageFromClientGUI(translator);
     }
 
@@ -75,8 +159,6 @@ public class ExaminationController implements Initializable{
     	request_id_textbox.setDisable(false);
     	failure_explanation.setDisable(false);
     	submit_failure_report_btn.setDisable(false);
-    	
-    	request_id_textbox.setText(String.valueOf(this.processID).toString());
     }
 
 

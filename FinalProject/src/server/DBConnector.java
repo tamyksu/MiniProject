@@ -345,6 +345,7 @@ public class DBConnector {
 
 					return newTranslator;
 				}
+				
 				rs.previous();
 				ArrayList<ArrayList<?>> processes = new ArrayList<ArrayList<?>>();
 				while(rs.next()) {	
@@ -514,7 +515,7 @@ public class DBConnector {
 			
 		case GETALLPROCESSES:
 			try {
-				stmt = conn.prepareStatement("SELECT * FROM processes;");
+				stmt = conn.prepareStatement("SELECT * FROM icmdb.processes;");
 				ResultSet rs = stmt.executeQuery();		
 				if(rs.first() == false) {
 					ar.add("No processes");
@@ -550,11 +551,14 @@ public class DBConnector {
 						}
 					}
 					else {
+						
 						return null;
 					}
 					processes.add(intArray);
 					processes.add(stringArray);
+					
 				}
+				
 				Translator newTranslator = new Translator(translator.getRequest(), processes);
 				return newTranslator;
 			} catch (SQLException e) {
@@ -634,7 +638,9 @@ public class DBConnector {
 			}
 
 		}
-		
+		case INSERT_FAILURE_REPORT:
+			
+			break;
 		default:
 			System.out.println("default");
 			break;

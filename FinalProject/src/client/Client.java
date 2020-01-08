@@ -203,6 +203,7 @@ public class Client extends AbstractClient {
 			getProcessesFromServer();
 			break;
 		case "Supervisor":
+
 			Client.getInstance().setName(result.get(1));
 			this.setRule(result.get(0));
 			ScreenController.getScreenController().activate("processesMain");
@@ -267,6 +268,7 @@ public class Client extends AbstractClient {
 				processes.getMyProcessesInArrayList().add(process);	
 			}
 		this.processes=processes;
+		
 		}
 		//send processes information to specific controller
 		ControllerProcessMain.getInstance().SetInTable(processes);
@@ -275,6 +277,7 @@ public class Client extends AbstractClient {
 	//function related to supervisor. get all the process exist 
 	@SuppressWarnings("unchecked")
 	private void handlerMessageFromServerGetAllProcesses(ArrayList<?> rs) {
+
 		Processes processes = new Processes();
     	ArrayList<ArrayList<?>> result = new ArrayList<ArrayList<?>>();	
 		result = (ArrayList<ArrayList<?>>) rs ;

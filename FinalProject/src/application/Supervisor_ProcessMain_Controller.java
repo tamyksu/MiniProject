@@ -396,12 +396,25 @@ public class Supervisor_ProcessMain_Controller implements Initializable{
     
     void initializeChosenProcessScreen(String processStage)
     {
-    	System.out.println("Supervisor_ProcessesMain: initializeFlag: Stage: " + processStage);
-    	this.process_stage = Integer.parseInt(processStage);
+    	System.out.println("Supervisor_ProcessesMain: initializeChosenProcessScreen: Stage: " + processStage);
+    	if(processStage == null)
+    		return;
+    	try
+    	{
+    		this.process_stage = Integer.parseInt(processStage);
+        	
+    	}
+    	catch(NumberFormatException e)
+    	{
+    		double temp = Double.parseDouble(processStage);
+    		this.process_stage = (int)temp;
+    	}
     	
     	switch(processStage)
     	{
+    	case "2.5":
     	case "3":
+    	case "7.5":
     	case "8":
     		add_extension__time_btn.setDisable(true);
     		decline_extension_request_btn.setDisable(true);
