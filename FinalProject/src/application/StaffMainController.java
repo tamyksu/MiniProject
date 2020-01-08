@@ -46,6 +46,12 @@ public class StaffMainController implements Initializable{
     private Text print_message;
     @FXML
     private Text print_Chaiman;
+    @FXML
+    private Text print_IE1;
+    @FXML
+    private Text print_IE2;
+    @FXML
+    private Text print_supervisor;
 	@FXML
 	private Button AppointCangesControlBoard;
 	@FXML
@@ -57,9 +63,12 @@ public class StaffMainController implements Initializable{
 	@FXML
 	private ComboBox<String> supervisor_comboBox;
 	@FXML
+	String save_role="";
+	int choosen_person_not_available=0;
 	private Button AppointSupervisor;
 	@FXML
 	private Button log_out_btn;
+     String  save_id="";
 	private ArrayList<String> IDChosenStaff= new ArrayList<String>();
 	private ArrayList<String> FullNameChosenStaff= new ArrayList<String>();
 	ArrayList<String> workersList = new ArrayList<String>();
@@ -73,34 +82,19 @@ public class StaffMainController implements Initializable{
 	@FXML
 /*******************************************AppointsecondIEclick****************************************************************/	
     void AppointsecondIEclick(ActionEvent event) {
-		ArrayList<Object> params = new ArrayList<Object>();
-		
-		String name =secondIE_comboBox.getValue();
-		for(int i=0;i<FullNameChosenStaff.size();i++)
-			if(FullNameChosenStaff.get(i).equals(name))//find the name in array and get his id
-			{
-				params.add(IDChosenStaff.get(i));
-			}
-		params.add("Information Engineer");
-		
-		Translator translator = new Translator(OptionsOfAction.UPDATEPERMANENT, params);
-		Client.getInstance().handleMessageFromClientGUI(translator);
+	  	ArrayList<Object> params = new ArrayList<Object>();
+			params.add("Information Engineer-2");
+
+		checkBefore("Information Engineer-2","2");
     }
 /*******************************************AppointfirstIEclick***********************************************************/
     @FXML
     void AppointfirstIEclick(ActionEvent event) {
-		ArrayList<Object> params = new ArrayList<Object>();
-		
-		String name =firstIE_comboBox.getValue();
-		for(int i=0;i<FullNameChosenStaff.size();i++)
-			if(FullNameChosenStaff.get(i).equals(name))//find the name in array and get his id
-			{
-				params.add(IDChosenStaff.get(i));
-			}
-		params.add("Information Engineer");
-		
-		Translator translator = new Translator(OptionsOfAction.UPDATEPERMANENT, params);
-		Client.getInstance().handleMessageFromClientGUI(translator);
+
+    	ArrayList<Object> params = new ArrayList<Object>();
+		params.add("Information Engineer-1");
+
+	checkBefore("Information Engineer-1","2");
     }
 /*****************************************Appoint_Chiarman_click**********************************************************/
 
@@ -109,32 +103,22 @@ public class StaffMainController implements Initializable{
 	{
 		ArrayList<Object> params = new ArrayList<Object>();
 		params.add("ChairMan");
+	checkBefore("ChairMan","2");
+	
+	
 
-	checkBefore("ChairMan");
-	
-	
+}
 		
-	
-		}
 	
 	
 	/*********************************AppointSupervisor_click*****************************************************************/
 	// Event Listener on Button[#AppointSupervisor].onAction
 	@FXML
 	public void AppointSupervisor_click(ActionEvent event) {
-	ArrayList<Object> params = new ArrayList<Object>();
-	//if(checkApoint("Supervisor")==true) {
-		String name =supervisor_comboBox.getValue();
-	
-		for(int i=0;i<FullNameChosenStaff.size();i++)
-			if(FullNameChosenStaff.get(i).equals(name))//find the name in array and get his id
-			{
-				params.add(IDChosenStaff.get(i));
-			}
+		ArrayList<Object> params = new ArrayList<Object>();
 		params.add("Supervisor");
-		
-		Translator translator = new Translator(OptionsOfAction.UPDATEPERMANENT, params);
-		Client.getInstance().handleMessageFromClientGUI(translator);
+
+	checkBefore("Supervisor","2");
 	}
 	//}
 	/**************************************initialize*******************************************************************/
@@ -150,7 +134,7 @@ public class StaffMainController implements Initializable{
 		try {
 			print_message.setVisible(false);
 		ArrayList<String> check= new ArrayList<String>();
-		Translator translator= new Translator(OptionsOfAction.SELECTCHAIRMAN,check);
+		Translator translator= new Translator(OptionsOfAction.INITIALIZE_COMBO_BOX,check);
 		client/*Client.getInstance()*/.handleMessageFromClientGUI(translator);
 	}
 		catch(Exception e){}
@@ -173,83 +157,176 @@ public class StaffMainController implements Initializable{
 		supervisor_comboBox.setItems(data);
 		this.FullNameChosenStaff.addAll(data);
 		System.out.println(FullNameChosenStaff);
-		
-	
-
+		checkBefore("ChairMan","1");
+		checkBefore("Supervisor","1");
+		checkBefore("Information Engineer-1","1");
+		checkBefore("Information Engineer-2","1");
 	}
+	public void afterSet(ArrayList<String> WorkersName)//get name of current chairman
+	{
+		ArrayList<Object> params = new ArrayList<Object>();
+		Integer result = Integer.valueOf(WorkersName.get(0));
+		if(result==1) {//there some one in parmenent table
+			
+		params.add(WorkersName.get(1));
+		
+		Translator translator = new Translator(OptionsOfAction.CURRENT_IN_ROLE,params);
+		Client.getInstance().handleMessageFromClientGUI(translator);
+		}
+	}
+	
+	public void printMessage1(ArrayList<String> WorkersName)
+	{ 
+		System.out.println("Current in " + WorkersName.get(2) + "position:\n" + (WorkersName.get(0)+" " +WorkersName.get(1)));
+
+		if(WorkersName.get(3).equals("2")&& WorkersName.get(2).equals("ChairMan"))
+		{
+			
+			print_Chaiman.setText("Current in " + WorkersName.get(2) + "position:\n" + (WorkersName.get(0)+" " +WorkersName.get(1)));
+		}
+		else if(WorkersName.get(3).equals("3") && WorkersName.get(2).equals("Supervisor"))
+		{
+			
+			print_supervisor.setText("Current in " + WorkersName.get(2) + "position:\n" + (WorkersName.get(0)+" " +WorkersName.get(1)));
+		}
+		else if(WorkersName.get(3).equals("4") && WorkersName.get(2).equals("Information Engineer-1"))
+		{
+			System.out.println("Information Engineer-1 not empty");
+			print_IE1.setText("Current in " + WorkersName.get(2) + "position:\n" + (WorkersName.get(0)+" " +WorkersName.get(1)));
+		}
+		else if(WorkersName.get(3).equals("5") && WorkersName.get(2).equals("Information Engineer-2"))
+		{
+		
+			print_IE2.setText("Current in " + WorkersName.get(2) + "position:\n" + (WorkersName.get(0)+" " +WorkersName.get(1)));
+		}
+		
+		
+	}
+	
 /*******************************************printMessage***********************************************************/
 	public void printMessage(ArrayList<String> WorkersName)
-	{	print_message.setVisible(true);
-	System.out.println("print message");
+	{	
+		
+	
+		if(WorkersName.get(3).equals("2")&& WorkersName.get(2).equals("ChairMan"))
+		{
+			
+			print_Chaiman.setText("Current in " + WorkersName.get(2) + "position:\n" + (WorkersName.get(0)+" " +WorkersName.get(1)));
+		}
+		else if(WorkersName.get(3).equals("3") && WorkersName.get(2).equals("Supervisor"))
+		{
+			
+			
+			print_supervisor.setText("Current in " + WorkersName.get(2) + "position:\n" + (WorkersName.get(0)+" " +WorkersName.get(1)));
+		}
+		else if(WorkersName.get(3).equals("4") && WorkersName.get(2).equals("Information Engineer-1"))
+		{
+			System.out.println("Information Engineer-1 not empty");
+			print_IE1.setText("Current in " + WorkersName.get(2) + "position:\n" + (WorkersName.get(0)+" " +WorkersName.get(1)));
+		}
+		else if(WorkersName.get(3).equals("5") && WorkersName.get(2).equals("Information Engineer-2"))
+		{
+		
+			print_IE2.setText("Current in " + WorkersName.get(2) + "position:\n" + (WorkersName.get(0)+" " +WorkersName.get(1)));
+		}
+		
+		
+		if((WorkersName.get(4).equals("7")))
+		{
+		print_message.setVisible(true);
+		
 		print_message.setText(WorkersName.get(0)+" " +WorkersName.get(1)+"is now: "+WorkersName.get(2));
-		print_Chaiman.setText("Current in Chairnam position: " + (WorkersName.get(0)+" " +WorkersName.get(1)));
-	/*	if(WorkersName.get(2)=="ChairMan")
-		flagChairMan=1;
-		else if(WorkersName.get(2)=="Supervisor")
-			flagSupervisor=1;*/
-		//getChairManData();
+		}
+
+		
 	}
 /**************************************************checkApoint**************************************************************/
 	public void checkApoint(ArrayList<String> WorkersName) {
-		System.out.println(WorkersName.get(1)+"  "+WorkersName.get(0));
-		Integer result = Integer.valueOf(WorkersName.get(0));	
-		System.out.println("**2"+ result);
-		if(WorkersName.get(1)=="ChairMan") {
-		
-			
-			if(result==1) 
-			{
-				
-				flagChairMan=1;
-			}
-		else {
-			System.out.println("check appoint if 0");
-			flagChairMan=0;
-		     }
-		}
-			ArrayList<Object> params = new ArrayList<Object>();
-			
-			System.out.println("**3 flag:"+result);
-			if(result==1) {//need to delete from db before put selected worker in role
-				//flagChairMan=0;
-				
-				params.add("ChairMan");
-				Translator translator = new Translator(OptionsOfAction.DELETEPERMANENT, params);
-				Client.getInstance().handleMessageFromClientGUI(translator);
-				params.remove(0);
-			}
 	
+		Integer result = Integer.valueOf(WorkersName.get(0));	
+		
+
+			ArrayList<Object> params = new ArrayList<Object>();
+			save_role=WorkersName.get(1);
+			String name="";
+			if(WorkersName.get(1).equals("ChairMan"))
+			 name =chairman_comboBox.getValue();
+			else if (WorkersName.get(1).equals("Supervisor"))
+				 name =supervisor_comboBox.getValue();
+			else if(WorkersName.get(1).equals("Information Engineer-1"))
+				 name =firstIE_comboBox.getValue();
+			else if(WorkersName.get(1).equals("Information Engineer-2"))
+				 name =secondIE_comboBox.getValue();
 			
-			
-			String name =chairman_comboBox.getValue();
-			System.out.println(name);//V
+		
 			for(int i=0;i<FullNameChosenStaff.size();i++)
 				if(FullNameChosenStaff.get(i).equals(name))//find the name in array and get his id
 				{
 					params.add(IDChosenStaff.get(i));
 				}
-			params.add("ChairMan");
 			
-			Translator translator = new Translator(OptionsOfAction.UPDATEPERMANENT, params);
-			Client.getInstance().handleMessageFromClientGUI(translator);
-			
+			Translator translator1 = new Translator(OptionsOfAction.checkNAMEParmenent, params);
+			Client.getInstance().handleMessageFromClientGUI(translator1);
+			params.remove(0);
+		
+			if(result==1) {//if the place im from empty
+		
+				params.add(WorkersName.get(1));
+				Translator translator = new Translator(OptionsOfAction.DELETEPERMANENT, params);
+				Client.getInstance().handleMessageFromClientGUI(translator);
+				params.remove(0);
+			}
+	
+
 		}
 	
-		//flagChairMan=1;//apointed worker to role ChairMan
-		//else if(WorkersName.get(2)=="Supervisor")
-		
 	
+		
+	public void check_if_this_man_available(ArrayList<String> WorkersName)
+	{			
+		ArrayList<Object> params = new ArrayList<Object>();
+
+		if(WorkersName.get(0).equals("1"))
+			{
+		
+
+				params.add(WorkersName.get(1));//send id
+				Translator translator = new Translator(OptionsOfAction.DELETEPERMANENT, params);
+				Client.getInstance().handleMessageFromClientGUI(translator);
+				params.remove(0);
+			}
+				//sparams.remove(0);
+		    params.add(WorkersName.get(1));
+				params.add(save_role);
+		
+					
+					Translator translator1 = new Translator(OptionsOfAction.UPDATEPERMANENT, params);
+					Client.getInstance().handleMessageFromClientGUI(translator1);
+		
+		
+		
+	}
 /**************************************************SET_DELETEPERMANENT**************************************************************/	
 	public void SET_DELETEPERMANENT(ArrayList<String> WorkersName) {
-		System.out.println("4-sucssed"+WorkersName.get(0));
-		if(WorkersName.get(0)=="ChairMan")
-		flagChairMan=0;
-		}
+		if(WorkersName.get(0).equals("ChairMan"))
+			print_Chaiman.setText("empty position");
+		
+	else if(WorkersName.get(0).equals("Supervisor"))
+		print_supervisor.setText("empty position");
+	
+else if(WorkersName.get(0).equals("Information Engineer-1"))
+	print_IE1.setText("empty position");
+
+else if(WorkersName.get(0).equals("Information Engineer-2"))
+	print_IE2.setText("empty position");
+}
+
 /*********************************************checkBefore**********************************************************************/	
-public void checkBefore(String role)
+public void checkBefore(String role,String option)
 {
 	ArrayList<Object> params = new ArrayList<Object>();
 	params.add(role);
+	params.add(option);
 
 	Translator translator = new Translator(OptionsOfAction.checkDB, params);//check in db if this role empty
 	Client.getInstance().handleMessageFromClientGUI(translator);//it will return flag of chair man

@@ -55,7 +55,8 @@ public class Client extends AbstractClient {
 			break;
 		case GETALLINFORMATIONSYSTEMS:
 			//fillListForComboBox(result.getParmas());	
-		case SELECTCHAIRMAN:
+			break;
+		case INITIALIZE_COMBO_BOX:
 			handlerMessageFromServerSelectChairMan(result.getParmas());
 			break;
 		case UPDATEPERMANENT:
@@ -64,12 +65,26 @@ public class Client extends AbstractClient {
 		case DELETEPERMANENT:
 			handlerMessageFromServerDELETEPERMANENT(result.getParmas());
 			break;
+		case CURRENT_IN_ROLE:
+			handlerMessageFromServerCURRENT_IN_ROLE(result.getParmas());
+			break;
 		case checkDB:
 			handlerMessageFromServercheckDB(result.getParmas());
+			break;
+		case checkNAMEParmenent:
+			handlerMessageFromServercheckNAMEParmenent(result.getParmas());
 		default:
 			break;
 		}
 	
+	}
+	
+	public void handlerMessageFromServercheckNAMEParmenent(Object message)
+	{
+		ArrayList<String> arr= (ArrayList<String>)message;
+		System.out.println("just go to func"+arr.get(0));
+		StaffMainController.instance.check_if_this_man_available(arr);
+		
 	}
 	/******************************************handlerMessageFromServerSelectChairMan************************************************************/
 	public void handlerMessageFromServerSelectChairMan(Object message)
@@ -80,11 +95,41 @@ public class Client extends AbstractClient {
 		
 		
 	}
+	
+	
+	
+	public void handlerMessageFromServerCURRENT_IN_ROLE(Object message)
+	{
+		ArrayList<String> arr= (ArrayList<String>)message;
+		
+		if(arr.get(2).equals("ChairMan"))
+		arr.add("2");///its make it index 3
+		else if(arr.get(2).equals("Supervisor"))
+			arr.add("3");
+		else if(arr.get(2).equals("Information Engineer-1"))
+			arr.add("4");
+		else if(arr.get(2).equals("Information Engineer-2"))
+			arr.add("5");
+		
+	
+		StaffMainController.instance.printMessage1(arr);
+	}
 	public void handlerMessageFromServercheckDB(Object message)
 	{
 	ArrayList<String> arr= (ArrayList<String>)message;
+	//System.out.println(arr.get(2)+"checkkkkkkkkkkkkk");
+	System.out.println("in option: "+arr.get(2)+" this place empty if it 0 :"+arr.get(0)+" in role "+ arr.get(1));
+	
+		if(arr.get(2).equals("1"))//first thing
+		{
+			
+		StaffMainController.instance.afterSet(arr);
+		}	
+		else //chair man check in parmenent
+	{
 		
-		StaffMainController.instance.checkApoint(arr);
+			StaffMainController.instance.checkApoint(arr);
+	}		
 	}
 
  public void handlerMessageFromServerDELETEPERMANENT(Object message){
@@ -103,6 +148,7 @@ public class Client extends AbstractClient {
 			sendToServer(message);
 		} catch (IOException e) {
 			System.out.println("Could not perform action to server");
+			System.out.println(e.getMessage());
 			quit();
 		}
 	}
@@ -137,9 +183,22 @@ public class Client extends AbstractClient {
 	}
 /*******************************************handlerMessageFromServerUpdatePermanent***********************************************************/
 	public void handlerMessageFromServerUpdatePermanent(Object message){
-		
 		ArrayList<String> arr= (ArrayList<String>)message;
+		System.out.println("update permanent");
+		
+		
+		if(arr.get(2).equals("ChairMan"))
+			arr.add("2");///its make it index 3
+			else if(arr.get(2).equals("Supervisor"))
+				arr.add("3");
+			else if(arr.get(2).equals("Information Engineer-1"))
+				arr.add("4");
+			else if(arr.get(2).equals("Information Engineer-2"))
+				arr.add("5");
 	
+		arr.add("7");
+	
+		System.out.println("handlerMessageFromServerUpdatePermanent"+arr.get(0));
 		StaffMainController.instance.printMessage(arr);
 	}
 /*****************************************handlerMessageFromServerNewRequest*************************************************************/	

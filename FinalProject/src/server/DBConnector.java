@@ -9,6 +9,9 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.ArrayList;
+
+import com.sun.xml.internal.ws.api.streaming.XMLStreamReaderFactory.Default;
+
 import translator.*;
 import application.MyFile;
 import application.Request;
@@ -150,13 +153,17 @@ public class DBConnector {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-	/***************************************SELECTCHAIRMAN***********************************************/		
-		case SELECTCHAIRMAN:
+			break;
+	/***************************************INITIALIZE_COMBO_BOX***********************************************/		
+		case INITIALIZE_COMBO_BOX:
 		
 			try {
+				
 				stmt = conn.prepareStatement("select first_name, last_name, id from icmdb.workers "
-						+ "where( id NOT IN(select user_id from icmdb.users_requests))"
-						+ "AND id NOT IN (select user_id from icmdb.permanent_roles)");
+						+ "where( id NOT IN(select user_id from icmdb.users_requests))");
+						//+ "and id NOT IN(select user_id from icmdb.permanent_roles))");
+				
+						
 				ResultSet rs = stmt.executeQuery();
 				String nameWorker;
 				if(rs.first() == false) {
@@ -170,6 +177,7 @@ public class DBConnector {
 					ar.add( new String(rs.getString(2)));
 					ar.add( new String(rs.getString(3)));
 				}
+				
 			
 				Translator newTranslator = new Translator(translator.getRequest(), ar);
 				return newTranslator;
@@ -177,21 +185,44 @@ public class DBConnector {
 				}
 			catch (SQLException e) {
 					// TODO Auto-generated catch block
-					System.out.println("SQL EXCEPTION SELECTCHAIRMAN!");
+					System.out.println("SQL EXCEPTION INITIALIZE_COMBO_BOX!");
 			}
+			break;
+			
+		case checkNAMEParmenent:
+		try {
+
+			stmt = conn.prepareStatement("SELECT count(*) FROM icmdb.permanent_roles where user_id=? ");//1- this person already in posion
+			stmt.setString(1, (String) translator.getParmas().get(0));
+			
+			ResultSet rs = stmt.executeQuery();
+			rs.next();
+		
+		
+			ar.add( new String(rs.getString(1)));//result person if 1 or 0
+			ar.add((String)translator.getParmas().get(0));
+
+			Translator newTranslator = new Translator(translator.getRequest(), ar);
+			return newTranslator;
+		}
+			catch(SQLException e)
+			{
+				System.out.println("SQL EXCEPTION checkNAMEParmenent!");
+			}
+			break;
 	/*****************************************checkDB********************************************************/	
 		case checkDB:
 			try {
-			System.out.println("checkDB");
+				
+			
 			stmt = conn.prepareStatement("SELECT count(*) FROM icmdb.permanent_roles where role=? ");
 			stmt.setString(1, (String) translator.getParmas().get(0).toString());
 			ResultSet rs = stmt.executeQuery();
 			rs.next();
-			int j = rs.getInt(1);	
-			System.out.println(j);
-			
+		
 			ar.add( new String(rs.getString(1)));//result if 1 or 0
 			ar.add((String)translator.getParmas().get(0).toString());//role
+			ar.add((String)translator.getParmas().get(1).toString());//option
 			Translator newTranslator = new Translator(translator.getRequest(), ar);
 			return newTranslator;
 		}
@@ -199,30 +230,25 @@ public class DBConnector {
 			{
 				System.out.println("SQL EXCEPTION checkDB!");
 			}
+			break;
 	/***********************************************CHECK_ROLE**********************************************************/
 	case DELETEPERMANENT:
 			try {
-				System.out.println("here :)");
-				stmt = conn.prepareStatement("delete from icmdb.permanent_roles where role=? ");
+				stmt = conn.prepareStatement("select role from icmdb.permanent_roles where role=? or user_id=? ");
 				stmt.setString(1, (String) translator.getParmas().get(0).toString());
-				System.out.println("almost" + translator.getParmas().get(0) + " :)");
-				stmt.executeUpdate();	
-				System.out.println("deketed" + translator.getParmas().get(0) + " :)");
-				ar.add((String) translator.getParmas().get(0));//put the role
-				/*if(rs.first() == false) {
-					ar.add("Select chairman failled");
-					Translator newTranslator = new Translator(translator.getRequest(), ar);
-					return newTranslator;
-				}
-		
+				stmt.setString(2, (String) translator.getParmas().get(0).toString());
+				ResultSet rs = stmt.executeQuery();
 				rs.previous();
-				while (rs.next()) { // get the processID from the Select query
-					ar.add( new String(rs.getString(1)));
-					ar.add( new String(rs.getString(2)));
-					
-				}
+				while (rs.next())  // get the processID from the Select query
+					ar.add( new String(rs.getString(1)));//get role
 				
-			*/
+		
+				stmt = conn.prepareStatement("delete from icmdb.permanent_roles where role=? or user_id=? ");
+				stmt.setString(1, (String) translator.getParmas().get(0).toString());
+				stmt.setString(2, (String) translator.getParmas().get(0).toString());
+				
+				stmt.executeUpdate();	
+		
 				Translator newTranslator = new Translator(translator.getRequest(), ar);
 				return newTranslator;
 			
@@ -232,9 +258,44 @@ public class DBConnector {
 				System.out.println("SQL EXCEPTION DELETEPERMANENT!");
 				
 			}
+			break;
 /*********************************************UPDATEPERMANENT*********************************************************/		
-		case UPDATEPERMANENT:
+	case CURRENT_IN_ROLE:
+		
+	try{
+		
+		stmt = conn.prepareStatement("select first_name, last_name from icmdb.workers "
+				+ "inner join icmdb.permanent_roles ON( icmdb.workers.id=icmdb.permanent_roles.user_id )"
+				+ "and icmdb.permanent_roles.role = ? ");
+		stmt.setString(1, (String) translator.getParmas().get(0));
+		ResultSet rs = stmt.executeQuery();
+
+		if(rs.first() == false) {
+			ar.add("Select chairman failled");
+			Translator newTranslator = new Translator(translator.getRequest(), ar);
+			return newTranslator;
+		}
+		rs.previous();
+		while (rs.next()) { // get the processID from the Select query
+			ar.add( new String(rs.getString(1)));//name
+			ar.add( new String(rs.getString(2)));//last name
+	
+			
+		}
+				ar.add( (String) translator.getParmas().get(0));//role
+		
+		Translator newTranslator = new Translator(translator.getRequest(), ar);
+		return newTranslator;
+	}
+	catch(SQLException e) {
+		System.out.println("SQL Exception: Failed CURRENT_IN_ROLE ");
+	}
+	
+	break;
+	case UPDATEPERMANENT:
 		try {
+			
+			System.out.println("add new person to role");
 			stmt = conn.prepareStatement("insert into icmdb.permanent_roles (user_id,role) values(?,?)");
 			stmt.setString(1, (String) translator.getParmas().get(0));
 			stmt.setString(2, (String) translator.getParmas().get(1));
@@ -244,6 +305,7 @@ System.out.println("id "+translator.getParmas().get(0));
 			stmt = conn.prepareStatement("select first_name, last_name from icmdb.workers "
 					+ "inner join icmdb.permanent_roles ON icmdb.workers.id=icmdb.permanent_roles.user_id "
 					+ "and icmdb.permanent_roles.role = ? ");
+		
 			stmt.setString(1, (String) translator.getParmas().get(1));
 			ResultSet rs = stmt.executeQuery();
 	
@@ -267,6 +329,7 @@ System.out.println("id "+translator.getParmas().get(0));
 		catch(SQLException e) {
 			System.out.println("SQL Exception: Failed UPDATEPERMANENT ");
 		}
+		break;
 /*************************************************LOGIN***************************************************************/
 		case LOGIN:
 			try {
@@ -296,9 +359,10 @@ System.out.println("id "+translator.getParmas().get(0));
 			}
 			catch (SQLException e) {
 				System.out.println("ERROR");
-				e.printStackTrace();} 
-			return null;
-
+				e.printStackTrace();
+				
+			} 
+		return null;
 		case GETRELATEDREQUESTS:
 			try {
 				stmt = conn.prepareStatement(""
