@@ -210,6 +210,7 @@ public class ControllerProcessMain implements Initializable {
 		default:
 			//disable all
 			initializeButtons();
+			
 			break;
 		}
 		
@@ -341,7 +342,7 @@ public class ControllerProcessMain implements Initializable {
 	//disable all buttons on startup (before choosing a process from the table)
 	private void initializeButtons() 
 	{
-		newRequestBtn.setDisable(true);
+		newRequestBtn.setDisable(false);
 		extension_btn.setDisable(true);
 		evaluation_btn.setDisable(true);
 		decision_btn.setDisable(true);
