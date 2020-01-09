@@ -8,11 +8,13 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.cell.PropertyValueFactory;
 import translator.OptionsOfAction;
 import translator.Translator;
@@ -192,10 +194,12 @@ public class ControllerProcessMain implements Initializable {
 		else
 			ButtonAdjustment(process.getRole());
 		Supervisor_ProcessMain_Controller.instance.initializeChosenProcessScreen(process.getProcess_stage());//to initiate the flag
+		ExaminationController.instance.initializeChosenProcessScreen(process.getProcess_stage());
 	}
 
 	//The function responsible for matching buttons to the process is indicated in the table
 	private void ButtonAdjustment(String userRole) {
+		System.out.println("ButtonAdjustment: userRole = " + userRole);
 		switch (userRole.toLowerCase()) {
 		case "initiator":
 			fitInitiator();
@@ -218,7 +222,7 @@ public class ControllerProcessMain implements Initializable {
 	
 	//The function responsible for matching buttons to the process is indicated in the table
 	public void ButtonAdjustmentSuperUser(String userRole, String processStatus) {
-		
+		System.out.println("ButtonAdjustmentSuperUser: userRole = " + userRole);
 		switch (userRole.toLowerCase())
 		{
 			case "manager":
@@ -370,6 +374,10 @@ public class ControllerProcessMain implements Initializable {
 
 	@FXML
 	void evaluation_click(ActionEvent event) {
+		int proc = getSelectedRowNumber();
+		
+		if(proc == -1)
+			return;
 		ScreenController.getScreenController().activate("evaluation");
 	}
 
@@ -386,17 +394,30 @@ public class ControllerProcessMain implements Initializable {
 
 	@FXML
 	void decision_click(ActionEvent event) {
+		int proc = getSelectedRowNumber();
+		
+		if(proc == -1)
+			return;
 		ScreenController.getScreenController().activate("decisionMaking");
 	}
 
 	@FXML
 	void execution_click(ActionEvent event) {
+		int proc = getSelectedRowNumber();
+		
+		if(proc == -1)
+			return;
 		ScreenController.getScreenController().activate("execution");
 	}
 
 	@FXML
 	void examination_click(ActionEvent event) {
+		int proc = getSelectedRowNumber();
+		
+		if(proc == -1)
+			return;
 		ScreenController.getScreenController().activate("examination");
+		ExaminationController.instance.setProcessID(proc);		
 	}
 
 	@FXML
@@ -421,24 +442,40 @@ public class ControllerProcessMain implements Initializable {
 		switch (Client.getInstance().getRole()) {
 		case "Supervisor":
 			Client.getInstance().getAllProcessesFromServer();
+			fitSupervisor();
 			break;
 		case "Manager":
 			Client.getInstance().getAllProcessesFromServer();
+			fitManager();
 			break;
 		default:
 			Client.getInstance().getProcessesFromServer();
+			initializeButtons();
 			break;
 		}
 			
 	}
 	
 	public int getSelectedRowNumber()
-	{
-		//check if a row is selected in the processes table
-		if(tableView.getSelectionModel().getSelectedItem() == null)
-			return -1;
-		else
-			return tableView.getSelectionModel().getSelectedItem().getRequestId();
+	{		
+		try
+    	{
+    		int processID = tableView.getSelectionModel().getSelectedItem().getRequestId();//needs rows in the processes table
+    		
+    		return processID;
+    	}
+    	catch(NullPointerException e)
+    	{
+    		System.out.println("No row was chosen");
+    		
+    		Alert alert = new Alert(AlertType.INFORMATION);
+        	
+            alert.setTitle("ALERT");
+            alert.setHeaderText("NO ROW WAS CHOSEN");
+            alert.setContentText("Please select a row in the processes table");
+            alert.showAndWait();
+            return -1;
+    	}
 	}
 	
 	public String getRequestID()
