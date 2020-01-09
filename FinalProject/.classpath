@@ -5,8 +5,8 @@
 	<classpathentry kind="lib" path="mysql-connector-java-8.0.13.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/OCSF"/>
 	<classpathentry kind="con" path="org.eclipse.fx.ide.jdt.core.JAVAFX_CONTAINER"/>
-	<classpathentry kind="lib" path="C:/Users/Ido Finzy/Desktop/בראודה/תוכנות/activation-1.1.1.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Ido Finzy/Desktop/בראודה/תוכנות/תוכנות לשליחת מייל בג&apos;אווה/javamail1_4_5/javamail-1.4.5/lib/mailapi.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Ido Finzy/Desktop/בראודה/תוכנות/תוכנות לשליחת מייל בג&apos;אווה/javamail1_4_5/javamail-1.4.5/lib/smtp.jar"/>
+	<classpathentry kind="lib" path="activation-1.1.1.jar"/>
+	<classpathentry kind="lib" path="mailapi.jar"/>
+	<classpathentry kind="lib" path="smtp.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
