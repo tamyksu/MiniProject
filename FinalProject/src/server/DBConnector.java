@@ -75,7 +75,7 @@ public class DBConnector {
 				stmt.setString(6, nr.getNotes());
 				stmt.setString(7, "Active");
 				stmt.setDate(8, date);
-				stmt.setInt(9, 1);
+				stmt.setString(9, "1");
 				stmt.executeUpdate();
 
 				// Get the ID newly inserted request:
