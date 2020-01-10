@@ -1,8 +1,5 @@
 package server;
 import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.sql.Connection;
@@ -10,14 +7,9 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.ArrayList;
-
-import com.sun.xml.internal.ws.api.streaming.XMLStreamReaderFactory.Default;
-
 import translator.*;
 import application.MyFile;
 import application.Request;
-import application.UserProcess;
-import client.Client;
 import java.sql.ResultSet;
 public class DBConnector {
 
