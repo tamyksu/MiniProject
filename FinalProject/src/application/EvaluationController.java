@@ -1,12 +1,22 @@
 package application;
 
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.ResourceBundle;
+
+import client.Client;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import translator.OptionsOfAction;
+import translator.Translator;
+import javafx.scene.control.Alert.AlertType;
 
-public class EvaluationController {
+public class EvaluationController implements Initializable{
 
     @FXML
     private TextArea constraints_textbox;
@@ -38,12 +48,31 @@ public class EvaluationController {
 
     @FXML
     void submit_duetime_click(ActionEvent event) {
-
+    	
+    	if(days_textbox.getText().trim().isEmpty() || !NewRequestController.isNumeric(days_textbox.getText())) {
+    		new Alert(AlertType.ERROR, "You must fill all the details!").show();
+    	}
+    	else {
+    		ArrayList<Integer> arr = new ArrayList<>();
+    		arr.add(Integer.parseInt(days_textbox.getText()));
+    		Translator translator = new Translator(OptionsOfAction.Fill_Evalution_Number_Of_Days, arr);
+    		Client.getInstance().handleMessageFromClientGUI(translator);
+    	}
     }
 
     @FXML
     void submit_click(ActionEvent event) {
 
     }
+
+
+	@Override
+	public void initialize(URL location, ResourceBundle resources) {
+		constraints_textbox.setDisable(true);
+		submit_btn.setDisable(true);
+		result_textbox.setDisable(true);
+		request_change_textbox.setDisable(true);
+		
+	}
 
 }

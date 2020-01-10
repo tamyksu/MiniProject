@@ -56,13 +56,13 @@
                   <Button fx:id="execution_btn" layoutX="129.0" layoutY="491.0" mnemonicParsing="false" onAction="#execution_click" prefHeight="31.0" prefWidth="178.0" text="Execution" />
                   <Button fx:id="examination_btn" layoutX="129.0" layoutY="522.0" mnemonicParsing="false" onAction="#examination_click" prefHeight="31.0" prefWidth="178.0" text="Examination" />
                   <Button fx:id="shutdown_btn" layoutX="129.0" layoutY="553.0" mnemonicParsing="false" onAction="#shutdown_click" prefHeight="31.0" prefWidth="178.0" text="Shut Down Process" />
-                  <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#1f93ff00" height="644.0" layoutX="746.0" layoutY="-8.0" opacity="0.14" stroke="BLACK" strokeType="INSIDE" width="390.0" />
+                  <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#1f93ff00" height="644.0" layoutX="746.0" layoutY="-8.0" opacity="0.14" stroke="BLACK" strokeType="INSIDE" width="523.0" />
                   <Label fx:id="textstyle" layoutX="911.0" layoutY="3.0" text="Process Information">
                      <font>
                         <Font name="System Bold" size="21.0" />
                      </font>
                   </Label>
-                  <HBox layoutX="747.0" layoutY="47.0" prefHeight="582.0" prefWidth="403.0">
+                  <HBox layoutX="747.0" layoutY="47.0" prefHeight="582.0" prefWidth="508.0">
                      <children>
                         <VBox layoutX="709.0" layoutY="90.0" prefHeight="621.0" prefWidth="175.0">
                            <children>
@@ -161,12 +161,12 @@
                               </Label>
                            </children>
                         </VBox>
-                        <VBox layoutX="901.0" layoutY="88.0" prefHeight="607.0" prefWidth="200.0">
+                        <VBox layoutX="901.0" layoutY="88.0" prefHeight="582.0" prefWidth="343.0">
                            <children>
                               <Label fx:id="InitiatorName" prefHeight="32.0" prefWidth="320.0" styleClass="brightText" text="-" />
                               <Label fx:id="InitiatorEmail" layoutX="10.0" layoutY="10.0" prefHeight="32.0" prefWidth="320.0" styleClass="brightText" text="-" />
                               <Label fx:id="InformationSystem" layoutX="10.0" layoutY="74.0" prefHeight="32.0" prefWidth="320.0" styleClass="brightText" text="-" />
-                              <Label fx:id="CurrentState" layoutX="10.0" layoutY="106.0" prefHeight="71.0" prefWidth="320.0" styleClass="brightText" text="-">
+                              <Label fx:id="CurrentState" layoutX="10.0" layoutY="106.0" prefHeight="71.0" prefWidth="339.0" styleClass="brightText" text="-">
                                  <VBox.margin>
                                     <Insets top="1.0" />
                                  </VBox.margin>
