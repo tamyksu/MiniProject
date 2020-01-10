@@ -270,6 +270,7 @@ public class Client extends AbstractClient {
 			this.setRule(result.get(0));
 			ScreenController.getScreenController().activate("processesMain");
 			ControllerProcessMain.instance.ButtonAdjustmentSuperUser(result.get(0),"Active");
+			System.out.println("hhhcheck");
 			getAllProcessesFromServer();
 			break;
 		case "Manager":

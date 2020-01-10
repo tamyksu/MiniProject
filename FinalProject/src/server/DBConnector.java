@@ -103,7 +103,12 @@ public class DBConnector {
 				}
 				
 				// Add the new request ID with it's initator' Id to users_request 
-
+/****************************************************update in process state******************************************************/
+				PreparedStatement stmt8 = conn.prepareStatement("insert into  processes_state  (request_id,status1,date)"
+						+ "values(?,?,CURRENT_TIMESTAMP)");
+				stmt8.setInt(1, processID);
+				stmt8.setString(2,"Active");
+				stmt8.executeUpdate();
 						
 	// ***************************** Recieve Files from Client and insert them to Data Base
 				PreparedStatement stmt3 = conn.prepareStatement("insert into  users_requests (user_id,process_id,"
@@ -363,6 +368,7 @@ System.out.println("id "+translator.getParmas().get(0));
 					rs1.next();
 					ArrayList<String> ans = new ArrayList<String>();
 					if(rs1.getString(1).equals("Supervisor") ) {
+				
 						ans.add("Supervisor");
 					}
 					else if(rs1.getString(1).equals("Manager") ){
@@ -670,9 +676,9 @@ System.out.println("id "+translator.getParmas().get(0));
 		{
 			try {
 				java.sql.Date date = new java.sql.Date(new java.util.Date().getTime()); // Current Date
-				stmt = conn.prepareStatement("insert into icmdb.processes_state where status1='Active',request_id=?,date=?");
-				stmt.setString(1, (String) translator.getParmas().get(0));
-				stmt.setDate(2, date);
+			
+			
+				
 				stmt = conn.prepareStatement("UPDATE processes SET status1='Active' WHERE request_id=?");
 				stmt.setString(1, (String) translator.getParmas().get(0));
 
@@ -681,6 +687,16 @@ System.out.println("id "+translator.getParmas().get(0));
 				if(rs == 1)
 				{
 					ar.add("Successfully Defrosted");
+	/********************************************************************************/
+					
+					PreparedStatement stmt9 = conn.prepareStatement("insert into icmdb.processes_state (request_id,status1,date) "
+							+"values(?,?,CURRENT_TIMESTAMP)");
+					stmt9.setString(1, (String) translator.getParmas().get(0));
+					stmt9.setString(2, "Active");
+					stmt9.executeUpdate();
+					
+					
+					/******************************************************************************/
 					return new Translator(translator.getRequest(),ar);
 				}
 				else
@@ -738,14 +754,27 @@ System.out.println("id "+translator.getParmas().get(0));
 				
 				if(rs == 1)
 				{
+					
+					
 					ar.add("Succesfully Suspended");
+					
+					/********************************************************************************/
+					
+					PreparedStatement stmt9 = conn.prepareStatement("insert into icmdb.processes_state (request_id,status1,date) "
+							+"values(?,?,CURRENT_TIMESTAMP)");
+					stmt9.setString(1, (String) translator.getParmas().get(0));
+					stmt9.setString(2, "Suspended");
+					stmt9.executeUpdate();
+					
+					
+					/******************************************************************************/
 					return new Translator(translator.getRequest(),ar);
 				}
 				else
 				{
 					ar.add("Failed To Suspend");
 				}
-				
+		
 				return new Translator(translator.getRequest(),ar);
 
 
@@ -769,6 +798,14 @@ System.out.println("id "+translator.getParmas().get(0));
 				
 				if(rs == 1)
 				{
+					/*************************************************************************/
+					
+					PreparedStatement stmt9 = conn.prepareStatement("insert into icmdb.processes_state (request_id,status1,date) "
+							+"values(?,?,CURRENT_TIMESTAMP)");
+					stmt9.setString(1, (String) translator.getParmas().get(0));
+					stmt9.setString(2, "Shutdown");
+					stmt9.executeUpdate();
+					/***********************************************************/
 					ar.add("Successfully Shutdown");
 					return new Translator(translator.getRequest(),ar);
 				}
