@@ -1,8 +1,5 @@
 package server;
 import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.sql.Connection;
@@ -10,14 +7,9 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.ArrayList;
-
-import com.sun.xml.internal.ws.api.streaming.XMLStreamReaderFactory.Default;
-
 import translator.*;
 import application.MyFile;
 import application.Request;
-import application.UserProcess;
-import client.Client;
 import java.sql.ResultSet;
 public class DBConnector {
 
@@ -60,9 +52,16 @@ public class DBConnector {
 
 			Request nr = (Request) translator.getParmas().get(0);
 			try {
-				
-				// Add new request to processes table in the Data Base:
 				java.sql.Date date = new java.sql.Date(new java.util.Date().getTime()); // Current Date
+				
+				stmt = conn.prepareStatement("select request_id from icmdb.processes where initiator_id=? and creation_date=?");
+				
+				
+				stmt = conn.prepareStatement("insert into icmdb.processes_state where status1='Active',request_id=?,date=?");
+				stmt.setString(1, nr.getUserID());
+				stmt.setDate(2, date);
+				// Add new request to processes table in the Data Base:
+				//java.sql.Date date = new java.sql.Date(new java.util.Date().getTime()); // Current Date
 				stmt = conn.prepareStatement("insert into icmdb.processes (initiator_id,system_num,"
 						+ "problem_description,"
 						+ "		request_description,explanaton,"
@@ -75,9 +74,14 @@ public class DBConnector {
 				stmt.setString(6, nr.getNotes());
 				stmt.setString(7, "Active");
 				stmt.setDate(8, date);
-				stmt.setInt(9, 1);
+				stmt.setString(9, "1");
 				stmt.executeUpdate();
-
+		/******************************************add status process to table*****************************/		
+			
+				
+				
+				
+/********************************************************end*****************************************/
 				// Get the ID newly inserted request:
 
 				PreparedStatement stmt2 = conn.prepareStatement("select request_id from processes where"
@@ -665,6 +669,10 @@ System.out.println("id "+translator.getParmas().get(0));
 		case DEFROST_PROCESS:
 		{
 			try {
+				java.sql.Date date = new java.sql.Date(new java.util.Date().getTime()); // Current Date
+				stmt = conn.prepareStatement("insert into icmdb.processes_state where status1='Active',request_id=?,date=?");
+				stmt.setString(1, (String) translator.getParmas().get(0));
+				stmt.setDate(2, date);
 				stmt = conn.prepareStatement("UPDATE processes SET status1='Active' WHERE request_id=?");
 				stmt.setString(1, (String) translator.getParmas().get(0));
 
@@ -672,7 +680,7 @@ System.out.println("id "+translator.getParmas().get(0));
 				
 				if(rs == 1)
 				{
-					ar.add("Succesfully Defrosted");
+					ar.add("Successfully Defrosted");
 					return new Translator(translator.getRequest(),ar);
 				}
 				else
@@ -719,6 +727,67 @@ System.out.println("id "+translator.getParmas().get(0));
 		case EXAMINATION_COMPLETED:
 			setNextStageByOne((int)translator.getParmas().get(0));
 			break;
+
+		case FREEZE_PROCESS:
+		{
+			try {
+				stmt = conn.prepareStatement("UPDATE processes SET status1='Suspended' WHERE request_id=?");
+				stmt.setString(1, (String) translator.getParmas().get(0));
+
+				int rs = stmt.executeUpdate();
+				
+				if(rs == 1)
+				{
+					ar.add("Succesfully Suspended");
+					return new Translator(translator.getRequest(),ar);
+				}
+				else
+				{
+					ar.add("Failed To Suspend");
+				}
+				
+				return new Translator(translator.getRequest(),ar);
+
+
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				
+				ar.add("SQL Error");
+				return new Translator(translator.getRequest(),ar);
+
+			}
+		}
+		
+		case SHUTDOWN_PROCESS:
+		{
+			try {
+				stmt = conn.prepareStatement("UPDATE processes SET status1='Shutdown',process_stage='13' WHERE request_id=?");
+				stmt.setString(1, (String) translator.getParmas().get(0));
+
+				int rs = stmt.executeUpdate();
+				
+				if(rs == 1)
+				{
+					ar.add("Successfully Shutdown");
+					return new Translator(translator.getRequest(),ar);
+				}
+				else
+				{
+					ar.add("Failed To Shutdown");
+				}
+				
+				return new Translator(translator.getRequest(),ar);
+
+
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				
+				ar.add("SQL Error");
+				return new Translator(translator.getRequest(),ar);
+			}						
+		}
 			
 		case FILL_FAILURE_REPORT_CLICK:
 			setNextStageByInput((int)translator.getParmas().get(0), "11.5");

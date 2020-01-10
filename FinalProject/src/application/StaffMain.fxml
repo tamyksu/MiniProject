@@ -9,9 +9,9 @@
 
 <Pane xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.StaffMainController">
    <children>
-      <SplitPane dividerPositions="0.07349665924276169" orientation="VERTICAL" prefHeight="900.0" prefWidth="1500.0">
+      <SplitPane dividerPositions="0.5" orientation="VERTICAL" prefHeight="900.0" prefWidth="1500.0">
         <items>
-          <AnchorPane fx:id="idp" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="0.0" minWidth="0.0" prefHeight="62.0" prefWidth="1500.0">
+          <AnchorPane styleClass="idp" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="0.0" minWidth="0.0" prefHeight="62.0" prefWidth="1500.0">
                <children>
                   <Label layoutX="18.0" layoutY="11.0" prefHeight="26.0" prefWidth="62.0" styleClass="brightText" text="ICM">
                      <font>
@@ -20,7 +20,7 @@
                   </Label>
                </children>
             </AnchorPane>
-          <AnchorPane fx:id="idPane" focusTraversable="true" minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
+          <AnchorPane styleClass="idPane" focusTraversable="true" minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
                <children>
                   <Text fx:id="print_IE2" fill="#ccd4da" layoutX="840.0" layoutY="414.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Current  this position is empty" wrappingWidth="415.13671875">
                      <font>
@@ -28,11 +28,6 @@
                      </font>
                   </Text>
                   <Text fx:id="print_supervisor" fill="#ccd4da" layoutX="21.0" layoutY="625.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Current  this position is empty" wrappingWidth="415.13671875">
-                     <font>
-                        <Font size="18.0" />
-                     </font>
-                  </Text>
-                  <Text fx:id="print_message" fill="#f3f8fc" layoutX="417.0" layoutY="506.0" strokeType="OUTSIDE" strokeWidth="0.0" visible="false" wrappingWidth="415.13671875">
                      <font>
                         <Font size="18.0" />
                      </font>
@@ -89,6 +84,20 @@
                   <Button fx:id="log_out_btn" layoutX="1116.0" layoutY="22.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="148.0" text="Log out" />
                   <Button fx:id="Appoint_Chiarman" layoutX="116.0" layoutY="357.0" mnemonicParsing="false" onAction="#Appoint_Chiarman_click" text="Appoint Chiarman" />
                   <Button fx:id="Appoint_firstIE" layoutX="552.0" layoutY="357.0" mnemonicParsing="false" onAction="#AppointfirstIEclick" text="Appoint #1 Information Engineer:" />
+                  <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#1f93ff00" height="192.0" layoutX="140.0" layoutY="447.0" opacity="0.18" stroke="BLACK" strokeType="INSIDE" width="400.0" x="300.0" />
+                  <Label layoutX="551.0" layoutY="458.0" styleClass="brightText" text="Statistic Reports">
+                     <font>
+                        <Font name="System Bold" size="18.0" />
+                     </font>
+                  </Label>
+                  <Button layoutX="534.0" layoutY="512.0" mnemonicParsing="false" onAction="#active_reports" prefHeight="24.0" prefWidth="208.0" text="Active Reports " />
+                  <Button layoutX="534.0" layoutY="546.0" mnemonicParsing="false" onAction="#execution_reports" prefHeight="24.0" prefWidth="208.0" text="Execution Reports " />
+                  <Button layoutX="536.0" layoutY="584.0" mnemonicParsing="false" onAction="#delay_execution" prefHeight="24.0" prefWidth="208.0" text="Delay Execution" />
+                  <Text fx:id="print_message" fill="#f3f8fc" layoutX="9.0" layoutY="673.0" strokeType="OUTSIDE" strokeWidth="0.0" text="fff" visible="false" wrappingWidth="415.13671875">
+                     <font>
+                        <Font size="18.0" />
+                     </font>
+                  </Text>
                </children>
             </AnchorPane>
         </items>

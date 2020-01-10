@@ -333,6 +333,24 @@ public void checkBefore(String role,String option)
 	Translator translator = new Translator(OptionsOfAction.checkDB, params);//check in db if this role empty
 	Client.getInstance().handleMessageFromClientGUI(translator);//it will return flag of chair man
 }
+
+
+@FXML
+void active_reports(ActionEvent event) {
+
+}
+
+@FXML
+void execution_reports(ActionEvent event) {
+
+}
+
+@FXML
+void delay_execution(ActionEvent event) {
+
+}
+
+
 }
 	
 

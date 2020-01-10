@@ -24,15 +24,8 @@ public enum OptionsOfAction {
 	INSERT_FAILURE_REPORT,
 	SHUTDOWN_PROCESS,
 	EXAMINATION_COMPLETED,
-	FILL_FAILURE_REPORT_CLICK;
-	
-	
-	
-	
-	
-	
-
-	
+	FILL_FAILURE_REPORT_CLICK,
+	Fill_Evalution_Number_Of_Days;
 }
 
 

@@ -12,6 +12,7 @@ import application.ScreenController;
 import application.StaffMainController;
 import application.Supervisor_ProcessMain_Controller;
 import application.UserProcess;
+import javafx.application.Platform;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 
@@ -83,18 +84,32 @@ public class Client extends AbstractClient {
 		break;
 		case DEFROST_PROCESS:
 			handleMessageFromServerDefrostProcess(result.getParmas());
+			break;
+		case SHUTDOWN_PROCESS:
+			handleMessageFromServerShutdownProcess(result.getParmas());
 		default:
 			break;
 		}
 	
 	}
+	
+	private void handleMessageFromServerShutdownProcess(Object message) {
+	ArrayList<String> arr= (ArrayList<String>) message;
+	
+	if(arr.get(0).equals("Successfully Shutdown"))
+	{
+	}
+	else
+		new Alert(AlertType.ERROR,"There was an issue to shutdown this process").show();
+}
+	
 		private void handleMessageFromServerDefrostProcess(Object message) {
 		ArrayList<String> arr= (ArrayList<String>) message;
 		
-		if(arr.get(0).equals("Succesfully Defrosted"))
+		if(arr.get(0).equals("Successfully Defrosted"))
 		{
 			ControllerProcessMain.getInstance().getTheUpdateProcessesFromDB();
-			ControllerProcessMain.getInstance().ButtonAdjustmentSuperUser(this.role, ControllerProcessMain.getInstance().getRequestID());
+			ControllerProcessMain.getInstance().ButtonAdjustmentSuperUser(Client.instance.role, ControllerProcessMain.getInstance().getRequestID());
 		}
 		else
 			new Alert(AlertType.ERROR,"There was an issue to defrost this process").show();
@@ -111,13 +126,8 @@ public class Client extends AbstractClient {
 	public void handlerMessageFromServerSelectChairMan(Object message)
 	{
 		ArrayList<String> arr= (ArrayList<String>)message;
-		
-		StaffMainController.instance.setDataChairMan(arr);
-		
-		
+		StaffMainController.instance.setDataChairMan(arr);	
 	}
-	
-	
 	
 	public void handlerMessageFromServerCURRENT_IN_ROLE(Object message)
 	{
@@ -256,16 +266,17 @@ public class Client extends AbstractClient {
 			getProcessesFromServer();
 			break;
 		case "Supervisor":
-
 			Client.getInstance().setName(result.get(1));
 			this.setRule(result.get(0));
 			ScreenController.getScreenController().activate("processesMain");
+			ControllerProcessMain.instance.ButtonAdjustmentSuperUser(result.get(0),"Active");
 			getAllProcessesFromServer();
 			break;
 		case "Manager":
 			Client.getInstance().setName(result.get(1));
 			this.setRule(result.get(0));
 			ScreenController.getScreenController().activate("processesMain");
+			ControllerProcessMain.instance.ButtonAdjustmentSuperUser(result.get(0),"Active");
 			getAllProcessesFromServer();
 			break;
 	
@@ -391,6 +402,8 @@ public class Client extends AbstractClient {
 	
 	public void handlerMessageFromServerGetAppOrPLofProc(Object rs)
 	{
+		
+		//TODO: HANDLE A SCENARIO WHERE RS="NO EMPLOYEES WERE FOUND"
 		ArrayList <String> names = (ArrayList<String>)rs;
 		ArrayList <String> fullNames = new ArrayList <String>();
 		int procID = Integer.parseInt(names.get(0));

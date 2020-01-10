@@ -3,9 +3,7 @@ package application;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
-
 import com.sun.org.apache.xerces.internal.util.SynchronizedSymbolTable;
-
 import client.Client;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
@@ -81,7 +79,46 @@ public class Supervisor_ProcessMain_Controller implements Initializable{
     @FXML
     private Label current_performance_leader_text;
     
+    @FXML
+    private Label initiator_name_text;
+
+    @FXML
+    private Label initiator_email_text;
+
+    @FXML
+    private Label initiator_role_text;
+
+    @FXML
+    private Label information_system_text;
+
+    @FXML
+    private Label current_stage_text;
+
+    @FXML
+    private Label requested_change_text;
+
+    @FXML
+    private Label explanation_text;
+
+    @FXML
+    private Label notes_text;
+
+    @FXML
+    private Label request_date_text;
+
+    @FXML
+    private Label request_id_text;
+
+    @FXML
+    private Label documents_text;
+
+    @FXML
+    private Label status_text;
+
+    @FXML
+    private Label current_stage_due_time_text;
     
+
     @Override
 	public void initialize(URL location, ResourceBundle resources) {
 		instance = this;
@@ -89,18 +126,22 @@ public class Supervisor_ProcessMain_Controller implements Initializable{
     
     @FXML
     void freeze_process_btn_click(ActionEvent event) {
-    	ArrayList <Object> arr = new ArrayList<Object>();
+    	ArrayList <Object> processInfo = new ArrayList<Object>();
+
+    	processInfo.add(ControllerProcessMain.getInstance().getRequestID());//process/request id
     	
-    	arr.add(2);//process/request id
-    	arr.add(due_time_text.getText());
-    	
-    	Translator translator = new Translator(OptionsOfAction.FREEZE_PROCESS, arr);
+    	Translator translator = new Translator(OptionsOfAction.FREEZE_PROCESS, processInfo);
     	client.handleMessageFromClientGUI(translator);
     }
-    
+
     @FXML
     void shut_down_process_btn_click(ActionEvent event) {
+    	ArrayList <Object> processInfo = new ArrayList<Object>();
 
+    	processInfo.add(ControllerProcessMain.getInstance().getRequestID());//process/request id
+    	
+    	Translator translator = new Translator(OptionsOfAction.SHUTDOWN_PROCESS, processInfo);
+    	client.handleMessageFromClientGUI(translator);
     }
     
     public void getAppraiserOrPerformanceLeaderCBData()
@@ -465,6 +506,23 @@ public class Supervisor_ProcessMain_Controller implements Initializable{
     void back_click(ActionEvent event) {
     	ScreenController.getScreenController().activate(ScreenController.getScreenController().getLastScreen());
     	ControllerProcessMain.instance.getTheUpdateProcessesFromDB();
+    }
+    
+    public void updateProcessInformation()
+    {
+		UserProcess process = Client.getInstance().getProcesses().getMyProcess().get(Integer.parseInt(ControllerProcessMain.getInstance().getRequestID()));
+		initiator_name_text.setText(process.getIntiatorId());
+		initiator_email_text.setText(process.getEmail());
+		initiator_role_text.setText(process.getRole());
+		information_system_text.setText("" + process.getSystem_num());
+		current_stage_text.setText(process.getProcess_stage());
+		requested_change_text.setText(process.getRequest_description());
+		explanation_text.setText(process.getExplanaton());
+		notes_text.setText(process.getNotes());
+		request_date_text.setText(process.getCreation_date());
+		request_id_text.setText("" + process.getRequest_id());
+		status_text.setText(process.getStatus());
+		current_stage_due_time_text.setText(process.getCurrent_stage_due_date());
     }
     
 }
