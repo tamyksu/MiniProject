@@ -60,9 +60,16 @@ public class DBConnector {
 
 			Request nr = (Request) translator.getParmas().get(0);
 			try {
-				
-				// Add new request to processes table in the Data Base:
 				java.sql.Date date = new java.sql.Date(new java.util.Date().getTime()); // Current Date
+				
+				stmt = conn.prepareStatement("select request_id from icmdb.processes where initiator_id=? and creation_date=?");
+				
+				
+				stmt = conn.prepareStatement("insert into icmdb.processes_state where status1='Active',request_id=?,date=?");
+				stmt.setString(1, nr.getUserID());
+				stmt.setDate(2, date);
+				// Add new request to processes table in the Data Base:
+				//java.sql.Date date = new java.sql.Date(new java.util.Date().getTime()); // Current Date
 				stmt = conn.prepareStatement("insert into icmdb.processes (initiator_id,system_num,"
 						+ "problem_description,"
 						+ "		request_description,explanaton,"
@@ -77,7 +84,12 @@ public class DBConnector {
 				stmt.setDate(8, date);
 				stmt.setInt(9, 1);
 				stmt.executeUpdate();
-
+		/******************************************add status process to table*****************************/		
+			
+				
+				
+				
+/********************************************************end*****************************************/
 				// Get the ID newly inserted request:
 
 				PreparedStatement stmt2 = conn.prepareStatement("select request_id from processes where"
@@ -665,6 +677,10 @@ System.out.println("id "+translator.getParmas().get(0));
 		case DEFROST_PROCESS:
 		{
 			try {
+				java.sql.Date date = new java.sql.Date(new java.util.Date().getTime()); // Current Date
+				stmt = conn.prepareStatement("insert into icmdb.processes_state where status1='Active',request_id=?,date=?");
+				stmt.setString(1, (String) translator.getParmas().get(0));
+				stmt.setDate(2, date);
 				stmt = conn.prepareStatement("UPDATE processes SET status1='Active' WHERE request_id=?");
 				stmt.setString(1, (String) translator.getParmas().get(0));
 
