@@ -10,13 +10,15 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.ArrayList;
+
+import com.sun.xml.internal.ws.api.streaming.XMLStreamReaderFactory.Default;
+
 import translator.*;
 import application.MyFile;
 import application.Request;
 import application.UserProcess;
 import client.Client;
 import java.sql.ResultSet;
-
 public class DBConnector {
 
 	private static Connection conn;
@@ -49,7 +51,6 @@ public class DBConnector {
 		Translator translator = (Translator) data;
 		PreparedStatement stmt;
 		ArrayList<String> ar = new ArrayList<String>() ;
-		
 		switch (translator.getRequest()) {
 		case NEWREQUEST:
 
@@ -100,7 +101,7 @@ public class DBConnector {
 				// Add the new request ID with it's initator' Id to users_request 
 
 						
-				// ***************************** Recieve Files from Client and insert them to Data Base
+	// ***************************** Recieve Files from Client and insert them to Data Base
 				PreparedStatement stmt3 = conn.prepareStatement("insert into  users_requests (user_id,process_id,"
 						+ "role)"
 						+ "values(?,?,?)");
@@ -151,17 +152,21 @@ public class DBConnector {
 				failed.add(new Boolean(false));
 				answer = new Translator(OptionsOfAction.NEWREQUEST,failed);
 				return answer;
-			} catch (IOException ex) {
+			} catch (IOException e) {
 				// TODO Auto-generated catch block
-				ex.printStackTrace();
+				e.printStackTrace();
 			}
-	/***************************************SELECTCHAIRMAN***********************************************/		
-		case SELECTCHAIRMAN:
+		//	break;
+	/***************************************INITIALIZE_COMBO_BOX***********************************************/		
+		case INITIALIZE_COMBO_BOX:
 		
 			try {
+				
 				stmt = conn.prepareStatement("select first_name, last_name, id from icmdb.workers "
-						+ "where( id NOT IN(select user_id from icmdb.users_requests))"
-						+ "AND id NOT IN (select user_id from icmdb.permanent_roles)");
+						+ "where( id NOT IN(select user_id from icmdb.users_requests))");
+						//+ "and id NOT IN(select user_id from icmdb.permanent_roles))");
+				
+						
 				ResultSet rs = stmt.executeQuery();
 				String nameWorker;
 				if(rs.first() == false) {
@@ -175,60 +180,78 @@ public class DBConnector {
 					ar.add( new String(rs.getString(2)));
 					ar.add( new String(rs.getString(3)));
 				}
+				
 			
 				Translator newTranslator = new Translator(translator.getRequest(), ar);
 				return newTranslator;
 				
 				}
-			catch (SQLException ex) {
+			catch (SQLException e) {
 					// TODO Auto-generated catch block
-					System.out.println("SQL EXCEPTION SELECTCHAIRMAN!");
+					System.out.println("SQL EXCEPTION INITIALIZE_COMBO_BOX!");
 			}
+			break;
+			
+		case checkNAMEParmenent:
+		try {
+
+			stmt = conn.prepareStatement("SELECT count(*) FROM icmdb.permanent_roles where user_id=? ");//1- this person already in posion
+			stmt.setString(1, (String) translator.getParmas().get(0));
+			
+			ResultSet rs = stmt.executeQuery();
+			rs.next();
+		
+		
+			ar.add( new String(rs.getString(1)));//result person if 1 or 0
+			ar.add((String)translator.getParmas().get(0));
+
+			Translator newTranslator = new Translator(translator.getRequest(), ar);
+			return newTranslator;
+		}
+			catch(SQLException e)
+			{
+				System.out.println("SQL EXCEPTION checkNAMEParmenent!");
+			}
+			break;
 	/*****************************************checkDB********************************************************/	
 		case checkDB:
 			try {
-			System.out.println("checkDB");
+				
+			
 			stmt = conn.prepareStatement("SELECT count(*) FROM icmdb.permanent_roles where role=? ");
 			stmt.setString(1, (String) translator.getParmas().get(0).toString());
 			ResultSet rs = stmt.executeQuery();
 			rs.next();
-			int j = rs.getInt(1);	
-			System.out.println(j);
-			
+		
 			ar.add( new String(rs.getString(1)));//result if 1 or 0
 			ar.add((String)translator.getParmas().get(0).toString());//role
+			ar.add((String)translator.getParmas().get(1).toString());//option
 			Translator newTranslator = new Translator(translator.getRequest(), ar);
 			return newTranslator;
-			}
+		}
 			catch(SQLException e)
 			{
 				System.out.println("SQL EXCEPTION checkDB!");
 			}
 			break;
-			
-		case DELETEPERMANENT:
+	/***********************************************CHECK_ROLE**********************************************************/
+	case DELETEPERMANENT:
 			try {
-				System.out.println("here :)");
-				stmt = conn.prepareStatement("delete from icmdb.permanent_roles where role=? ");
+				stmt = conn.prepareStatement("select role from icmdb.permanent_roles where role=? or user_id=? ");
 				stmt.setString(1, (String) translator.getParmas().get(0).toString());
-				System.out.println("almost" + translator.getParmas().get(0) + " :)");
-				stmt.executeUpdate();	
-				System.out.println("deleted" + translator.getParmas().get(0) + " :)");
-				ar.add((String) translator.getParmas().get(0));//put the role
-				/*if(rs.first() == false) {
-					ar.add("Select chairman failled");
-					Translator newTranslator = new Translator(translator.getRequest(), ar);
-					return newTranslator;
-				}
-		
+				stmt.setString(2, (String) translator.getParmas().get(0).toString());
+				ResultSet rs = stmt.executeQuery();
 				rs.previous();
-				while (rs.next()) { // get the processID from the Select query
-					ar.add( new String(rs.getString(1)));
-					ar.add( new String(rs.getString(2)));
-					
-				}
+				while (rs.next())  // get the processID from the Select query
+					ar.add( new String(rs.getString(1)));//get role
 				
-			*/
+		
+				stmt = conn.prepareStatement("delete from icmdb.permanent_roles where role=? or user_id=? ");
+				stmt.setString(1, (String) translator.getParmas().get(0).toString());
+				stmt.setString(2, (String) translator.getParmas().get(0).toString());
+				
+				stmt.executeUpdate();	
+		
 				Translator newTranslator = new Translator(translator.getRequest(), ar);
 				return newTranslator;
 			
@@ -239,20 +262,53 @@ public class DBConnector {
 				
 			}
 			break;
-				
-		
 /*********************************************UPDATEPERMANENT*********************************************************/		
-		case UPDATEPERMANENT:
+	case CURRENT_IN_ROLE:
+		
+	try{
+		
+		stmt = conn.prepareStatement("select first_name, last_name from icmdb.workers "
+				+ "inner join icmdb.permanent_roles ON( icmdb.workers.id=icmdb.permanent_roles.user_id )"
+				+ "and icmdb.permanent_roles.role = ? ");
+		stmt.setString(1, (String) translator.getParmas().get(0));
+		ResultSet rs = stmt.executeQuery();
+
+		if(rs.first() == false) {
+			ar.add("Select chairman failled");
+			Translator newTranslator = new Translator(translator.getRequest(), ar);
+			return newTranslator;
+		}
+		rs.previous();
+		while (rs.next()) { // get the processID from the Select query
+			ar.add( new String(rs.getString(1)));//name
+			ar.add( new String(rs.getString(2)));//last name
+	
+			
+		}
+				ar.add( (String) translator.getParmas().get(0));//role
+		
+		Translator newTranslator = new Translator(translator.getRequest(), ar);
+		return newTranslator;
+	}
+	catch(SQLException e) {
+		System.out.println("SQL Exception: Failed CURRENT_IN_ROLE ");
+	}
+	
+	break;
+	case UPDATEPERMANENT:
 		try {
+			
+			System.out.println("add new person to role");
 			stmt = conn.prepareStatement("insert into icmdb.permanent_roles (user_id,role) values(?,?)");
 			stmt.setString(1, (String) translator.getParmas().get(0));
 			stmt.setString(2, (String) translator.getParmas().get(1));
-			System.out.println("id "+translator.getParmas().get(0));
+System.out.println("id "+translator.getParmas().get(0));
 
 			stmt.executeUpdate();
 			stmt = conn.prepareStatement("select first_name, last_name from icmdb.workers "
 					+ "inner join icmdb.permanent_roles ON icmdb.workers.id=icmdb.permanent_roles.user_id "
 					+ "and icmdb.permanent_roles.role = ? ");
+		
 			stmt.setString(1, (String) translator.getParmas().get(1));
 			ResultSet rs = stmt.executeQuery();
 	
@@ -277,9 +333,7 @@ public class DBConnector {
 			System.out.println("SQL Exception: Failed UPDATEPERMANENT ");
 		}
 		break;
-			
 /*************************************************LOGIN***************************************************************/
-
 		case LOGIN:
 			try {
 				stmt = conn.prepareStatement("select * from users where user_id=? and password=?");	
@@ -323,9 +377,10 @@ public class DBConnector {
 			}
 			catch (SQLException e) {
 				System.out.println("ERROR");
-				e.printStackTrace();} 
-			return null;
-
+				e.printStackTrace();
+				
+			} 
+		return null;
 		case GETRELATEDREQUESTS:
 			try {
 				stmt = conn.prepareStatement(""
@@ -345,6 +400,7 @@ public class DBConnector {
 
 					return newTranslator;
 				}
+				
 				rs.previous();
 				ArrayList<ArrayList<?>> processes = new ArrayList<ArrayList<?>>();
 				while(rs.next()) {	
@@ -446,7 +502,7 @@ public class DBConnector {
 					stmt.executeUpdate();
 					
 					System.out.println("APPOINT_APPRAISER_OR_PERFORMANCE_LEADER Insert is working");
-					setNextStage((int)translator.getParmas().get(1));
+					setNextStageByOne((int)translator.getParmas().get(1));
 				}
 				catch (SQLException e) {
 					// TODO Auto-generated catch block
@@ -462,7 +518,7 @@ public class DBConnector {
 				stmt.setInt(2, (int)translator.getParmas().get(0));
 				
 				stmt.executeUpdate();
-				setNextStage((int)translator.getParmas().get(0));
+				setNextStageByOne((int)translator.getParmas().get(0));
 			}
 			catch(SQLException e) {
 				 //TODO Auto-generated catch block
@@ -514,7 +570,7 @@ public class DBConnector {
 			
 		case GETALLPROCESSES:
 			try {
-				stmt = conn.prepareStatement("SELECT * FROM processes;");
+				stmt = conn.prepareStatement("SELECT * FROM icmdb.processes;");
 				ResultSet rs = stmt.executeQuery();		
 				if(rs.first() == false) {
 					ar.add("No processes");
@@ -550,11 +606,14 @@ public class DBConnector {
 						}
 					}
 					else {
+						
 						return null;
 					}
 					processes.add(intArray);
 					processes.add(stringArray);
+					
 				}
+				
 				Translator newTranslator = new Translator(translator.getRequest(), processes);
 				return newTranslator;
 			} catch (SQLException e) {
@@ -613,7 +672,7 @@ public class DBConnector {
 				
 				if(rs == 1)
 				{
-					ar.add("Succesfully Defrosted");
+					ar.add("Successfully Defrosted");
 					return new Translator(translator.getRequest(),ar);
 				}
 				else
@@ -635,6 +694,98 @@ public class DBConnector {
 
 		}
 		
+		case FREEZE_PROCESS:
+		{
+			try {
+				stmt = conn.prepareStatement("UPDATE processes SET status1='Suspended' WHERE request_id=?");
+				stmt.setString(1, (String) translator.getParmas().get(0));
+
+				int rs = stmt.executeUpdate();
+				
+				if(rs == 1)
+				{
+					ar.add("Succesfully Suspended");
+					return new Translator(translator.getRequest(),ar);
+				}
+				else
+				{
+					ar.add("Failed To Suspend");
+				}
+				
+				return new Translator(translator.getRequest(),ar);
+
+
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				
+				ar.add("SQL Error");
+				return new Translator(translator.getRequest(),ar);
+
+			}
+		}
+		
+		case SHUTDOWN_PROCESS:
+		{
+			try {
+				stmt = conn.prepareStatement("UPDATE processes SET status1='Shutdown',process_stage='13' WHERE request_id=?");
+				stmt.setString(1, (String) translator.getParmas().get(0));
+
+				int rs = stmt.executeUpdate();
+				
+				if(rs == 1)
+				{
+					ar.add("Successfully Shutdown");
+					return new Translator(translator.getRequest(),ar);
+				}
+				else
+				{
+					ar.add("Failed To Shutdown");
+				}
+				
+				return new Translator(translator.getRequest(),ar);
+
+
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				
+				ar.add("SQL Error");
+				return new Translator(translator.getRequest(),ar);
+
+			}
+		}
+		
+		case INSERT_FAILURE_REPORT:
+			try {
+				stmt = conn.prepareStatement("insert into icmdb.failure_reports "
+						+ "(failure_report_id,request_id, failure_explanation) "
+						+ "values(?,?,?)");
+						
+				stmt.setInt(1, (int)translator.getParmas().get(0));
+				stmt.setInt(2, (int)translator.getParmas().get(1));
+				stmt.setString(3, translator.getParmas().get(2).toString());
+				
+				stmt.executeUpdate();
+				setNextStageByInput((int)translator.getParmas().get(1), "7");
+			}
+		 catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			
+			System.out.println("INSERT_FAILURE_REPORT: SQL EXCEPTION");
+
+		}
+			
+			break;
+			
+		case EXAMINATION_COMPLETED:
+			setNextStageByOne((int)translator.getParmas().get(0));
+			break;
+			
+		case FILL_FAILURE_REPORT_CLICK:
+			setNextStageByInput((int)translator.getParmas().get(0), "11.5");
+			break;
 		default:
 			System.out.println("default");
 			break;
@@ -674,11 +825,11 @@ public class DBConnector {
 		return null;
 	}
 	
-	private static void setNextStage(int procID)
+	private static void setNextStageByOne(int procID)//for the "approve" buttons
 	{
 		PreparedStatement stmt;
-		String strProcStage;
-		int numProcStage;
+		String procStage;
+		String nextProcStage = "";
 		
 		System.out.println("procID: " + procID);
 		try {
@@ -694,26 +845,91 @@ public class DBConnector {
 				return;
 			}
 			
-			strProcStage = rs.getString(1);
-			System.out.println("strProcStage = " + strProcStage);
+			procStage = rs.getString(1);
+			System.out.println("strProcStage = " + procStage);
 			
-			numProcStage = Integer.parseInt(strProcStage);
-			numProcStage++;
-			strProcStage = String.valueOf(numProcStage);
+			switch(procStage)
+			{
+			case "1":
+				nextProcStage = "2";
+				break;
+			case "2":
+			case "2.5":
+				nextProcStage = "3";
+				break;
+			case "3":
+				nextProcStage = "4";
+			case "4":
+				nextProcStage = "5";
+				break;
+			case "5":
+				nextProcStage = "6";
+				break;
+			case "6":
+				nextProcStage = "7";
+				break;
+			case "7":
+			case "7.5":
+				nextProcStage = "8";
+				break;
+			case "8":
+				nextProcStage = "9";
+				break;
+			case "9":
+				nextProcStage = "10";
+				break;
+			case "10":
+				nextProcStage = "11";
+				break;
+			case "11":
+			case "11.5":
+				nextProcStage = "12";
+				break;
+			case "12":
+				nextProcStage = "13";
+				break;
+				default:
+					break;
+			}
+			
 			
 			stmt = conn.prepareStatement("UPDATE icmdb.processes SET process_stage = ? WHERE request_id = ?");
 		
-			stmt.setString(1, strProcStage);
+			stmt.setString(1, nextProcStage);
 			stmt.setInt(2, procID);
 			
 			stmt.executeUpdate();
-			System.out.println("strProcStage++ = " + strProcStage);
+			System.out.println("procStage++ = " + nextProcStage);
 			
-			System.out.println("update process stage succeeded");
+			System.out.println("update process stage by one succeeded");
 			
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			System.out.println("SQL Exception setNextStage()");
 		}	
+	}
+	
+	private static void setNextStageByInput(int procID, String nextStage)//for the non "approve" buttons
+	{
+		try
+		{
+			PreparedStatement stmt;
+			
+			stmt = conn.prepareStatement("UPDATE icmdb.processes SET process_stage = ? WHERE request_id = ?");
+			
+			stmt.setString(1, nextStage);
+			stmt.setInt(2, procID);
+			
+			stmt.executeUpdate();
+			
+			System.out.println("update process stage by input succeeded");
+
+		}
+		
+		catch (SQLException e) {
+		// TODO Auto-generated catch block
+		System.out.println("SQL Exception setNextStageByInput()");
+		}	
+		
 	}
 }

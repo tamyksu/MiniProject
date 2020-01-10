@@ -17,11 +17,11 @@
 {
 	-fx-fill: white;
 }
-#styleICM
+.styleICM
 {
 	-fx-fill: white;
 }
-#idPane{
+.idPane{
 		-fx-background-image: url("/application/1.jpg");
      	-fx-background-size: 100% 100%;
 }
@@ -29,7 +29,7 @@
 #color{
 	-fx-background-color: blue;
 }
-#idp{
+.idp{
 		-fx-background-image: url("/application/paneUP.jpg");
 }
 .button{
@@ -39,7 +39,7 @@
 .brightText{
 	-fx-text-fill: white;
 }
-#idButton{
+.idButton{
 -fx-background-image: url("/application/2.jpg");
 	-fx-text-fill: white;
 }
@@ -47,10 +47,8 @@
 {
 	-fx-background-color: blue;
 }
-#textstyle{
+.textstyle{
 	-fx-text-fill: white;
-	
-
 }
 
 .brightText{

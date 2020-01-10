@@ -11,7 +11,7 @@
    <children>
       <SplitPane dividerPositions="0.07349665924276169" orientation="VERTICAL" prefHeight="900.0" prefWidth="1500.0">
         <items>
-          <AnchorPane fx:id="idp" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="0.0" minWidth="0.0" prefHeight="62.0" prefWidth="1500.0">
+          <AnchorPane styleClass="idp" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="0.0" minWidth="0.0" prefHeight="62.0" prefWidth="1500.0">
                <children>
                   <Label layoutX="18.0" layoutY="11.0" prefHeight="26.0" prefWidth="62.0" styleClass="brightText" text="ICM">
                      <font>
@@ -20,20 +20,35 @@
                   </Label>
                </children>
             </AnchorPane>
-          <AnchorPane fx:id="idPane" focusTraversable="true" minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
+          <AnchorPane styleClass="idPane" focusTraversable="true" minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
                <children>
+                  <Text fx:id="print_IE2" fill="#ccd4da" layoutX="840.0" layoutY="414.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Current  this position is empty" wrappingWidth="415.13671875">
+                     <font>
+                        <Font size="18.0" />
+                     </font>
+                  </Text>
+                  <Text fx:id="print_supervisor" fill="#ccd4da" layoutX="21.0" layoutY="625.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Current  this position is empty" wrappingWidth="415.13671875">
+                     <font>
+                        <Font size="18.0" />
+                     </font>
+                  </Text>
                   <Text fx:id="print_message" fill="#f3f8fc" layoutX="417.0" layoutY="506.0" strokeType="OUTSIDE" strokeWidth="0.0" visible="false" wrappingWidth="415.13671875">
                      <font>
                         <Font size="18.0" />
                      </font>
                   </Text>
-                  <Text fx:id="print_Chaiman" fill="#ccd4da" layoutX="21.0" layoutY="415.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Current in Chairnam position: empty" wrappingWidth="415.13671875">
+                  <Text fx:id="print_IE1" fill="#ccd4da" layoutX="444.0" layoutY="414.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Current  this position is empty" wrappingWidth="339.13671875">
                      <font>
                         <Font size="18.0" />
                      </font>
                   </Text>
-                  <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#1f93ff00" height="160.0" layoutX="-283.0" layoutY="447.0" opacity="0.18" stroke="BLACK" strokeType="INSIDE" width="340.0" x="300.0" />
-                  <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#1f93ff00" height="227.0" layoutX="16.0" layoutY="205.0" opacity="0.18" stroke="BLACK" strokeType="INSIDE" width="1247.0" />
+                  <Text fx:id="print_Chaiman" fill="#ccd4da" layoutX="21.0" layoutY="415.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Current  this position is empty" wrappingWidth="415.13671875">
+                     <font>
+                        <Font size="18.0" />
+                     </font>
+                  </Text>
+                  <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#1f93ff00" height="192.0" layoutX="-283.0" layoutY="447.0" opacity="0.18" stroke="BLACK" strokeType="INSIDE" width="400.0" x="300.0" />
+                  <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#1f93ff00" height="227.0" layoutX="17.0" layoutY="205.0" opacity="0.18" stroke="BLACK" strokeType="INSIDE" width="1247.0" />
                   <Button fx:id="back_btn" layoutX="22.0" layoutY="22.0" mnemonicParsing="false" onAction="#back_click" text="Back" />
                   <Button fx:id="Appoint_secondIE" layoutX="982.0" layoutY="357.0" mnemonicParsing="false" onAction="#AppointsecondIEclick" text="Appoint #2 Information Engineer:" />
                   <ComboBox fx:id="chairman_comboBox" layoutX="62.0" layoutY="303.0" prefHeight="31.0" prefWidth="295.0" promptText="Select Chairman" />
