@@ -98,8 +98,6 @@ public class Client extends AbstractClient {
 	
 	if(arr.get(0).equals("Successfully Shutdown"))
 	{
-		///ControllerProcessMain.getInstance().getTheUpdateProcessesFromDB();
-		///ControllerProcessMain.getInstance().ButtonAdjustmentSuperUser(this.role, ControllerProcessMain.getInstance().getRequestID());
 	}
 	else
 		new Alert(AlertType.ERROR,"There was an issue to shutdown this process").show();
@@ -128,13 +126,8 @@ public class Client extends AbstractClient {
 	public void handlerMessageFromServerSelectChairMan(Object message)
 	{
 		ArrayList<String> arr= (ArrayList<String>)message;
-		
-		StaffMainController.instance.setDataChairMan(arr);
-		
-		
+		StaffMainController.instance.setDataChairMan(arr);	
 	}
-	
-	
 	
 	public void handlerMessageFromServerCURRENT_IN_ROLE(Object message)
 	{

@@ -75,7 +75,7 @@ public class DBConnector {
 				stmt.setString(6, nr.getNotes());
 				stmt.setString(7, "Active");
 				stmt.setDate(8, date);
-				stmt.setInt(9, 1);
+				stmt.setString(9, "1");
 				stmt.executeUpdate();
 
 				// Get the ID newly inserted request:
@@ -693,7 +693,33 @@ System.out.println("id "+translator.getParmas().get(0));
 			}
 
 		}
-		
+		case INSERT_FAILURE_REPORT:
+			try {
+				stmt = conn.prepareStatement("insert into icmdb.failure_reports "
+						+ "(failure_report_id,request_id, failure_explanation) "
+						+ "values(?,?,?)");
+						
+				stmt.setInt(1, (int)translator.getParmas().get(0));
+				stmt.setInt(2, (int)translator.getParmas().get(1));
+				stmt.setString(3, translator.getParmas().get(2).toString());
+				
+				stmt.executeUpdate();
+				setNextStageByInput((int)translator.getParmas().get(1), "7");
+			}
+		 catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			
+			System.out.println("INSERT_FAILURE_REPORT: SQL EXCEPTION");
+
+		}
+			
+			break;
+			
+		case EXAMINATION_COMPLETED:
+			setNextStageByOne((int)translator.getParmas().get(0));
+			break;
+
 		case FREEZE_PROCESS:
 		{
 			try {
@@ -752,36 +778,8 @@ System.out.println("id "+translator.getParmas().get(0));
 				
 				ar.add("SQL Error");
 				return new Translator(translator.getRequest(),ar);
-
-			}
+			}						
 		}
-		
-		case INSERT_FAILURE_REPORT:
-			try {
-				stmt = conn.prepareStatement("insert into icmdb.failure_reports "
-						+ "(failure_report_id,request_id, failure_explanation) "
-						+ "values(?,?,?)");
-						
-				stmt.setInt(1, (int)translator.getParmas().get(0));
-				stmt.setInt(2, (int)translator.getParmas().get(1));
-				stmt.setString(3, translator.getParmas().get(2).toString());
-				
-				stmt.executeUpdate();
-				setNextStageByInput((int)translator.getParmas().get(1), "7");
-			}
-		 catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			
-			System.out.println("INSERT_FAILURE_REPORT: SQL EXCEPTION");
-
-		}
-			
-			break;
-			
-		case EXAMINATION_COMPLETED:
-			setNextStageByOne((int)translator.getParmas().get(0));
-			break;
 			
 		case FILL_FAILURE_REPORT_CLICK:
 			setNextStageByInput((int)translator.getParmas().get(0), "11.5");

@@ -16,7 +16,7 @@
 
 <Pane xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.EvaluationController">
    <children>
-      <SplitPane dividerPositions="0.5" orientation="VERTICAL" prefHeight="1500.0" prefWidth="1500">
+      <SplitPane dividerPositions="0.5" orientation="VERTICAL" prefHeight="843.0" prefWidth="1441.0">
         <items>
           <AnchorPane styleClass="idp" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="0.0" minWidth="0.0" prefHeight="62.0" prefWidth="1500.0">
                <children>
@@ -29,9 +29,22 @@
             </AnchorPane>
           <AnchorPane styleClass="idPane" focusTraversable="true" minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
                <children>
-                  <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#66b5ff00" height="82.0" layoutX="101.0" layoutY="535.0" opacity="0.14" stroke="BLACK" strokeType="INSIDE" width="531.0" />
+                  <Rectangle arcHeight="5.0" arcWidth="4.0" fill="#ffffff00" height="98.0" layoutX="81.0" layoutY="34.0" stroke="BLACK" strokeType="INSIDE" width="554.0" />
+                  <Rectangle arcHeight="5.0" arcWidth="4.0" fill="#ffffff00" height="531.0" layoutX="81.0" layoutY="164.0" stroke="BLACK" strokeType="INSIDE" width="554.0" />
+                  <Label styleClass="textstyle" layoutX="415.0" layoutY="76.0" text="Days">
+                     <font>
+                        <Font size="14.0" />
+                     </font>
+                  </Label>
+                  <Button fx:id="submit_duetime_btn" layoutX="550.0" layoutY="86.0" mnemonicParsing="false" onAction="#submit_duetime_click" text="Submit" />
+                  <Label styleClass="textstyle" layoutX="86.0" layoutY="77.0" text="Define Due Time Of Valuation Report:" />
+                  <Label styleClass="textstyle" layoutX="203.0" layoutY="36.0" prefHeight="0.0" prefWidth="298.0" text="Due Time Of Valuation Report">
+                     <font>
+                        <Font name="System Bold" size="21.0" />
+                     </font>
+                  </Label>
                   <Button layoutX="1284.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="86.0" text="log out" />
-                  <Button fx:id="back_btn" layoutX="21.0" layoutY="6.0" mnemonicParsing="false" onAction="#back_click" text="Back" />
+                  <Button fx:id="back_btn" layoutX="17.0" layoutY="6.0" mnemonicParsing="false" onAction="#back_click" text="Back" />
                   <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#1f93ff00" height="665.0" layoutX="679.0" layoutY="34.0" opacity="0.14" stroke="BLACK" strokeType="INSIDE" width="524.0" />
                   <HBox layoutX="693.0" layoutY="35.0" prefHeight="613.0" prefWidth="495.0">
                      <children>
@@ -168,42 +181,23 @@
                         <Font name="System Bold" size="21.0" />
                      </font>
                   </Label>
-                  <Button fx:id="submit_duetime_btn" layoutX="535.0" layoutY="572.0" mnemonicParsing="false" onAction="#submit_duetime_click" text="Submit" />
-                  <TextField fx:id="days_textbox" layoutX="359.0" layoutY="569.0" prefHeight="31.0" prefWidth="59.0" />
-                  <Label styleClass="textstyle" layoutX="101.0" layoutY="576.0" text="Define Due Time Of Valuation Report:" />
-                  <Pane layoutX="93.0" layoutY="32.0" prefHeight="496.0" prefWidth="531.0">
-                     <children>
-                        <Rectangle arcHeight="5.0" arcWidth="4.0" fill="#ffffff00" height="496.0" stroke="BLACK" strokeType="INSIDE" width="531.0" />
-                        <Label styleClass="textstyle" layoutX="164.0" layoutY="6.0" text="Evaluation Report">
-                           <font>
-                              <Font name="System Bold" size="26.0" />
-                           </font>
-                        </Label>
-                        <Label styleClass="textstyle" layoutX="14.0" layoutY="52.0" text="Requested Change:" />
-                        <TextArea fx:id="request_change_textbox" layoutX="14.0" layoutY="73.0" prefHeight="98.0" prefWidth="503.0">
-                           <font>
-                              <Font size="13.0" />
-                           </font></TextArea>
-                        <TextArea fx:id="result_textbox" layoutX="14.0" layoutY="196.0" prefHeight="98.0" prefWidth="503.0" />
-                        <Label styleClass="textstyle" layoutX="14.0" layoutY="175.0" text="Result:" />
-                        <Label styleClass="textstyle" layoutX="14.0" layoutY="299.0" text="Constraints And Risks:" />
-                        <TextArea fx:id="constraints_textbox" layoutX="14.0" layoutY="320.0" prefHeight="98.0" prefWidth="503.0" />
-                        <Label styleClass="textstyle" layoutX="14.0" layoutY="447.0" text="Evaluation Of Duration Time For Current Stage:" />
-                        <TextField layoutX="334.0" layoutY="442.0" prefHeight="31.0" prefWidth="73.0" />
-                        <Label styleClass="textstyle" layoutX="411.0" layoutY="447.0" text="Days" />
-                        <Button fx:id="submit_btn" layoutX="436.0" layoutY="461.0" mnemonicParsing="false" onAction="#submit_click" text="Submit Form" />
-                     </children>
-                  </Pane>
-                  <Label styleClass="textstyle" layoutX="418.0" layoutY="575.0" text="Days">
+                  <TextField fx:id="days_textbox" layoutX="344.0" layoutY="70.0" prefHeight="31.0" prefWidth="59.0" />
+                  <Label styleClass="textstyle" layoutX="95.0" layoutY="491.0" text="Constraints And Risks:" />
+                  <Label styleClass="textstyle" layoutX="95.0" layoutY="216.0" text="Requested Change:" />
+                  <TextArea fx:id="result_textbox" layoutX="95.0" layoutY="381.0" prefHeight="98.0" prefWidth="503.0" />
+                  <Label styleClass="textstyle" layoutX="247.0" layoutY="164.0" text="Evaluation Report">
                      <font>
-                        <Font size="14.0" />
+                        <Font name="System Bold" size="26.0" />
                      </font>
                   </Label>
-                  <Label styleClass="textstyle" layoutX="218.0" layoutY="535.0" prefHeight="0.0" prefWidth="298.0" text="Due Time Of Valuation Report">
+                  <TextArea fx:id="request_change_textbox" layoutX="95.0" layoutY="242.0" prefHeight="98.0" prefWidth="503.0">
                      <font>
-                        <Font name="System Bold" size="21.0" />
+                        <Font size="13.0" />
                      </font>
-                  </Label>
+                  </TextArea>
+                  <Button fx:id="submit_btn" layoutX="511.0" layoutY="648.0" mnemonicParsing="false" onAction="#submit_click" text="Submit Form" />
+                  <TextArea fx:id="constraints_textbox" layoutX="93.0" layoutY="512.0" prefHeight="98.0" prefWidth="503.0" />
+                  <Label styleClass="textstyle" layoutX="93.0" layoutY="355.0" text="Result:" />
                </children>
             </AnchorPane>
         </items>

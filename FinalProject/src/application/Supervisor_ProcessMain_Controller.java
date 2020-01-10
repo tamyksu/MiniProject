@@ -3,9 +3,7 @@ package application;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
-
 import com.sun.org.apache.xerces.internal.util.SynchronizedSymbolTable;
-
 import client.Client;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;

@@ -437,7 +437,7 @@ public class ControllerProcessMain implements Initializable {
 		if(proc == -1)
 			return;
 		ScreenController.getScreenController().activate("examination");
-		ExaminationController.instance.setProcessID(proc);
+		ExaminationController.instance.setProcessID(proc);		
 		ExaminationController.instance.updateProcessInformation();
 
 	}
