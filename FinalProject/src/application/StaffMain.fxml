@@ -11,7 +11,7 @@
    <children>
       <SplitPane dividerPositions="0.5" orientation="VERTICAL" prefHeight="900.0" prefWidth="1500.0">
         <items>
-          <AnchorPane styleClass="idp" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="0.0" minWidth="0.0" prefHeight="62.0" prefWidth="1500.0">
+          <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="0.0" minWidth="0.0" prefHeight="62.0" prefWidth="1500.0" styleClass="idp">
                <children>
                   <Label layoutX="18.0" layoutY="11.0" prefHeight="26.0" prefWidth="62.0" styleClass="brightText" text="ICM">
                      <font>
@@ -20,7 +20,7 @@
                   </Label>
                </children>
             </AnchorPane>
-          <AnchorPane styleClass="idPane" focusTraversable="true" minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
+          <AnchorPane focusTraversable="true" minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0" styleClass="idPane">
                <children>
                   <Text fx:id="print_IE2" fill="#ccd4da" layoutX="840.0" layoutY="414.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Current  this position is empty" wrappingWidth="415.13671875">
                      <font>
@@ -90,7 +90,7 @@
                         <Font name="System Bold" size="18.0" />
                      </font>
                   </Label>
-                  <Button layoutX="534.0" layoutY="512.0" mnemonicParsing="false" onAction="#active_reports" prefHeight="24.0" prefWidth="208.0" text="Active Reports " />
+                  <Button layoutX="534.0" layoutY="512.0" mnemonicParsing="false" onAction="#active_reports_button" prefHeight="24.0" prefWidth="208.0" text="Active Reports " />
                   <Button layoutX="534.0" layoutY="546.0" mnemonicParsing="false" onAction="#execution_reports" prefHeight="24.0" prefWidth="208.0" text="Execution Reports " />
                   <Button layoutX="536.0" layoutY="584.0" mnemonicParsing="false" onAction="#delay_execution" prefHeight="24.0" prefWidth="208.0" text="Delay Execution" />
                   <Text fx:id="print_message" fill="#f3f8fc" layoutX="9.0" layoutY="673.0" strokeType="OUTSIDE" strokeWidth="0.0" text="fff" visible="false" wrappingWidth="415.13671875">

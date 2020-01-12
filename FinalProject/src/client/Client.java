@@ -4,6 +4,8 @@ import translator.OptionsOfAction;
 import translator.Translator;
 import java.io.*;
 import java.util.ArrayList;
+
+import application.ActiveReportsController;
 import application.ControllerProcessMain;
 import application.LoginController;
 import application.NewRequestController;
@@ -81,18 +83,42 @@ public class Client extends AbstractClient {
 			break;
 		case checkNAMEParmenent:
 			handlerMessageFromServercheckNAMEParmenent(result.getParmas());
+		case Get_Active_Statistic:
+			handlerMessageFromServercheckNAMEParmenent(result.getParmas());
 		break;
 		case DEFROST_PROCESS:
-			handleMessageFromServerDefrostProcess(result.getParmas());
+			handleMessageFromServerGet_Active_Statistic(result.getParmas());
 			break;
 		case SHUTDOWN_PROCESS:
 			handleMessageFromServerShutdownProcess(result.getParmas());
+			break;
+		case REJECTE_PROCESS:
+			handleMessageFromServerREJECTE_PROCESS(result.getParmas());
 		default:
 			break;
 		}
 	
 	}
 	
+	public void handleMessageFromServerGet_Active_Statistic(Object message)
+	{
+		
+		ArrayList<	ArrayList<Integer>> arr= (ArrayList<ArrayList<Integer>>) message;
+		ActiveReportsController.instance.calaulate(arr);
+		
+	}
+	private void handleMessageFromServerREJECTE_PROCESS(Object message)
+	{
+		ArrayList<String> arr= (ArrayList<String>) message;
+		
+		if(arr.get(0).equals("Successfully rejected"))
+		{
+		}
+		else
+			new Alert(AlertType.ERROR,"There was an issue to reject this process").show();
+		
+		
+	}
 	private void handleMessageFromServerShutdownProcess(Object message) {
 	ArrayList<String> arr= (ArrayList<String>) message;
 	
