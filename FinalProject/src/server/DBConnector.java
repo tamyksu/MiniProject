@@ -8,6 +8,7 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import translator.*;
+import application.Evaluation_Options;
 import application.MyFile;
 import application.Request;
 import java.sql.ResultSet;
@@ -829,6 +830,94 @@ System.out.println("id "+translator.getParmas().get(0));
 		case FILL_FAILURE_REPORT_CLICK:
 			setNextStageByInput((int)translator.getParmas().get(0), "11.5");
 			break;
+			
+		case Fill_Evalution_Number_Of_Days: // Appraiser evaluate the required number of days.
+			ArrayList<Boolean> evaluateNumberOfDaysAnswer = new ArrayList<>();
+			Translator fillNumberOfDaysAnswer = new Translator(OptionsOfAction.Fill_Evalution_Number_Of_Days, evaluateNumberOfDaysAnswer);
+			int processID = (int) translator.getParmas().get(0); // The process ID.
+			String processStage = translator.getParmas().get(1).toString(); // The process ID.
+			if(processStage.equals("2")) {
+				try {
+					stmt = conn.prepareStatement("insert into icmdb.evaluation_reports "
+							+ "(process_id, appraiser_id, number_of_days, approval_result) "
+							+ "values(?,?,?,?)");
+
+					stmt.setInt(1, processID); // The process ID.
+					stmt.setString(2, translator.getParmas().get(2).toString()); // The Appraiser's ID
+					stmt.setInt(3,(int) translator.getParmas().get(3)); // The evaluated number of days
+					stmt.setString(4, Evaluation_Options.Waiting.toString()); // Evaluation status (currently waiting)
+
+					stmt.executeUpdate();
+					setNextStageByOne(processID); // Process is set to next stage;
+					evaluateNumberOfDaysAnswer.add(true);
+					return fillNumberOfDaysAnswer;
+				}
+				catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+					evaluateNumberOfDaysAnswer.add(false);
+
+					System.out.println("Insert Evaluation Days: SQL EXCEPTION");
+					return fillNumberOfDaysAnswer;
+				}
+			}
+			if(processStage.equals("2.5")) {
+				try {
+					stmt = conn.prepareStatement("Update icmdb.evaluation_reports SET"
+							+ " appraiser_id=?, number_of_days=?, approval_result=?"
+							+ " WHERE process_id=?");
+
+					
+					stmt.setString(1, translator.getParmas().get(2).toString()); // The Appraiser's ID
+					stmt.setInt(2,(int) translator.getParmas().get(3)); // The evaluated number of days
+					stmt.setString(3, Evaluation_Options.Waiting.toString()); // Evaluation status (currently waiting)
+					stmt.setInt(4, processID); // The process ID.
+					
+					stmt.executeUpdate();
+					setNextStageByOne(processID); // Process is set to next stage;
+					evaluateNumberOfDaysAnswer.add(true);
+					return fillNumberOfDaysAnswer;
+				}
+				catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+					evaluateNumberOfDaysAnswer.add(false);
+
+					System.out.println("Insert Evaluation Days: SQL EXCEPTION");
+					return fillNumberOfDaysAnswer;
+				}
+			}
+			//break;
+		case Fill_Evalution_Form:
+			int processID1 = (int) translator.getParmas().get(0); // The process ID.
+			String processStage1 = translator.getParmas().get(1).toString(); // The process ID.
+			ArrayList<Boolean> evaluationFormInserted = new ArrayList<>();
+			Translator evaluationFormTranslator = new Translator(OptionsOfAction.Fill_Evalution_Number_Of_Days, evaluationFormInserted);
+			try {
+				stmt = conn.prepareStatement("UPDATE icmdb.evaluation_reports SET"
+						+ "requested_change=?, result=?, constraits_and_risks=?"
+						+ " WHERE process_id=?"); // The Requested change
+
+				stmt.setString(1,translator.getParmas().get(1).toString()); // The Requested change
+				stmt.setString(2, translator.getParmas().get(2).toString()); // Result
+				stmt.setString(3, translator.getParmas().get(3).toString()); // Constraints and risks
+				stmt.setInt(4, processID1); // The process ID.
+				stmt.executeUpdate();
+				
+				setNextStageByOne(processID1); // Process is set to next stage;
+				evaluationFormInserted.add(true);
+				return evaluationFormTranslator;
+			}
+			catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				evaluationFormInserted.add(false);
+				
+				System.out.println("Insert Evaluation Days: SQL EXCEPTION");
+				return evaluationFormTranslator;
+			}
+			// break;
+			
 		default:
 			System.out.println("default");
 			break;
@@ -868,6 +957,8 @@ System.out.println("id "+translator.getParmas().get(0));
 		return null;
 	}
 	
+
+	
 	private static void setNextStageByOne(int procID)//for the "approve" buttons
 	{
 		PreparedStatement stmt;
@@ -902,6 +993,7 @@ System.out.println("id "+translator.getParmas().get(0));
 				break;
 			case "3":
 				nextProcStage = "4";
+				break;
 			case "4":
 				nextProcStage = "5";
 				break;
@@ -931,8 +1023,8 @@ System.out.println("id "+translator.getParmas().get(0));
 			case "12":
 				nextProcStage = "13";
 				break;
-				default:
-					break;
+			default:
+				break;
 			}
 			
 			

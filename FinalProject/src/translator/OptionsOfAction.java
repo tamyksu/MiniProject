@@ -25,7 +25,8 @@ public enum OptionsOfAction {
 	SHUTDOWN_PROCESS,
 	EXAMINATION_COMPLETED,
 	FILL_FAILURE_REPORT_CLICK,
-	Fill_Evalution_Number_Of_Days;
+	Fill_Evalution_Number_Of_Days,
+	Fill_Evalution_Form;
 }
 
 

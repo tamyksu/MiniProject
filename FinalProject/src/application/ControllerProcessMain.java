@@ -105,7 +105,8 @@ public class ControllerProcessMain implements Initializable {
 	@FXML
 	private Button director_btn;
 	
-
+	UserProcess process;
+	
 	public static void setInstance(ControllerProcessMain instance) {
 		ControllerProcessMain.instance = instance;
 	}
@@ -175,7 +176,7 @@ public class ControllerProcessMain implements Initializable {
 	}
 	//Updates the relevant fields by the process that is specified in the process table
 	public void updateFieldsOfRequestMarked(Person person) {
-		UserProcess process = Client.getInstance().getProcesses().getMyProcess().get(person.getRequestId());
+		process = Client.getInstance().getProcesses().getMyProcess().get(person.getRequestId());
 		InitiatorName.setText(process.getIntiatorId());
 		InitiatorEmail.setText(process.getEmail());
 		InformationSystem.setText("" + process.getSystem_num());
@@ -395,6 +396,9 @@ public class ControllerProcessMain implements Initializable {
 		
 		if(proc == -1)
 			return;
+		
+		EvaluationController.getInstance().pageLoad(Double.parseDouble(process.getProcess_stage()));
+		System.out.println(process.getProcess_stage() +" process stage");
 		ScreenController.getScreenController().activate("evaluation");
 		EvaluationController.instance.updateProcessInformation();
 	}

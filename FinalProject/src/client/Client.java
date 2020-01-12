@@ -5,6 +5,7 @@ import translator.Translator;
 import java.io.*;
 import java.util.ArrayList;
 import application.ControllerProcessMain;
+import application.EvaluationController;
 import application.LoginController;
 import application.NewRequestController;
 import application.Processes;
@@ -85,12 +86,42 @@ public class Client extends AbstractClient {
 		case DEFROST_PROCESS:
 			handleMessageFromServerDefrostProcess(result.getParmas());
 			break;
+		case Fill_Evalution_Number_Of_Days:
+			handleMessageFromServerFillEvalutionNumberOfDays(result.getParmas());
+			break;
+		case Fill_Evalution_Form:
+			handleMessageFromServerFillEvalutionForm(result.getParmas());
+			break;	
 		case SHUTDOWN_PROCESS:
 			handleMessageFromServerShutdownProcess(result.getParmas());
 		default:
 			break;
 		}
 	
+	}
+	
+	public void handleMessageFromServerFillEvalutionForm(Object rs) {
+		@SuppressWarnings("unchecked")
+		ArrayList<Boolean> result = (ArrayList<Boolean>) rs;
+		
+		if(result.get(0).booleanValue()==true) {
+			EvaluationController.getInstance().setAnswerFromServerSubmitForm(true);
+		}
+		else {
+			EvaluationController.getInstance().setAnswerFromServerSubmitForm(false);
+		}
+	}
+	
+	public void handleMessageFromServerFillEvalutionNumberOfDays(Object rs) {
+		@SuppressWarnings("unchecked")
+		ArrayList<Boolean> result = (ArrayList<Boolean>) rs;
+		
+		if(result.get(0).booleanValue()==true) {
+			EvaluationController.getInstance().setAnswerFromServerSubmitDays(true);
+		}
+		else {
+			EvaluationController.getInstance().setAnswerFromServerSubmitDays(false);
+		}
 	}
 	
 	private void handleMessageFromServerShutdownProcess(Object message) {
@@ -173,15 +204,7 @@ public class Client extends AbstractClient {
 		this.userID = userID;
 	}
 	
-	public void handleMessageFromClientGUINewRequest(Object message) {
-		try {
-			super.
-			sendToServer(message);
-		} catch (IOException e) {
-			System.out.println("Could not insert new request");
-			quit();
-		}
-	}
+
 	public void handleMessageFromClientGUI(Object message) {
 		try {
 			sendToServer(message);
@@ -240,6 +263,7 @@ public class Client extends AbstractClient {
 		System.out.println("handlerMessageFromServerUpdatePermanent"+arr.get(0));
 		StaffMainController.instance.printMessage(arr);
 	}
+	
 /*****************************************handlerMessageFromServerNewRequest*************************************************************/	
 	
 	public void handlerMessageFromServerNewRequest(Object rs) {

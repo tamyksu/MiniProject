@@ -80,6 +80,9 @@ public class EvaluationController implements Initializable{
     @FXML
     private Label current_stage_due_time_text;
     
+    private boolean answerFromServerSubmitDays;
+    private boolean answerFromServerSubmitForm;
+    
     @FXML
     void back_click(ActionEvent event) {
     	ScreenController.getScreenController().activate(ScreenController.getScreenController().getLastScreen());
@@ -87,24 +90,79 @@ public class EvaluationController implements Initializable{
 
 
     @FXML
+    /**
+     * Appraiser submit evaluated number of days.
+     * @param event
+     */
     void submit_duetime_click(ActionEvent event) {
-    	
+    	UserProcess process = Client.getInstance().getProcesses().getMyProcess().get(Integer.parseInt(ControllerProcessMain.getInstance().getRequestID()));
+    	/**
+    	 * Form validation:
+    	 */
     	if(days_textbox.getText().trim().isEmpty() || !NewRequestController.isNumeric(days_textbox.getText())) {
     		new Alert(AlertType.ERROR, "You must fill all the details!").show();
     	}
     	else {
-    		ArrayList<Integer> arr = new ArrayList<>();
-    		arr.add(Integer.parseInt(days_textbox.getText()));
-    		Translator translator = new Translator(OptionsOfAction.Fill_Evalution_Number_Of_Days, arr);
+    		ArrayList<Object> arr = new ArrayList<>();
+    		arr.add((new Integer(process.getRequest_id()))); // The process ID   0.
+    		arr.add(process.getProcess_stage()); // Process Stage   1
+    		arr.add(Client.getInstance().getUserID()); // The Appraiser's ID   2
+    		
+    		arr.add(new Integer
+    				(Integer.parseInt(days_textbox.getText()))); // The evaluated number of days  3
+    		
+
+    		Translator translator = new Translator(OptionsOfAction.Fill_Evalution_Number_Of_Days, arr); // new Translator
     		Client.getInstance().handleMessageFromClientGUI(translator);
+
+    		try { Thread.sleep(1000); } catch (InterruptedException e) {System.out.println("Can't Sleep");}
+
+    		if(answerFromServerSubmitDays==true) {
+    			pageLoad(3);
+    		}
     	}
     }
 
+    /**
+     * Fill evaluation form and submit
+     * @param event
+     */
     @FXML
     void submit_click(ActionEvent event) {
-
+    	if(formCheck()) {
+    		UserProcess process = Client.getInstance().getProcesses().getMyProcess().get(Integer.parseInt(ControllerProcessMain.getInstance().getRequestID()));
+    		ArrayList<Object> arrForm = new ArrayList<>();
+    		arrForm.add(new Integer(process.getRequest_id())); // Process ID   0
+    		arrForm.add(process.getProcess_stage()); // Process Stage   1
+    		arrForm.add(request_change_textbox.getText().toString()); // The Requested change  2
+    		arrForm.add(result_textbox.getText().toString()); // Result  3
+    		arrForm.add(constraints_textbox.getText().toString()); // Constraints and risks  4
+    		
+    		Translator translator = new Translator(OptionsOfAction.Fill_Evalution_Form, arrForm);
+    		Client.getInstance().handleMessageFromClientGUI(translator);
+    		
+    		if(answerFromServerSubmitForm==true) {
+    			pageLoad(3);
+    		}
+    	}
     }
     
+    /**
+     * Form validation
+     * @return  true/false
+     */
+    public boolean formCheck() {
+    	// if any of the TextAreas/Textfields is empty:
+    	if(request_change_textbox.getText().trim().isEmpty()
+    			|| result_textbox.getText().trim().isEmpty() ||
+    			constraints_textbox.getText().trim().isEmpty()) {
+
+    		new Alert(AlertType.ERROR, "You must fill all the details!").show();
+    		return false;
+    	}	
+    	return true;
+
+    }
     public void updateProcessInformation()
     {
 		UserProcess process = Client.getInstance().getProcesses().getMyProcess().get(Integer.parseInt(ControllerProcessMain.getInstance().getRequestID()));
@@ -122,15 +180,61 @@ public class EvaluationController implements Initializable{
 		current_stage_due_time_text.setText(process.getCurrent_stage_due_date());
     }
 
+    public static EvaluationController getInstance() {
+		return instance;
+	}
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		instance = this;
-		constraints_textbox.setDisable(true);
-		submit_btn.setDisable(true);
-		result_textbox.setDisable(true);
-		request_change_textbox.setDisable(true);
-		
+		this.answerFromServerSubmitDays=false;
+		this.answerFromServerSubmitForm=false;
+	}
+	
+	public void submitionSuccesseded() {
+		new Alert(AlertType.INFORMATION, "Submition received.");
+	}
+
+	public void submitionFailed() {
+		new Alert(AlertType.ERROR, "Failed, please try again.").show();
+	}
+	public void setAnswerFromServerSubmitDays(boolean answer) {
+		this.answerFromServerSubmitDays = answer;
+	}
+	public void setAnswerFromServerSubmitForm(boolean answer) {
+		this.answerFromServerSubmitForm = answer;
+	}
+	
+	/**
+	 * How to load the page, depends on the stage of the process
+	 * @param stage
+	 */
+	public void pageLoad(double stage) { // How to load the page
+		days_textbox.clear();
+		if(stage==2 || stage==2.5) {
+			days_textbox.setDisable(false);
+			submit_duetime_btn.setDisable(false);
+			constraints_textbox.setDisable(true);
+			submit_btn.setDisable(true);
+			result_textbox.setDisable(true);
+			request_change_textbox.setDisable(true);
+		}
+		if(stage==4) {
+			days_textbox.setDisable(true);
+			submit_duetime_btn.setDisable(true);
+			constraints_textbox.setDisable(false);
+			submit_btn.setDisable(false);
+			result_textbox.setDisable(false);
+			request_change_textbox.setDisable(false);
+		}
+		if(stage<2 || stage>4 || stage==3) {
+			days_textbox.setDisable(true);
+			submit_duetime_btn.setDisable(true);
+			constraints_textbox.setDisable(true);
+			submit_btn.setDisable(true);
+			result_textbox.setDisable(true);
+			request_change_textbox.setDisable(true);
+		}
 	}
 
 }
