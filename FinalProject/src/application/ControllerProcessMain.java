@@ -248,6 +248,7 @@ public class ControllerProcessMain implements Initializable {
 	
 	//change button disability in accordance to appraiser
 	private void fitChairman() {
+		System.out.println("charman");
 		newRequestBtn.setDisable(false);
 		extension_btn.setDisable(true);
 		evaluation_btn.setDisable(false);
@@ -467,8 +468,11 @@ public class ControllerProcessMain implements Initializable {
 
 	@FXML
 	public void getTheUpdateProcessesFromDB() {
+		
+		System.out.println("h"+Client.getInstance().getRole());
 		switch (Client.getInstance().getRole()) {
 		case "Supervisor":
+	
 			Client.getInstance().getAllProcessesFromServer();
 			fitSupervisor();
 			break;

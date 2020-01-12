@@ -1,6 +1,7 @@
 package application;
 
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.ResourceBundle;
 
 import client.Client;
@@ -9,6 +10,8 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import translator.OptionsOfAction;
+import translator.Translator;
 
 public class DecisionController implements Initializable{
 
@@ -64,7 +67,7 @@ public class DecisionController implements Initializable{
 
     @FXML
     private Label current_stage_due_time_text;
-
+	Client client = Client.getInstance();
     @Override
 	public void initialize(URL location, ResourceBundle resources) {
 		instance = this;
@@ -77,7 +80,11 @@ public class DecisionController implements Initializable{
 
     @FXML
     void deny_click(ActionEvent event) {
+    	ArrayList <Object> processInfo = new ArrayList<Object>();
 
+    	processInfo.add(ControllerProcessMain.getInstance().getRequestID());
+		Translator translator= new Translator(OptionsOfAction.REJECTE_PROCESS,processInfo);
+		client/*Client.getInstance()*/.handleMessageFromClientGUI(translator);
     }
 
     @FXML

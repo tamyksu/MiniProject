@@ -73,6 +73,13 @@ public class StaffMainController implements Initializable{
 	private ArrayList<String> FullNameChosenStaff= new ArrayList<String>();
 	ArrayList<String> workersList = new ArrayList<String>();
 	// Event Listener on Button[#back_btn].onAction
+	
+	
+	
+	@FXML
+	public void active_reports_button(ActionEvent event) {
+	 	ScreenController.getScreenController().activate("active_reports");
+	}
 	/****************************************back_click******************************************************************/
 	@FXML
 	public void back_click(ActionEvent event) {

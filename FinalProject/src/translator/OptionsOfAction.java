@@ -26,12 +26,7 @@ public enum OptionsOfAction {
 	EXAMINATION_COMPLETED,
 	FILL_FAILURE_REPORT_CLICK,
 	Fill_Evalution_Number_Of_Days,
-	Fill_Evalution_Form;
+	Fill_Evalution_Form,
+	REJECTE_PROCESS,
+	Get_Active_Statistic;
 }
-
-
-
-/* GETALLINFORMATIONSYSTEMS - is an option that is currently NOT in use.
- * If it will be in use, it will be for the NewRequestController.
- * Maybe if we would like to get all the information Systems from the database.
- */

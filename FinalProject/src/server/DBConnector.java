@@ -3,14 +3,27 @@ import java.io.BufferedOutputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
+
+import org.omg.CORBA.INTERNAL;
+
+import com.mysql.cj.exceptions.DataReadException;
+
 import translator.*;
 import application.Evaluation_Options;
 import application.MyFile;
 import application.Request;
+import javafx.util.converter.LocalDateTimeStringConverter;
+
 import java.sql.ResultSet;
 public class DBConnector {
 
@@ -167,13 +180,125 @@ public class DBConnector {
 				e.printStackTrace();
 			}
 		//	break;
-	/***************************************INITIALIZE_COMBO_BOX***********************************************/		
+	/****************************************Get_Active_Statistic********************************************************/		
+		case Get_Active_Statistic:
+			try {
+				ArrayList<ArrayList<Integer>> arr=new ArrayList<>();
+				ArrayList<Integer>active=new ArrayList<>();
+				stmt = conn.prepareStatement("SELECT COUNT(*) FROM icmdb.processes_state where status1='Active'"
+				
+						+"and date>=? and date<? GROUP BY extract(month from date)"
+						+ "order by extract(month from date) ");
+				LocalDate local=(LocalDate)translator.getParmas().get(0);
+				LocalDate local_end=(LocalDate)translator.getParmas().get(1);
+				Timestamp start=Timestamp.valueOf(local.atTime(LocalTime.MIDNIGHT));
+				Timestamp end=Timestamp.valueOf(local_end.atTime(LocalTime.MIDNIGHT));
+			
+				  stmt.setTimestamp(1,start);
+				  stmt.setTimestamp(2,end);
+				//stmt.setString(2,s_end);
+				ResultSet rs = stmt.executeQuery();
+				rs.previous();
+				int i=0;
+				while (rs.next())  // get the processID from the Select query
+				{
+				active.add(rs.getInt(1));
+				System.out.println(active.get(i));
+				i++;
+				}
+				arr.add(active);
+					//System.out.println(arr.get(0));
+			/**************************************************************************************/
+				ArrayList<Integer>suspend=new ArrayList<>();
+				PreparedStatement stmt5 = conn.prepareStatement("SELECT COUNT(*) FROM icmdb.processes_state where status1='Suspended'"
+				
+						+"and date>=? and date<? GROUP BY extract(month from date)"
+						+ "order by extract(month from date) ");
+				//local=(LocalDate)translator.getParmas().get(0);
+			 //	local_end=(LocalDate)translator.getParmas().get(1);
+				// start=Timestamp.valueOf(local.atTime(LocalTime.MIDNIGHT));
+			//	 end=Timestamp.valueOf(local_end.atTime(LocalTime.MIDNIGHT));
+			
+				stmt5.setTimestamp(1,start);
+				stmt5.setTimestamp(2,end);
+				//stmt.setString(2,s_end);
+				  rs = stmt5.executeQuery();
+				rs.previous();
+				 i=0;
+				while (rs.next())  // get the processID from the Select query
+				{
+				suspend.add(rs.getInt(1));
+				System.out.println("chek"+suspend.get(i));
+				i++;
+				}
+				arr.add(suspend);
+			//*************************************************************************************
+				ArrayList<Integer>shutdown=new ArrayList<>();
+				stmt = conn.prepareStatement("SELECT COUNT(*) FROM icmdb.processes_state where status1='Shutdown'"
+				
+						+"and date>=? and date<? GROUP BY extract(month from date)"
+						+ "order by extract(month from date) ");
+				local=(LocalDate)translator.getParmas().get(0);
+			 	local_end=(LocalDate)translator.getParmas().get(1);
+				 start=Timestamp.valueOf(local.atTime(LocalTime.MIDNIGHT));
+				 end=Timestamp.valueOf(local_end.atTime(LocalTime.MIDNIGHT));
+			
+				  stmt.setTimestamp(1,start);
+				  stmt.setTimestamp(2,end);
+				//stmt.setString(2,s_end);
+				  rs = stmt.executeQuery();
+				rs.previous();
+				 i=0;
+				while (rs.next())  // get the processID from the Select query
+				{
+				active.add(rs.getInt(1));
+				System.out.println(shutdown.get(i));
+				i++;
+				}
+				arr.add(shutdown);
+			/********************************************************************************************/
+				ArrayList<Integer>rejected=new ArrayList<>();
+				stmt = conn.prepareStatement("SELECT COUNT(*) FROM icmdb.processes_state where status1='Rejected'"
+				
+						+"and date>=? and date<? GROUP BY extract(month from date)"
+						+ "order by extract(month from date) ");
+				local=(LocalDate)translator.getParmas().get(0);
+			 	local_end=(LocalDate)translator.getParmas().get(1);
+				 start=Timestamp.valueOf(local.atTime(LocalTime.MIDNIGHT));
+				 end=Timestamp.valueOf(local_end.atTime(LocalTime.MIDNIGHT));
+			
+				  stmt.setTimestamp(1,start);
+				  stmt.setTimestamp(2,end);
+				//stmt.setString(2,s_end);
+				  rs = stmt.executeQuery();
+				rs.previous();
+				 i=0;
+				while (rs.next())  // get the processID from the Select query
+				{
+				active.add(rs.getInt(1));
+				System.out.println(rejected.get(i));
+				i++;
+				}
+				arr.add(rejected);
+			
+			/***************************************************************************************/
+		//0-active 1-suspend 2-shutdown 3-rejected
+				Translator newTranslator = new Translator(translator.getRequest(), arr);
+				return newTranslator;
+			}	
+			
+			catch (SQLException e) {
+				// TODO Auto-generated catch block
+				System.out.println("SQL EXCEPTION Get_Active_Statistic!");
+		}
+		break;
+	/**********************************************INITIALIZE_COMBO_BOX***********************************************************/
 		case INITIALIZE_COMBO_BOX:
 		
 			try {
 				
 				stmt = conn.prepareStatement("select first_name, last_name, id from icmdb.workers "
-						+ "where( id NOT IN(select user_id from icmdb.users_requests))");
+						+ "where( id NOT IN(select user_id from icmdb.users_requests) and role ='Information Engineer')");
 						//+ "and id NOT IN(select user_id from icmdb.permanent_roles))");
 				
 						
@@ -744,7 +869,45 @@ System.out.println("id "+translator.getParmas().get(0));
 		case EXAMINATION_COMPLETED:
 			setNextStageByOne((int)translator.getParmas().get(0));
 			break;
+		case REJECTE_PROCESS:
+			try {
+				
+				stmt = conn.prepareStatement("UPDATE processes SET status1='Rejected',process_stage='14' WHERE request_id=?");
+				stmt.setString(1, (String) translator.getParmas().get(0));
 
+				int rs = stmt.executeUpdate();
+				
+				if(rs == 1)
+				{
+					/*************************************************************************/
+					
+					PreparedStatement stmt9 = conn.prepareStatement("insert into icmdb.processes_state (request_id,status1,date) "
+							+"values(?,?,CURRENT_TIMESTAMP)");
+					stmt9.setString(1, (String) translator.getParmas().get(0));
+					stmt9.setString(2, "Rejected");
+					stmt9.executeUpdate();
+					/***********************************************************/
+					ar.add("Successfully rejected");
+					return new Translator(translator.getRequest(),ar);
+				}
+				else
+				{
+					ar.add("Failed To reject");
+				}
+				
+				return new Translator(translator.getRequest(),ar);
+
+			}
+		
+		catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				
+				ar.add("SQL Error- reject process");
+				return new Translator(translator.getRequest(),ar);
+
+			}
+			
 		case FREEZE_PROCESS:
 		{
 			try {
