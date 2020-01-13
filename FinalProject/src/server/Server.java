@@ -7,21 +7,11 @@ import java.io.*;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
-
-import javax.swing.text.DateFormatter;
-
-import com.sun.java.accessibility.util.Translator;
-
 import application.Processes;
 import application.UserProcess;
-import client.Client;
-import javafx.util.converter.LocalDateTimeStringConverter;
 import ocsf.server.*;
-import translator.OptionsOfAction;
 
 /**
  * This class overrides some of the methods in the abstract 
@@ -161,7 +151,7 @@ public class Server extends AbstractServer
 		{
 			for (int i = 0; i < result.size(); i=i+2) {                                                                         
 				UserProcess process = new UserProcess();
-				//Get values from intarray	
+
 				process.setRequest_id((int)result.get(i).get(0));
 				process.setSystem_num((int)result.get(i).get(1));
 				process.setIntiatorId((String)result.get(i+1).get(0));
@@ -202,28 +192,11 @@ public class Server extends AbstractServer
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-				//String currentDate = formatter.format(LocalDate.now());
-				
-//				int compRes = dueDate.compareTo(currentDate);
-//				
-//				if(compRes == 1)
-//					System.out.println("Send messsage to :"+process.getHandler_id());
-//				else
-//					if(compRes<0)
-//						System.out.println("Send messsage to :"+process.getHandler_id());
-//						System.out.println("Send messsage to Supervisor:");
-//						System.out.println("Send messsage to Super Super Manager MMM:");
-				
+
 				processes.getMyProcess().put(new Integer((int)result.get(i).get(0)), process);
 				processes.getMyProcessesInArrayList().add(process);	
 			}
-  		 
-//			for (UserProcess p : processes)
-//			{
-//				
-//			}
-			
-		  System.out.println("LOL WHAT");		
+
 		}
   }
   }
