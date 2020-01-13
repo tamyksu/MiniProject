@@ -4,10 +4,24 @@ package server;
 // license found at www.lloseng.com 
 
 import java.io.*;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
+
+import javax.swing.text.DateFormatter;
+
+import com.sun.java.accessibility.util.Translator;
 
 import application.Processes;
+import application.UserProcess;
+import client.Client;
+import javafx.util.converter.LocalDateTimeStringConverter;
 import ocsf.server.*;
+import translator.OptionsOfAction;
 
 /**
  * This class overrides some of the methods in the abstract 
@@ -122,7 +136,96 @@ public class Server extends AbstractServer
       System.out.println("ERROR - Could not listen for clients!");
     }
     
+	Timer timer = new Timer();
+	
+	Calendar calendar = Calendar.getInstance();
+	calendar.set(Calendar.HOUR_OF_DAY, 10);
+	calendar.set(Calendar.MINUTE, 15);
+	calendar.set(Calendar.SECOND, 0);
+	
+	Date time = calendar.getTime();
+	//checkDueDateOfProcesses();
+	
+	timer.schedule(new checkDueDateOfProcessesTask(), time);
     
+  }
+  
+  static class checkDueDateOfProcessesTask extends TimerTask{
+	  @Override
+	public void run() {
+		  
+  		 ArrayList<ArrayList<?>> result = DBConnector.getActiveProcesses();
+		  
+  		Processes processes = new Processes();
+		if(!(result.get(0).get(0).toString().equals("No processes")))
+		{
+			for (int i = 0; i < result.size(); i=i+2) {                                                                         
+				UserProcess process = new UserProcess();
+				//Get values from intarray	
+				process.setRequest_id((int)result.get(i).get(0));
+				process.setSystem_num((int)result.get(i).get(1));
+				process.setIntiatorId((String)result.get(i+1).get(0));
+				process.setProblem_description((String)result.get(i+1).get(1));
+				process.setRequest_description((String)result.get(i+1).get(2));
+				process.setExplanaton((String)result.get(i+1).get(3));
+				process.setNotes((String)result.get(i+1).get(4));
+				process.setStatus((String)result.get(i+1).get(5));
+				process.setCreation_date((String)result.get(i+1).get(6));
+				process.setHandler_id((String)result.get(i+1).get(7));
+				process.setProcess_stage((String)result.get(i+1).get(8));
+				process.setCurrent_stage_due_date((String)result.get(i+1).get(9));
+				process.setInitiatorFirstName((String)result.get(i+1).get(10));
+				process.setInitiatorLastName((String)result.get(i+1).get(11));
+				process.setEmail((String)result.get(i+1).get(12));
+				process.setDepartment((String)result.get(i+1).get(13));
+				
+				try {
+					Date dueDate = new SimpleDateFormat("yyyy-MM-dd").parse(process.getCurrent_stage_due_date());
+					Date currentDate = new SimpleDateFormat("yyyy-MM-dd").parse(LocalDate.now().toString());
+					
+					long diff = dueDate.getTime() - currentDate.getTime();
+				    long days = TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS);
+				    
+				    if(days < 0)
+				    {
+						System.out.println("Send messsage to :"+process.getHandler_id());
+						System.out.println("Send messsage to Supervisor:");
+						System.out.println("Send messsage to Super Super Manager MMM:");
+				    }
+				    else
+				    	if(days == 1)
+				    	{
+							System.out.println("Send messsage to :"+process.getHandler_id());
+				    	}
+					
+				} catch (ParseException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				//String currentDate = formatter.format(LocalDate.now());
+				
+//				int compRes = dueDate.compareTo(currentDate);
+//				
+//				if(compRes == 1)
+//					System.out.println("Send messsage to :"+process.getHandler_id());
+//				else
+//					if(compRes<0)
+//						System.out.println("Send messsage to :"+process.getHandler_id());
+//						System.out.println("Send messsage to Supervisor:");
+//						System.out.println("Send messsage to Super Super Manager MMM:");
+				
+				processes.getMyProcess().put(new Integer((int)result.get(i).get(0)), process);
+				processes.getMyProcessesInArrayList().add(process);	
+			}
+  		 
+//			for (UserProcess p : processes)
+//			{
+//				
+//			}
+			
+		  System.out.println("LOL WHAT");		
+		}
+  }
   }
 }
 //End of EchoServer class
