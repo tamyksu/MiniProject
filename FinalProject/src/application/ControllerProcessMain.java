@@ -4,6 +4,9 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
+
+import com.sun.scenario.effect.Effect.AccelType;
+
 import client.Client;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -107,6 +110,8 @@ public class ControllerProcessMain implements Initializable {
 	
 	UserProcess process;
 	
+	private static EvaluationReport evaluationReports; // current evaluation report
+	
 	public static void setInstance(ControllerProcessMain instance) {
 		ControllerProcessMain.instance = instance;
 	}
@@ -206,6 +211,7 @@ public class ControllerProcessMain implements Initializable {
 		case "appraiser":
 			fitAppraiser();
 			break;
+			
 		case "chairman":
 			fitChairman();
 			break;
@@ -239,22 +245,22 @@ public class ControllerProcessMain implements Initializable {
 				else
 					fitSupervisor();
 				break;	
-		
+			
 			default:
 				break;
 		}
 	
 	}
 	
-	//change button disability in accordance to appraiser
+	//change button disability in accordance to Chairman
 	private void fitChairman() {
-		System.out.println("charman");
+		System.out.println("chairman");
 		newRequestBtn.setDisable(false);
 		extension_btn.setDisable(true);
-		evaluation_btn.setDisable(false);
+		evaluation_btn.setDisable(true);
 		decision_btn.setDisable(false);
 		execution_btn.setDisable(true);
-		examination_btn.setDisable(false);
+		examination_btn.setDisable(true);
 		supervisor_mode_btn.setDisable(true);
 		director_btn.setDisable(true);
 		defrost_btn.setDisable(true);
@@ -325,6 +331,19 @@ public class ControllerProcessMain implements Initializable {
 		defrost_btn.setDisable(false);
 	}
 	
+	private void fitChangeBoardDisabled()
+	{
+		newRequestBtn.setDisable(true);
+		extension_btn.setDisable(true);
+		evaluation_btn.setDisable(true);
+		decision_btn.setDisable(true);
+		execution_btn.setDisable(true);
+		examination_btn.setDisable(true);
+		supervisor_mode_btn.setDisable(true);
+		director_btn.setDisable(false);
+		defrost_btn.setDisable(false);
+	}
+	
 	private void fitSupervisorDisabled() 
 	{
 		newRequestBtn.setDisable(true);
@@ -364,6 +383,8 @@ public class ControllerProcessMain implements Initializable {
 		director_btn.setDisable(false);
 		defrost_btn.setDisable(true);
 	}
+	
+	
 	
 	private void fitSupervisorShutdown() 
 	{
@@ -421,6 +442,24 @@ public class ControllerProcessMain implements Initializable {
 		
 		if(proc == -1)
 			return;
+		if(process.getProcess_stage().isEmpty()) {
+			new Alert(AlertType.ERROR, "Error!").show();
+			return;
+		}
+		if(Double.parseDouble(process.getProcess_stage())<5) {
+			new Alert(AlertType.ERROR, "Unabble to make a decision, not yet!").show();
+			return;
+		}
+		if(Double.parseDouble(process.getProcess_stage())>5) {
+			new Alert(AlertType.ERROR, "Already made a decision!").show();
+			return;
+		}
+		ArrayList<Integer> arr = new ArrayList<>();
+		arr.add(process.getRequest_id()); 
+		Translator translator = new Translator(OptionsOfAction.Get_Evaluation_Report_For_Process_ID, arr);
+		Client.getInstance().handleMessageFromClientGUI(translator);
+		try { Thread.sleep(500); } catch (InterruptedException e) {System.out.println("Can't Sleep");}
+		DecisionController.getInstance().loadPage(evaluationReports);
 		ScreenController.getScreenController().activate("decisionMaking");
 		DecisionController.instance.updateProcessInformation();
 	}
@@ -526,4 +565,11 @@ public class ControllerProcessMain implements Initializable {
 		}
     }
 
+	public static void setEvaluationReports(EvaluationReport evaluationReports) {
+		ControllerProcessMain.evaluationReports = evaluationReports;
+	}
+    
+    
+
+    
 }

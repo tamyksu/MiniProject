@@ -28,5 +28,8 @@ public enum OptionsOfAction {
 	Fill_Evalution_Number_Of_Days,
 	Fill_Evalution_Form,
 	REJECTE_PROCESS,
-	Get_Active_Statistic;
+	Get_Active_Statistic,
+	Get_Evaluation_Report_For_Process_ID,
+	Approve_Decision,
+	More_Info_Decision;
 }

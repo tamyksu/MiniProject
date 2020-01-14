@@ -90,18 +90,18 @@ public class StaffMainController implements Initializable{
 /*******************************************AppointsecondIEclick****************************************************************/	
     void AppointsecondIEclick(ActionEvent event) {
 	  	ArrayList<Object> params = new ArrayList<Object>();
-			params.add("Information Engineer-2");
+			params.add("Change Board Member-2"); // Information Engineer
 
-		checkBefore("Information Engineer-2","2");
+		checkBefore("Change Board Member-2","2"); // Information Engineer
     }
 /*******************************************AppointfirstIEclick***********************************************************/
     @FXML
     void AppointfirstIEclick(ActionEvent event) {
 
     	ArrayList<Object> params = new ArrayList<Object>();
-		params.add("Information Engineer-1");
+		params.add("Change Board Member-1"); // Information Engineer
 
-	checkBefore("Information Engineer-1","2");
+	checkBefore("Change Board Member-1","2"); // Information Engineer
     }
 /*****************************************Appoint_Chiarman_click**********************************************************/
 
@@ -166,8 +166,8 @@ public class StaffMainController implements Initializable{
 		System.out.println(FullNameChosenStaff);
 		checkBefore("ChairMan","1");
 		checkBefore("Supervisor","1");
-		checkBefore("Information Engineer-1","1");
-		checkBefore("Information Engineer-2","1");
+		checkBefore("Change Board Member-1","1"); // Information Engineer
+		checkBefore("Change Board Member-2","1"); // Information Engineer
 	}
 	public void afterSet(ArrayList<String> WorkersName)//get name of current chairman
 	{
@@ -196,12 +196,12 @@ public class StaffMainController implements Initializable{
 			
 			print_supervisor.setText("Current in " + WorkersName.get(2) + "position:\n" + (WorkersName.get(0)+" " +WorkersName.get(1)));
 		}
-		else if(WorkersName.get(3).equals("4") && WorkersName.get(2).equals("Information Engineer-1"))
+		else if(WorkersName.get(3).equals("4") && WorkersName.get(2).equals("Change Board Member-1")) // Information Engineer
 		{
-			System.out.println("Information Engineer-1 not empty");
+			System.out.println("Change Board Member-1 not empty"); // Information Engineer
 			print_IE1.setText("Current in " + WorkersName.get(2) + "position:\n" + (WorkersName.get(0)+" " +WorkersName.get(1)));
 		}
-		else if(WorkersName.get(3).equals("5") && WorkersName.get(2).equals("Information Engineer-2"))
+		else if(WorkersName.get(3).equals("5") && WorkersName.get(2).equals("Change Board Member-2")) // Information Engineer
 		{
 		
 			print_IE2.setText("Current in " + WorkersName.get(2) + "position:\n" + (WorkersName.get(0)+" " +WorkersName.get(1)));
@@ -226,12 +226,12 @@ public class StaffMainController implements Initializable{
 			
 			print_supervisor.setText("Current in " + WorkersName.get(2) + "position:\n" + (WorkersName.get(0)+" " +WorkersName.get(1)));
 		}
-		else if(WorkersName.get(3).equals("4") && WorkersName.get(2).equals("Information Engineer-1"))
+		else if(WorkersName.get(3).equals("4") && WorkersName.get(2).equals("Change Board Member-1")) // Information Engineer
 		{
-			System.out.println("Information Engineer-1 not empty");
+			System.out.println("Change Board Member-1 not empty"); // Information Engineer
 			print_IE1.setText("Current in " + WorkersName.get(2) + "position:\n" + (WorkersName.get(0)+" " +WorkersName.get(1)));
 		}
-		else if(WorkersName.get(3).equals("5") && WorkersName.get(2).equals("Information Engineer-2"))
+		else if(WorkersName.get(3).equals("5") && WorkersName.get(2).equals("Change Board Member-2")) // Information Engineer
 		{
 		
 			print_IE2.setText("Current in " + WorkersName.get(2) + "position:\n" + (WorkersName.get(0)+" " +WorkersName.get(1)));
@@ -260,9 +260,9 @@ public class StaffMainController implements Initializable{
 			 name =chairman_comboBox.getValue();
 			else if (WorkersName.get(1).equals("Supervisor"))
 				 name =supervisor_comboBox.getValue();
-			else if(WorkersName.get(1).equals("Information Engineer-1"))
+			else if(WorkersName.get(1).equals("Change Board Member-1")) // Information Engineer
 				 name =firstIE_comboBox.getValue();
-			else if(WorkersName.get(1).equals("Information Engineer-2"))
+			else if(WorkersName.get(1).equals("Change Board Member-2")) // Information Engineer
 				 name =secondIE_comboBox.getValue();
 			
 		
@@ -321,10 +321,10 @@ public class StaffMainController implements Initializable{
 	else if(WorkersName.get(0).equals("Supervisor"))
 		print_supervisor.setText("empty position");
 	
-else if(WorkersName.get(0).equals("Information Engineer-1"))
+else if(WorkersName.get(0).equals("Change Board Member-1")) // Information Engineer
 	print_IE1.setText("empty position");
 
-else if(WorkersName.get(0).equals("Information Engineer-2"))
+else if(WorkersName.get(0).equals("Change Board Member-2")) // Information Engineer
 	print_IE2.setText("empty position");
 }
 
