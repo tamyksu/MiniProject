@@ -9,8 +9,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.ResourceBundle;
 import java.util.concurrent.TimeUnit;
-
-import client.Client;
+import com.sun.scenario.effect.Effect.AccelType;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -111,7 +110,10 @@ public class ControllerProcessMain implements Initializable {
 	@FXML
 	private Button director_btn;
 	
-
+	UserProcess process;
+	
+	private static EvaluationReport evaluationReports; // current evaluation report
+	
 	public static void setInstance(ControllerProcessMain instance) {
 		ControllerProcessMain.instance = instance;
 	}
@@ -181,7 +183,7 @@ public class ControllerProcessMain implements Initializable {
 	}
 	//Updates the relevant fields by the process that is specified in the process table
 	public void updateFieldsOfRequestMarked(Person person) {
-		UserProcess process = Client.getInstance().getProcesses().getMyProcess().get(person.getRequestId());
+		process = Client.getInstance().getProcesses().getMyProcess().get(person.getRequestId());
 		InitiatorName.setText(process.getIntiatorId());
 		InitiatorEmail.setText(process.getEmail());
 		InformationSystem.setText("" + process.getSystem_num());
@@ -255,10 +257,10 @@ public class ControllerProcessMain implements Initializable {
 	private void fitChairman() {
 		newRequestBtn.setDisable(false);
 		extension_btn.setDisable(true);
-		evaluation_btn.setDisable(false);
+		evaluation_btn.setDisable(true);
 		decision_btn.setDisable(false);
 		execution_btn.setDisable(true);
-		examination_btn.setDisable(false);
+		examination_btn.setDisable(true);
 		supervisor_mode_btn.setDisable(true);
 		director_btn.setDisable(true);
 		defrost_btn.setDisable(true);
@@ -317,6 +319,19 @@ public class ControllerProcessMain implements Initializable {
 	}
 	
 	private void fitManagerDisabled()
+	{
+		newRequestBtn.setDisable(true);
+		extension_btn.setDisable(true);
+		evaluation_btn.setDisable(true);
+		decision_btn.setDisable(true);
+		execution_btn.setDisable(true);
+		examination_btn.setDisable(true);
+		supervisor_mode_btn.setDisable(true);
+		director_btn.setDisable(false);
+		defrost_btn.setDisable(false);
+	}
+	
+	private void fitChangeBoardDisabled()
 	{
 		newRequestBtn.setDisable(true);
 		extension_btn.setDisable(true);
@@ -418,6 +433,9 @@ public class ControllerProcessMain implements Initializable {
 		
 		if(proc == -1)
 			return;
+		
+		EvaluationController.getInstance().pageLoad(Double.parseDouble(process.getProcess_stage()));
+		System.out.println(process.getProcess_stage() +" process stage");
 		ScreenController.getScreenController().activate("evaluation");
 		EvaluationController.instance.updateProcessInformation();
 	}
@@ -439,6 +457,28 @@ public class ControllerProcessMain implements Initializable {
 		
 		if(proc == -1)
 			return;
+			
+		if(process.getProcess_stage().isEmpty()) {
+			new Alert(AlertType.ERROR, "Error!").show();
+			return;
+		}
+		
+		if(Double.parseDouble(process.getProcess_stage())<5) {
+			new Alert(AlertType.ERROR, "Unabble to make a decision, not yet!").show();
+			return;
+		}
+		
+		if(Double.parseDouble(process.getProcess_stage())>5) {
+			new Alert(AlertType.ERROR, "Already made a decision!").show();
+			return;
+		}
+		
+		ArrayList<Integer> arr = new ArrayList<>();
+		arr.add(process.getRequest_id()); 
+		Translator translator = new Translator(OptionsOfAction.Get_Evaluation_Report_For_Process_ID, arr);
+		Client.getInstance().handleMessageFromClientGUI(translator);
+		try { Thread.sleep(500); } catch (InterruptedException e) {System.out.println("Can't Sleep");}
+		DecisionController.getInstance().loadPage(evaluationReports);
 		ScreenController.getScreenController().activate("decisionMaking");
 		DecisionController.instance.updateProcessInformation();
 	}
@@ -540,4 +580,11 @@ public class ControllerProcessMain implements Initializable {
 		}
     }
 
+	public static void setEvaluationReports(EvaluationReport evaluationReports) {
+		ControllerProcessMain.evaluationReports = evaluationReports;
+	}
+    
+    
+
+    
 }

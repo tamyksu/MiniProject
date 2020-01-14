@@ -10,8 +10,8 @@ public class MyHashMaps {
 		processStages = new HashMap<>();
 		processStages.put((double) 1 , "Appointing Appraiser");
 		processStages.put((double) 2, "Appraiser is defining evaluation stage due time");
-		processStages.put((double) 2.5, "Supervisor is declining the evaluation due time");
-		processStages.put((double) 3, "Supervisor is approving the evaluation stage due time");
+		processStages.put((double) 2.5, "Supervisor denied the evaluation due time");
+		processStages.put((double) 3, "Supervisor examines the evaluation stage due time");
 		processStages.put((double) 4, "Appraiser is evaluating");
 		processStages.put((double) 5, "Changes Control Board is making decision");
 		processStages.put((double) 6, "Appointing performance leader");
