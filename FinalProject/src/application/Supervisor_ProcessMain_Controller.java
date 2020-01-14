@@ -168,8 +168,6 @@ public class Supervisor_ProcessMain_Controller implements Initializable{
     		return;
     	}
     	
-    	
-
     	if(this.process_stage != Constants.STAGE_OF_APPRAISER && this.process_stage != Constants.STAGE_OF_EXECUTION)
     	{
     		return;
@@ -317,15 +315,9 @@ public class Supervisor_ProcessMain_Controller implements Initializable{
     		System.out.println("getAppraiserAndPerformanceLeaderLabels - this.procID is wrong");
     		return;
     	}
-    	
-    	if(process_stage == Constants.STAGE_OF_APPRAISER)
-    		return;
-        	
     		
-    	if(process_stage > Constants.STAGE_OF_APPRAISER)
-    	{
-        	//current_performance_leader_text.setText("None");
-        	
+    	if(process_stage >= Constants.STAGE_OF_APPRAISER)
+    	{        	
         	ArrayList<Object> arr = new ArrayList<Object>();
         	arr.add(this.procID);
         	Translator translator = new Translator(OptionsOfAction.GET_APPRAISER_AND_PERFORMANCE_LEADER_OF_PROC, arr);

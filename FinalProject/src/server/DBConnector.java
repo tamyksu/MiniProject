@@ -760,10 +760,10 @@ public class DBConnector {
 		case GET_APPRAISER_AND_PERFORMANCE_LEADER_OF_PROC:
 			try {
 				System.out.println("GET_APPRAISER_AND_PERFORMANCE_LEADER_OF_PROC 1");
-				stmt = conn.prepareStatement("SELECT first_name, last_name, id, role\r\n" + 
+				stmt = conn.prepareStatement("SELECT first_name, last_name, id, users_requests.role\r\n" + 
 						"FROM icmdb.workers\r\n" + 
 						"		JOIN icmdb.users_requests ON id = user_id\r\n" + 
-						"						WHERE (role = 'Appraiser' OR role = 'Performance Leader')\r\n" + 
+						"						WHERE (users_requests.role = 'Appraiser' OR users_requests.role = 'Performance Leader')\r\n" + 
 						"						AND process_id = ?	");
 				stmt.setInt(1, (int)translator.getParmas().get(0));
 				

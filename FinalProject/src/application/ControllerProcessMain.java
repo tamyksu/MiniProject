@@ -10,6 +10,8 @@ import java.util.Date;
 import java.util.ResourceBundle;
 import java.util.concurrent.TimeUnit;
 import com.sun.scenario.effect.Effect.AccelType;
+
+import client.Client;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
