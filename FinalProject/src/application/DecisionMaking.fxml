@@ -186,9 +186,9 @@
                               <Font name="System Bold" size="20.0" />
                            </font>
                         </Label>
-                        <TextArea fx:id="requestedChangeText" disable="true" layoutX="10.0" layoutY="87.0" prefHeight="133.0" prefWidth="511.0" />
-                        <TextArea fx:id="resultText" disable="true" layoutX="10.0" layoutY="251.0" prefHeight="133.0" prefWidth="511.0" />
-                        <TextArea fx:id="constraitsAndRisksText" disable="true" layoutX="9.0" layoutY="420.0" prefHeight="133.0" prefWidth="511.0" />
+                        <TextArea fx:id="requestedChangeText" editable="false" layoutX="10.0" layoutY="87.0" prefHeight="133.0" prefWidth="511.0" />
+                        <TextArea fx:id="resultText" editable="false" layoutX="10.0" layoutY="251.0" prefHeight="133.0" prefWidth="511.0" />
+                        <TextArea fx:id="constraitsAndRisksText" editable="false" layoutX="9.0" layoutY="420.0" prefHeight="133.0" prefWidth="511.0" />
                      </children>
                   </Pane>
                   <Label layoutX="841.0" layoutY="-1.0" styleClass="textstyle" text="Process Information">

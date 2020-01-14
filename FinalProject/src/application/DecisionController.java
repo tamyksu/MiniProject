@@ -108,6 +108,7 @@ public class DecisionController implements Initializable{
     	processInfo.add(ControllerProcessMain.getInstance().getRequestID());
 		Translator translator= new Translator(OptionsOfAction.REJECTE_PROCESS,processInfo);
 		client/*Client.getInstance()*/.handleMessageFromClientGUI(translator);
+		disableAllButtons();
     }
 
     @FXML
@@ -158,6 +159,7 @@ public class DecisionController implements Initializable{
     		Alert alert =new Alert(AlertType.INFORMATION, "You approved the request.");
         	alert.setTitle("Approved!");
         	alert.show();
+        	disableAllButtons();
     	}
     	else {
     		Alert alert =new Alert(AlertType.ERROR, "Could not approve the request.");
@@ -171,6 +173,7 @@ public class DecisionController implements Initializable{
     		Alert alert =new Alert(AlertType.INFORMATION, "Asked for more information.");
         	alert.setTitle("Approved!");
         	alert.show();
+        	disableAllButtons();
     	}
     	else {
     		Alert alert =new Alert(AlertType.ERROR, "Could not ask for more information.");
@@ -198,5 +201,17 @@ public class DecisionController implements Initializable{
     	requestedChangeText.setText(er.getRequestedChange());
     	resultText.setText(er.getResult());
     	constraitsAndRisksText.setText(er.getConstraitsAndRisks());
+    	enableAllButtons();
+    }
+    
+    public void disableAllButtons() {
+    	approve_btn.setDisable(true);
+    	deny_btn.setDisable(true);
+    	request_more_btn.setDisable(true);
+    }
+    public void enableAllButtons() {
+    	approve_btn.setDisable(false);
+    	deny_btn.setDisable(false);
+    	request_more_btn.setDisable(false);
     }
 }
