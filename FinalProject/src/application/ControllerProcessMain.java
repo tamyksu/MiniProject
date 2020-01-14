@@ -434,6 +434,19 @@ public class ControllerProcessMain implements Initializable {
 		if(proc == -1)
 			return;
 		
+		if(process.getProcess_stage().isEmpty()) {
+			new Alert(AlertType.ERROR, "Error!").show();
+			return;
+		}
+		if(Double.parseDouble(process.getProcess_stage())<2) {
+			new Alert(AlertType.ERROR, "Unabble to evaluate, not yet!").show();
+			return;
+		}
+		if(Double.parseDouble(process.getProcess_stage())>4) {
+			new Alert(AlertType.ERROR, "Already evaluated!").show();
+			return;
+		}
+		
 		EvaluationController.getInstance().pageLoad(Double.parseDouble(process.getProcess_stage()));
 		System.out.println(process.getProcess_stage() +" process stage");
 		ScreenController.getScreenController().activate("evaluation");
@@ -489,6 +502,20 @@ public class ControllerProcessMain implements Initializable {
 		
 		if(proc == -1)
 			return;
+		
+		if(process.getProcess_stage().isEmpty()) {
+			new Alert(AlertType.ERROR, "Error!").show();
+			return;
+		}
+		if(Double.parseDouble(process.getProcess_stage())<6) {
+			new Alert(AlertType.ERROR, "Too early for the execution stage.").show();
+			return;
+		}
+		if(Double.parseDouble(process.getProcess_stage())>8) {
+			new Alert(AlertType.ERROR, "This process has already passed the execution stage.").show();
+			return;
+		}
+		
 		ScreenController.getScreenController().activate("execution");
 		ExecutionController.instance.updateProcessInformation();
 	}

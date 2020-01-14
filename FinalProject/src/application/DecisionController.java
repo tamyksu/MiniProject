@@ -168,6 +168,8 @@ public class DecisionController implements Initializable{
     	}
     }
     
+    
+    
     public void showActionMoreInfoMessage(boolean val) {
     	if(val==true) {
     		Alert alert =new Alert(AlertType.INFORMATION, "Asked for more information.");
