@@ -4,6 +4,8 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
 import com.sun.org.apache.xerces.internal.util.SynchronizedSymbolTable;
+import com.sun.xml.internal.bind.v2.runtime.reflect.opt.Const;
+
 import client.Client;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
@@ -168,7 +170,7 @@ public class Supervisor_ProcessMain_Controller implements Initializable{
     	
     	
 
-    	if(this.process_stage != 1 && this.process_stage != 6)
+    	if(this.process_stage != Constants.STAGE_OF_APPRAISER && this.process_stage != Constants.STAGE_OF_EXECUTION)
     	{
     		return;
     	}
@@ -203,7 +205,7 @@ public class Supervisor_ProcessMain_Controller implements Initializable{
     	this.apprairsID = appraisersID;
     	this.appraisersNames = appraisersNames;
     	
-    	if(process_stage == 1)
+    	if(process_stage==Constants.STAGE_OF_APPRAISER)
     	{
     		appoint_appraiser_comboBox.setDisable(false);
     		if(appraisersForCB != null)
@@ -212,7 +214,7 @@ public class Supervisor_ProcessMain_Controller implements Initializable{
     		appoint_appraiser_btn.setDisable(false);
     	}
     		
-    	if(process_stage == 6)
+    	if(process_stage == Constants.STAGE_OF_EXECUTION)
     	{
 			appoint_performance_leader_comboBox.setDisable(false);
 			if(appraisersForCB != null)
@@ -238,7 +240,7 @@ public class Supervisor_ProcessMain_Controller implements Initializable{
     	String chosenAppraiser;
     	try
     	{
-    		if(this.process_stage == 1)
+    		if(this.process_stage == Constants.STAGE_OF_APPRAISER)
     		{
         		chosenAppraiser = appoint_appraiser_comboBox.getValue();
         		current_appraiser_text.setText(chosenAppraiser);
@@ -258,7 +260,7 @@ public class Supervisor_ProcessMain_Controller implements Initializable{
     		check.add(chosenID);
     		
     		check.add(this.procID);//check.add(2);//check.add(processID);
-    		if(process_stage == 1)
+    		if(process_stage == Constants.STAGE_OF_APPRAISER)
     			check.add("Appraiser");
     		else
     			check.add("Performance Leader");
@@ -266,7 +268,7 @@ public class Supervisor_ProcessMain_Controller implements Initializable{
     		Translator translator = new Translator(OptionsOfAction.APPOINT_APPRAISER_OR_PERFORMANCE_LEADER, check);
     		client.handleMessageFromClientGUI(translator);
     		
-    		if(process_stage == 1)
+    		if(process_stage == Constants.STAGE_OF_APPRAISER)
     		{
     			add_extension__time_btn.setDisable(true);
         		decline_extension_request_btn.setDisable(true);
@@ -281,7 +283,7 @@ public class Supervisor_ProcessMain_Controller implements Initializable{
         		process_stage = 2;
     		}
     		else
-    		if(process_stage == 6)
+    		if(process_stage == Constants.STAGE_OF_EXECUTION)
     		{
     			add_extension__time_btn.setDisable(true);
         		decline_extension_request_btn.setDisable(true);
@@ -293,7 +295,7 @@ public class Supervisor_ProcessMain_Controller implements Initializable{
         		appoint_appraiser_btn.setDisable(true);
     			appoint_performance_leader_comboBox.setDisable(true);
     			appoint_performance_leader_btn.setDisable(true);
-        		process_stage = 6;
+        		process_stage = Constants.STAGE_OF_EXECUTION;
     		}
 
     	}
@@ -316,11 +318,11 @@ public class Supervisor_ProcessMain_Controller implements Initializable{
     		return;
     	}
     	
-    	if(process_stage == 1)
+    	if(process_stage == Constants.STAGE_OF_APPRAISER)
     		return;
         	
     		
-    	if(process_stage > 1)
+    	if(process_stage > Constants.STAGE_OF_APPRAISER)
     	{
         	//current_performance_leader_text.setText("None");
         	

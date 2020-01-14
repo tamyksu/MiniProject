@@ -2,8 +2,14 @@ package application;
 
 import java.io.IOException;
 import java.net.URL;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.ResourceBundle;
+import java.util.concurrent.TimeUnit;
+
 import client.Client;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -386,7 +392,24 @@ public class ControllerProcessMain implements Initializable {
 
 	@FXML
 	void extension_click(ActionEvent event) {
-
+		//Check if days to due time <= 3
+		Date dueDate;
+		try {
+			dueDate = new SimpleDateFormat("yyyy-MM-dd").parse(CurrentStageDueTime.getText());
+			Date currentDate = new SimpleDateFormat("yyyy-MM-dd").parse(LocalDate.now().toString());
+			
+			long diff = dueDate.getTime() - currentDate.getTime();
+		    long days = TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS);
+		    
+		    if(days>3)
+		    {
+		    	new Alert(AlertType.INFORMATION,"You can ask for extention only when 3 or less days left until due date").show();
+		    }
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	    
 	}
 
 	@FXML
@@ -448,7 +471,6 @@ public class ControllerProcessMain implements Initializable {
 		Supervisor_ProcessMain_Controller.instance.getAppraiserOrPerformanceLeaderCBData();
 		Supervisor_ProcessMain_Controller.instance.getAppraiserAndPerformanceLeaderLabels();
 		Supervisor_ProcessMain_Controller.instance.updateProcessInformation();
-
 	}
 	
 	@FXML

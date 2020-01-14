@@ -44,6 +44,7 @@ public class DBConnector {
 		PreparedStatement stmt;
 		ArrayList<String> ar = new ArrayList<String>() ;
 		switch (translator.getRequest()) {
+		
 		case NEWREQUEST:
 
 			ArrayList<Boolean> failed = new ArrayList<Boolean>();
@@ -792,12 +793,13 @@ System.out.println("id "+translator.getParmas().get(0));
 		case FILL_FAILURE_REPORT_CLICK:
 			setNextStageByInput((int)translator.getParmas().get(0), "11.5");
 			break;
+
 		default:
 			System.out.println("default");
 			break;
 		}
 		return null;
-
+		
 	}
 
 	//Another function aimed at getting the initiator information from the database
@@ -937,5 +939,61 @@ System.out.println("id "+translator.getParmas().get(0));
 		System.out.println("SQL Exception setNextStageByInput()");
 		}	
 		
+	}
+	
+	public static ArrayList<ArrayList<?>> getActiveProcesses()
+	{
+		try {
+			ArrayList<String> ar = new ArrayList<String>() ;
+
+			PreparedStatement stmt = conn.prepareStatement("SELECT * FROM icmdb.processes WHERE status1='Active';");
+			ResultSet rs = stmt.executeQuery();		
+			if(rs.first() == false) {
+				ar.add("No processes");
+				ArrayList<ArrayList<?>> empty = new ArrayList<ArrayList<?>>();
+				empty.add(ar);
+				return null;
+			}
+			rs.previous();
+			ArrayList<ArrayList<?>> processes = new ArrayList<ArrayList<?>>();
+			while(rs.next()) {	
+				ArrayList<Integer> intArray= new ArrayList<Integer>();
+				ArrayList<String> stringArray= new ArrayList<String>();
+				intArray.add(rs.getInt(1));
+				stringArray.add(rs.getString(2));
+				intArray.add(rs.getInt(3));
+				stringArray.add(rs.getString(4));
+				stringArray.add(rs.getString(5));
+				stringArray.add(rs.getString(6));
+				stringArray.add(rs.getString(7));
+				stringArray.add(rs.getString(8));
+				stringArray.add(rs.getString(9));
+				stringArray.add(rs.getString(10));
+				stringArray.add(rs.getString(11));
+				stringArray.add(rs.getString(12));
+				ResultSet initiatorInfo = getInitiatorInfo(rs.getString(2));
+				if (initiatorInfo != null) {
+					while(initiatorInfo.next()) {
+						stringArray.add(initiatorInfo.getString(3));
+						stringArray.add(initiatorInfo.getString(4));
+						stringArray.add(initiatorInfo.getString(5));
+						stringArray.add(initiatorInfo.getString(6));
+					}
+				}
+				else {
+					return null;
+				}
+				processes.add(intArray);
+				processes.add(stringArray);;
+
+			}
+			
+			return processes;
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return null;
+		}	
+	
 	}
 }
