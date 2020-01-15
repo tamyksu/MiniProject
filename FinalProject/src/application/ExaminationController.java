@@ -185,7 +185,7 @@ public class ExaminationController implements Initializable{
             return;
     	}
     	
-    	check.add(requestID);
+    	//check.add(requestID);
     	check.add(this.processID);
 		check.add(failure_explanation.getText());
 		

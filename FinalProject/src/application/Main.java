@@ -51,6 +51,7 @@ public class Main extends Application {
 			ScreenController.getScreenController().addScreen("newRequest", FXMLLoader.load(getClass().getResource("/application/NewRequestForm.fxml")));
 			ScreenController.getScreenController().addScreen("staffMain", FXMLLoader.load(getClass().getResource("/application/StaffMain.fxml")));
 			ScreenController.getScreenController().addScreen("supervisor_processesMain", FXMLLoader.load(getClass().getResource("/application/Supervisor_ProcessesMain.fxml")));
+			ScreenController.getScreenController().addScreen("active_reports", FXMLLoader.load(getClass().getResource("/application/ActiveReports.fxml")));
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

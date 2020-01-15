@@ -21,6 +21,11 @@
 {
 	-fx-fill: white;
 }
+.styleTexts
+{
+	-fx-fill: white;
+	
+}
 .idPane{
 		-fx-background-image: url("/application/1.jpg");
      	-fx-background-size: 100% 100%;

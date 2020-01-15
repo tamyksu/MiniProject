@@ -3,9 +3,18 @@ import ocsf.client.*;
 import translator.OptionsOfAction;
 import translator.Translator;
 import java.io.*;
+//<<<<<<< HEAD
 import java.sql.Date;
+//=======
+import java.sql.ResultSet;
+//>>>>>>> 7bb24f8ad901dd33f47b6b2c05c17a3106a813c6
 import java.util.ArrayList;
+
+import application.ActiveReportsController;
 import application.ControllerProcessMain;
+import application.DecisionController;
+import application.EvaluationController;
+import application.EvaluationReport;
 import application.LoginController;
 import application.NewRequestController;
 import application.Processes;
@@ -83,24 +92,118 @@ public class Client extends AbstractClient {
 			break;
 		case checkNAMEParmenent:
 			handlerMessageFromServercheckNAMEParmenent(result.getParmas());
-		break;
+			break;
+		case Get_Active_Statistic:
+			handleMessageFromServerGet_Active_Statistic(result.getParmas());
+			break;
+
 		case DEFROST_PROCESS:
 			handleMessageFromServerDefrostProcess(result.getParmas());
+
+		case Fill_Evalution_Number_Of_Days:
+			handleMessageFromServerFillEvalutionNumberOfDays(result.getParmas());
+			break;
+		case Fill_Evalution_Form:
+			handleMessageFromServerFillEvalutionForm(result.getParmas());
+			break;	
+		case Get_Evaluation_Report_For_Process_ID:
+			handleMessageFromServerGetEvalutionForm(result.getParmas());
+			break;
+		case Approve_Decision:
+			handleMessageFromServerApproveDecision(result.getParmas());
+			break;
+		case More_Info_Decision:
+			handleMessageFromServerMoreInfoDecision(result.getParmas());
+
 			break;
 		case SHUTDOWN_PROCESS:
 			handleMessageFromServerShutdownProcess(result.getParmas());
+//<<<<<<< HEAD
 		case GET_RELATED_MESSAGES:
 			setRelatedMessages(result.getParmas());
 			break;
 		case RECOVER_PASSWORD:
 			sendRecoveredPassword(result.getParmas());
 			break;
+//=======
+		
+		case REJECTE_PROCESS:
+			handleMessageFromServerREJECTE_PROCESS(result.getParmas());
+			break;
+//>>>>>>> 7bb24f8ad901dd33f47b6b2c05c17a3106a813c6
 		default:
 			break;
 		}
 	
 	}
 	
+	public void handleMessageFromServerMoreInfoDecision(Object rs) {
+		@SuppressWarnings("unchecked")
+		ArrayList<Boolean> result = (ArrayList<Boolean>) rs;
+		boolean val = result.get(0).booleanValue();
+		DecisionController.getInstance().setAnswerFromServerMoreInfo(val);
+	}
+	public void handleMessageFromServerApproveDecision(Object rs) {
+		@SuppressWarnings("unchecked")
+		ArrayList<Boolean> result = (ArrayList<Boolean>) rs;
+		boolean val = result.get(0).booleanValue();
+		DecisionController.getInstance().setAnswerFromServerApprove(val);
+	}
+	public void handleMessageFromServerGetEvalutionForm(Object rs) {
+		@SuppressWarnings("unchecked")
+		ArrayList<Object> result = (ArrayList<Object>) rs;
+		int processID = (int) result.get(0);
+		String appraiserID = result.get(1).toString();
+		String requestedChange = result.get(2).toString();
+		String result1 = result.get(3).toString();
+		String constraitsAndRisks = result.get(4).toString();
+		
+		EvaluationReport er = new EvaluationReport(processID, appraiserID, requestedChange,
+				result1, constraitsAndRisks);
+		ControllerProcessMain.setEvaluationReports(er);
+	}
+	public void handleMessageFromServerFillEvalutionForm(Object rs) {
+		@SuppressWarnings("unchecked")
+		ArrayList<Boolean> result = (ArrayList<Boolean>) rs;
+		
+		if(result.get(0).booleanValue()==true) {
+			EvaluationController.getInstance().setAnswerFromServerSubmitForm(true);
+		}
+		else {
+			EvaluationController.getInstance().setAnswerFromServerSubmitForm(false);
+		}
+	}
+	
+	public void handleMessageFromServerFillEvalutionNumberOfDays(Object rs) {
+		@SuppressWarnings("unchecked")
+		ArrayList<Boolean> result = (ArrayList<Boolean>) rs;
+		
+		if(result.get(0).booleanValue()==true) {
+			EvaluationController.getInstance().setAnswerFromServerSubmitDays(true);
+		}
+		else {
+			EvaluationController.getInstance().setAnswerFromServerSubmitDays(false);
+		}
+	}
+	public void handleMessageFromServerGet_Active_Statistic(Object message)
+	{
+		System.out.println("go to calculate");
+		ArrayList<ArrayList<Integer>> arr= (ArrayList<ArrayList<Integer>>) message;
+		ActiveReportsController.instance.calaulate(arr);
+		
+	}
+	private void handleMessageFromServerREJECTE_PROCESS(Object message)
+	{
+		ArrayList<String> arr= (ArrayList<String>) message;
+		
+		if(arr.get(0).equals("Successfully rejected"))
+		{
+		}
+		else
+			new Alert(AlertType.ERROR,"There was an issue to reject this process").show();
+		
+		
+	}
 	private void handleMessageFromServerShutdownProcess(Object message) {
 	ArrayList<String> arr= (ArrayList<String>) message;
 	
@@ -141,13 +244,13 @@ public class Client extends AbstractClient {
 	{
 		ArrayList<String> arr= (ArrayList<String>)message;
 		
-		if(arr.get(2).equals("ChairMan"))
+		if(arr.get(2).equals("Chairman"))
 		arr.add("2");///its make it index 3
 		else if(arr.get(2).equals("Supervisor"))
 			arr.add("3");
-		else if(arr.get(2).equals("Information Engineer-1"))
+		else if(arr.get(2).equals("Change Board Member-1")) // Information Engineer
 			arr.add("4");
-		else if(arr.get(2).equals("Information Engineer-2"))
+		else if(arr.get(2).equals("Change Board Member-2")) // Information Engineer
 			arr.add("5");
 		
 	
@@ -181,15 +284,7 @@ public class Client extends AbstractClient {
 		this.userID = userID;
 	}
 	
-	public void handleMessageFromClientGUINewRequest(Object message) {
-		try {
-			super.
-			sendToServer(message);
-		} catch (IOException e) {
-			System.out.println("Could not insert new request");
-			quit();
-		}
-	}
+
 	public void handleMessageFromClientGUI(Object message) {
 		try {
 			sendToServer(message);
@@ -238,9 +333,9 @@ public class Client extends AbstractClient {
 			arr.add("2");///its make it index 3
 			else if(arr.get(2).equals("Supervisor"))
 				arr.add("3");
-			else if(arr.get(2).equals("Information Engineer-1"))
+			else if(arr.get(2).equals("Change Board Member-1")) // Information Engineer
 				arr.add("4");
-			else if(arr.get(2).equals("Information Engineer-2"))
+			else if(arr.get(2).equals("Change Board Member-2")) // Information Engineer
 				arr.add("5");
 	
 		arr.add("7");
@@ -248,6 +343,7 @@ public class Client extends AbstractClient {
 		System.out.println("handlerMessageFromServerUpdatePermanent"+arr.get(0));
 		StaffMainController.instance.printMessage(arr);
 	}
+	
 /*****************************************handlerMessageFromServerNewRequest*************************************************************/	
 	
 	public void handlerMessageFromServerNewRequest(Object rs) {
@@ -279,6 +375,7 @@ public class Client extends AbstractClient {
 			this.setRule(result.get(0));
 			ScreenController.getScreenController().activate("processesMain");
 			ControllerProcessMain.instance.ButtonAdjustmentSuperUser(result.get(0),"Active");
+			System.out.println("hhhcheck");
 			getAllProcessesFromServer();
 			getRelatedMessages("Supervisor");
 			break;
@@ -290,7 +387,29 @@ public class Client extends AbstractClient {
 			getAllProcessesFromServer();
 			getRelatedMessages("Manager");
 			break;
-	
+		case "Chairman":
+			Client.getInstance().setName(result.get(1));
+			this.setRule(result.get(0));
+			ScreenController.getScreenController().activate("processesMain");
+			ControllerProcessMain.instance.ButtonAdjustmentSuperUser(result.get(0),"Active");
+			getAllProcessesFromServer();
+			break;
+		case "Change Board Member-1":
+			Client.getInstance().setName(result.get(1));
+			this.setRule(result.get(0));
+			ScreenController.getScreenController().activate("processesMain");
+			ControllerProcessMain.instance.ButtonAdjustmentSuperUser(result.get(0),"Active");
+			System.out.println("hhhcheck");
+			getAllProcessesFromServer();
+			break;	
+		case "Change Board Member-2":
+			Client.getInstance().setName(result.get(1));
+			this.setRule(result.get(0));
+			ScreenController.getScreenController().activate("processesMain");
+			ControllerProcessMain.instance.ButtonAdjustmentSuperUser(result.get(0),"Active");
+			System.out.println("hhhcheck");
+			getAllProcessesFromServer();
+			break;	
 		case "Login failed, username and password did not match":
 			Platform.runLater(new Runnable() {//avoiding java.lang.IllegalStateException “Not on FX application thread”
 	    	    public void run() {

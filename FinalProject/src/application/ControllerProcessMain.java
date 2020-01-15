@@ -111,8 +111,12 @@ public class ControllerProcessMain implements Initializable {
 	 @FXML
 	private TextArea notifications_text;
 
+	UserProcess process;
 	
-
+	private static EvaluationReport evaluationReports; // current evaluation report
+	
+	
+	
 	public static void setInstance(ControllerProcessMain instance) {
 		ControllerProcessMain.instance = instance;
 	}
@@ -542,5 +546,9 @@ public class ControllerProcessMain implements Initializable {
     	if(messages.size() == 0)
     		notifications_text.setText("No Notifications");
     }
+    
+	public static void setEvaluationReports(EvaluationReport evaluationReports) {
+		ControllerProcessMain.evaluationReports = evaluationReports;
+	}
 
 }
