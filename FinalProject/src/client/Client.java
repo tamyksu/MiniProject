@@ -15,6 +15,7 @@ import application.ControllerProcessMain;
 import application.DecisionController;
 import application.EvaluationController;
 import application.EvaluationReport;
+import application.ExecutionController;
 import application.LoginController;
 import application.NewRequestController;
 import application.Processes;
@@ -116,6 +117,12 @@ public class Client extends AbstractClient {
 			handleMessageFromServerMoreInfoDecision(result.getParmas());
 
 			break;
+		case Execution_Suggest_Number_Of_Days:
+			handleMessageFromServerExecutionSuggestNumberOfDays(result.getParmas());
+			break;
+		case Execution_Completed:
+			handleMessageFromServerExecutionCompleted(result.getParmas());
+			break;	
 		case SHUTDOWN_PROCESS:
 			handleMessageFromServerShutdownProcess(result.getParmas());
 //<<<<<<< HEAD
@@ -135,6 +142,20 @@ public class Client extends AbstractClient {
 			break;
 		}
 	
+	}
+	
+	public void handleMessageFromServerExecutionCompleted(Object rs) {
+		@SuppressWarnings("unchecked")
+		ArrayList<Boolean> result = (ArrayList<Boolean>) rs;
+		boolean val = result.get(0).booleanValue();
+		ExecutionController.getInstance().setAnswerFromServerExecutionCompleted(val);
+	}
+	
+	public void handleMessageFromServerExecutionSuggestNumberOfDays(Object rs) {
+		@SuppressWarnings("unchecked")
+		ArrayList<Boolean> result = (ArrayList<Boolean>) rs;
+		boolean val = result.get(0).booleanValue();
+		ExecutionController.getInstance().setAnswerFromServerSubmitDays(val);
 	}
 	
 	public void handleMessageFromServerMoreInfoDecision(Object rs) {

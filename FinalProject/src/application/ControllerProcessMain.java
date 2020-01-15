@@ -2,8 +2,15 @@ package application;
 
 import java.io.IOException;
 import java.net.URL;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.ResourceBundle;
+import java.util.concurrent.TimeUnit;
+import com.sun.scenario.effect.Effect.AccelType;
+
 import client.Client;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -123,6 +130,7 @@ public class ControllerProcessMain implements Initializable {
 
 	@FXML
 	void newRequest(ActionEvent event) {
+		NewRequestController.getInstance().loadPage();
 		ScreenController.getScreenController().activate("newRequest");
 	}
 
@@ -186,11 +194,11 @@ public class ControllerProcessMain implements Initializable {
 	}
 	//Updates the relevant fields by the process that is specified in the process table
 	public void updateFieldsOfRequestMarked(Person person) {
-		UserProcess process = Client.getInstance().getProcesses().getMyProcess().get(person.getRequestId());
+		process = Client.getInstance().getProcesses().getMyProcess().get(person.getRequestId());
 		InitiatorName.setText(process.getIntiatorId());
 		InitiatorEmail.setText(process.getEmail());
 		InformationSystem.setText("" + process.getSystem_num());
-		CurrentState.setText(process.getProcess_stage());
+		CurrentState.setText(MyHashMaps.getProcessStageText(Double.parseDouble(process.getProcess_stage())));
 		RequestedChange.setText(process.getRequest_description());
 		Explanation.setText(process.getExplanaton());
 		Notes.setText(process.getNotes());
@@ -219,7 +227,9 @@ public class ControllerProcessMain implements Initializable {
 		case "chairman":
 			fitChairman();
 			break;
-			
+		case "performance leader":
+			fitPerformanceLeaderDisabled();
+			break;	
 		default:
 			//disable all but newRequest button
 			initializeButtons();
@@ -260,10 +270,10 @@ public class ControllerProcessMain implements Initializable {
 	private void fitChairman() {
 		newRequestBtn.setDisable(false);
 		extension_btn.setDisable(true);
-		evaluation_btn.setDisable(false);
+		evaluation_btn.setDisable(true);
 		decision_btn.setDisable(false);
 		execution_btn.setDisable(true);
-		examination_btn.setDisable(false);
+		examination_btn.setDisable(true);
 		supervisor_mode_btn.setDisable(true);
 		director_btn.setDisable(true);
 		defrost_btn.setDisable(true);
@@ -334,6 +344,33 @@ public class ControllerProcessMain implements Initializable {
 		defrost_btn.setDisable(false);
 	}
 	
+
+	private void fitChangeBoardDisabled()
+	{
+		newRequestBtn.setDisable(true);
+		extension_btn.setDisable(true);
+		evaluation_btn.setDisable(true);
+		decision_btn.setDisable(true);
+		execution_btn.setDisable(true);
+		examination_btn.setDisable(true);
+		supervisor_mode_btn.setDisable(true);
+		director_btn.setDisable(true);
+		defrost_btn.setDisable(true);
+	}
+	
+	private void fitPerformanceLeaderDisabled()
+	{
+		newRequestBtn.setDisable(true);
+		extension_btn.setDisable(true);
+		evaluation_btn.setDisable(true);
+		decision_btn.setDisable(true);
+		execution_btn.setDisable(false);
+		examination_btn.setDisable(true);
+		supervisor_mode_btn.setDisable(true);
+		director_btn.setDisable(true);
+		defrost_btn.setDisable(true);
+	}
+	
 	private void fitSupervisorDisabled() 
 	{
 		newRequestBtn.setDisable(true);
@@ -397,7 +434,24 @@ public class ControllerProcessMain implements Initializable {
 
 	@FXML
 	void extension_click(ActionEvent event) {
-
+		//Check if days to due time <= 3
+		Date dueDate;
+		try {
+			dueDate = new SimpleDateFormat("yyyy-MM-dd").parse(CurrentStageDueTime.getText());
+			Date currentDate = new SimpleDateFormat("yyyy-MM-dd").parse(LocalDate.now().toString());
+			
+			long diff = dueDate.getTime() - currentDate.getTime();
+		    long days = TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS);
+		    
+		    if(days>3)
+		    {
+		    	new Alert(AlertType.INFORMATION,"You can ask for extention only when 3 or less days left until due date").show();
+		    }
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	    
 	}
 
 	@FXML
@@ -406,6 +460,22 @@ public class ControllerProcessMain implements Initializable {
 		
 		if(proc == -1)
 			return;
+		
+		if(process.getProcess_stage().isEmpty()) {
+			new Alert(AlertType.ERROR, "Error!").show();
+			return;
+		}
+		if(Double.parseDouble(process.getProcess_stage())<2) {
+			new Alert(AlertType.ERROR, "Unabble to evaluate, not yet!").show();
+			return;
+		}
+		if(Double.parseDouble(process.getProcess_stage())>4) {
+			new Alert(AlertType.ERROR, "Already evaluated!").show();
+			return;
+		}
+		
+		EvaluationController.getInstance().pageLoad(Double.parseDouble(process.getProcess_stage()));
+		System.out.println(process.getProcess_stage() +" process stage");
 		ScreenController.getScreenController().activate("evaluation");
 		EvaluationController.instance.updateProcessInformation();
 	}
@@ -427,6 +497,28 @@ public class ControllerProcessMain implements Initializable {
 		
 		if(proc == -1)
 			return;
+			
+		if(process.getProcess_stage().isEmpty()) {
+			new Alert(AlertType.ERROR, "Error!").show();
+			return;
+		}
+		
+		if(Double.parseDouble(process.getProcess_stage())<5) {
+			new Alert(AlertType.ERROR, "Unabble to make a decision, not yet!").show();
+			return;
+		}
+		
+		if(Double.parseDouble(process.getProcess_stage())>5) {
+			new Alert(AlertType.ERROR, "Already made a decision!").show();
+			return;
+		}
+		
+		ArrayList<Integer> arr = new ArrayList<>();
+		arr.add(process.getRequest_id()); 
+		Translator translator = new Translator(OptionsOfAction.Get_Evaluation_Report_For_Process_ID, arr);
+		Client.getInstance().handleMessageFromClientGUI(translator);
+		try { Thread.sleep(500); } catch (InterruptedException e) {System.out.println("Can't Sleep");}
+		DecisionController.getInstance().loadPage(evaluationReports);
 		ScreenController.getScreenController().activate("decisionMaking");
 		DecisionController.instance.updateProcessInformation();
 	}
@@ -437,6 +529,20 @@ public class ControllerProcessMain implements Initializable {
 		
 		if(proc == -1)
 			return;
+
+		if(process.getProcess_stage().isEmpty()) {
+			new Alert(AlertType.ERROR, "Error!").show();
+			return;
+		}
+		if(Double.parseDouble(process.getProcess_stage())<7) {
+			new Alert(AlertType.ERROR, "Too early for the execution stage.").show();
+			return;
+		}
+		if(Double.parseDouble(process.getProcess_stage())>9) {
+			new Alert(AlertType.ERROR, "This process has passed the execution stage.").show();
+			return;
+		}
+		ExecutionController.getInstance().loadPage(Double.parseDouble(process.getProcess_stage()));
 		ScreenController.getScreenController().activate("execution");
 		ExecutionController.instance.updateProcessInformation();
 	}

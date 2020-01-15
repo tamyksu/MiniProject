@@ -170,7 +170,7 @@ public class EvaluationController implements Initializable{
 		initiator_email_text.setText(process.getEmail());
 		initiator_role_text.setText(process.getRole());
 		information_system_text.setText("" + process.getSystem_num());
-		current_stage_text.setText(process.getProcess_stage());
+		current_stage_text.setText(MyHashMaps.getProcessStageText(Double.parseDouble(process.getProcess_stage())));
 		requested_change_text.setText(process.getRequest_description());
 		explanation_text.setText(process.getExplanaton());
 		notes_text.setText(process.getNotes());

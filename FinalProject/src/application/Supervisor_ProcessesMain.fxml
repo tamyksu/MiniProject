@@ -61,20 +61,27 @@
                         <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#1f93ff00" height="56.0" layoutX="429.0" layoutY="-62.0" opacity="0.14" stroke="BLACK" strokeType="INSIDE" width="237.0" />
                      </children></Pane>
                   <Button fx:id="back_btn" layoutX="22.0" layoutY="22.0" mnemonicParsing="false" onAction="#back_click" text="Back" />
+<<<<<<< HEAD
                   <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#1f93ff00" height="194.0" layoutX="13.0" layoutY="164.0" opacity="0.14" stroke="BLACK" strokeType="INSIDE" width="685.0" />
                   <Button fx:id="freeze_process_btn" layoutX="504.0" layoutY="109.0" mnemonicParsing="false" onAction="#freeze_process_btn_click" prefHeight="32.0" prefWidth="175.0" text="Freeze Process" />
                   <Button fx:id="shut_down_process_btn" layoutX="28.0" layoutY="109.0" mnemonicParsing="false" onAction="#shut_down_process_btn_click" prefHeight="31.0" prefWidth="178.0" text="Shut Down Process" />
                   <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#1f93ff00" height="657.0" layoutX="750.0" layoutY="53.0" opacity="0.14" stroke="BLACK" strokeType="INSIDE" width="524.0" />
+=======
+                  <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#1f93ff00" height="534.0" layoutX="-12.0" layoutY="53.0" opacity="0.14" stroke="BLACK" strokeType="INSIDE" width="708.0" />
+                  <Button fx:id="freeze_process_btn" layoutX="464.0" layoutY="225.0" mnemonicParsing="false" onAction="#freeze_process_btn_click" prefHeight="32.0" prefWidth="175.0" text="Freeze Process" />
+                  <Button fx:id="shut_down_process_btn" layoutX="463.0" layoutY="194.0" mnemonicParsing="false" onAction="#shut_down_process_btn_click" prefHeight="31.0" prefWidth="178.0" text="Shut Down Process" />
+                  <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#1f93ff00" height="658.0" layoutX="710.0" layoutY="52.0" opacity="0.14" stroke="BLACK" strokeType="INSIDE" width="564.0" />
+>>>>>>> 728887eb79a5b085e454ca2599cd532f5e3ad787
                   <Label layoutX="914.0" layoutY="57.0" styleClass="textstyle" text="Process Information">
                      <font>
                         <Font name="System Bold" size="21.0" />
                      </font>
                   </Label>
-                  <HBox layoutX="766.0" layoutY="92.0" prefHeight="615.0" prefWidth="495.0">
+                  <HBox layoutX="720.0" layoutY="90.0" prefHeight="617.0" prefWidth="541.0">
                      <children>
-                        <VBox layoutX="709.0" layoutY="90.0" prefHeight="621.0" prefWidth="175.0">
+                        <VBox layoutX="709.0" layoutY="90.0" prefHeight="615.0" prefWidth="178.0">
                            <children>
-                              <Label styleClass="textstyle" text="Initiator Name:">
+                              <Label prefHeight="25.0" prefWidth="123.0" styleClass="textstyle" text="Initiator Name:">
                                  <font>
                                     <Font size="17.0" />
                                  </font>
@@ -177,7 +184,7 @@
                               </Label>
                            </children>
                         </VBox>
-                        <VBox layoutX="901.0" layoutY="88.0" prefHeight="610.0" prefWidth="320.0">
+                        <VBox layoutX="901.0" layoutY="88.0" prefHeight="617.0" prefWidth="364.0">
                            <children>
                               <Label fx:id="initiator_name_text" prefHeight="32.0" prefWidth="320.0" styleClass="brightText" text="-" />
                               <Label fx:id="initiator_email_text" layoutX="10.0" layoutY="10.0" prefHeight="32.0" prefWidth="320.0" styleClass="brightText" text="-" />
@@ -200,8 +207,23 @@
                         </VBox>
                      </children>
                   </HBox>
+<<<<<<< HEAD
                   <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#1f93ff00" height="96.0" layoutX="10.0" layoutY="372.0" opacity="0.14" stroke="BLACK" strokeType="INSIDE" width="685.0" />
                   <Label layoutX="284.0" layoutY="164.0" prefHeight="31.0" prefWidth="151.0" styleClass="textstyle" text="Add Extension">
+=======
+                  <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#1f93ff00" height="221.0" layoutX="22.0" layoutY="368.0" opacity="0.14" stroke="BLACK" strokeType="INSIDE" width="676.0" />
+                  <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#1f93ff00" height="107.0" layoutX="21.0" layoutY="258.0" opacity="0.14" stroke="BLACK" strokeType="INSIDE" width="676.0" />
+                  <ComboBox fx:id="appoint_appraiser_comboBox" layoutX="55.0" layoutY="483.0" prefHeight="31.0" prefWidth="212.0" />
+                  <Button fx:id="appoint_appraiser_btn" layoutX="92.0" layoutY="533.0" mnemonicParsing="false" onAction="#appointAppraiserOrPerformanceLeader" text="Appoint Appraiser" />
+                  <Button fx:id="appoint_performance_leader_btn" layoutX="444.0" layoutY="533.0" mnemonicParsing="false" onAction="#appointAppraiserOrPerformanceLeader" text="Appoint Performence Leader" />
+                  <ComboBox fx:id="appoint_performance_leader_comboBox" layoutX="443.0" layoutY="483.0" prefHeight="31.0" prefWidth="212.0" />
+                  <Label layoutX="288.0" layoutY="370.0" styleClass="textstyle" text="Appoint Staff">
+                     <font>
+                        <Font name="System Bold" size="21.0" />
+                     </font>
+                  </Label>
+                  <Label layoutX="251.0" layoutY="57.0" prefHeight="31.0" prefWidth="212.0" styleClass="textstyle" text="Process Managment">
+>>>>>>> 728887eb79a5b085e454ca2599cd532f5e3ad787
                      <font>
                         <Font name="System Bold" size="21.0" />
                      </font>
@@ -214,25 +236,49 @@
                         <Font name="System Bold" size="21.0" />
                      </font>
                   </Label>
+<<<<<<< HEAD
                   <Label fx:id="add_extension_explanation_text" layoutX="38.0" layoutY="261.0" prefHeight="88.0" prefWidth="630.0" styleClass="textstyle" text="explanation">
+=======
+                  <Label layoutX="18.0" layoutY="182.0" prefHeight="71.0" prefWidth="320.0" styleClass="textstyle" text="explanation">
+>>>>>>> 728887eb79a5b085e454ca2599cd532f5e3ad787
                      <font>
                         <Font size="17.0" />
                      </font>
                   </Label>
+<<<<<<< HEAD
                   <Button fx:id="decline_extension_request_btn" layoutX="437.0" layoutY="211.0" mnemonicParsing="false" onAction="#declineDueTimeExtension" prefHeight="32.0" prefWidth="192.0" text="decline extension request" />
                   <TextField fx:id="extension_time_text" layoutX="310.0" layoutY="211.0" prefHeight="32.0" prefWidth="84.0" />
                   <Label layoutX="432.0" layoutY="527.0" prefHeight="26.0" prefWidth="237.0" styleClass="textstyle" text="Current Performence Leader:">
+=======
+                  <Button fx:id="decline_extension_request_btn" layoutX="11.0" layoutY="99.0" mnemonicParsing="false" onAction="#declineDueTimeExtension" prefHeight="32.0" prefWidth="175.0" text="decline extension request" />
+                  <TextField fx:id="extension_time_text" layoutX="203.0" layoutY="131.0" prefHeight="32.0" prefWidth="162.0" />
+                  <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#1f93ff00" height="56.0" layoutX="42.0" layoutY="414.0" opacity="0.14" stroke="BLACK" strokeType="INSIDE" width="237.0" />
+                  <Label layoutX="434.0" layoutY="413.0" prefHeight="26.0" prefWidth="237.0" styleClass="textstyle" text="Current Performence Leader:">
+>>>>>>> 728887eb79a5b085e454ca2599cd532f5e3ad787
                      <font>
                         <Font name="System Bold" size="17.0" />
                      </font>
                   </Label>
+<<<<<<< HEAD
                   <Label fx:id="current_performance_leader_text" layoutX="434.0" layoutY="553.0" prefHeight="26.0" prefWidth="227.0" styleClass="textstyle" text="None">
+=======
+                  <Label layoutX="85.0" layoutY="413.0" prefHeight="26.0" prefWidth="151.0" styleClass="textstyle" text="Current Appraiser:">
+                     <font>
+                        <Font name="System Bold" size="17.0" />
+                     </font>
+                  </Label>
+                  <Label fx:id="current_appraiser_text" layoutX="50.0" layoutY="439.0" prefHeight="26.0" prefWidth="221.0" styleClass="textstyle" text="None">
+>>>>>>> 728887eb79a5b085e454ca2599cd532f5e3ad787
                      <font>
                         <Font size="17.0" />
                      </font>
                   </Label>
+<<<<<<< HEAD
                   <TextField fx:id="due_time_text" layoutX="310.0" layoutY="415.0" prefHeight="31.0" prefWidth="86.0" />
                   <Label layoutX="189.0" layoutY="68.0" prefHeight="31.0" prefWidth="342.0" styleClass="textstyle" text="Change The Status Of The Process">
+=======
+                  <Label fx:id="current_performance_leader_text" layoutX="435.0" layoutY="439.0" prefHeight="26.0" prefWidth="227.0" styleClass="textstyle" text="None">
+>>>>>>> 728887eb79a5b085e454ca2599cd532f5e3ad787
                      <font>
                         <Font name="System Bold" size="21.0" />
                      </font>

@@ -638,9 +638,7 @@ System.out.println("id "+translator.getParmas().get(0));
 				ArrayList<String> ans = new ArrayList<String>();
 				ans.add("correct match");
 				ans.add(ar.get(0));
-
-				Translator newTranslator = new Translator(translator.getRequest(), ans);
-				return newTranslator;
+				return new Translator(translator.getRequest(), ans);
 
 			}
 			catch (SQLException e) {
@@ -1292,12 +1290,100 @@ System.out.println("id "+translator.getParmas().get(0));
 			//break;
 		case More_Info_Decision:
 			int processForDecisionMoreInfo = (int) translator.getParmas().get(0); // The process ID. 
-			setNextStageByInput(processForDecisionMoreInfo, "2");
 			ArrayList<Boolean> decisionMoreInfoResult = new ArrayList<>();
-			decisionMoreInfoResult.add(true);
 			Translator decisionMoreInfotranslator = new Translator(
+<<<<<<< HEAD
+					OptionsOfAction.More_Info_Decision, decisionMoreInfoResult);
+			try {
+				setNextStageByInput(processForDecisionMoreInfo, "2");
+				/*
+				 *  Delete the row of the Process from the Evaluation Report table,
+				 *  because the process is going back to the Evaluation stage
+				 *   all over again
+				 */
+				stmt = conn.prepareStatement("DELETE FROM icmdb.evaluation_reports"
+						+ " WHERE process_id=?;");
+				stmt.setInt(1,processForDecisionMoreInfo); // The Requested change
+				stmt.executeUpdate();	
+				
+
+				
+				decisionMoreInfoResult.add(true);
+				
+				return decisionMoreInfotranslator;
+			}
+			catch (SQLException e) {
+				decisionMoreInfoResult.add(false);
+				return decisionMoreInfotranslator;
+			}
+		
+		case Execution_Suggest_Number_Of_Days:
+			ArrayList<Boolean> executeNumberOfDaysAnswer = new ArrayList<>();
+			Translator executeNumberOfDaysTranslator = new Translator(OptionsOfAction.Execution_Suggest_Number_Of_Days, executeNumberOfDaysAnswer);
+			int processID2 = (int) translator.getParmas().get(0); // The process ID.
+			String processStageExec = translator.getParmas().get(1).toString(); // The process stage.
+			if(processStageExec.equals("7")) {
+				try {
+					stmt = conn.prepareStatement("insert into icmdb.execution "
+							+ "(process_id, executor_id, number_of_days) "
+							+ "values(?,?,?)");
+					/**    I stopped here!!!   **/
+					stmt.setInt(1, processID2); // The process ID.
+					stmt.setString(2, translator.getParmas().get(2).toString()); // The Appraiser's ID
+					stmt.setInt(3,(int) translator.getParmas().get(3)); // The evaluated number of days for execution
+					
+					stmt.executeUpdate();
+					setNextStageByOne(processID2); // Process is set to next stage;
+					executeNumberOfDaysAnswer.add(true);
+					return executeNumberOfDaysTranslator;
+				}
+				catch (SQLException e) {
+					
+					executeNumberOfDaysAnswer.add(false);
+
+					System.out.println("Insert Evaluation Days: SQL EXCEPTION");
+					return executeNumberOfDaysTranslator;
+				}
+			}
+			if(processStageExec.equals("7.5")) {
+				try {
+					stmt = conn.prepareStatement("Update icmdb.execution SET"
+							+ " executor_id=?, number_of_days=?"
+							+ " WHERE process_id=?");
+
+
+					stmt.setString(1, translator.getParmas().get(2).toString()); // The Appraiser's ID
+					stmt.setInt(2,(int) translator.getParmas().get(3)); // The evaluated number of days
+					
+					stmt.setInt(3, processID2); // The process ID.
+
+					stmt.executeUpdate();
+					setNextStageByOne(processID2); // Process is set to next stage;
+					executeNumberOfDaysAnswer.add(true);
+					return executeNumberOfDaysTranslator;
+				}
+				catch (SQLException e) {
+					//e.printStackTrace();
+					executeNumberOfDaysAnswer.add(false);
+
+					System.out.println("Insert Evaluation Days: SQL EXCEPTION");
+					return executeNumberOfDaysTranslator;
+				}
+			}
+			
+			case Execution_Completed:
+			int processIDCompleteExec = (int) translator.getParmas().get(0); // The process ID. 
+			setNextStageByOne(processIDCompleteExec);
+			ArrayList<Boolean> completeExecutionAnswer = new ArrayList<>();
+			completeExecutionAnswer.add(true);
+			Translator completeExecutionTranslator = new Translator(
+					OptionsOfAction.Execution_Completed, completeExecutionAnswer);
+			return completeExecutionTranslator;
+			//break;
+=======
 					OptionsOfAction.Approve_Decision, decisionMoreInfoResult);
 			return decisionMoreInfotranslator;
+			
 		
 		case GET_RELATED_MESSAGES:
 			String role = (String)translator.getParmas().get(0);
