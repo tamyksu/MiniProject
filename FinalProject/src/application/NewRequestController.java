@@ -263,11 +263,14 @@ public class NewRequestController implements Initializable {
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		instance=this;
-		this.answerFromServer = false;
 		initializeComboBox();
 		
 	}
 	
+	public void loadPage() {
+		this.answerFromServer = false;
+		deleteAll();
+	}
 	
 	public void initializeComboBox() {
 		

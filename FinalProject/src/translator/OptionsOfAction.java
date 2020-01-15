@@ -31,5 +31,7 @@ public enum OptionsOfAction {
 	Get_Active_Statistic,
 	Get_Evaluation_Report_For_Process_ID,
 	Approve_Decision,
-	More_Info_Decision;
+	More_Info_Decision,
+	Execution_Suggest_Number_Of_Days,
+	Execution_Completed;
 }

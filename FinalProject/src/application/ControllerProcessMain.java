@@ -118,6 +118,7 @@ public class ControllerProcessMain implements Initializable {
 
 	@FXML
 	void newRequest(ActionEvent event) {
+		NewRequestController.getInstance().loadPage();
 		ScreenController.getScreenController().activate("newRequest");
 	}
 
@@ -185,7 +186,7 @@ public class ControllerProcessMain implements Initializable {
 		InitiatorName.setText(process.getIntiatorId());
 		InitiatorEmail.setText(process.getEmail());
 		InformationSystem.setText("" + process.getSystem_num());
-		CurrentState.setText(process.getProcess_stage());
+		CurrentState.setText(MyHashMaps.getProcessStageText(Double.parseDouble(process.getProcess_stage())));
 		RequestedChange.setText(process.getRequest_description());
 		Explanation.setText(process.getExplanaton());
 		Notes.setText(process.getNotes());
@@ -215,7 +216,9 @@ public class ControllerProcessMain implements Initializable {
 		case "chairman":
 			fitChairman();
 			break;
-			
+		case "performance leader":
+			fitPerformanceLeaderDisabled();
+			break;	
 		default:
 			//disable all but newRequest button
 			initializeButtons();
@@ -340,8 +343,21 @@ public class ControllerProcessMain implements Initializable {
 		execution_btn.setDisable(true);
 		examination_btn.setDisable(true);
 		supervisor_mode_btn.setDisable(true);
-		director_btn.setDisable(false);
-		defrost_btn.setDisable(false);
+		director_btn.setDisable(true);
+		defrost_btn.setDisable(true);
+	}
+	
+	private void fitPerformanceLeaderDisabled()
+	{
+		newRequestBtn.setDisable(true);
+		extension_btn.setDisable(true);
+		evaluation_btn.setDisable(true);
+		decision_btn.setDisable(true);
+		execution_btn.setDisable(false);
+		examination_btn.setDisable(true);
+		supervisor_mode_btn.setDisable(true);
+		director_btn.setDisable(true);
+		defrost_btn.setDisable(true);
 	}
 	
 	private void fitSupervisorDisabled() 
@@ -398,6 +414,7 @@ public class ControllerProcessMain implements Initializable {
 		director_btn.setDisable(true);
 		defrost_btn.setDisable(true);
 	}
+	
 	
 
 	@FXML
@@ -488,15 +505,15 @@ public class ControllerProcessMain implements Initializable {
 			new Alert(AlertType.ERROR, "Error!").show();
 			return;
 		}
-		if(Double.parseDouble(process.getProcess_stage())<6) {
+		if(Double.parseDouble(process.getProcess_stage())<7) {
 			new Alert(AlertType.ERROR, "Too early for the execution stage.").show();
 			return;
 		}
-		if(Double.parseDouble(process.getProcess_stage())>8) {
-			new Alert(AlertType.ERROR, "This process has already passed the execution stage.").show();
+		if(Double.parseDouble(process.getProcess_stage())>9) {
+			new Alert(AlertType.ERROR, "This process has passed the execution stage.").show();
 			return;
 		}
-		
+		ExecutionController.getInstance().loadPage(Double.parseDouble(process.getProcess_stage()));
 		ScreenController.getScreenController().activate("execution");
 		ExecutionController.instance.updateProcessInformation();
 	}
