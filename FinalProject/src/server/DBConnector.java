@@ -13,15 +13,19 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.time.temporal.ChronoUnit;
 
 import org.omg.CORBA.INTERNAL;
 
 import com.mysql.cj.exceptions.DataReadException;
 
 import translator.*;
+import application.ActiveReportsController;
 import application.Evaluation_Options;
 import application.MyFile;
 import application.Request;
+import javafx.print.Collation;
 import javafx.util.converter.LocalDateTimeStringConverter;
 
 import java.sql.ResultSet;
@@ -58,6 +62,7 @@ public class DBConnector {
 		PreparedStatement stmt;
 		ArrayList<String> ar = new ArrayList<String>() ;
 		switch (translator.getRequest()) {
+		
 		case NEWREQUEST:
 
 			ArrayList<Boolean> failed = new ArrayList<Boolean>();
@@ -67,10 +72,10 @@ public class DBConnector {
 			Request nr = (Request) translator.getParmas().get(0);
 			try {
 				java.sql.Date date = new java.sql.Date(new java.util.Date().getTime()); // Current Date
-
+				
 				stmt = conn.prepareStatement("select request_id from icmdb.processes where initiator_id=? and creation_date=?");
-
-
+				
+				
 				stmt = conn.prepareStatement("insert into icmdb.processes_state where status1='Active',request_id=?,date=?");
 				stmt.setString(1, nr.getUserID());
 				stmt.setDate(2, date);
@@ -90,12 +95,12 @@ public class DBConnector {
 				stmt.setDate(8, date);
 				stmt.setString(9, "1");
 				stmt.executeUpdate();
-				/******************************************add status process to table*****************************/		
-
-
-
-
-				/********************************************************end*****************************************/
+		/******************************************add status process to table*****************************/		
+			
+				
+				
+				
+/********************************************************end*****************************************/
 				// Get the ID newly inserted request:
 
 				PreparedStatement stmt2 = conn.prepareStatement("select request_id from processes where"
@@ -115,16 +120,16 @@ public class DBConnector {
 					processID = rs.getInt("request_id");
 					break;
 				}
-
+				
 				// Add the new request ID with it's initator' Id to users_request 
-				/****************************************************update in process state******************************************************/
+/****************************************************update in process state******************************************************/
 				PreparedStatement stmt8 = conn.prepareStatement("insert into  processes_state  (request_id,status1,date)"
 						+ "values(?,?,CURRENT_TIMESTAMP)");
 				stmt8.setInt(1, processID);
 				stmt8.setString(2,"Active");
 				stmt8.executeUpdate();
-
-				// ***************************** Recieve Files from Client and insert them to Data Base
+						
+	// ***************************** Recieve Files from Client and insert them to Data Base
 				PreparedStatement stmt3 = conn.prepareStatement("insert into  users_requests (user_id,process_id,"
 						+ "role)"
 						+ "values(?,?,?)");
@@ -180,128 +185,246 @@ public class DBConnector {
 				e.printStackTrace();
 			}
 			break;
-			/****************************************Get_Active_Statistic********************************************************/		
+			
+	/****************************************Get_Active_Statistic********************************************************/		
 		case Get_Active_Statistic:
 			try {
+				
+				 ArrayList<LocalDate> dates =( ArrayList<LocalDate>)translator.getParmas().get(0);
+				 LocalDate start_date=dates.get(0);
+					LocalDate end_date=dates.get(1);
+					 ArrayList<Long> days=( ArrayList<Long>)translator.getParmas().get(1);
+					 Long num_days=days.get(0);
+					 Long daysBetween = ChronoUnit.DAYS.between(start_date, end_date);
+					// long startTime = start_date.get
+					 //if(daysBetween <num_days)return 0;
+					/* if((daysBetween%num_days)==0)
+					 {
+					 Long size_array=(daysBetween/num_days);
+					 }else
+					 {
+						 Long size_array=(daysBetween/num_days);
+						 size_array++;
+ 
+					 }*/
+				//	 int size=size_array.intValue();
+					 //int num_interval=num_days.intValue();
+				//System.out.println("size Arrays"+size);
+				//System.out.println("num days interval"+num_interval);
 				ArrayList<ArrayList<Integer>> arr=new ArrayList<>();
-				ArrayList<Integer>active=new ArrayList<>();
+				ArrayList<Integer>active=new ArrayList<Integer>();
+				LocalDate start_index=start_date;
+				LocalDate end_index=start_index.plusDays(num_days);
+				while(!start_index.isAfter(end_date))
+				{
+			
 				stmt = conn.prepareStatement("SELECT COUNT(*) FROM icmdb.processes_state where status1='Active'"
-
-						+"and date>=? and date<? GROUP BY extract(month from date)"
-						+ "order by extract(month from date) ");
-				LocalDate local=(LocalDate)translator.getParmas().get(0);
-				LocalDate local_end=(LocalDate)translator.getParmas().get(1);
-				Timestamp start=Timestamp.valueOf(local.atTime(LocalTime.MIDNIGHT));
-				Timestamp end=Timestamp.valueOf(local_end.atTime(LocalTime.MIDNIGHT));
-
-				stmt.setTimestamp(1,start);
-				stmt.setTimestamp(2,end);
+				
+						+"and date>=? and date<?");
+								
+				//LocalDate local=(LocalDate)translator.getParmas().get(0);
+				//LocalDate local_end=(LocalDate)translator.getParmas().get(1);
+				Timestamp start=Timestamp.valueOf(start_index.atTime(LocalTime.MIDNIGHT));
+				Timestamp end=Timestamp.valueOf(end_index.atTime(LocalTime.MIDNIGHT));
+				
+				  stmt.setTimestamp(1,start);
+				  stmt.setTimestamp(2,end);
+				 
 				//stmt.setString(2,s_end);
 				ResultSet rs = stmt.executeQuery();
 				rs.previous();
 				int i=0;
 				while (rs.next())  // get the processID from the Select query
 				{
-					active.add(rs.getInt(1));
-					System.out.println(active.get(i));
-					i++;
+				active.add(i, rs.getInt(1));
+				System.out.println(active.get(i));
+				i++;
 				}
+	
+			
+			start_index=end_index;
+			end_index= end_index.plusDays(num_days);
+			}
+				
 				arr.add(active);
-				//System.out.println(arr.get(0));
-				/**************************************************************************************/
-				ArrayList<Integer>suspend=new ArrayList<>();
-				PreparedStatement stmt5 = conn.prepareStatement("SELECT COUNT(*) FROM icmdb.processes_state where status1='Suspended'"
-
-						+"and date>=? and date<? GROUP BY extract(month from date)"
-						+ "order by extract(month from date) ");
-				//local=(LocalDate)translator.getParmas().get(0);
-				//	local_end=(LocalDate)translator.getParmas().get(1);
-				// start=Timestamp.valueOf(local.atTime(LocalTime.MIDNIGHT));
-				//	 end=Timestamp.valueOf(local_end.atTime(LocalTime.MIDNIGHT));
-
-				stmt5.setTimestamp(1,start);
-				stmt5.setTimestamp(2,end);
-				//stmt.setString(2,s_end);
-				rs = stmt5.executeQuery();
-				rs.previous();
-				i=0;
-				while (rs.next())  // get the processID from the Select query
+					//System.out.println(arr.get(0));*/
+				System.out.println("****************");
+			/**************************************************************************************/
+				 start_index=start_date;
+				 ArrayList<Integer>suspended=new ArrayList<Integer>();
+				 end_index=start_index.plusDays(num_days);
+				while(!start_index.isAfter(end_date))
 				{
-					suspend.add(rs.getInt(1));
-					System.out.println("chek"+suspend.get(i));
-					i++;
-				}
-				arr.add(suspend);
-				//*************************************************************************************
-				ArrayList<Integer>shutdown=new ArrayList<>();
-				stmt = conn.prepareStatement("SELECT COUNT(*) FROM icmdb.processes_state where status1='Shutdown'"
-
-						+"and date>=? and date<? GROUP BY extract(month from date)"
-						+ "order by extract(month from date) ");
-				local=(LocalDate)translator.getParmas().get(0);
-				local_end=(LocalDate)translator.getParmas().get(1);
-				start=Timestamp.valueOf(local.atTime(LocalTime.MIDNIGHT));
-				end=Timestamp.valueOf(local_end.atTime(LocalTime.MIDNIGHT));
-
-				stmt.setTimestamp(1,start);
-				stmt.setTimestamp(2,end);
+			
+				stmt = conn.prepareStatement("SELECT COUNT(*) FROM icmdb.processes_state where status1='Suspended'"
+				
+						+"and date>=? and date<?");
+								
+				//LocalDate local=(LocalDate)translator.getParmas().get(0);
+				//LocalDate local_end=(LocalDate)translator.getParmas().get(1);
+				Timestamp start=Timestamp.valueOf(start_index.atTime(LocalTime.MIDNIGHT));
+				Timestamp end=Timestamp.valueOf(end_index.atTime(LocalTime.MIDNIGHT));
+				
+				  stmt.setTimestamp(1,start);
+				  stmt.setTimestamp(2,end);
+				 
 				//stmt.setString(2,s_end);
-				rs = stmt.executeQuery();
+				ResultSet rs = stmt.executeQuery();
 				rs.previous();
-				i=0;
+				int i=0;
 				while (rs.next())  // get the processID from the Select query
-				{
-					active.add(rs.getInt(1));
-					System.out.println(shutdown.get(i));
-					i++;
+				{ 
+					System.out.println("suspend"+rs.getInt(1));
+					suspended.add(i, rs.getInt(1));
+				System.out.println(suspended.get(i));
+				i++;
 				}
-				arr.add(shutdown);
-				/********************************************************************************************/
-				ArrayList<Integer>rejected=new ArrayList<>();
-				stmt = conn.prepareStatement("SELECT COUNT(*) FROM icmdb.processes_state where status1='Rejected'"
+	
+			
+			start_index=end_index;
+			end_index= end_index.plusDays(num_days);
+			}
+				
+				arr.add(suspended);
+			//*************************************************************************************
+			System.out.println("********************************************");
+			
+				
+			 start_index=start_date;
+			 ArrayList<Integer>shutdown=new ArrayList<Integer>();
+			 end_index=start_index.plusDays(num_days);
+			while(!start_index.isAfter(end_date))
+			{
+		
+			stmt = conn.prepareStatement("SELECT COUNT(*) FROM icmdb.processes_state where status1='Shutdown'"
+			
+					+"and date>=? and date<?");
+							
+			//LocalDate local=(LocalDate)translator.getParmas().get(0);
+			//LocalDate local_end=(LocalDate)translator.getParmas().get(1);
+			Timestamp start=Timestamp.valueOf(start_index.atTime(LocalTime.MIDNIGHT));
+			Timestamp end=Timestamp.valueOf(end_index.atTime(LocalTime.MIDNIGHT));
+			
+			  stmt.setTimestamp(1,start);
+			  stmt.setTimestamp(2,end);
+			 
+			//stmt.setString(2,s_end);
+			ResultSet rs = stmt.executeQuery();
+			rs.previous();
+		int i=0;
+			while (rs.next())  // get the processID from the Select query
+			{
+				System.out.println("shutdown"+rs.getInt(1));
+				shutdown.add(i, rs.getInt(1));
+				i++;
+			}
 
-						+"and date>=? and date<? GROUP BY extract(month from date)"
-						+ "order by extract(month from date) ");
-				local=(LocalDate)translator.getParmas().get(0);
-				local_end=(LocalDate)translator.getParmas().get(1);
-				start=Timestamp.valueOf(local.atTime(LocalTime.MIDNIGHT));
-				end=Timestamp.valueOf(local_end.atTime(LocalTime.MIDNIGHT));
+		
+		start_index=end_index;
+		end_index= end_index.plusDays(num_days);
+		}
+			
+			arr.add(shutdown);
+			/********************************************************************************************/
+			
+			
+			 start_index=start_date;
+			 ArrayList<Integer>rejected=new ArrayList<Integer>();
+			 end_index=start_index.plusDays(num_days);
+			while(!start_index.isAfter(end_date))
+			{
+		
+			stmt = conn.prepareStatement("SELECT COUNT(*) FROM icmdb.processes_state where status1='Rejected'"
+			
+					+"and date>=? and date<?");
+							
+			//LocalDate local=(LocalDate)translator.getParmas().get(0);
+			//LocalDate local_end=(LocalDate)translator.getParmas().get(1);
+			Timestamp start=Timestamp.valueOf(start_index.atTime(LocalTime.MIDNIGHT));
+			Timestamp end=Timestamp.valueOf(end_index.atTime(LocalTime.MIDNIGHT));
+			
+			  stmt.setTimestamp(1,start);
+			  stmt.setTimestamp(2,end);
+			 
+			//stmt.setString(2,s_end);
+			ResultSet rs = stmt.executeQuery();
+			rs.previous();
+			int i=0;
+			while (rs.next())  // get the processID from the Select query
+			{
+				System.out.println("rejected"+rs.getInt(1));
+				rejected.add(i, rs.getInt(1));
+			//System.out.println(active.get(i));
+				i++;
+			}
 
-				stmt.setTimestamp(1,start);
-				stmt.setTimestamp(2,end);
-				//stmt.setString(2,s_end);
-				rs = stmt.executeQuery();
-				rs.previous();
-				i=0;
-				while (rs.next())  // get the processID from the Select query
-				{
-					active.add(rs.getInt(1));
-					System.out.println(rejected.get(i));
-					i++;
-				}
-				arr.add(rejected);
+		
+		start_index=end_index;
+		end_index= end_index.plusDays(num_days);
+		}
+			
+			arr.add(rejected);
+			
+			/***************************************************************************************/
+			System.out.println("**************************");
+			
+			 start_index=start_date;
+			 ArrayList<Integer>TotalDays=new ArrayList<Integer>();
+			 end_index=start_index.plusDays(num_days);
+			while(!start_index.isAfter(end_date))
+			{
+		
+			stmt = conn.prepareStatement("SELECT COUNT(*) FROM icmdb.processes_state where "
+			
+					+"date>=? and date<? group by workdays");
+							
+			//LocalDate local=(LocalDate)translator.getParmas().get(0);
+			//LocalDate local_end=(LocalDate)translator.getParmas().get(1);
+			Timestamp start=Timestamp.valueOf(start_index.atTime(LocalTime.MIDNIGHT));
+			Timestamp end=Timestamp.valueOf(end_index.atTime(LocalTime.MIDNIGHT));
+			
+			  stmt.setTimestamp(1,start);
+			  stmt.setTimestamp(2,end);
+			 
+			//stmt.setString(2,s_end);
+			ResultSet rs = stmt.executeQuery();
+			rs.previous();
+			int i=0;
+			while (rs.next())  // get the processID from the Select query
+			{
+				System.out.println("rejected"+rs.getInt(1));
+				TotalDays.add(rs.getInt(1));
+			//System.out.println(TotalDays.get(i));
+				i++;
+			}
 
-				/***************************************************************************************/
-				//0-active 1-suspend 2-shutdown 3-rejected
+		
+		start_index=end_index;
+		end_index= end_index.plusDays(num_days);
+		}
+			
+			arr.add(TotalDays);
+			
+			/***************************************************************************************/
+		//0-active 1-suspend 2-shutdown 3-rejected 4-total days
 				Translator newTranslator = new Translator(translator.getRequest(), arr);
 				return newTranslator;
 			}	
-
+			
 			catch (SQLException e) {
 				// TODO Auto-generated catch block
 				System.out.println("SQL EXCEPTION Get_Active_Statistic!");
-			}
-			break;
-			/**********************************************INITIALIZE_COMBO_BOX***********************************************************/
+		}
+		break;
+	/**********************************************INITIALIZE_COMBO_BOX***********************************************************/
 		case INITIALIZE_COMBO_BOX:
-
+		
 			try {
-
-				stmt = conn.prepareStatement("select first_name, last_name, id from icmdb.workers "
-						+ "where( id NOT IN(select user_id from icmdb.users_requests) and role ='Information Engineer')");
-				//+ "and id NOT IN(select user_id from icmdb.permanent_roles))");
-
-
+				
+				stmt = conn.prepareStatement("select first_name, last_name, id from icmdb.workers "						+ "where( id NOT IN(select user_id from icmdb.users_requests) and role ='Information Engineer')");
+						//+ "and id NOT IN(select user_id from icmdb.permanent_roles))");
+				
+						
 				ResultSet rs = stmt.executeQuery();
 				String nameWorker;
 				if(rs.first() == false) {
@@ -315,62 +438,62 @@ public class DBConnector {
 					ar.add( new String(rs.getString(2)));
 					ar.add( new String(rs.getString(3)));
 				}
-
-
+				
+			
 				Translator newTranslator = new Translator(translator.getRequest(), ar);
 				return newTranslator;
-
-			}
+				
+				}
 			catch (SQLException e) {
-				// TODO Auto-generated catch block
-				System.out.println("SQL EXCEPTION INITIALIZE_COMBO_BOX!");
+					// TODO Auto-generated catch block
+					System.out.println("SQL EXCEPTION INITIALIZE_COMBO_BOX!");
 			}
 			break;
-
+			
 		case checkNAMEParmenent:
-			try {
+		try {
 
-				stmt = conn.prepareStatement("SELECT count(*) FROM icmdb.permanent_roles where user_id=? ");//1- this person already in posion
-				stmt.setString(1, (String) translator.getParmas().get(0));
+			stmt = conn.prepareStatement("SELECT count(*) FROM icmdb.permanent_roles where user_id=? ");//1- this person already in posion
+			stmt.setString(1, (String) translator.getParmas().get(0));
+			
+			ResultSet rs = stmt.executeQuery();
+			rs.next();
+		
+		
+			ar.add( new String(rs.getString(1)));//result person if 1 or 0
+			ar.add((String)translator.getParmas().get(0));
 
-				ResultSet rs = stmt.executeQuery();
-				rs.next();
-
-
-				ar.add( new String(rs.getString(1)));//result person if 1 or 0
-				ar.add((String)translator.getParmas().get(0));
-
-				Translator newTranslator = new Translator(translator.getRequest(), ar);
-				return newTranslator;
-			}
+			Translator newTranslator = new Translator(translator.getRequest(), ar);
+			return newTranslator;
+		}
 			catch(SQLException e)
 			{
 				System.out.println("SQL EXCEPTION checkNAMEParmenent!");
 			}
 			break;
-			/*****************************************checkDB********************************************************/	
+	/*****************************************checkDB********************************************************/	
 		case checkDB:
 			try {
-
-
-				stmt = conn.prepareStatement("SELECT count(*) FROM icmdb.permanent_roles where role=? ");
-				stmt.setString(1, (String) translator.getParmas().get(0).toString());
-				ResultSet rs = stmt.executeQuery();
-				rs.next();
-
-				ar.add( new String(rs.getString(1)));//result if 1 or 0
-				ar.add((String)translator.getParmas().get(0).toString());//role
-				ar.add((String)translator.getParmas().get(1).toString());//option
-				Translator newTranslator = new Translator(translator.getRequest(), ar);
-				return newTranslator;
-			}
+				
+			
+			stmt = conn.prepareStatement("SELECT count(*) FROM icmdb.permanent_roles where role=? ");
+			stmt.setString(1, (String) translator.getParmas().get(0).toString());
+			ResultSet rs = stmt.executeQuery();
+			rs.next();
+		
+			ar.add( new String(rs.getString(1)));//result if 1 or 0
+			ar.add((String)translator.getParmas().get(0).toString());//role
+			ar.add((String)translator.getParmas().get(1).toString());//option
+			Translator newTranslator = new Translator(translator.getRequest(), ar);
+			return newTranslator;
+		}
 			catch(SQLException e)
 			{
 				System.out.println("SQL EXCEPTION checkDB!");
 			}
 			break;
-			/***********************************************CHECK_ROLE**********************************************************/
-		case DELETEPERMANENT:
+	/***********************************************CHECK_ROLE**********************************************************/
+	case DELETEPERMANENT:
 			try {
 				stmt = conn.prepareStatement("select role from icmdb.permanent_roles where role=? or user_id=? ");
 				stmt.setString(1, (String) translator.getParmas().get(0).toString());
@@ -379,96 +502,96 @@ public class DBConnector {
 				rs.previous();
 				while (rs.next())  // get the processID from the Select query
 					ar.add( new String(rs.getString(1)));//get role
-
-
+				
+		
 				stmt = conn.prepareStatement("delete from icmdb.permanent_roles where role=? or user_id=? ");
 				stmt.setString(1, (String) translator.getParmas().get(0).toString());
 				stmt.setString(2, (String) translator.getParmas().get(0).toString());
-
+				
 				stmt.executeUpdate();	
-
+		
 				Translator newTranslator = new Translator(translator.getRequest(), ar);
 				return newTranslator;
-
+			
 			}
 			catch(SQLException e)
 			{
 				System.out.println("SQL EXCEPTION DELETEPERMANENT!");
-
+				
 			}
 			break;
-			/*********************************************UPDATEPERMANENT*********************************************************/		
-		case CURRENT_IN_ROLE:
+/*********************************************UPDATEPERMANENT*********************************************************/		
+	case CURRENT_IN_ROLE:
+		
+	try{
+		
+		stmt = conn.prepareStatement("select first_name, last_name from icmdb.workers "
+				+ "inner join icmdb.permanent_roles ON( icmdb.workers.id=icmdb.permanent_roles.user_id )"
+				+ "and icmdb.permanent_roles.role = ? ");
+		stmt.setString(1, (String) translator.getParmas().get(0));
+		ResultSet rs = stmt.executeQuery();
 
-			try{
-
-				stmt = conn.prepareStatement("select first_name, last_name from icmdb.workers "
-						+ "inner join icmdb.permanent_roles ON( icmdb.workers.id=icmdb.permanent_roles.user_id )"
-						+ "and icmdb.permanent_roles.role = ? ");
-				stmt.setString(1, (String) translator.getParmas().get(0));
-				ResultSet rs = stmt.executeQuery();
-
-				if(rs.first() == false) {
-					ar.add("Select chairman failled");
-					Translator newTranslator = new Translator(translator.getRequest(), ar);
-					return newTranslator;
-				}
-				rs.previous();
-				while (rs.next()) { // get the processID from the Select query
-					ar.add( new String(rs.getString(1)));//name
-					ar.add( new String(rs.getString(2)));//last name
-
-
-				}
+		if(rs.first() == false) {
+			ar.add("Select chairman failled");
+			Translator newTranslator = new Translator(translator.getRequest(), ar);
+			return newTranslator;
+		}
+		rs.previous();
+		while (rs.next()) { // get the processID from the Select query
+			ar.add( new String(rs.getString(1)));//name
+			ar.add( new String(rs.getString(2)));//last name
+	
+			
+		}
 				ar.add( (String) translator.getParmas().get(0));//role
+		
+		Translator newTranslator = new Translator(translator.getRequest(), ar);
+		return newTranslator;
+	}
+	catch(SQLException e) {
+		System.out.println("SQL Exception: Failed CURRENT_IN_ROLE ");
+	}
+	
+	break;
+	case UPDATEPERMANENT:
+		try {
+			
+			System.out.println("add new person to role");
+			stmt = conn.prepareStatement("insert into icmdb.permanent_roles (user_id,role) values(?,?)");
+			stmt.setString(1, (String) translator.getParmas().get(0));
+			stmt.setString(2, (String) translator.getParmas().get(1));
+System.out.println("id "+translator.getParmas().get(0));
 
+			stmt.executeUpdate();
+			stmt = conn.prepareStatement("select first_name, last_name from icmdb.workers "
+					+ "inner join icmdb.permanent_roles ON icmdb.workers.id=icmdb.permanent_roles.user_id "
+					+ "and icmdb.permanent_roles.role = ? ");
+		
+			stmt.setString(1, (String) translator.getParmas().get(1));
+			ResultSet rs = stmt.executeQuery();
+	
+			if(rs.first() == false) {
+				ar.add("Select chairman failled");
 				Translator newTranslator = new Translator(translator.getRequest(), ar);
 				return newTranslator;
 			}
-			catch(SQLException e) {
-				System.out.println("SQL Exception: Failed CURRENT_IN_ROLE ");
+			rs.previous();
+			while (rs.next()) { // get the processID from the Select query
+				ar.add( new String(rs.getString(1)));//name
+				ar.add( new String(rs.getString(2)));//last name
+				ar.add( (String) translator.getParmas().get(1));//role
+				
 			}
-
-			break;
-		case UPDATEPERMANENT:
-			try {
-
-				System.out.println("add new person to role");
-				stmt = conn.prepareStatement("insert into icmdb.permanent_roles (user_id,role) values(?,?)");
-				stmt.setString(1, (String) translator.getParmas().get(0));
-				stmt.setString(2, (String) translator.getParmas().get(1));
-				System.out.println("id "+translator.getParmas().get(0));
-
-				stmt.executeUpdate();
-				stmt = conn.prepareStatement("select first_name, last_name from icmdb.workers "
-						+ "inner join icmdb.permanent_roles ON icmdb.workers.id=icmdb.permanent_roles.user_id "
-						+ "and icmdb.permanent_roles.role = ? ");
-
-				stmt.setString(1, (String) translator.getParmas().get(1));
-				ResultSet rs = stmt.executeQuery();
-
-				if(rs.first() == false) {
-					ar.add("Select chairman failled");
-					Translator newTranslator = new Translator(translator.getRequest(), ar);
-					return newTranslator;
-				}
-				rs.previous();
-				while (rs.next()) { // get the processID from the Select query
-					ar.add( new String(rs.getString(1)));//name
-					ar.add( new String(rs.getString(2)));//last name
-					ar.add( (String) translator.getParmas().get(1));//role
-
-				}
-
-				Translator newTranslator = new Translator(translator.getRequest(), ar);
-				return newTranslator;
-
-			}
-			catch(SQLException e) {
-				System.out.println("SQL Exception: Failed UPDATEPERMANENT ");
-			}
-			break;
-			/*************************************************LOGIN***************************************************************/
+		
+			Translator newTranslator = new Translator(translator.getRequest(), ar);
+			return newTranslator;
+			
+		}
+		catch(SQLException e) {
+			System.out.println("SQL Exception: Failed UPDATEPERMANENT ");
+		}
+		break;
+/*************************************************LOGIN***************************************************************/
 		case LOGIN:
 			try {
 				stmt = conn.prepareStatement("select * from users where user_id=? and password=?");	
@@ -478,8 +601,7 @@ public class DBConnector {
 				ResultSet rs = stmt.executeQuery();
 				if(rs.first() == false) {
 					ar.add("Login failed, username and password did not match");
-					Translator newTranslator = new Translator(translator.getRequest(), ar);
-					return newTranslator;
+					return new Translator(translator.getRequest(), ar);
 				}
 				rs.previous();
 				while(rs.next())
@@ -494,7 +616,6 @@ public class DBConnector {
 					rs1.next();
 					ArrayList<String> ans = new ArrayList<String>();
 					if(rs1.getString(1).equals("Supervisor") ) {
-
 						ans.add("Supervisor");
 					}
 					if(rs1.getString(1).equals("Chairman") ) {
@@ -513,22 +634,20 @@ public class DBConnector {
 						ans.add("Manager");
 					}
 					ans.add(ar.get(0));
-					Translator newTranslator = new Translator(translator.getRequest(), ans);
-					return newTranslator;
+					return new Translator(translator.getRequest(), ans);
 				}
 				ArrayList<String> ans = new ArrayList<String>();
 				ans.add("correct match");
 				ans.add(ar.get(0));
-				Translator newTranslator = new Translator(translator.getRequest(), ans);
-				return newTranslator;
+				return new Translator(translator.getRequest(), ans);
 
 			}
 			catch (SQLException e) {
 				System.out.println("ERROR");
 				e.printStackTrace();
-
+				
 			} 
-			return null;
+		return null;
 		case GETRELATEDREQUESTS:
 			try {
 				stmt = conn.prepareStatement(""
@@ -544,11 +663,9 @@ public class DBConnector {
 					ArrayList<ArrayList<?>> empty = new ArrayList<ArrayList<?>>();
 					empty.add(ar);
 
-					Translator newTranslator = new Translator(translator.getRequest(), empty);
-
-					return newTranslator;
+					return new Translator(translator.getRequest(), empty);
 				}
-
+				
 				rs.previous();
 				ArrayList<ArrayList<?>> processes = new ArrayList<ArrayList<?>>();
 				while(rs.next()) {	
@@ -582,14 +699,14 @@ public class DBConnector {
 					processes.add(intArray);
 					processes.add(stringArray);
 				}
-				Translator newTranslator = new Translator(translator.getRequest(), processes);
-				return newTranslator;
+				
+				return new Translator(translator.getRequest(), processes);
 			} catch (SQLException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}	
 			break;
-
+			
 		case GET_APPRAISER_AND_PERFORMANCE_LEADER_CB_DATA:
 			System.out.println("made it1");
 			try {
@@ -603,8 +720,8 @@ public class DBConnector {
 						"							WHERE process_id = ?) "
 						+ "							OR id NOT IN (SELECT users_requests.user_id FROM icmdb.users_requests)) "
 						+ "AND id NOT IN (SELECT user_id FROM icmdb.permanent_roles)");
-
-
+				
+				
 				stmt.setInt(1, (int)translator.getParmas().get(0));
 				ResultSet rs = stmt.executeQuery();		
 				System.out.println("made it2");
@@ -615,9 +732,7 @@ public class DBConnector {
 					ArrayList<ArrayList<?>> empty = new ArrayList<ArrayList<?>>();
 					empty.add(ar);
 
-					Translator newTranslator = new Translator(translator.getRequest(), empty);
-
-					return newTranslator;
+					return new Translator(translator.getRequest(), empty);
 				}
 				rs.previous();
 				System.out.println("Yes appraisers or performance leaders");
@@ -630,8 +745,9 @@ public class DBConnector {
 				}
 				System.out.println("workersWithoutRole:");
 				System.out.println(workersWithoutRole);
-				Translator newTranslator = new Translator(translator.getRequest(), workersWithoutRole);
-				return newTranslator;
+				
+				return  new Translator(translator.getRequest(), workersWithoutRole);
+				
 			} catch (SQLException e) {
 				// TODO Auto-generated catch block
 				System.out.println("Catch");
@@ -659,29 +775,39 @@ public class DBConnector {
 			break;
 		case SET_EVALUATION_OR_EXECUTION_DUE_TIME:
 			try {
-				stmt = conn.prepareStatement("UPDATE icmdb.processes SET current_stage_due_date = ? "
+				//////////////////////////////need to check-not delete/////////////////////////////
+			/*	stmt = conn.prepareStatement("UPDATE icmdb.processes_state SET workdays = ? "
 						+ "WHERE request_id = ?");
-
 				stmt.setString(1, translator.getParmas().get(1).toString());
 				stmt.setInt(2, (int)translator.getParmas().get(0));
-
+				stmt.executeUpdate();*/
+				///////////////////////////////////////////
+				stmt = conn.prepareStatement("UPDATE icmdb.processes SET current_stage_due_date = ? "
+						+ "WHERE request_id = ?");
+				
+				stmt.setString(1, translator.getParmas().get(1).toString());
+				stmt.setInt(2, (int)translator.getParmas().get(0));
+				
 				stmt.executeUpdate();
 				setNextStageByOne((int)translator.getParmas().get(0));
 			}
 			catch(SQLException e) {
-				//TODO Auto-generated catch block
+				 //TODO Auto-generated catch block
 				System.out.println("Catch SET_EVALUATION_OR_EXECUTION_DUE_TIME");
 			}
 			break;
 		case ADD_EVALUATION_OR_EXECUTION_EXTENSION_TIME:
 			try {
+				
+				
+				
 				stmt = conn.prepareStatement("SELECT current_stage_due_date FROM icmdb.processes WHERE request_id = ?");
 				stmt.setInt(1, (int)translator.getParmas().get(0));
-
+				
 				ResultSet rs = stmt.executeQuery();		
-
+				
 				//System.out.println("HERE 1");
-
+				
 				if(rs.first() == false) {
 					System.out.println("No Process Was Found");
 					return null;
@@ -694,28 +820,35 @@ public class DBConnector {
 
 				while(rs.next()) {
 					currentDueTime = rs.getString(1);
-				}
+					}
 				System.out.println(currentDueTime);
 				int newDueTime = Integer.parseInt(currentDueTime);
-
+				
 				newDueTime += (int)translator.getParmas().get(1);
-
-				stmt = conn.prepareStatement("UPDATE icmdb.processes SET current_stage_due_date = ? "
+				////////////////////////////need to check-not delete//////////
+				
+			/*	stmt = conn.prepareStatement("UPDATE icmdb.processes_state SET current_stage_due_date = ? "
 						+ "WHERE request_id = ?");
-
 				stmt.setString(1, String.valueOf(newDueTime).toString());
 				stmt.setInt(2, (int)translator.getParmas().get(0));
-
+				stmt.executeUpdate();*/
+				//////////////////////////////
+				stmt = conn.prepareStatement("UPDATE icmdb.processes SET current_stage_due_date = ? "
+						+ "WHERE request_id = ?");
+				
+				stmt.setString(1, String.valueOf(newDueTime).toString());
+				stmt.setInt(2, (int)translator.getParmas().get(0));
+				
 				stmt.executeUpdate();
 				System.out.println("Due Time Update Was Succeeded!");
 			}
 			catch(SQLException e) {
-				//TODO Auto-generated catch block
+				 //TODO Auto-generated catch block
 				System.out.println("Catch ADD_EVALUATION_OR_EXECUTION_EXTENSION_TIME");
 			}
-
+			
 			break;
-
+			
 		case GETALLPROCESSES:
 			try {
 				stmt = conn.prepareStatement("SELECT * FROM icmdb.processes;");
@@ -724,8 +857,7 @@ public class DBConnector {
 					ar.add("No processes");
 					ArrayList<ArrayList<?>> empty = new ArrayList<ArrayList<?>>();
 					empty.add(ar);
-					Translator newTranslator = new Translator(translator.getRequest(), empty);
-					return newTranslator;
+					return new Translator(translator.getRequest(), empty);
 				}
 				rs.previous();
 				ArrayList<ArrayList<?>> processes = new ArrayList<ArrayList<?>>();
@@ -754,32 +886,32 @@ public class DBConnector {
 						}
 					}
 					else {
-
+						
 						return null;
 					}
 					processes.add(intArray);
 					processes.add(stringArray);
-
+					
 				}
-
-				Translator newTranslator = new Translator(translator.getRequest(), processes);
-				return newTranslator;
+				
+				return new Translator(translator.getRequest(), processes);
+				
 			} catch (SQLException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}	
 			break;
-
+			
 		case GET_APPRAISER_AND_PERFORMANCE_LEADER_OF_PROC:
 			try {
 				System.out.println("GET_APPRAISER_AND_PERFORMANCE_LEADER_OF_PROC 1");
-				stmt = conn.prepareStatement("SELECT first_name, last_name, id, role\r\n" + 
+				stmt = conn.prepareStatement("SELECT first_name, last_name, id, users_requests.role\r\n" + 
 						"FROM icmdb.workers\r\n" + 
 						"		JOIN icmdb.users_requests ON id = user_id\r\n" + 
-						"						WHERE (role = 'Appraiser' OR role = 'Performance Leader')\r\n" + 
+						"						WHERE (users_requests.role = 'Appraiser' OR users_requests.role = 'Performance Leader')\r\n" + 
 						"						AND process_id = ?	");
 				stmt.setInt(1, (int)translator.getParmas().get(0));
-
+				
 				ResultSet rs = stmt.executeQuery();	
 				System.out.println("GET_APPRAISER_AND_PERFORMANCE_LEADER_OF_PROC 2");
 				if(rs.first() == false) {
@@ -787,29 +919,28 @@ public class DBConnector {
 					ar.add("No employees were found");
 					ArrayList<ArrayList<?>> empty = new ArrayList<ArrayList<?>>();
 					empty.add(ar);
-					Translator newTranslator = new Translator(translator.getRequest(), empty);
-					return newTranslator;
+					
+					return new Translator(translator.getRequest(), empty);
 				}
 				rs.previous();
 				ArrayList<Object> processes = new ArrayList<Object>();
-
+			
 				processes.add(String.valueOf((int)translator.getParmas().get(0)));
-
+				
 				while(rs.next()) {	
 					processes.add(rs.getString(1));
 					processes.add(rs.getString(2));
 					processes.add(rs.getString(4));
 				}
-				//System.out.println("OMG");
+				System.out.println("OMG");
 				System.out.println(processes);
-				Translator newTranslator = new Translator(translator.getRequest(), processes);
-				return newTranslator;
+				return new Translator(translator.getRequest(), processes);
 			} catch (SQLException e) {
 				// TODO Auto-generated catch block
 				System.out.println("SQL Exception GET_APPRAISER_AND_PERFORMANCE_LEADER_OF_PROC");
 			}	
 			break;	
-
+			
 		case DEFROST_PROCESS:
 		{
 			try {
@@ -821,19 +952,19 @@ public class DBConnector {
 				stmt.setString(1, (String) translator.getParmas().get(0));
 
 				int rs = stmt.executeUpdate();
-
+				
 				if(rs == 1)
 				{
 					ar.add("Successfully Defrosted");
-					/********************************************************************************/
-
+	/********************************************************************************/
+					
 					PreparedStatement stmt9 = conn.prepareStatement("insert into icmdb.processes_state (request_id,status1,date) "
 							+"values(?,?,CURRENT_TIMESTAMP)");
 					stmt9.setString(1, (String) translator.getParmas().get(0));
 					stmt9.setString(2, "Active");
 					stmt9.executeUpdate();
-
-
+					
+					
 					/******************************************************************************/
 					return new Translator(translator.getRequest(),ar);
 				}
@@ -841,14 +972,14 @@ public class DBConnector {
 				{
 					ar.add("Failed To Defrosted");
 				}
-
+				
 				return new Translator(translator.getRequest(),ar);
 
 
 			} catch (SQLException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
-
+				
 				ar.add("SQL Error");
 				return new Translator(translator.getRequest(),ar);
 
@@ -860,11 +991,11 @@ public class DBConnector {
 				stmt = conn.prepareStatement("insert into icmdb.failure_reports "
 						+ "(failure_report_id,request_id, failure_explanation) "
 						+ "values(?,?,?)");
-
+						
 				stmt.setInt(1, (int)translator.getParmas().get(0));
 				stmt.setInt(2, (int)translator.getParmas().get(1));
 				stmt.setString(3, translator.getParmas().get(2).toString());
-
+				
 				stmt.executeUpdate();
 				setNextStageByInput((int)translator.getParmas().get(1), "7");
 			}
@@ -875,24 +1006,24 @@ public class DBConnector {
 				System.out.println("INSERT_FAILURE_REPORT: SQL EXCEPTION");
 
 			}
-
+			
 			break;
-
+			
 		case EXAMINATION_COMPLETED:
 			setNextStageByOne((int)translator.getParmas().get(0));
 			break;
 		case REJECTE_PROCESS:
 			try {
-
+				
 				stmt = conn.prepareStatement("UPDATE processes SET status1='Rejected',process_stage='14' WHERE request_id=?");
 				stmt.setString(1, (String) translator.getParmas().get(0));
 
 				int rs = stmt.executeUpdate();
-
+				
 				if(rs == 1)
 				{
 					/*************************************************************************/
-
+					
 					PreparedStatement stmt9 = conn.prepareStatement("insert into icmdb.processes_state (request_id,status1,date) "
 							+"values(?,?,CURRENT_TIMESTAMP)");
 					stmt9.setString(1, (String) translator.getParmas().get(0));
@@ -906,20 +1037,20 @@ public class DBConnector {
 				{
 					ar.add("Failed To reject");
 				}
-
+				
 				return new Translator(translator.getRequest(),ar);
 
 			}
-
-			catch (SQLException e) {
+		
+		catch (SQLException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
-
+				
 				ar.add("SQL Error- reject process");
 				return new Translator(translator.getRequest(),ar);
 
 			}
-
+			
 		case FREEZE_PROCESS:
 		{
 			try {
@@ -927,22 +1058,22 @@ public class DBConnector {
 				stmt.setString(1, (String) translator.getParmas().get(0));
 
 				int rs = stmt.executeUpdate();
-
+				
 				if(rs == 1)
 				{
-
-
+					
+					
 					ar.add("Succesfully Suspended");
-
+					
 					/********************************************************************************/
-
+					
 					PreparedStatement stmt9 = conn.prepareStatement("insert into icmdb.processes_state (request_id,status1,date) "
 							+"values(?,?,CURRENT_TIMESTAMP)");
 					stmt9.setString(1, (String) translator.getParmas().get(0));
 					stmt9.setString(2, "Suspended");
 					stmt9.executeUpdate();
-
-
+					
+					
 					/******************************************************************************/
 					return new Translator(translator.getRequest(),ar);
 				}
@@ -950,20 +1081,20 @@ public class DBConnector {
 				{
 					ar.add("Failed To Suspend");
 				}
-
+		
 				return new Translator(translator.getRequest(),ar);
 
 
 			} catch (SQLException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
-
+				
 				ar.add("SQL Error");
 				return new Translator(translator.getRequest(),ar);
 
 			}
 		}
-
+		
 		case SHUTDOWN_PROCESS:
 		{
 			try {
@@ -971,11 +1102,11 @@ public class DBConnector {
 				stmt.setString(1, (String) translator.getParmas().get(0));
 
 				int rs = stmt.executeUpdate();
-
+				
 				if(rs == 1)
 				{
 					/*************************************************************************/
-
+					
 					PreparedStatement stmt9 = conn.prepareStatement("insert into icmdb.processes_state (request_id,status1,date) "
 							+"values(?,?,CURRENT_TIMESTAMP)");
 					stmt9.setString(1, (String) translator.getParmas().get(0));
@@ -989,24 +1120,24 @@ public class DBConnector {
 				{
 					ar.add("Failed To Shutdown");
 				}
-
+				
 				return new Translator(translator.getRequest(),ar);
 
 
 			} catch (SQLException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
-
+				
 				ar.add("SQL Error");
 				return new Translator(translator.getRequest(),ar);
 			}						
 		}
-
+			
 		case FILL_FAILURE_REPORT_CLICK:
 			setNextStageByInput((int)translator.getParmas().get(0), "11.5");
 			break;
-			/*******   Fill Evaluation Number Of Days (Appraiser) ******/
-		case Fill_Evalution_Number_Of_Days: // Appraiser evaluate the required number of days.
+
+	case Fill_Evalution_Number_Of_Days: // Appraiser evaluate the required number of days.
 			ArrayList<Boolean> evaluateNumberOfDaysAnswer = new ArrayList<>();
 			Translator fillNumberOfDaysAnswer = new Translator(OptionsOfAction.Fill_Evalution_Number_Of_Days, evaluateNumberOfDaysAnswer);
 			int processID = (int) translator.getParmas().get(0); // The process ID.
@@ -1088,7 +1219,7 @@ public class DBConnector {
 				System.out.println("Insert Evaluation Days: SQL EXCEPTION");
 				return evaluationFormTranslator;
 			}
-			//break;
+			
 		case Get_Evaluation_Report_For_Process_ID:
 			int procID = (int) translator.getParmas().get(0); // The process ID.
 			ArrayList<Object> evaluationForm = new ArrayList<>();
@@ -1130,6 +1261,7 @@ public class DBConnector {
 			int processForDecisionMoreInfo = (int) translator.getParmas().get(0); // The process ID. 
 			ArrayList<Boolean> decisionMoreInfoResult = new ArrayList<>();
 			Translator decisionMoreInfotranslator = new Translator(
+<<<<<<< HEAD
 					OptionsOfAction.More_Info_Decision, decisionMoreInfoResult);
 			try {
 				setNextStageByInput(processForDecisionMoreInfo, "2");
@@ -1216,6 +1348,11 @@ public class DBConnector {
 					OptionsOfAction.Execution_Completed, completeExecutionAnswer);
 			return completeExecutionTranslator;
 			//break;
+=======
+					OptionsOfAction.Approve_Decision, decisionMoreInfoResult);
+			return decisionMoreInfotranslator;
+
+>>>>>>> 7bb24f8ad901dd33f47b6b2c05c17a3106a813c6
 		default:
 			System.out.println("default");
 			break;
@@ -1254,32 +1391,30 @@ public class DBConnector {
 		}
 		return null;
 	}
-
-
-
+	
 	private static void setNextStageByOne(int procID)//for the "approve" buttons
 	{
 		PreparedStatement stmt;
 		String procStage;
 		String nextProcStage = "";
-
+		
 		System.out.println("procID: " + procID);
 		try {
 			stmt = conn.prepareStatement("SELECT process_stage FROM icmdb.processes\r\n" + 
 					"					WHERE request_id = ?");
-
+			
 			stmt.setInt(1, procID);
-
+			
 			ResultSet rs = stmt.executeQuery();	
 			System.out.println("SET NEXT STAGE 1");
 			if(rs.first() == false) {
 				System.out.println("setNextStage() Failed - There is no process ID %d" + procID);
 				return;
 			}
-
+			
 			procStage = rs.getString(1);
 			System.out.println("strProcStage = " + procStage);
-
+			
 			switch(procStage)
 			{
 			case "1":
@@ -1321,48 +1456,104 @@ public class DBConnector {
 			case "12":
 				nextProcStage = "13";
 				break;
-			default:
-				break;
+				default:
+					break;
 			}
-
-
+			
+			
 			stmt = conn.prepareStatement("UPDATE icmdb.processes SET process_stage = ? WHERE request_id = ?");
-
+		
 			stmt.setString(1, nextProcStage);
 			stmt.setInt(2, procID);
-
+			
 			stmt.executeUpdate();
 			System.out.println("procStage++ = " + nextProcStage);
-
+			
 			System.out.println("update process stage by one succeeded");
-
+			
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			System.out.println("SQL Exception setNextStage()");
 		}	
 	}
-
+	
 	private static void setNextStageByInput(int procID, String nextStage)//for the non "approve" buttons
 	{
 		try
 		{
 			PreparedStatement stmt;
-
+			
 			stmt = conn.prepareStatement("UPDATE icmdb.processes SET process_stage = ? WHERE request_id = ?");
-
+			
 			stmt.setString(1, nextStage);
 			stmt.setInt(2, procID);
-
+			
 			stmt.executeUpdate();
-
+			
 			System.out.println("update process stage by input succeeded");
 
 		}
-
+		
 		catch (SQLException e) {
 			// TODO Auto-generated catch block
 			System.out.println("SQL Exception setNextStageByInput()");
 		}	
+		
+	}
+	
+	public static ArrayList<ArrayList<?>> getActiveProcesses()
+	{
+		try {
+			ArrayList<String> ar = new ArrayList<String>() ;
 
+			PreparedStatement stmt = conn.prepareStatement("SELECT * FROM icmdb.processes WHERE status1='Active';");
+			ResultSet rs = stmt.executeQuery();		
+			if(rs.first() == false) {
+				ar.add("No processes");
+				ArrayList<ArrayList<?>> empty = new ArrayList<ArrayList<?>>();
+				empty.add(ar);
+				return null;
+			}
+			rs.previous();
+			ArrayList<ArrayList<?>> processes = new ArrayList<ArrayList<?>>();
+			while(rs.next()) {	
+				ArrayList<Integer> intArray= new ArrayList<Integer>();
+				ArrayList<String> stringArray= new ArrayList<String>();
+				intArray.add(rs.getInt(1));
+				stringArray.add(rs.getString(2));
+				intArray.add(rs.getInt(3));
+				stringArray.add(rs.getString(4));
+				stringArray.add(rs.getString(5));
+				stringArray.add(rs.getString(6));
+				stringArray.add(rs.getString(7));
+				stringArray.add(rs.getString(8));
+				stringArray.add(rs.getString(9));
+				stringArray.add(rs.getString(10));
+				stringArray.add(rs.getString(11));
+				stringArray.add(rs.getString(12));
+				ResultSet initiatorInfo = getInitiatorInfo(rs.getString(2));
+				if (initiatorInfo != null) {
+					while(initiatorInfo.next()) {
+						stringArray.add(initiatorInfo.getString(3));
+						stringArray.add(initiatorInfo.getString(4));
+						stringArray.add(initiatorInfo.getString(5));
+						stringArray.add(initiatorInfo.getString(6));
+					}
+				}
+				else {
+					return null;
+				}
+				processes.add(intArray);
+				processes.add(stringArray);;
+
+			}
+			
+			return processes;
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return null;
+		}	
+	
 	}
 }

@@ -2,9 +2,13 @@ package application;
 
 import java.io.IOException;
 import java.net.URL;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.ResourceBundle;
-
+import java.util.concurrent.TimeUnit;
 import com.sun.scenario.effect.Effect.AccelType;
 
 import client.Client;
@@ -212,7 +216,6 @@ public class ControllerProcessMain implements Initializable {
 		case "appraiser":
 			fitAppraiser();
 			break;
-			
 		case "chairman":
 			fitChairman();
 			break;
@@ -248,16 +251,15 @@ public class ControllerProcessMain implements Initializable {
 				else
 					fitSupervisor();
 				break;	
-			
+		
 			default:
 				break;
 		}
 	
 	}
 	
-	//change button disability in accordance to Chairman
+	//change button disability in accordance to appraiser
 	private void fitChairman() {
-		System.out.println("chairman");
 		newRequestBtn.setDisable(false);
 		extension_btn.setDisable(true);
 		evaluation_btn.setDisable(true);
@@ -400,8 +402,6 @@ public class ControllerProcessMain implements Initializable {
 		defrost_btn.setDisable(true);
 	}
 	
-	
-	
 	private void fitSupervisorShutdown() 
 	{
 		newRequestBtn.setDisable(true);
@@ -426,7 +426,24 @@ public class ControllerProcessMain implements Initializable {
 
 	@FXML
 	void extension_click(ActionEvent event) {
-
+		//Check if days to due time <= 3
+		Date dueDate;
+		try {
+			dueDate = new SimpleDateFormat("yyyy-MM-dd").parse(CurrentStageDueTime.getText());
+			Date currentDate = new SimpleDateFormat("yyyy-MM-dd").parse(LocalDate.now().toString());
+			
+			long diff = dueDate.getTime() - currentDate.getTime();
+		    long days = TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS);
+		    
+		    if(days>3)
+		    {
+		    	new Alert(AlertType.INFORMATION,"You can ask for extention only when 3 or less days left until due date").show();
+		    }
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	    
 	}
 
 	@FXML
@@ -472,18 +489,22 @@ public class ControllerProcessMain implements Initializable {
 		
 		if(proc == -1)
 			return;
+			
 		if(process.getProcess_stage().isEmpty()) {
 			new Alert(AlertType.ERROR, "Error!").show();
 			return;
 		}
+		
 		if(Double.parseDouble(process.getProcess_stage())<5) {
 			new Alert(AlertType.ERROR, "Unabble to make a decision, not yet!").show();
 			return;
 		}
+		
 		if(Double.parseDouble(process.getProcess_stage())>5) {
 			new Alert(AlertType.ERROR, "Already made a decision!").show();
 			return;
 		}
+		
 		ArrayList<Integer> arr = new ArrayList<>();
 		arr.add(process.getRequest_id()); 
 		Translator translator = new Translator(OptionsOfAction.Get_Evaluation_Report_For_Process_ID, arr);
@@ -536,7 +557,6 @@ public class ControllerProcessMain implements Initializable {
 		Supervisor_ProcessMain_Controller.instance.getAppraiserOrPerformanceLeaderCBData();
 		Supervisor_ProcessMain_Controller.instance.getAppraiserAndPerformanceLeaderLabels();
 		Supervisor_ProcessMain_Controller.instance.updateProcessInformation();
-
 	}
 	
 	@FXML
@@ -551,11 +571,8 @@ public class ControllerProcessMain implements Initializable {
 
 	@FXML
 	public void getTheUpdateProcessesFromDB() {
-		
-		System.out.println("h"+Client.getInstance().getRole());
 		switch (Client.getInstance().getRole()) {
 		case "Supervisor":
-	
 			Client.getInstance().getAllProcessesFromServer();
 			fitSupervisor();
 			break;
