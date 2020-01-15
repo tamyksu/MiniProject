@@ -1,4 +1,5 @@
 package server;
+import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -433,6 +434,7 @@ System.out.println("id "+translator.getParmas().get(0));
 					}
 					processes.add(intArray);
 					processes.add(stringArray);
+					processes.add(getRelatedFilesName(rs.getInt(1)));
 				}
 				Translator newTranslator = new Translator(translator.getRequest(), processes);
 				return newTranslator;
@@ -441,7 +443,7 @@ System.out.println("id "+translator.getParmas().get(0));
 				e.printStackTrace();
 			}	
 			break;
-			
+		
 		case GET_APPRAISER_AND_PERFORMANCE_LEADER_CB_DATA:
 			System.out.println("made it1");
 			try {
@@ -603,7 +605,7 @@ System.out.println("id "+translator.getParmas().get(0));
 							stringArray.add(initiatorInfo.getString(4));
 							stringArray.add(initiatorInfo.getString(5));
 							stringArray.add(initiatorInfo.getString(6));
-						}
+						}					
 					}
 					else {
 						
@@ -611,7 +613,7 @@ System.out.println("id "+translator.getParmas().get(0));
 					}
 					processes.add(intArray);
 					processes.add(stringArray);
-					
+					processes.add(getRelatedFilesName(rs.getInt(1)));
 				}
 				
 				Translator newTranslator = new Translator(translator.getRequest(), processes);
@@ -696,12 +698,37 @@ System.out.println("id "+translator.getParmas().get(0));
 		case INSERT_FAILURE_REPORT:
 			
 			break;
+		case DOWNLOADFILE:
+		{
+        	ArrayList<MyFile> fileToServer = new ArrayList<MyFile>();
+    		MyFile msg= new MyFile((String) translator.getParmas().get(0));
+    		  try{
+    			      File newFile = new File ((String) translator.getParmas().get(0));      
+    			      byte [] mybytearray  = new byte [(int)newFile.length()];
+    			      FileInputStream fis = new FileInputStream(newFile);
+    			      BufferedInputStream bis = new BufferedInputStream(fis);			  
+    			      
+    			      msg.initArray(mybytearray.length);
+    			      msg.setSize(mybytearray.length);
+    			      
+    			      bis.read(msg.getMybytearray(),0,mybytearray.length);
+    			      fileToServer.add(msg);	
+    			    Translator newTranslator = new Translator(translator.getRequest(), fileToServer);
+    				return newTranslator;
+    			    }
+    			catch (Exception e) {
+    				System.out.println("Error: Can't send files to Server");
+    			}
+				
+		}
+
+	break;
 		default:
 			System.out.println("default");
 			break;
 		}
 		return null;
-
+		
 	}
 
 	//Another function aimed at getting the initiator information from the database
@@ -776,5 +803,29 @@ System.out.println("id "+translator.getParmas().get(0));
 			// TODO Auto-generated catch block
 			System.out.println("SQL Exception setNextStage()");
 		}	
+	}
+
+	private static ArrayList<String> getRelatedFilesName(int requestID) {
+		ArrayList<String> filesNames = new ArrayList<String>();
+		String tempString;
+		PreparedStatement stmt;
+		try {
+			stmt = conn.prepareStatement("SELECT file FROM files WHERE files.request_id=?");
+			stmt.setInt(1, requestID);
+			ResultSet rs = stmt.executeQuery();
+			if(rs.first() == false) {
+				return null;
+			}
+			rs.previous();
+			while (rs.next()) {
+				tempString =rs.getString(1);
+				filesNames.add(tempString);
+			}
+			return filesNames;
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}		
+		return null;
 	}
 }

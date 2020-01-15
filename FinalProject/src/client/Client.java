@@ -3,10 +3,12 @@ import ocsf.client.*;
 import translator.OptionsOfAction;
 import translator.Translator;
 import java.io.*;
+import java.sql.PreparedStatement;
 import java.util.ArrayList;
 import application.ControllerProcessMain;
 import application.LoginController;
-import application.NewRequestContoroller;
+import application.MyFile;
+import application.NewRequestController;
 import application.Processes;
 import application.ScreenController;
 import application.StaffMainController;
@@ -83,11 +85,43 @@ public class Client extends AbstractClient {
 		break;
 		case DEFROST_PROCESS:
 			handleMessageFromServerDefrostProcess(result.getParmas());
+		case DOWNLOADFILE:
+			handleMessageFromServerDownloadFile(result.getParmas());
 		default:
 			break;
 		}
 	
 	}
+		private void handleMessageFromServerDownloadFile(ArrayList<?> parmas) {
+		System.out.println("File received");
+		MyFile myfile = (MyFile) parmas.get(0);
+		
+		String newFileNamePath = ".\\File_Download\\"+myfile.getFileName().split("_")[4];
+
+		try {
+			FileOutputStream fos;
+			fos = new FileOutputStream(newFileNamePath);
+			BufferedOutputStream bos = new BufferedOutputStream(fos);
+			/* The following code can save another version of the file in 
+			 * the project's directory:*/
+			try {
+				bos.write(myfile.mybytearray, 0, myfile.getSize());
+				bos.flush();
+				fos.flush();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		
+	}
+
 		private void handleMessageFromServerDefrostProcess(Object message) {
 		ArrayList<String> arr= (ArrayList<String>) message;
 		
@@ -237,10 +271,10 @@ public class Client extends AbstractClient {
 		ArrayList<Boolean> result = (ArrayList<Boolean>) rs;
 		
 		if(result.get(0).booleanValue()==true) {
-			NewRequestContoroller.getInstance().setAnswerFromServer(true);
+			NewRequestController.getInstance().setAnswerFromServer(true);
 		}
 		else {
-			NewRequestContoroller.getInstance().setAnswerFromServer(false);
+			NewRequestController.getInstance().setAnswerFromServer(false);
 		}
 	}
 /*********************************************handlerMessageFromServerLogin*************************************************/	
@@ -299,7 +333,7 @@ public class Client extends AbstractClient {
 		result = (ArrayList<ArrayList<?>>) rs ;
 		if(!(result.get(0).get(0).toString().equals("No processes")))
 		{
-			for (int i = 0; i < result.size(); i=i+2) {
+			for (int i = 0; i < result.size(); i=i+3) {
 				UserProcess process = new UserProcess();
 				process.setRequest_id((int)result.get(i).get(0));
 				process.setRole((String)result.get(i+1).get(0));
@@ -318,8 +352,10 @@ public class Client extends AbstractClient {
 				process.setInitiatorLastName((String)result.get(i+1).get(12));
 				process.setEmail((String)result.get(i+1).get(13));
 				process.setDepartment((String)result.get(i+1).get(14));
+				if(result.get(i+2) != null) process.setRelatedDocuments((ArrayList<String>) result.get(i+2));
 				processes.getMyProcess().put(new Integer((int)result.get(i).get(0)), process);
-				processes.getMyProcessesInArrayList().add(process);	
+				processes.getMyProcessesInArrayList().add(process);
+				
 			}
 		this.processes=processes;
 		
@@ -337,7 +373,7 @@ public class Client extends AbstractClient {
 		result = (ArrayList<ArrayList<?>>) rs ;
 		if(!(result.get(0).get(0).toString().equals("No processes")))
 		{
-			for (int i = 0; i < result.size(); i=i+2) {                                                                         
+			for (int i = 0; i < result.size(); i=i+3) {                                                                         
 				UserProcess process = new UserProcess();
 				//Get values from intarray	
 				process.setRequest_id((int)result.get(i).get(0));
@@ -361,6 +397,8 @@ public class Client extends AbstractClient {
 				process.setInitiatorLastName((String)result.get(i+1).get(11));
 				process.setEmail((String)result.get(i+1).get(12));
 				process.setDepartment((String)result.get(i+1).get(13));
+				if(result.get(i+2) != null)
+					process.setRelatedDocuments((ArrayList<String>) result.get(i+2));
 				processes.getMyProcess().put(new Integer((int)result.get(i).get(0)), process);
 				processes.getMyProcessesInArrayList().add(process);	
 			}

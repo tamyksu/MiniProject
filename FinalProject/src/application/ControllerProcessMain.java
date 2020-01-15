@@ -11,6 +11,8 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.MenuButton;
+import javafx.scene.control.MenuItem;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
@@ -19,6 +21,8 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import translator.OptionsOfAction;
 import translator.Translator;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler.*; 
+import javafx.event.EventHandler;
 
 public class ControllerProcessMain implements Initializable {
 	public static ControllerProcessMain instance;
@@ -107,11 +111,12 @@ public class ControllerProcessMain implements Initializable {
 	@FXML
 	private Button director_btn;
 	
+	@FXML
+	private MenuButton DocumentsMenu;
 
-	public static void setInstance(ControllerProcessMain instance) {
-		ControllerProcessMain.instance = instance;
-	}
-
+	@FXML
+	private Button DownloadFiles;
+	
 	@FXML
 	void newRequest(ActionEvent event) {
 		ScreenController.getScreenController().activate("newRequest");
@@ -121,6 +126,7 @@ public class ControllerProcessMain implements Initializable {
 	public void initialize(URL location, ResourceBundle resources) {
 		instance = this;
 		initializeButtons();
+		DocumentsMenu.getItems().clear();
 	}
 
 	public static ControllerProcessMain getInstance() {
@@ -177,6 +183,7 @@ public class ControllerProcessMain implements Initializable {
 	}
 	//Updates the relevant fields by the process that is specified in the process table
 	public void updateFieldsOfRequestMarked(Person person) {
+        Documents.setText("Document selected");
 		UserProcess process = Client.getInstance().getProcesses().getMyProcess().get(person.getRequestId());
 		InitiatorName.setText(process.getIntiatorId());
 		InitiatorEmail.setText(process.getEmail());
@@ -189,12 +196,66 @@ public class ControllerProcessMain implements Initializable {
 		RequestID.setText("" + process.getRequest_id());
 		currentStatus.setText(process.getStatus());
 		RequestedChange.setText(process.getRequest_description());
+		arrangesTheDocumentsAsClickableStrings(process.getRelatedDocuments());
 		if(process.getRole().toLowerCase().equals("supervisor") || process.getRole().toLowerCase().equals("manager"))
 			ButtonAdjustmentSuperUser(process.getRole(), process.getStatus());
 		else
 			ButtonAdjustment(process.getRole());
 		Supervisor_ProcessMain_Controller.instance.initializeChosenProcessScreen(process.getProcess_stage());//to initiate the flag
 		ExaminationController.instance.initializeChosenProcessScreen(process.getProcess_stage());
+	}
+
+	
+	/////////////////func set documents in  DocumentsMenu//////////////////////////////////////////
+	private void arrangesTheDocumentsAsClickableStrings(ArrayList<String> relatedDocuments) {
+		DocumentsMenu.getItems().clear();
+        if(relatedDocuments == null) return;
+		// create action event 
+        ArrayList<String> arrayList = new ArrayList<String>();
+        ArrayList<String> arrayList1 = new ArrayList<String>();
+		arrayList.addAll(relatedDocuments);
+		for (int i = 0; i < arrayList.size(); i++) {
+			arrayList1.add(arrayList.get(i).split("_")[4]);
+		}
+        EventHandler<ActionEvent> event1 = new EventHandler<ActionEvent>() { 
+            public void handle(ActionEvent e) 
+            { 
+                Documents.setText(((MenuItem)e.getSource()).getText() + " selected"); 
+            } 
+        }; 
+		for (int i = 0; i < arrayList1.size(); i++) {
+        	MenuItem m1 = new MenuItem(arrayList1.get(i)); 
+            // add action events to the menuitems 
+            m1.setOnAction(event1);
+            DocumentsMenu.getItems().add(m1); 
+
+		}
+   	}
+	/////////////////func related to documents//////////////////////////////////////////
+	@FXML
+	public void downloadFiles() {
+		//tableView.getSelectionModel().getSelectedItem()
+		if(Documents.getText().equals("Document selected")) return;
+		String path = getFilePath(Documents.getText().split(" ")[0]);
+		ArrayList<Object> file = new ArrayList<Object>();
+		file.add(path);
+		Translator translator = new Translator(OptionsOfAction.DOWNLOADFILE, file);
+		Client.getInstance().handleMessageFromClientGUI(translator);
+		showSeccessAlert();
+	}
+    public void showSeccessAlert() {
+    	Alert alert =new Alert(AlertType.INFORMATION, "File was received.");
+    	alert.setTitle("Successfully downloaded");
+    	alert.show();
+    }
+
+	private String getFilePath(String text) {
+		Person currentProcess = tableView.getSelectionModel().getSelectedItem();
+		return ".\\Files_Server_Recieved\\"+currentProcess.getRequestId()+"_"+InitiatorName.getText()+"_"+text;
+	}
+
+	public static void setInstance(ControllerProcessMain instance) {
+		ControllerProcessMain.instance = instance;
 	}
 
 	//The function responsible for matching buttons to the process is indicated in the table
