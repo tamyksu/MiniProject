@@ -15,6 +15,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
+import javafx.scene.control.TextArea;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.cell.PropertyValueFactory;
 import translator.OptionsOfAction;
@@ -23,6 +24,8 @@ import javafx.event.ActionEvent;
 
 public class ControllerProcessMain implements Initializable {
 	public static ControllerProcessMain instance;
+	
+	private ArrayList<Object> messagesData;
 
 	@FXML
 	private TableView<Person> tableView;
@@ -104,6 +107,10 @@ public class ControllerProcessMain implements Initializable {
 	
 	@FXML
 	private Button director_btn;
+	
+	 @FXML
+	private TextArea notifications_text;
+
 	
 
 	public static void setInstance(ControllerProcessMain instance) {
@@ -444,11 +451,18 @@ public class ControllerProcessMain implements Initializable {
 
 	@FXML
 	void supervisorMode_click(ActionEvent event) {
+		int proc = getSelectedRowNumber();
+		
+		if(proc == -1)
+			return;
 		ScreenController.getScreenController().activate("supervisor_processesMain");
 		Supervisor_ProcessMain_Controller.instance.getAppraiserOrPerformanceLeaderCBData();
 		Supervisor_ProcessMain_Controller.instance.getAppraiserAndPerformanceLeaderLabels();
 		Supervisor_ProcessMain_Controller.instance.updateProcessInformation();
-
+		Supervisor_ProcessMain_Controller.instance.setProcessID(proc);
+		Supervisor_ProcessMain_Controller.instance.setDueTimeRequest(this.messagesData);
+		Supervisor_ProcessMain_Controller.instance.setDueTimeExtensionExplanation();
+		
 	}
 	
 	@FXML
@@ -516,6 +530,17 @@ public class ControllerProcessMain implements Initializable {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+    }
+    
+    public void setRelatedMessages(ArrayList <String> messages, ArrayList<Object> msgData)
+    {
+    	notifications_text.setText("");
+    	this.messagesData = msgData;
+    	
+    	for(int i=messages.size()-1; i >= 0 ; i--)
+    		notifications_text.setText(notifications_text.getText() + messages.get(i));
+    	if(messages.size() == 0)
+    		notifications_text.setText("No Notifications");
     }
 
 }

@@ -58,6 +58,7 @@
                            <font>
                               <Font size="18.0" />
                            </font></TextField>
+                        <Button fx:id="recoverPassword_btn" layoutX="300.0" layoutY="435.0" mnemonicParsing="false" onAction="#recoverPasswordFromDB" opacity="0.71" prefHeight="1.0" prefWidth="185.0" text="Recover Password" />
                      </children></Pane>
                   <Pane prefHeight="838.0" prefWidth="233.0" />
                </children>

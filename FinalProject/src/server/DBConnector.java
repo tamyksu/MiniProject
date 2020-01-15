@@ -369,12 +369,14 @@ System.out.println("id "+translator.getParmas().get(0));
 						ans.add("Manager");
 					}
 					ans.add(ar.get(0));
+					
 					Translator newTranslator = new Translator(translator.getRequest(), ans);
 					return newTranslator;
 				}
 				ArrayList<String> ans = new ArrayList<String>();
 				ans.add("correct match");
 				ans.add(ar.get(0));
+
 				Translator newTranslator = new Translator(translator.getRequest(), ans);
 				return newTranslator;
 
@@ -515,18 +517,42 @@ System.out.println("id "+translator.getParmas().get(0));
 			break;
 		case SET_EVALUATION_OR_EXECUTION_DUE_TIME:
 			try {
+				java.sql.Date date = new java.sql.Date(new java.util.Date().getTime());
+				
+				date = date.valueOf(date.toLocalDate().plusDays(Integer.parseInt(translator.getParmas().get(1).toString())));
+				
+				System.out.println("SET_EVALUATION_OR_EXECUTION_DUE_TIME 1");
+				
 				stmt = conn.prepareStatement("UPDATE icmdb.processes SET current_stage_due_date = ? "
 						+ "WHERE request_id = ?");
 				
-				stmt.setString(1, translator.getParmas().get(1).toString());
+				stmt.setDate(1, date);
 				stmt.setInt(2, (int)translator.getParmas().get(0));
 				
 				stmt.executeUpdate();
+				
+				System.out.println("SET_EVALUATION_OR_EXECUTION_DUE_TIME 2");
+
+				
+				String toWho="";
+				if((int)translator.getParmas().get(2) == 3)
+					toWho = "Appraiser";
+				else
+					toWho = "Performance Leader";
+				
+				sendNotification((int)translator.getParmas().get(0), "execution due stage time was approved", 
+						Integer.parseInt(translator.getParmas().get(1).toString()),
+						toWho, "Supervisor", null);
+				
+				deleteNotification((int)translator.getParmas().get(0), "define execution stage due time",
+						Integer.parseInt(translator.getParmas().get(1).toString()), "Supervisor", toWho);
+				
 				setNextStageByOne((int)translator.getParmas().get(0));
 			}
 			catch(SQLException e) {
 				 //TODO Auto-generated catch block
 				System.out.println("Catch SET_EVALUATION_OR_EXECUTION_DUE_TIME");
+				System.out.println(e.getMessage());
 			}
 			break;
 		case ADD_EVALUATION_OR_EXECUTION_EXTENSION_TIME:
@@ -545,29 +571,54 @@ System.out.println("id "+translator.getParmas().get(0));
 				//System.out.println("SSSS");
 				rs.previous();
 
-				String currentDueTime="";
-				//System.out.println("HERE 2");
-
-				while(rs.next()) {
-					currentDueTime = rs.getString(1);
-					}
-				System.out.println(currentDueTime);
-				int newDueTime = Integer.parseInt(currentDueTime);
 				
-				newDueTime += (int)translator.getParmas().get(1);
+				//System.out.println("HERE 2");
+				java.sql.Date date = null;
+				
+				while(rs.next()) {
+					date = rs.getDate(1);
+					}
+				System.out.println(date);
+				
+				
+				date = date.valueOf(date.toLocalDate().plusDays((int)translator.getParmas().get(1)));
 				
 				stmt = conn.prepareStatement("UPDATE icmdb.processes SET current_stage_due_date = ? "
 						+ "WHERE request_id = ?");
 				
-				stmt.setString(1, String.valueOf(newDueTime).toString());
+				stmt.setDate(1, date);
 				stmt.setInt(2, (int)translator.getParmas().get(0));
 				
 				stmt.executeUpdate();
-				System.out.println("Due Time Update Was Succeeded!");
+				System.out.println("Extension Due Time Update Was Succeeded!");
+				
+				String toWho="";
+				int procStage = (int)translator.getParmas().get(2);
+				switch(procStage)
+				{
+				case 4:
+					toWho = "Appraiser";
+					break;
+				case 5:
+					toWho = "Chairman";
+					break;
+				case 9:
+					toWho = "Performance Leader";
+					break;
+				case 11:
+					toWho = "Examinator";
+					break;
+				}
+				
+				sendNotification((int)translator.getParmas().get(0), "due time extension was added", (int)translator.getParmas().get(1),
+						toWho, "Supervisor", null);
+				deleteNotification((int)translator.getParmas().get(0), "add due time extension", 0,
+						"Supervisor", toWho);
 			}
 			catch(SQLException e) {
 				 //TODO Auto-generated catch block
 				System.out.println("Catch ADD_EVALUATION_OR_EXECUTION_EXTENSION_TIME");
+				System.out.println(e.getMessage());
 			}
 			
 			break;
@@ -792,6 +843,251 @@ System.out.println("id "+translator.getParmas().get(0));
 		case FILL_FAILURE_REPORT_CLICK:
 			setNextStageByInput((int)translator.getParmas().get(0), "11.5");
 			break;
+			
+		case GET_RELATED_MESSAGES:
+			String role = (String)translator.getParmas().get(0);
+			
+			
+				System.out.println("GET_RELATED_MESSAGES 1");
+			try {
+					if(role.compareTo("Manager") != 0 && role.compareTo("Supervisor") != 0)//role = ID of someone
+					{
+						stmt = conn.prepareStatement("SELECT *\r\n" + 
+								"FROM icmdb.messages\r\n" + 
+								"JOIN icmdb.users_requests \r\n" + 
+								"ON users_requests.process_id = messages.process_id && messages.to_who = users_requests.role\r\n" + 
+								"WHERE user_id = ?");
+						
+						System.out.println((String)translator.getParmas().get(0));
+						stmt.setString(1, (String)translator.getParmas().get(0));
+						
+						ResultSet rs = stmt.executeQuery();	
+						System.out.println("GET_RELATED_MESSAGES 2");
+						if(rs.first() == false) {
+							System.out.println("GET_RELATED_MESSAGES - No messages were found");
+							ar.add("No messages were found");
+							ArrayList<ArrayList<?>> empty = new ArrayList<ArrayList<?>>();
+							empty.add(ar);
+							Translator newTranslator = new Translator(translator.getRequest(), empty);
+							return newTranslator;
+						}
+						
+						rs.previous();
+						
+						ArrayList<Object> messages = new ArrayList<Object>();
+					
+						while(rs.next()) {	
+							messages.add(rs.getInt(2));
+							messages.add(rs.getString(3));
+							messages.add(rs.getInt(4));
+							messages.add(rs.getString(6));
+							messages.add(rs.getString(7));
+							messages.add((java.sql.Date)rs.getDate(8));
+						}
+						
+						System.out.println("GET_RELATED_MESSAGES: " + messages);
+						Translator newTranslator = new Translator(translator.getRequest(), messages);
+						return newTranslator;
+					}
+					
+					else
+					{
+						stmt = conn.prepareStatement("SELECT *\r\n" + 
+								"FROM icmdb.messages\r\n" + 
+								"WHERE messages.to_who = \"Supervisor\"");
+												
+						
+						ResultSet rs = stmt.executeQuery();	
+						System.out.println("GET_RELATED_MESSAGES 3");
+						if(rs.first() == false) {
+							System.out.println("GET_RELATED_MESSAGES - No messages were found");
+							ar.add("No messages were found");
+							ArrayList<ArrayList<?>> empty = new ArrayList<ArrayList<?>>();
+							empty.add(ar);
+							Translator newTranslator = new Translator(translator.getRequest(), empty);
+							return newTranslator;
+						}
+						
+						rs.previous();
+						
+						ArrayList<Object> messages = new ArrayList<Object>();
+					
+						while(rs.next()) {	
+							messages.add(rs.getInt(2));
+							messages.add(rs.getString(3));
+							messages.add(rs.getInt(4));
+							messages.add(rs.getString(6));
+							messages.add(rs.getString(7));
+							messages.add((java.sql.Date)rs.getDate(8));
+						}
+						
+						System.out.println(messages);
+						Translator newTranslator = new Translator(translator.getRequest(), messages);
+						return newTranslator;
+					}
+				} 
+			catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				
+			
+			break;
+		case DECLINE_EVALUATION_OR_EXECUTION_DUE_TIME:
+			try 
+			{
+				
+				System.out.println("DECLINE_EVALUATION_OR_EXECUTION_DUE_TIME 1");
+
+				
+				String toWho="";
+				String nextStage="";
+				
+				if((int)translator.getParmas().get(2) == 3)
+				{
+					toWho = "Appraiser";
+					nextStage = "2.5";
+				}
+					
+				else
+				{
+					toWho = "Performance Leader";
+					nextStage = "7.5";
+				}
+					
+				sendNotification((int)translator.getParmas().get(0), "execution stage due time was declined", 0,
+						toWho, "Supervisor", null);
+				
+				deleteNotification((int)translator.getParmas().get(0), "define execution stage due time",
+						Integer.parseInt(translator.getParmas().get(1).toString()), "Supervisor", toWho);
+				
+				setNextStageByInput((int)translator.getParmas().get(0), nextStage);
+			}
+			catch(Exception e) {
+				 //TODO Auto-generated catch block
+				System.out.println("Catch DECLINE_EVALUATION_OR_EXECUTION_DUE_TIME");
+				System.out.println(e.getMessage());
+			}
+
+			break;
+		case DECLINE_EVALUATION_OR_EXECUTION_EXTENSION_TIME:
+			try
+			{
+				String toWho="";
+				int procStage = (int)translator.getParmas().get(1);
+				switch(procStage)
+				{
+				case 4:
+					toWho = "Appraiser";
+					break;
+				case 5:
+					toWho = "Chairman";
+					break;
+				case 9:
+					toWho = "Performance Leader";
+					break;
+				case 11:
+					toWho = "Examinator";
+					break;
+				}
+			
+				sendNotification((int)translator.getParmas().get(0), "due time extension was declined", 0,
+						toWho, "Supervisor", null);
+				
+				deleteNotification((int)translator.getParmas().get(0), "add due time extension", 0,
+						"Supervisor", toWho);
+			
+				
+			}
+		catch(Exception e) {
+			 //TODO Auto-generated catch block
+			System.out.println("Catch ADD_EVALUATION_OR_EXECUTION_EXTENSION_TIME");
+			System.out.println(e.getMessage());
+		}
+			break;
+		case RECOVER_PASSWORD:
+			try
+			{
+				ArrayList<Object> passwordAndEmail = new ArrayList<Object>();
+
+				System.out.println(translator.getParmas());
+				
+				stmt = conn.prepareStatement("SELECT email FROM icmdb.workers WHERE id=?");
+										
+				stmt.setString(1, (String)translator.getParmas().get(0));
+				
+				ResultSet rs = stmt.executeQuery();	
+				
+				System.out.println("RECOVER_PASSWORD 1");
+				
+				if(rs.first() == false) {
+					stmt = conn.prepareStatement("SELECT email FROM icmdb.students WHERE id=?");
+					
+					stmt.setString(1, (String)translator.getParmas().get(0));
+					
+					ResultSet rs2 = stmt.executeQuery();	
+					
+					System.out.println("RECOVER_PASSWORD 1");
+					
+					if(rs2.first() == false) {
+						System.out.println("RECOVER_PASSWORD - No email was found");
+						ar.add("No email was found");
+						
+						Translator newTranslator = new Translator(translator.getRequest(), ar);
+						return newTranslator;
+					}
+					rs2.previous();
+					
+					while(rs2.next()) {	
+						passwordAndEmail.add(rs2.getString(1));
+					}
+				}
+				
+				else
+				{
+					rs.previous();
+					
+					while(rs.next()) {	
+						passwordAndEmail.add(rs.getString(1));
+					}
+				}
+				
+				
+				System.out.println(passwordAndEmail);
+				
+				stmt = conn.prepareStatement("SELECT password FROM icmdb.users WHERE user_id=?");
+				
+				stmt.setString(1, (String)translator.getParmas().get(0));
+				
+				ResultSet rs3 = stmt.executeQuery();	
+				
+				System.out.println("RECOVER_PASSWORD 2");
+				
+				if(rs3.first() == false) {
+					System.out.println("RECOVER_PASSWORD - No password was found");
+					ar.add("No password was found");
+					
+					Translator newTranslator = new Translator(translator.getRequest(), ar);
+					return newTranslator;
+				}
+				
+				rs3.previous();
+							
+				while(rs3.next()) {	
+					passwordAndEmail.add(rs3.getString(1));
+				}
+				
+				System.out.println("DBConnector - RECOVER_PASSWORD - passwordAndEmail: " + passwordAndEmail);
+				
+				Translator newTranslator = new Translator(translator.getRequest(), passwordAndEmail);
+				return newTranslator;
+			} 
+			catch (SQLException e) {
+			// TODO Auto-generated catch block
+				System.out.println("RECOVER_PASSWORD - SQL EXCEPTION");
+			e.printStackTrace();
+			}
+			break;
 		default:
 			System.out.println("default");
 			break;
@@ -865,6 +1161,7 @@ System.out.println("id "+translator.getParmas().get(0));
 				break;
 			case "3":
 				nextProcStage = "4";
+				break;
 			case "4":
 				nextProcStage = "5";
 				break;
@@ -937,5 +1234,72 @@ System.out.println("id "+translator.getParmas().get(0));
 		System.out.println("SQL Exception setNextStageByInput()");
 		}	
 		
+	}
+	
+	private static void sendNotification(int procID, String content, int days, String toWho, String fromWho, String reason)
+	{
+
+		try
+		{
+			java.sql.Date date = new java.sql.Date(new java.util.Date().getTime());
+			
+			PreparedStatement stmt;
+			
+			stmt = conn.prepareStatement("INSERT INTO icmdb.messages (process_id, content, days, to_who, from_who, reason_for_extension, date)"
+					+ "  VALUES (?,?,?,?,?,?,?)");
+			
+			stmt.setInt(1, procID);
+			stmt.setString(2, content);
+			stmt.setInt(3, days);
+			stmt.setString(4, toWho);
+			stmt.setString(5, fromWho);
+			stmt.setString(6, reason);
+			stmt.setDate(7, date);
+			
+			stmt.executeUpdate();
+			
+			System.out.println("DBController - sendNotification - insert succeeded");
+
+		}
+		
+		catch (SQLException e) {
+		// TODO Auto-generated catch block
+		System.out.println("SQL Exception DBController - sendNotification()");
+		}	
+		
+		
+	}
+	
+	public static void deleteNotification(int procID, String content, int days, String toWho, String fromWho)
+	{
+		try
+		{
+			System.out.println("procID, content, days, toWho, fromWho");
+			System.out.println(procID + ", " + content + ", " + days + ", " + toWho + ", " + fromWho);
+			
+
+			PreparedStatement stmt;
+			
+			stmt = conn.prepareStatement("DELETE FROM icmdb.messages\r\n" + 
+					"					WHERE process_id=? AND content=? AND days=? AND to_who=? AND from_who=?");
+			
+			stmt.setInt(1, procID);
+			stmt.setString(2, content);
+			stmt.setInt(3, days);
+			stmt.setString(4, toWho);
+			stmt.setString(5, fromWho);
+			
+			stmt.executeUpdate();
+			
+			System.out.println("DBController - deleteNotification - deletion succeeded");
+
+		}
+		
+		catch (SQLException e) {
+		// TODO Auto-generated catch block
+		System.out.println("SQL Exception DBController - deleteNotification()");
+		System.out.println(e.getMessage());
+		}	
+
 	}
 }

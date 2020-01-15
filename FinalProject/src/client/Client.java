@@ -3,12 +3,14 @@ import ocsf.client.*;
 import translator.OptionsOfAction;
 import translator.Translator;
 import java.io.*;
+import java.sql.Date;
 import java.util.ArrayList;
 import application.ControllerProcessMain;
 import application.LoginController;
 import application.NewRequestController;
 import application.Processes;
 import application.ScreenController;
+import application.SendMail;
 import application.StaffMainController;
 import application.Supervisor_ProcessMain_Controller;
 import application.UserProcess;
@@ -87,6 +89,12 @@ public class Client extends AbstractClient {
 			break;
 		case SHUTDOWN_PROCESS:
 			handleMessageFromServerShutdownProcess(result.getParmas());
+		case GET_RELATED_MESSAGES:
+			setRelatedMessages(result.getParmas());
+			break;
+		case RECOVER_PASSWORD:
+			sendRecoveredPassword(result.getParmas());
+			break;
 		default:
 			break;
 		}
@@ -187,7 +195,7 @@ public class Client extends AbstractClient {
 			sendToServer(message);
 		} catch (IOException e) {
 			System.out.println("Could not perform action to server");
-		//	System.out.println(e.getMessage());
+			System.out.println(e.getMessage());
 			quit();
 		}
 	}
@@ -264,6 +272,7 @@ public class Client extends AbstractClient {
 			Client.getInstance().setName(result.get(1));
 			ScreenController.getScreenController().activate("processesMain");
 			getProcessesFromServer();
+			getRelatedMessages(result.get(1));
 			break;
 		case "Supervisor":
 			Client.getInstance().setName(result.get(1));
@@ -271,6 +280,7 @@ public class Client extends AbstractClient {
 			ScreenController.getScreenController().activate("processesMain");
 			ControllerProcessMain.instance.ButtonAdjustmentSuperUser(result.get(0),"Active");
 			getAllProcessesFromServer();
+			getRelatedMessages("Supervisor");
 			break;
 		case "Manager":
 			Client.getInstance().setName(result.get(1));
@@ -278,11 +288,21 @@ public class Client extends AbstractClient {
 			ScreenController.getScreenController().activate("processesMain");
 			ControllerProcessMain.instance.ButtonAdjustmentSuperUser(result.get(0),"Active");
 			getAllProcessesFromServer();
+			getRelatedMessages("Manager");
 			break;
 	
 		case "Login failed, username and password did not match":
-			LoginController.getInstance().getMessageField()
-					.setText("Login failed, username and password did not match");
+			Platform.runLater(new Runnable() {//avoiding java.lang.IllegalStateException “Not on FX application thread”
+	    	    public void run() {
+	    	    	Alert alert = new Alert(AlertType.INFORMATION);
+	            	
+	                alert.setTitle("ERROR");
+	                alert.setHeaderText("Login failed");
+	                alert.setContentText("Username and password did not match");
+	                alert.showAndWait();
+	                return;
+	    	    }
+	    	});
 			break;
 		default:
 			break;
@@ -429,4 +449,48 @@ public class Client extends AbstractClient {
 		System.out.println("Client full names: " + fullNames);
 		Supervisor_ProcessMain_Controller.instance.setAppraiserAndPerformanceLeaderLabels(fullNames);
 	}
+	
+	public void getRelatedMessages(String str)
+	{
+		ArrayList<Object> check = new ArrayList<Object>();
+		
+		check.add(str);
+		
+		Translator translator = new Translator(OptionsOfAction.GET_RELATED_MESSAGES, check);
+		Client.getInstance().handleMessageFromClientGUI(translator);
+	}
+
+	public void setRelatedMessages(Object rs)
+	{
+		System.out.println("setRelatedMessages");
+		ArrayList<Object> result = (ArrayList<Object>)rs;
+		ArrayList<String> messages = new ArrayList<String>();
+		System.out.println("setRelatedMessages" + result.size());
+
+		for(int i=0 ; i < result.size()/6 ; i++)
+		{
+			messages.add(new String((Date)result.get(6*i+5) + "  Process ID  " + (int)result.get(6*i) + ":  "
+			+ (String)result.get(6*i+3) + " - " + (String)result.get(6*i+1)));
+			
+			if((int)result.get(6*i+2) == 0)
+			{
+				messages.set(i, messages.get(i) + ".\n");
+			}
+			else
+			{
+				messages.set(i, messages.get(i) + ", " + (int)result.get(6*i+2) + " days.\n");
+			}
+		}
+		System.out.println("!" + messages + "!");
+		ControllerProcessMain.instance.setRelatedMessages(messages, result);
+	}
+	
+	private void sendRecoveredPassword(Object arr)
+	{
+		ArrayList <String> emailAndPassword = (ArrayList <String>)arr;
+		
+		System.out.println("Client - sendRecoveredPassword - emailAndPassword = " + emailAndPassword);
+		LoginController.instance.sendRecoveredPasswordToUserEmail(emailAndPassword);
+	}
+	
 }
