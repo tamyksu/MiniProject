@@ -119,24 +119,30 @@ public class ControllerProcessMain implements Initializable {
 	@FXML
 	private Button director_btn;
 	
+<<<<<<< HEAD
 	 @FXML
 	private TextArea notifications_text;
 
+=======
 	@FXML
 	private MenuButton DocumentsMenu;
+>>>>>>> f0ea820c81a46eb2623146813972162951754973
 	UserProcess process;
 	
 	private static EvaluationReport evaluationReports; // current evaluation report
 	
+<<<<<<< HEAD
 	
 	
 	public static void setInstance(ControllerProcessMain instance) {
 		ControllerProcessMain.instance = instance;
 	}
 
+=======
 	@FXML
 	private Button DownloadFiles;
 	
+>>>>>>> f0ea820c81a46eb2623146813972162951754973
 	@FXML
 	void newRequest(ActionEvent event) {
 		NewRequestController.getInstance().loadPage();
@@ -275,6 +281,9 @@ public class ControllerProcessMain implements Initializable {
 		return ".\\Files_Server_Recieved\\"+currentProcess.getRequestId()+"_"+InitiatorName.getText()+"_"+text;
 	}
 
+	public static void setInstance(ControllerProcessMain instance) {
+		ControllerProcessMain.instance = instance;
+	}
 
 	//The function responsible for matching buttons to the process is indicated in the table
 	private void ButtonAdjustment(String userRole) {

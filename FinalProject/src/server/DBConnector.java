@@ -1,4 +1,5 @@
 package server;
+import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -950,8 +951,8 @@ System.out.println("id "+translator.getParmas().get(0));
 					ar.add("No employees were found");
 					ArrayList<ArrayList<?>> empty = new ArrayList<ArrayList<?>>();
 					empty.add(ar);
-					Translator newTranslator = new Translator(translator.getRequest(), empty);
-					return newTranslator;
+					
+					return new Translator(translator.getRequest(), empty);
 				}
 				rs.previous();
 				ArrayList<Object> processes = new ArrayList<Object>();
@@ -965,8 +966,7 @@ System.out.println("id "+translator.getParmas().get(0));
 				}
 				System.out.println("OMG");
 				System.out.println(processes);
-				Translator newTranslator = new Translator(translator.getRequest(), processes);
-				return newTranslator;
+				return new Translator(translator.getRequest(), processes);
 			} catch (SQLException e) {
 				// TODO Auto-generated catch block
 				System.out.println("SQL Exception GET_APPRAISER_AND_PERFORMANCE_LEADER_OF_PROC");
@@ -1133,11 +1133,11 @@ System.out.println("id "+translator.getParmas().get(0));
 				stmt.setString(1, (String) translator.getParmas().get(0));
 
 				int rs = stmt.executeUpdate();
-				
+
 				if(rs == 1)
 				{
 					/*************************************************************************/
-					
+
 					PreparedStatement stmt9 = conn.prepareStatement("insert into icmdb.processes_state (request_id,status1,date) "
 							+"values(?,?,CURRENT_TIMESTAMP)");
 					stmt9.setString(1, (String) translator.getParmas().get(0));
@@ -1151,17 +1151,17 @@ System.out.println("id "+translator.getParmas().get(0));
 				{
 					ar.add("Failed To Shutdown");
 				}
-				
+
 				return new Translator(translator.getRequest(),ar);
 
 
 			} catch (SQLException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
-				
+
 				ar.add("SQL Error");
 				return new Translator(translator.getRequest(),ar);
-			}					
+			}
 		}
 			
 		case FILL_FAILURE_REPORT_CLICK:
@@ -1292,7 +1292,6 @@ System.out.println("id "+translator.getParmas().get(0));
 			int processForDecisionMoreInfo = (int) translator.getParmas().get(0); // The process ID. 
 			ArrayList<Boolean> decisionMoreInfoResult = new ArrayList<>();
 			Translator decisionMoreInfotranslator = new Translator(
-<<<<<<< HEAD
 					OptionsOfAction.More_Info_Decision, decisionMoreInfoResult);
 			try {
 				setNextStageByInput(processForDecisionMoreInfo, "2");
@@ -1372,17 +1371,13 @@ System.out.println("id "+translator.getParmas().get(0));
 			}
 			
 			case Execution_Completed:
-			int processIDCompleteExec = (int) translator.getParmas().get(0); // The process ID. 
-			setNextStageByOne(processIDCompleteExec);
-			ArrayList<Boolean> completeExecutionAnswer = new ArrayList<>();
-			completeExecutionAnswer.add(true);
-			Translator completeExecutionTranslator = new Translator(
-					OptionsOfAction.Execution_Completed, completeExecutionAnswer);
-			return completeExecutionTranslator;
-			//break;
-=======
-					OptionsOfAction.Approve_Decision, decisionMoreInfoResult);
-			return decisionMoreInfotranslator;
+				int processIDCompleteExec = (int) translator.getParmas().get(0); // The process ID. 
+				setNextStageByOne(processIDCompleteExec);
+				ArrayList<Boolean> completeExecutionAnswer = new ArrayList<>();
+				completeExecutionAnswer.add(true);
+				Translator completeExecutionTranslator = new Translator(
+						OptionsOfAction.Execution_Completed, completeExecutionAnswer);
+				return completeExecutionTranslator;
 			
 		
 		case GET_RELATED_MESSAGES:

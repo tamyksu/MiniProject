@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="con" path="org.eclipse.fx.ide.jdt.core.JAVAFX_CONTAINER"/>
+<<<<<<< HEAD
+<<<<<<< HEAD
+	<classpathentry kind="lib" path="C:/Users/Ido Finzy/Desktop/בראודה/תוכנות/תוכנות לשליחת מייל בג&apos;אווה/javamail1_4_5/javamail-1.4.5/lib/mailapi.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Ido Finzy/Desktop/בראודה/תוכנות/תוכנות לשליחת מייל בג&apos;אווה/javamail1_4_5/javamail-1.4.5/lib/smtp.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Ido Finzy/Desktop/בראודה/תוכנות/תוכנות לשליחת מייל בג&apos;אווה/jar_files/activation-1.1.1.jar"/>
+=======
+=======
+	<classpathentry combineaccessrules="false" kind="src" path="/OCSF"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+>>>>>>> f0ea820c81a46eb2623146813972162951754973
+	<classpathentry kind="lib" path="activation-1.1.1.jar"/>
+	<classpathentry kind="lib" path="mailapi.jar"/>
+	<classpathentry kind="lib" path="mysql-connector-java-8.0.13.jar"/>
+	<classpathentry kind="lib" path="smtp.jar"/>
+>>>>>>> 728887eb79a5b085e454ca2599cd532f5e3ad787
+	<classpathentry kind="output" path="bin"/>
+</classpath>

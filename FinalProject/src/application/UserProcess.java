@@ -1,5 +1,7 @@
 package application;
 
+import java.util.ArrayList;
+
 //
 public class UserProcess {
 	private int    request_id;
@@ -19,8 +21,14 @@ public class UserProcess {
 	private String email;
 	private String initiatorFirstName;
 	private String initiatorLastName;
-
+	private ArrayList<String> relatedDocuments;
 	
+	public ArrayList<String> getRelatedDocuments() {
+		return relatedDocuments;
+	}
+	public void setRelatedDocuments(ArrayList<String> arrayList) {
+		this.relatedDocuments = arrayList;
+	}
 	public String getRole() {
 		return role;
 	}
