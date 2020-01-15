@@ -22,6 +22,7 @@ import com.mysql.cj.exceptions.DataReadException;
 
 import translator.*;
 import application.ActiveReportsController;
+import application.Evaluation_Options;
 import application.MyFile;
 import application.Request;
 import javafx.print.Collation;
@@ -61,6 +62,7 @@ public class DBConnector {
 		PreparedStatement stmt;
 		ArrayList<String> ar = new ArrayList<String>() ;
 		switch (translator.getRequest()) {
+		
 		case NEWREQUEST:
 
 			ArrayList<Boolean> failed = new ArrayList<Boolean>();
@@ -183,10 +185,11 @@ public class DBConnector {
 				e.printStackTrace();
 			}
 			break;
+			
 	/****************************************Get_Active_Statistic********************************************************/		
 		case Get_Active_Statistic:
 			try {
-				System.out.println("hhh");
+				
 				 ArrayList<LocalDate> dates =( ArrayList<LocalDate>)translator.getParmas().get(0);
 				 LocalDate start_date=dates.get(0);
 					LocalDate end_date=dates.get(1);
@@ -598,8 +601,7 @@ System.out.println("id "+translator.getParmas().get(0));
 				ResultSet rs = stmt.executeQuery();
 				if(rs.first() == false) {
 					ar.add("Login failed, username and password did not match");
-					Translator newTranslator = new Translator(translator.getRequest(), ar);
-					return newTranslator;
+					return new Translator(translator.getRequest(), ar);
 				}
 				rs.previous();
 				while(rs.next())
@@ -614,21 +616,30 @@ System.out.println("id "+translator.getParmas().get(0));
 					rs1.next();
 					ArrayList<String> ans = new ArrayList<String>();
 					if(rs1.getString(1).equals("Supervisor") ) {
-				
 						ans.add("Supervisor");
+					}
+					if(rs1.getString(1).equals("Chairman") ) {
+
+						ans.add("Chairman");
+					}
+					if(rs1.getString(1).equals("Change Board Member-1") ) {
+
+						ans.add("Change Board Member-1");
+					}
+					if(rs1.getString(1).equals("Change Board Member-2") ) {
+
+						ans.add("Change Board Member-2");
 					}
 					else if(rs1.getString(1).equals("Manager") ){
 						ans.add("Manager");
 					}
 					ans.add(ar.get(0));
-					Translator newTranslator = new Translator(translator.getRequest(), ans);
-					return newTranslator;
+					return new Translator(translator.getRequest(), ans);
 				}
 				ArrayList<String> ans = new ArrayList<String>();
 				ans.add("correct match");
 				ans.add(ar.get(0));
-				Translator newTranslator = new Translator(translator.getRequest(), ans);
-				return newTranslator;
+				return new Translator(translator.getRequest(), ans);
 
 			}
 			catch (SQLException e) {
@@ -652,9 +663,7 @@ System.out.println("id "+translator.getParmas().get(0));
 					ArrayList<ArrayList<?>> empty = new ArrayList<ArrayList<?>>();
 					empty.add(ar);
 
-					Translator newTranslator = new Translator(translator.getRequest(), empty);
-
-					return newTranslator;
+					return new Translator(translator.getRequest(), empty);
 				}
 				
 				rs.previous();
@@ -690,8 +699,8 @@ System.out.println("id "+translator.getParmas().get(0));
 					processes.add(intArray);
 					processes.add(stringArray);
 				}
-				Translator newTranslator = new Translator(translator.getRequest(), processes);
-				return newTranslator;
+				
+				return new Translator(translator.getRequest(), processes);
 			} catch (SQLException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -723,9 +732,7 @@ System.out.println("id "+translator.getParmas().get(0));
 					ArrayList<ArrayList<?>> empty = new ArrayList<ArrayList<?>>();
 					empty.add(ar);
 
-					Translator newTranslator = new Translator(translator.getRequest(), empty);
-
-					return newTranslator;
+					return new Translator(translator.getRequest(), empty);
 				}
 				rs.previous();
 				System.out.println("Yes appraisers or performance leaders");
@@ -738,8 +745,9 @@ System.out.println("id "+translator.getParmas().get(0));
 				}
 				System.out.println("workersWithoutRole:");
 				System.out.println(workersWithoutRole);
-				Translator newTranslator = new Translator(translator.getRequest(), workersWithoutRole);
-				return newTranslator;
+				
+				return  new Translator(translator.getRequest(), workersWithoutRole);
+				
 			} catch (SQLException e) {
 				// TODO Auto-generated catch block
 				System.out.println("Catch");
@@ -747,23 +755,23 @@ System.out.println("id "+translator.getParmas().get(0));
 			}
 			break;
 		case APPOINT_APPRAISER_OR_PERFORMANCE_LEADER:
-				
-				try {
-					stmt = conn.prepareStatement("INSERT INTO users_requests(user_id, process_id, role)" +
-				"VALUES (?, ?, ?)");
-					stmt.setString(1, translator.getParmas().get(0).toString());
-					stmt.setInt(2, (int)translator.getParmas().get(1));
-					stmt.setString(3, translator.getParmas().get(2).toString());
-					
-					stmt.executeUpdate();
-					
-					System.out.println("APPOINT_APPRAISER_OR_PERFORMANCE_LEADER Insert is working");
-					setNextStageByOne((int)translator.getParmas().get(1));
-				}
-				catch (SQLException e) {
-					// TODO Auto-generated catch block
-					System.out.println("SQL EXCEPTION on APPOINT_APPRAISER_OR_PERFORMANCE_LEADER");
-				}
+
+			try {
+				stmt = conn.prepareStatement("INSERT INTO users_requests(user_id, process_id, role)" +
+						"VALUES (?, ?, ?)");
+				stmt.setString(1, translator.getParmas().get(0).toString());
+				stmt.setInt(2, (int)translator.getParmas().get(1));
+				stmt.setString(3, translator.getParmas().get(2).toString());
+
+				stmt.executeUpdate();
+
+				System.out.println("APPOINT_APPRAISER_OR_PERFORMANCE_LEADER Insert is working");
+				setNextStageByOne((int)translator.getParmas().get(1));
+			}
+			catch (SQLException e) {
+				// TODO Auto-generated catch block
+				System.out.println("SQL EXCEPTION on APPOINT_APPRAISER_OR_PERFORMANCE_LEADER");
+			}
 			break;
 		case SET_EVALUATION_OR_EXECUTION_DUE_TIME:
 			try {
@@ -849,8 +857,7 @@ System.out.println("id "+translator.getParmas().get(0));
 					ar.add("No processes");
 					ArrayList<ArrayList<?>> empty = new ArrayList<ArrayList<?>>();
 					empty.add(ar);
-					Translator newTranslator = new Translator(translator.getRequest(), empty);
-					return newTranslator;
+					return new Translator(translator.getRequest(), empty);
 				}
 				rs.previous();
 				ArrayList<ArrayList<?>> processes = new ArrayList<ArrayList<?>>();
@@ -887,8 +894,8 @@ System.out.println("id "+translator.getParmas().get(0));
 					
 				}
 				
-				Translator newTranslator = new Translator(translator.getRequest(), processes);
-				return newTranslator;
+				return new Translator(translator.getRequest(), processes);
+				
 			} catch (SQLException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -898,10 +905,10 @@ System.out.println("id "+translator.getParmas().get(0));
 		case GET_APPRAISER_AND_PERFORMANCE_LEADER_OF_PROC:
 			try {
 				System.out.println("GET_APPRAISER_AND_PERFORMANCE_LEADER_OF_PROC 1");
-				stmt = conn.prepareStatement("SELECT first_name, last_name, id, role\r\n" + 
+				stmt = conn.prepareStatement("SELECT first_name, last_name, id, users_requests.role\r\n" + 
 						"FROM icmdb.workers\r\n" + 
 						"		JOIN icmdb.users_requests ON id = user_id\r\n" + 
-						"						WHERE (role = 'Appraiser' OR role = 'Performance Leader')\r\n" + 
+						"						WHERE (users_requests.role = 'Appraiser' OR users_requests.role = 'Performance Leader')\r\n" + 
 						"						AND process_id = ?	");
 				stmt.setInt(1, (int)translator.getParmas().get(0));
 				
@@ -912,8 +919,8 @@ System.out.println("id "+translator.getParmas().get(0));
 					ar.add("No employees were found");
 					ArrayList<ArrayList<?>> empty = new ArrayList<ArrayList<?>>();
 					empty.add(ar);
-					Translator newTranslator = new Translator(translator.getRequest(), empty);
-					return newTranslator;
+					
+					return new Translator(translator.getRequest(), empty);
 				}
 				rs.previous();
 				ArrayList<Object> processes = new ArrayList<Object>();
@@ -927,8 +934,7 @@ System.out.println("id "+translator.getParmas().get(0));
 				}
 				System.out.println("OMG");
 				System.out.println(processes);
-				Translator newTranslator = new Translator(translator.getRequest(), processes);
-				return newTranslator;
+				return new Translator(translator.getRequest(), processes);
 			} catch (SQLException e) {
 				// TODO Auto-generated catch block
 				System.out.println("SQL Exception GET_APPRAISER_AND_PERFORMANCE_LEADER_OF_PROC");
@@ -939,9 +945,9 @@ System.out.println("id "+translator.getParmas().get(0));
 		{
 			try {
 				java.sql.Date date = new java.sql.Date(new java.util.Date().getTime()); // Current Date
-			
-			
-				
+
+
+
 				stmt = conn.prepareStatement("UPDATE processes SET status1='Active' WHERE request_id=?");
 				stmt.setString(1, (String) translator.getParmas().get(0));
 
@@ -993,13 +999,13 @@ System.out.println("id "+translator.getParmas().get(0));
 				stmt.executeUpdate();
 				setNextStageByInput((int)translator.getParmas().get(1), "7");
 			}
-		 catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			
-			System.out.println("INSERT_FAILURE_REPORT: SQL EXCEPTION");
+			catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 
-		}
+				System.out.println("INSERT_FAILURE_REPORT: SQL EXCEPTION");
+
+			}
 			
 			break;
 			
@@ -1130,6 +1136,136 @@ System.out.println("id "+translator.getParmas().get(0));
 		case FILL_FAILURE_REPORT_CLICK:
 			setNextStageByInput((int)translator.getParmas().get(0), "11.5");
 			break;
+
+	case Fill_Evalution_Number_Of_Days: // Appraiser evaluate the required number of days.
+			ArrayList<Boolean> evaluateNumberOfDaysAnswer = new ArrayList<>();
+			Translator fillNumberOfDaysAnswer = new Translator(OptionsOfAction.Fill_Evalution_Number_Of_Days, evaluateNumberOfDaysAnswer);
+			int processID = (int) translator.getParmas().get(0); // The process ID.
+			String processStage = translator.getParmas().get(1).toString(); // The process ID.
+			if(processStage.equals("2")) {
+				try {
+					stmt = conn.prepareStatement("insert into icmdb.evaluation_reports "
+							+ "(process_id, appraiser_id, number_of_days, approval_result) "
+							+ "values(?,?,?,?)");
+
+					stmt.setInt(1, processID); // The process ID.
+					stmt.setString(2, translator.getParmas().get(2).toString()); // The Appraiser's ID
+					stmt.setInt(3,(int) translator.getParmas().get(3)); // The evaluated number of days
+					stmt.setString(4, Evaluation_Options.Waiting.toString()); // Evaluation status (currently waiting)
+
+					stmt.executeUpdate();
+					setNextStageByOne(processID); // Process is set to next stage;
+					evaluateNumberOfDaysAnswer.add(true);
+					return fillNumberOfDaysAnswer;
+				}
+				catch (SQLException e) {
+					e.printStackTrace();
+					evaluateNumberOfDaysAnswer.add(false);
+
+					System.out.println("Insert Evaluation Days: SQL EXCEPTION");
+					return fillNumberOfDaysAnswer;
+				}
+			}
+			if(processStage.equals("2.5")) {
+				try {
+					stmt = conn.prepareStatement("Update icmdb.evaluation_reports SET"
+							+ " appraiser_id=?, number_of_days=?, approval_result=?"
+							+ " WHERE process_id=?");
+
+
+					stmt.setString(1, translator.getParmas().get(2).toString()); // The Appraiser's ID
+					stmt.setInt(2,(int) translator.getParmas().get(3)); // The evaluated number of days
+					stmt.setString(3, Evaluation_Options.Waiting.toString()); // Evaluation status (currently waiting)
+					stmt.setInt(4, processID); // The process ID.
+
+					stmt.executeUpdate();
+					setNextStageByOne(processID); // Process is set to next stage;
+					evaluateNumberOfDaysAnswer.add(true);
+					return fillNumberOfDaysAnswer;
+				}
+				catch (SQLException e) {
+					//e.printStackTrace();
+					evaluateNumberOfDaysAnswer.add(false);
+
+					System.out.println("Insert Evaluation Days: SQL EXCEPTION");
+					return fillNumberOfDaysAnswer;
+				}
+			}
+			break;
+		case Fill_Evalution_Form: /*******   Fill Evaluation Form (Appraiser) ******/
+			int processID1 = (int) translator.getParmas().get(0); // The process ID.
+			String processStage1 = translator.getParmas().get(1).toString(); // The process ID.
+			ArrayList<Boolean> evaluationFormInserted = new ArrayList<>();
+			Translator evaluationFormTranslator = new Translator(OptionsOfAction.Fill_Evalution_Number_Of_Days, evaluationFormInserted);
+			try {
+				stmt = conn.prepareStatement("UPDATE icmdb.evaluation_reports SET"
+						+ "requested_change=?, result=?, constraits_and_risks=?"
+						+ " WHERE process_id=?"); // The Requested change
+
+				stmt.setString(1,translator.getParmas().get(1).toString()); // The Requested change
+				stmt.setString(2, translator.getParmas().get(2).toString()); // Result
+				stmt.setString(3, translator.getParmas().get(3).toString()); // Constraints and risks
+				stmt.setInt(4, processID1); // The process ID.
+				stmt.executeUpdate();
+
+				setNextStageByOne(processID1); // Process is set to next stage;
+				evaluationFormInserted.add(true);
+				return evaluationFormTranslator;
+			}
+			catch (SQLException e) {
+				//e.printStackTrace();
+				evaluationFormInserted.add(false);
+
+				System.out.println("Insert Evaluation Days: SQL EXCEPTION");
+				return evaluationFormTranslator;
+			}
+			
+		case Get_Evaluation_Report_For_Process_ID:
+			int procID = (int) translator.getParmas().get(0); // The process ID.
+			ArrayList<Object> evaluationForm = new ArrayList<>();
+			Translator getEvaluFormTranlator;
+			try {
+				stmt = conn.prepareStatement("SELECT appraiser_id, requested_change, "
+						+ "result, "
+						+ "constraits_and_risks FROM icmdb.evaluation_reports"
+						+ " WHERE process_id=?;");
+				stmt.setInt(1,procID); // The Requested change
+				ResultSet rs = stmt.executeQuery();	
+				while(rs.next()) {	
+					evaluationForm.add(procID); // Process ID
+					evaluationForm.add(rs.getString(1)); // Appraiser ID
+					evaluationForm.add(rs.getString(2)); // requested change
+					evaluationForm.add(rs.getString(3)); // result
+					evaluationForm.add(rs.getString(4)); // constraints and risks
+					break;
+				}
+				getEvaluFormTranlator = new Translator(OptionsOfAction.Get_Evaluation_Report_For_Process_ID, evaluationForm);
+				return getEvaluFormTranlator;
+			} catch (SQLException e) {
+				e.printStackTrace();
+				evaluationForm.add((int)-1); // Process ID
+				getEvaluFormTranlator = new Translator(OptionsOfAction.Get_Evaluation_Report_For_Process_ID, evaluationForm);
+				return getEvaluFormTranlator;
+			}
+			//break;
+		case Approve_Decision:
+			int processForDecisionAproval = (int) translator.getParmas().get(0); // The process ID. 
+			setNextStageByOne(processForDecisionAproval);
+			ArrayList<Boolean> decisionApprovalResult = new ArrayList<>();
+			decisionApprovalResult.add(true);
+			Translator decisionApprovaltranslator = new Translator(
+					OptionsOfAction.Approve_Decision, decisionApprovalResult);
+			return decisionApprovaltranslator;
+			//break;
+		case More_Info_Decision:
+			int processForDecisionMoreInfo = (int) translator.getParmas().get(0); // The process ID. 
+			setNextStageByInput(processForDecisionMoreInfo, "2");
+			ArrayList<Boolean> decisionMoreInfoResult = new ArrayList<>();
+			decisionMoreInfoResult.add(true);
+			Translator decisionMoreInfotranslator = new Translator(
+					OptionsOfAction.Approve_Decision, decisionMoreInfoResult);
+			return decisionMoreInfotranslator;
+
 		default:
 			System.out.println("default");
 			break;
@@ -1203,6 +1339,7 @@ System.out.println("id "+translator.getParmas().get(0));
 				break;
 			case "3":
 				nextProcStage = "4";
+				break;
 			case "4":
 				nextProcStage = "5";
 				break;
@@ -1271,9 +1408,65 @@ System.out.println("id "+translator.getParmas().get(0));
 		}
 		
 		catch (SQLException e) {
-		// TODO Auto-generated catch block
-		System.out.println("SQL Exception setNextStageByInput()");
+			// TODO Auto-generated catch block
+			System.out.println("SQL Exception setNextStageByInput()");
 		}	
 		
+	}
+	
+	public static ArrayList<ArrayList<?>> getActiveProcesses()
+	{
+		try {
+			ArrayList<String> ar = new ArrayList<String>() ;
+
+			PreparedStatement stmt = conn.prepareStatement("SELECT * FROM icmdb.processes WHERE status1='Active';");
+			ResultSet rs = stmt.executeQuery();		
+			if(rs.first() == false) {
+				ar.add("No processes");
+				ArrayList<ArrayList<?>> empty = new ArrayList<ArrayList<?>>();
+				empty.add(ar);
+				return null;
+			}
+			rs.previous();
+			ArrayList<ArrayList<?>> processes = new ArrayList<ArrayList<?>>();
+			while(rs.next()) {	
+				ArrayList<Integer> intArray= new ArrayList<Integer>();
+				ArrayList<String> stringArray= new ArrayList<String>();
+				intArray.add(rs.getInt(1));
+				stringArray.add(rs.getString(2));
+				intArray.add(rs.getInt(3));
+				stringArray.add(rs.getString(4));
+				stringArray.add(rs.getString(5));
+				stringArray.add(rs.getString(6));
+				stringArray.add(rs.getString(7));
+				stringArray.add(rs.getString(8));
+				stringArray.add(rs.getString(9));
+				stringArray.add(rs.getString(10));
+				stringArray.add(rs.getString(11));
+				stringArray.add(rs.getString(12));
+				ResultSet initiatorInfo = getInitiatorInfo(rs.getString(2));
+				if (initiatorInfo != null) {
+					while(initiatorInfo.next()) {
+						stringArray.add(initiatorInfo.getString(3));
+						stringArray.add(initiatorInfo.getString(4));
+						stringArray.add(initiatorInfo.getString(5));
+						stringArray.add(initiatorInfo.getString(6));
+					}
+				}
+				else {
+					return null;
+				}
+				processes.add(intArray);
+				processes.add(stringArray);;
+
+			}
+			
+			return processes;
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return null;
+		}	
+	
 	}
 }
