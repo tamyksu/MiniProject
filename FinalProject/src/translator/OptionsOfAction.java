@@ -22,7 +22,8 @@ public enum OptionsOfAction {
 	FREEZE_PROCESS,
 	DEFROST_PROCESS,
 	INSERT_FAILURE_REPORT,
-	SHUTDOWN_PROCESS,
+	SHUTDOWN_PROCESS, 
+	DOWNLOADFILE,
 	EXAMINATION_COMPLETED,
 	FILL_FAILURE_REPORT_CLICK,
 	Fill_Evalution_Number_Of_Days,
@@ -33,5 +34,12 @@ public enum OptionsOfAction {
 	Approve_Decision,
 	More_Info_Decision,
 	Execution_Suggest_Number_Of_Days,
-	Execution_Completed;
-}
+	Execution_Completed	
+	}
+
+
+
+/* GETALLINFORMATIONSYSTEMS - is an option that is currently NOT in use.
+ * If it will be in use, it will be for the NewRequestController.
+ * Maybe if we would like to get all the information Systems from the database.
+ */

@@ -3,9 +3,9 @@ import ocsf.client.*;
 import translator.OptionsOfAction;
 import translator.Translator;
 import java.io.*;
-import java.sql.ResultSet;
+import java.sql.PreparedStatement;
 import java.util.ArrayList;
-
+import java.sql.ResultSet;
 import application.ActiveReportsController;
 import application.ControllerProcessMain;
 import application.DecisionController;
@@ -13,6 +13,7 @@ import application.EvaluationController;
 import application.EvaluationReport;
 import application.ExecutionController;
 import application.LoginController;
+import application.MyFile;
 import application.NewRequestController;
 import application.Processes;
 import application.ScreenController;
@@ -128,8 +129,8 @@ public class Client extends AbstractClient {
 		}
 	
 	}
-	
-	public void handleMessageFromServerExecutionCompleted(Object rs) {
+
+public void handleMessageFromServerExecutionCompleted(Object rs) {
 		@SuppressWarnings("unchecked")
 		ArrayList<Boolean> result = (ArrayList<Boolean>) rs;
 		boolean val = result.get(0).booleanValue();
@@ -198,6 +199,37 @@ public class Client extends AbstractClient {
 		ActiveReportsController.instance.calaulate(arr);
 		
 	}
+	
+	private void handleMessageFromServerDownloadFile(ArrayList<?> parmas) {
+		System.out.println("File received");
+		MyFile myfile = (MyFile) parmas.get(0);
+		
+		String newFileNamePath = ".\\File_Download\\"+myfile.getFileName().split("_")[4];
+
+		try {
+			FileOutputStream fos;
+			fos = new FileOutputStream(newFileNamePath);
+			BufferedOutputStream bos = new BufferedOutputStream(fos);
+			/* The following code can save another version of the file in 
+			 * the project's directory:*/
+			try {
+				bos.write(myfile.mybytearray, 0, myfile.getSize());
+				bos.flush();
+				fos.flush();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		
+	}
+	
 	private void handleMessageFromServerREJECTE_PROCESS(Object message)
 	{
 		ArrayList<String> arr= (ArrayList<String>) message;
@@ -219,7 +251,7 @@ public class Client extends AbstractClient {
 	else
 		new Alert(AlertType.ERROR,"There was an issue to shutdown this process").show();
 }
-	
+
 		private void handleMessageFromServerDefrostProcess(Object message) {
 		ArrayList<String> arr= (ArrayList<String>) message;
 		
@@ -243,8 +275,13 @@ public class Client extends AbstractClient {
 	public void handlerMessageFromServerSelectChairMan(Object message)
 	{
 		ArrayList<String> arr= (ArrayList<String>)message;
-		StaffMainController.instance.setDataChairMan(arr);	
+		
+		StaffMainController.instance.setDataChairMan(arr);
+		
+		
 	}
+	
+	
 	
 	public void handlerMessageFromServerCURRENT_IN_ROLE(Object message)
 	{
@@ -349,7 +386,6 @@ public class Client extends AbstractClient {
 		System.out.println("handlerMessageFromServerUpdatePermanent"+arr.get(0));
 		StaffMainController.instance.printMessage(arr);
 	}
-	
 /*****************************************handlerMessageFromServerNewRequest*************************************************************/	
 	
 	public void handlerMessageFromServerNewRequest(Object rs) {
@@ -376,6 +412,7 @@ public class Client extends AbstractClient {
 			getProcessesFromServer();
 			break;
 		case "Supervisor":
+
 			Client.getInstance().setName(result.get(1));
 			this.setRule(result.get(0));
 			ScreenController.getScreenController().activate("processesMain");
@@ -443,7 +480,7 @@ public class Client extends AbstractClient {
 		result = (ArrayList<ArrayList<?>>) rs ;
 		if(!(result.get(0).get(0).toString().equals("No processes")))
 		{
-			for (int i = 0; i < result.size(); i=i+2) {
+			for (int i = 0; i < result.size(); i=i+3) {
 				UserProcess process = new UserProcess();
 				process.setRequest_id((int)result.get(i).get(0));
 				process.setRole((String)result.get(i+1).get(0));
@@ -462,8 +499,10 @@ public class Client extends AbstractClient {
 				process.setInitiatorLastName((String)result.get(i+1).get(12));
 				process.setEmail((String)result.get(i+1).get(13));
 				process.setDepartment((String)result.get(i+1).get(14));
+				if(result.get(i+2) != null) process.setRelatedDocuments((ArrayList<String>) result.get(i+2));
 				processes.getMyProcess().put(new Integer((int)result.get(i).get(0)), process);
-				processes.getMyProcessesInArrayList().add(process);	
+				processes.getMyProcessesInArrayList().add(process);
+				
 			}
 		this.processes=processes;
 		
@@ -481,7 +520,7 @@ public class Client extends AbstractClient {
 		result = (ArrayList<ArrayList<?>>) rs ;
 		if(!(result.get(0).get(0).toString().equals("No processes")))
 		{
-			for (int i = 0; i < result.size(); i=i+2) {                                                                         
+			for (int i = 0; i < result.size(); i=i+3) {                                                                         
 				UserProcess process = new UserProcess();
 				//Get values from intarray	
 				process.setRequest_id((int)result.get(i).get(0));
@@ -505,6 +544,8 @@ public class Client extends AbstractClient {
 				process.setInitiatorLastName((String)result.get(i+1).get(11));
 				process.setEmail((String)result.get(i+1).get(12));
 				process.setDepartment((String)result.get(i+1).get(13));
+				if(result.get(i+2) != null)
+					process.setRelatedDocuments((ArrayList<String>) result.get(i+2));
 				processes.getMyProcess().put(new Integer((int)result.get(i).get(0)), process);
 				processes.getMyProcessesInArrayList().add(process);	
 			}
