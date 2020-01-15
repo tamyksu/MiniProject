@@ -83,11 +83,12 @@ public class Client extends AbstractClient {
 			break;
 		case checkNAMEParmenent:
 			handlerMessageFromServercheckNAMEParmenent(result.getParmas());
+			break;
 		case Get_Active_Statistic:
-			handlerMessageFromServercheckNAMEParmenent(result.getParmas());
-		break;
-		case DEFROST_PROCESS:
 			handleMessageFromServerGet_Active_Statistic(result.getParmas());
+			break;
+		case DEFROST_PROCESS:
+			handleMessageFromServerDefrostProcess(result.getParmas());
 			break;
 		case SHUTDOWN_PROCESS:
 			handleMessageFromServerShutdownProcess(result.getParmas());
@@ -102,8 +103,8 @@ public class Client extends AbstractClient {
 	
 	public void handleMessageFromServerGet_Active_Statistic(Object message)
 	{
-		
-		ArrayList<	ArrayList<Integer>> arr= (ArrayList<ArrayList<Integer>>) message;
+		System.out.println("go to calculate");
+		ArrayList<ArrayList<Integer>> arr= (ArrayList<ArrayList<Integer>>) message;
 		ActiveReportsController.instance.calaulate(arr);
 		
 	}
