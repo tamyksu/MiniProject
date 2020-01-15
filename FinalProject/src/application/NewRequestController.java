@@ -202,10 +202,9 @@ public class NewRequestController implements Initializable {
      */
     public boolean formCheck() {
     	// if any of the TextAreas/Textfields is empty:
-    	if(/*informationSystemNumber.getText().trim().isEmpty() || */ProblemDescription.getText().trim().isEmpty()
+    	if(ProblemDescription.getText().trim().isEmpty()
     			|| requestDescription.getText().trim().isEmpty() ||
-    			explanation.getText().trim().isEmpty() /*||
-    			notes.getText().trim().isEmpty()*/) {
+    			explanation.getText().trim().isEmpty()) {
 
     		new Alert(AlertType.ERROR, "You must fill all the details!").show();
     		
@@ -264,11 +263,14 @@ public class NewRequestController implements Initializable {
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		instance=this;
-		this.answerFromServer = false;
 		initializeComboBox();
 		
 	}
 	
+	public void loadPage() {
+		this.answerFromServer = false;
+		deleteAll();
+	}
 	
 	public void initializeComboBox() {
 		

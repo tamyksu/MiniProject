@@ -23,16 +23,19 @@ public enum OptionsOfAction {
 	DEFROST_PROCESS,
 	INSERT_FAILURE_REPORT,
 	SHUTDOWN_PROCESS, 
-	DOWNLOADFILE;
-	
-	
-	
-	
-	
-	
-
-	
-}
+	DOWNLOADFILE,
+	EXAMINATION_COMPLETED,
+	FILL_FAILURE_REPORT_CLICK,
+	Fill_Evalution_Number_Of_Days,
+	Fill_Evalution_Form,
+	REJECTE_PROCESS,
+	Get_Active_Statistic,
+	Get_Evaluation_Report_For_Process_ID,
+	Approve_Decision,
+	More_Info_Decision,
+	Execution_Suggest_Number_Of_Days,
+	Execution_Completed	
+	}
 
 
 

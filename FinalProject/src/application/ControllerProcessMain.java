@@ -1,8 +1,16 @@
 package application;
 
+import java.io.IOException;
 import java.net.URL;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.ResourceBundle;
+import java.util.concurrent.TimeUnit;
+import com.sun.scenario.effect.Effect.AccelType;
+
 import client.Client;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -91,9 +99,6 @@ public class ControllerProcessMain implements Initializable {
 	private Button updateTable;
 
 	@FXML
-	private Button shutdown_btn;
-
-	@FXML
 	private Button extension_btn;
 
 	@FXML
@@ -113,12 +118,16 @@ public class ControllerProcessMain implements Initializable {
 	
 	@FXML
 	private MenuButton DocumentsMenu;
-
+	UserProcess process;
+	
+	private static EvaluationReport evaluationReports; // current evaluation report
+	
 	@FXML
 	private Button DownloadFiles;
 	
 	@FXML
 	void newRequest(ActionEvent event) {
+		NewRequestController.getInstance().loadPage();
 		ScreenController.getScreenController().activate("newRequest");
 	}
 
@@ -184,18 +193,18 @@ public class ControllerProcessMain implements Initializable {
 	//Updates the relevant fields by the process that is specified in the process table
 	public void updateFieldsOfRequestMarked(Person person) {
         Documents.setText("Document selected");
-		UserProcess process = Client.getInstance().getProcesses().getMyProcess().get(person.getRequestId());
+		process = Client.getInstance().getProcesses().getMyProcess().get(person.getRequestId());
 		InitiatorName.setText(process.getIntiatorId());
 		InitiatorEmail.setText(process.getEmail());
 		InformationSystem.setText("" + process.getSystem_num());
-		CurrentState.setText(process.getCurrent_stage_due_date());
+		CurrentState.setText(MyHashMaps.getProcessStageText(Double.parseDouble(process.getProcess_stage())));
 		RequestedChange.setText(process.getRequest_description());
 		Explanation.setText(process.getExplanaton());
 		Notes.setText(process.getNotes());
 		RequestDate.setText(process.getCreation_date());
 		RequestID.setText("" + process.getRequest_id());
 		currentStatus.setText(process.getStatus());
-		RequestedChange.setText(process.getRequest_description());
+		CurrentStageDueTime.setText(process.getCurrent_stage_due_date());
 		arrangesTheDocumentsAsClickableStrings(process.getRelatedDocuments());
 		if(process.getRole().toLowerCase().equals("supervisor") || process.getRole().toLowerCase().equals("manager"))
 			ButtonAdjustmentSuperUser(process.getRole(), process.getStatus());
@@ -271,9 +280,11 @@ public class ControllerProcessMain implements Initializable {
 		case "chairman":
 			fitChairman();
 			break;
-			
+		case "performance leader":
+			fitPerformanceLeaderDisabled();
+			break;	
 		default:
-			//disable all
+			//disable all but newRequest button
 			initializeButtons();
 			break;
 		}
@@ -286,14 +297,18 @@ public class ControllerProcessMain implements Initializable {
 		switch (userRole.toLowerCase())
 		{
 			case "manager":
-				if(processStatus.toLowerCase().equals("suspended") || processStatus.toLowerCase().equals("shutdown"))
+				if(processStatus.toLowerCase().equals("suspended"))
 					fitManagerDisabled();
+				else if(processStatus.toLowerCase().equals("shutdown"))
+					fitDirectorShutdown();
 				else
 					fitManager();
 				break;
 			case "supervisor":
-				if(processStatus.toLowerCase().equals("suspended") || processStatus.toLowerCase().equals("shutdown"))
+				if(processStatus.toLowerCase().equals("suspended"))
 					fitSupervisorDisabled();
+				else if(processStatus.toLowerCase().equals("shutdown"))
+					fitSupervisorShutdown();
 				else
 					fitSupervisor();
 				break;	
@@ -302,18 +317,16 @@ public class ControllerProcessMain implements Initializable {
 				break;
 		}
 	
-		
 	}
 	
 	//change button disability in accordance to appraiser
 	private void fitChairman() {
 		newRequestBtn.setDisable(false);
 		extension_btn.setDisable(true);
-		evaluation_btn.setDisable(false);
+		evaluation_btn.setDisable(true);
 		decision_btn.setDisable(false);
 		execution_btn.setDisable(true);
-		examination_btn.setDisable(false);
-		shutdown_btn.setDisable(true);
+		examination_btn.setDisable(true);
 		supervisor_mode_btn.setDisable(true);
 		director_btn.setDisable(true);
 		defrost_btn.setDisable(true);
@@ -324,10 +337,9 @@ public class ControllerProcessMain implements Initializable {
 		newRequestBtn.setDisable(false);
 		extension_btn.setDisable(true);
 		evaluation_btn.setDisable(false);
-		decision_btn.setDisable(false);
+		decision_btn.setDisable(true);
 		execution_btn.setDisable(true);
-		examination_btn.setDisable(false);
-		shutdown_btn.setDisable(true);
+		examination_btn.setDisable(true);
 		supervisor_mode_btn.setDisable(true);
 		director_btn.setDisable(true);
 		defrost_btn.setDisable(true);
@@ -335,26 +347,24 @@ public class ControllerProcessMain implements Initializable {
 
 	//change button disability in accordance to supervisor
 	private void fitSupervisor() {
-		newRequestBtn.setDisable(false);
+		newRequestBtn.setDisable(true);
 		extension_btn.setDisable(true);
-		evaluation_btn.setDisable(false);
-		decision_btn.setDisable(false);
+		evaluation_btn.setDisable(true);
+		decision_btn.setDisable(true);
 		execution_btn.setDisable(true);
-		examination_btn.setDisable(false);
-		shutdown_btn.setDisable(true);
+		examination_btn.setDisable(true);
 		supervisor_mode_btn.setDisable(false);
 		director_btn.setDisable(true);
 		defrost_btn.setDisable(true);
 	}
 
 	private void fitManager() {
-		newRequestBtn.setDisable(false);
+		newRequestBtn.setDisable(true);
 		extension_btn.setDisable(true);
 		evaluation_btn.setDisable(true);
 		decision_btn.setDisable(true);
 		execution_btn.setDisable(true);
 		examination_btn.setDisable(true);
-		shutdown_btn.setDisable(true);
 		supervisor_mode_btn.setDisable(true);
 		director_btn.setDisable(false);
 		defrost_btn.setDisable(true);
@@ -369,7 +379,6 @@ public class ControllerProcessMain implements Initializable {
 		decision_btn.setDisable(true);
 		execution_btn.setDisable(true);
 		examination_btn.setDisable(true);
-		shutdown_btn.setDisable(true);
 		supervisor_mode_btn.setDisable(true);
 		director_btn.setDisable(true);
 		defrost_btn.setDisable(true);
@@ -377,34 +386,18 @@ public class ControllerProcessMain implements Initializable {
 	
 	private void fitManagerDisabled()
 	{
-		newRequestBtn.setDisable(false);
+		newRequestBtn.setDisable(true);
 		extension_btn.setDisable(true);
 		evaluation_btn.setDisable(true);
 		decision_btn.setDisable(true);
 		execution_btn.setDisable(true);
 		examination_btn.setDisable(true);
-		shutdown_btn.setDisable(false);
-		supervisor_mode_btn.setDisable(false);
+		supervisor_mode_btn.setDisable(true);
 		director_btn.setDisable(false);
 		defrost_btn.setDisable(false);
 	}
 	
-	private void fitSupervisorDisabled() 
-	{
-		newRequestBtn.setDisable(false);
-		extension_btn.setDisable(true);
-		evaluation_btn.setDisable(true);
-		decision_btn.setDisable(true);
-		execution_btn.setDisable(true);
-		examination_btn.setDisable(true);
-		shutdown_btn.setDisable(false);
-		supervisor_mode_btn.setDisable(false);
-		director_btn.setDisable(true);
-		defrost_btn.setDisable(false);
-	}
-	
-	//disable all buttons on startup (before choosing a process from the table)
-	private void initializeButtons() 
+	private void fitChangeBoardDisabled()
 	{
 		newRequestBtn.setDisable(true);
 		extension_btn.setDisable(true);
@@ -412,7 +405,72 @@ public class ControllerProcessMain implements Initializable {
 		decision_btn.setDisable(true);
 		execution_btn.setDisable(true);
 		examination_btn.setDisable(true);
-		shutdown_btn.setDisable(true);
+		supervisor_mode_btn.setDisable(true);
+		director_btn.setDisable(true);
+		defrost_btn.setDisable(true);
+	}
+	
+	private void fitPerformanceLeaderDisabled()
+	{
+		newRequestBtn.setDisable(true);
+		extension_btn.setDisable(true);
+		evaluation_btn.setDisable(true);
+		decision_btn.setDisable(true);
+		execution_btn.setDisable(false);
+		examination_btn.setDisable(true);
+		supervisor_mode_btn.setDisable(true);
+		director_btn.setDisable(true);
+		defrost_btn.setDisable(true);
+	}
+	
+	private void fitSupervisorDisabled() 
+	{
+		newRequestBtn.setDisable(true);
+		extension_btn.setDisable(true);
+		evaluation_btn.setDisable(true);
+		decision_btn.setDisable(true);
+		execution_btn.setDisable(true);
+		examination_btn.setDisable(true);
+		supervisor_mode_btn.setDisable(false);
+		director_btn.setDisable(true);
+		defrost_btn.setDisable(true);
+	}
+	
+	//disable all buttons on startup (before choosing a process from the table)
+	private void initializeButtons() 
+	{
+		newRequestBtn.setDisable(false);
+		extension_btn.setDisable(true);
+		evaluation_btn.setDisable(true);
+		decision_btn.setDisable(true);
+		execution_btn.setDisable(true);
+		examination_btn.setDisable(true);
+		supervisor_mode_btn.setDisable(true);
+		director_btn.setDisable(true);
+		defrost_btn.setDisable(true);
+	}
+	
+	private void fitDirectorShutdown() 
+	{
+		newRequestBtn.setDisable(true);
+		extension_btn.setDisable(true);
+		evaluation_btn.setDisable(true);
+		decision_btn.setDisable(true);
+		execution_btn.setDisable(true);
+		examination_btn.setDisable(true);
+		supervisor_mode_btn.setDisable(true);
+		director_btn.setDisable(false);
+		defrost_btn.setDisable(true);
+	}
+	
+	private void fitSupervisorShutdown() 
+	{
+		newRequestBtn.setDisable(true);
+		extension_btn.setDisable(true);
+		evaluation_btn.setDisable(true);
+		decision_btn.setDisable(true);
+		execution_btn.setDisable(true);
+		examination_btn.setDisable(true);
 		supervisor_mode_btn.setDisable(true);
 		director_btn.setDisable(true);
 		defrost_btn.setDisable(true);
@@ -429,7 +487,24 @@ public class ControllerProcessMain implements Initializable {
 
 	@FXML
 	void extension_click(ActionEvent event) {
-
+		//Check if days to due time <= 3
+		Date dueDate;
+		try {
+			dueDate = new SimpleDateFormat("yyyy-MM-dd").parse(CurrentStageDueTime.getText());
+			Date currentDate = new SimpleDateFormat("yyyy-MM-dd").parse(LocalDate.now().toString());
+			
+			long diff = dueDate.getTime() - currentDate.getTime();
+		    long days = TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS);
+		    
+		    if(days>3)
+		    {
+		    	new Alert(AlertType.INFORMATION,"You can ask for extention only when 3 or less days left until due date").show();
+		    }
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	    
 	}
 
 	@FXML
@@ -438,7 +513,24 @@ public class ControllerProcessMain implements Initializable {
 		
 		if(proc == -1)
 			return;
+		
+		if(process.getProcess_stage().isEmpty()) {
+			new Alert(AlertType.ERROR, "Error!").show();
+			return;
+		}
+		if(Double.parseDouble(process.getProcess_stage())<2) {
+			new Alert(AlertType.ERROR, "Unabble to evaluate, not yet!").show();
+			return;
+		}
+		if(Double.parseDouble(process.getProcess_stage())>4) {
+			new Alert(AlertType.ERROR, "Already evaluated!").show();
+			return;
+		}
+		
+		EvaluationController.getInstance().pageLoad(Double.parseDouble(process.getProcess_stage()));
+		System.out.println(process.getProcess_stage() +" process stage");
 		ScreenController.getScreenController().activate("evaluation");
+		EvaluationController.instance.updateProcessInformation();
 	}
 
 	@FXML
@@ -458,7 +550,30 @@ public class ControllerProcessMain implements Initializable {
 		
 		if(proc == -1)
 			return;
+			
+		if(process.getProcess_stage().isEmpty()) {
+			new Alert(AlertType.ERROR, "Error!").show();
+			return;
+		}
+		
+		if(Double.parseDouble(process.getProcess_stage())<5) {
+			new Alert(AlertType.ERROR, "Unabble to make a decision, not yet!").show();
+			return;
+		}
+		
+		if(Double.parseDouble(process.getProcess_stage())>5) {
+			new Alert(AlertType.ERROR, "Already made a decision!").show();
+			return;
+		}
+		
+		ArrayList<Integer> arr = new ArrayList<>();
+		arr.add(process.getRequest_id()); 
+		Translator translator = new Translator(OptionsOfAction.Get_Evaluation_Report_For_Process_ID, arr);
+		Client.getInstance().handleMessageFromClientGUI(translator);
+		try { Thread.sleep(500); } catch (InterruptedException e) {System.out.println("Can't Sleep");}
+		DecisionController.getInstance().loadPage(evaluationReports);
 		ScreenController.getScreenController().activate("decisionMaking");
+		DecisionController.instance.updateProcessInformation();
 	}
 
 	@FXML
@@ -467,7 +582,22 @@ public class ControllerProcessMain implements Initializable {
 		
 		if(proc == -1)
 			return;
+		
+		if(process.getProcess_stage().isEmpty()) {
+			new Alert(AlertType.ERROR, "Error!").show();
+			return;
+		}
+		if(Double.parseDouble(process.getProcess_stage())<7) {
+			new Alert(AlertType.ERROR, "Too early for the execution stage.").show();
+			return;
+		}
+		if(Double.parseDouble(process.getProcess_stage())>9) {
+			new Alert(AlertType.ERROR, "This process has passed the execution stage.").show();
+			return;
+		}
+		ExecutionController.getInstance().loadPage(Double.parseDouble(process.getProcess_stage()));
 		ScreenController.getScreenController().activate("execution");
+		ExecutionController.instance.updateProcessInformation();
 	}
 
 	@FXML
@@ -477,7 +607,9 @@ public class ControllerProcessMain implements Initializable {
 		if(proc == -1)
 			return;
 		ScreenController.getScreenController().activate("examination");
-		ExaminationController.instance.setProcessID(proc);
+		ExaminationController.instance.setProcessID(proc);		
+		ExaminationController.instance.updateProcessInformation();
+
 	}
 
 	@FXML
@@ -485,6 +617,7 @@ public class ControllerProcessMain implements Initializable {
 		ScreenController.getScreenController().activate("supervisor_processesMain");
 		Supervisor_ProcessMain_Controller.instance.getAppraiserOrPerformanceLeaderCBData();
 		Supervisor_ProcessMain_Controller.instance.getAppraiserAndPerformanceLeaderLabels();
+		Supervisor_ProcessMain_Controller.instance.updateProcessInformation();
 	}
 	
 	@FXML
@@ -542,5 +675,23 @@ public class ControllerProcessMain implements Initializable {
 	{
 		return this.RequestID.getText();
 	}
+	
+    @FXML
+    void logout_click(ActionEvent event) {
+    	try {
+			Client.instance.closeConnection();
+	    	System.exit(0);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+    }
 
+	public static void setEvaluationReports(EvaluationReport evaluationReports) {
+		ControllerProcessMain.evaluationReports = evaluationReports;
+	}
+    
+    
+
+    
 }

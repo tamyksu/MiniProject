@@ -2,16 +2,17 @@ package application;
 import java.util.HashMap;
 
 public class MyHashMaps {
-	static final MyHashMaps instance = new MyHashMaps();
+	public static MyHashMaps instance = new MyHashMaps();
 	public static HashMap<Double, String> processStages;
+	public static HashMap<Double, String> informationSystems;
 	
 	
 	private MyHashMaps() {
-		
-		processStages.put((double) 1, "Appointing Appraiser");
+		processStages = new HashMap<>();
+		processStages.put((double) 1 , "Appointing Appraiser");
 		processStages.put((double) 2, "Appraiser is defining evaluation stage due time");
-		processStages.put((double) 2.5, "Supervisor is declining the evaluation due time");
-		processStages.put((double) 3, "Supervisor is approving the evaluation stage due time");
+		processStages.put((double) 2.5, "Supervisor denied the evaluation due time");
+		processStages.put((double) 3, "Supervisor examines the evaluation stage due time");
 		processStages.put((double) 4, "Appraiser is evaluating");
 		processStages.put((double) 5, "Changes Control Board is making decision");
 		processStages.put((double) 6, "Appointing performance leader");
@@ -24,8 +25,18 @@ public class MyHashMaps {
 		processStages.put((double) 12, "Supervisor is closing the process");
 	}
 	
-	public MyHashMaps getInstance() {
+	public static MyHashMaps getInstance() {
 		return instance;
 	}
+	
+	public static String getProcessStageText(double num) {
+		return processStages.get((Double) num);		
+	}
+	
+	public static String getInformationSystemText(int num) {
+		return processStages.get(num);		
+	}
+	
+	
 
 }

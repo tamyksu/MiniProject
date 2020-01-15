@@ -3,8 +3,8 @@ package application;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
-
 import com.sun.org.apache.xerces.internal.util.SynchronizedSymbolTable;
+import com.sun.xml.internal.bind.v2.runtime.reflect.opt.Const;
 
 import client.Client;
 import javafx.application.Platform;
@@ -81,7 +81,46 @@ public class Supervisor_ProcessMain_Controller implements Initializable{
     @FXML
     private Label current_performance_leader_text;
     
+    @FXML
+    private Label initiator_name_text;
+
+    @FXML
+    private Label initiator_email_text;
+
+    @FXML
+    private Label initiator_role_text;
+
+    @FXML
+    private Label information_system_text;
+
+    @FXML
+    private Label current_stage_text;
+
+    @FXML
+    private Label requested_change_text;
+
+    @FXML
+    private Label explanation_text;
+
+    @FXML
+    private Label notes_text;
+
+    @FXML
+    private Label request_date_text;
+
+    @FXML
+    private Label request_id_text;
+
+    @FXML
+    private Label documents_text;
+
+    @FXML
+    private Label status_text;
+
+    @FXML
+    private Label current_stage_due_time_text;
     
+
     @Override
 	public void initialize(URL location, ResourceBundle resources) {
 		instance = this;
@@ -89,18 +128,22 @@ public class Supervisor_ProcessMain_Controller implements Initializable{
     
     @FXML
     void freeze_process_btn_click(ActionEvent event) {
-    	ArrayList <Object> arr = new ArrayList<Object>();
+    	ArrayList <Object> processInfo = new ArrayList<Object>();
+
+    	processInfo.add(ControllerProcessMain.getInstance().getRequestID());//process/request id
     	
-    	arr.add(2);//process/request id
-    	arr.add(due_time_text.getText());
-    	
-    	Translator translator = new Translator(OptionsOfAction.FREEZE_PROCESS, arr);
+    	Translator translator = new Translator(OptionsOfAction.FREEZE_PROCESS, processInfo);
     	client.handleMessageFromClientGUI(translator);
     }
-    
+
     @FXML
     void shut_down_process_btn_click(ActionEvent event) {
+    	ArrayList <Object> processInfo = new ArrayList<Object>();
 
+    	processInfo.add(ControllerProcessMain.getInstance().getRequestID());//process/request id
+    	
+    	Translator translator = new Translator(OptionsOfAction.SHUTDOWN_PROCESS, processInfo);
+    	client.handleMessageFromClientGUI(translator);
     }
     
     public void getAppraiserOrPerformanceLeaderCBData()
@@ -125,9 +168,7 @@ public class Supervisor_ProcessMain_Controller implements Initializable{
     		return;
     	}
     	
-    	
-
-    	if(this.process_stage != 1 && this.process_stage != 6)
+    	if(this.process_stage != Constants.STAGE_OF_APPRAISER && this.process_stage != Constants.STAGE_OF_EXECUTION)
     	{
     		return;
     	}
@@ -162,7 +203,7 @@ public class Supervisor_ProcessMain_Controller implements Initializable{
     	this.apprairsID = appraisersID;
     	this.appraisersNames = appraisersNames;
     	
-    	if(process_stage == 1)
+    	if(process_stage==Constants.STAGE_OF_APPRAISER)
     	{
     		appoint_appraiser_comboBox.setDisable(false);
     		if(appraisersForCB != null)
@@ -171,7 +212,7 @@ public class Supervisor_ProcessMain_Controller implements Initializable{
     		appoint_appraiser_btn.setDisable(false);
     	}
     		
-    	if(process_stage == 6)
+    	if(process_stage == Constants.STAGE_OF_EXECUTION)
     	{
 			appoint_performance_leader_comboBox.setDisable(false);
 			if(appraisersForCB != null)
@@ -197,7 +238,7 @@ public class Supervisor_ProcessMain_Controller implements Initializable{
     	String chosenAppraiser;
     	try
     	{
-    		if(this.process_stage == 1)
+    		if(this.process_stage == Constants.STAGE_OF_APPRAISER)
     		{
         		chosenAppraiser = appoint_appraiser_comboBox.getValue();
         		current_appraiser_text.setText(chosenAppraiser);
@@ -217,7 +258,7 @@ public class Supervisor_ProcessMain_Controller implements Initializable{
     		check.add(chosenID);
     		
     		check.add(this.procID);//check.add(2);//check.add(processID);
-    		if(process_stage == 1)
+    		if(process_stage == Constants.STAGE_OF_APPRAISER)
     			check.add("Appraiser");
     		else
     			check.add("Performance Leader");
@@ -225,7 +266,7 @@ public class Supervisor_ProcessMain_Controller implements Initializable{
     		Translator translator = new Translator(OptionsOfAction.APPOINT_APPRAISER_OR_PERFORMANCE_LEADER, check);
     		client.handleMessageFromClientGUI(translator);
     		
-    		if(process_stage == 1)
+    		if(process_stage == Constants.STAGE_OF_APPRAISER)
     		{
     			add_extension__time_btn.setDisable(true);
         		decline_extension_request_btn.setDisable(true);
@@ -240,7 +281,7 @@ public class Supervisor_ProcessMain_Controller implements Initializable{
         		process_stage = 2;
     		}
     		else
-    		if(process_stage == 6)
+    		if(process_stage == Constants.STAGE_OF_EXECUTION)
     		{
     			add_extension__time_btn.setDisable(true);
         		decline_extension_request_btn.setDisable(true);
@@ -252,7 +293,7 @@ public class Supervisor_ProcessMain_Controller implements Initializable{
         		appoint_appraiser_btn.setDisable(true);
     			appoint_performance_leader_comboBox.setDisable(true);
     			appoint_performance_leader_btn.setDisable(true);
-        		process_stage = 6;
+        		process_stage = Constants.STAGE_OF_EXECUTION;
     		}
 
     	}
@@ -274,15 +315,9 @@ public class Supervisor_ProcessMain_Controller implements Initializable{
     		System.out.println("getAppraiserAndPerformanceLeaderLabels - this.procID is wrong");
     		return;
     	}
-    	
-    	if(process_stage == 1)
-    		return;
-        	
     		
-    	if(process_stage > 1)
-    	{
-        	//current_performance_leader_text.setText("None");
-        	
+    	if(process_stage >= Constants.STAGE_OF_APPRAISER)
+    	{        	
         	ArrayList<Object> arr = new ArrayList<Object>();
         	arr.add(this.procID);
         	Translator translator = new Translator(OptionsOfAction.GET_APPRAISER_AND_PERFORMANCE_LEADER_OF_PROC, arr);
@@ -465,6 +500,23 @@ public class Supervisor_ProcessMain_Controller implements Initializable{
     void back_click(ActionEvent event) {
     	ScreenController.getScreenController().activate(ScreenController.getScreenController().getLastScreen());
     	ControllerProcessMain.instance.getTheUpdateProcessesFromDB();
+    }
+    
+    public void updateProcessInformation()
+    {
+		UserProcess process = Client.getInstance().getProcesses().getMyProcess().get(Integer.parseInt(ControllerProcessMain.getInstance().getRequestID()));
+		initiator_name_text.setText(process.getIntiatorId());
+		initiator_email_text.setText(process.getEmail());
+		initiator_role_text.setText(process.getRole());
+		information_system_text.setText("" + process.getSystem_num());
+		current_stage_text.setText(MyHashMaps.getProcessStageText(Double.parseDouble(process.getProcess_stage())));
+		requested_change_text.setText(process.getRequest_description());
+		explanation_text.setText(process.getExplanaton());
+		notes_text.setText(process.getNotes());
+		request_date_text.setText(process.getCreation_date());
+		request_id_text.setText("" + process.getRequest_id());
+		status_text.setText(process.getStatus());
+		current_stage_due_time_text.setText(process.getCurrent_stage_due_date());
     }
     
 }

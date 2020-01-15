@@ -14,14 +14,13 @@ public class Main extends Application {
 	@Override
 	public void start(Stage primaryStage) {
 		try {
-
 			
 			Parent root = FXMLLoader.load(getClass().getResource("/application/basePanel.fxml"));
 			Scene baseScene = new Scene(root, 1500,1500);
 			baseScene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
 			primaryStage.setScene(baseScene);
 			primaryStage.show();
-		
+			
 			initializeScreenController(baseScene);
 			ScreenController.getScreenController().activate("login");
 	
@@ -52,6 +51,7 @@ public class Main extends Application {
 			ScreenController.getScreenController().addScreen("newRequest", FXMLLoader.load(getClass().getResource("/application/NewRequestForm.fxml")));
 			ScreenController.getScreenController().addScreen("staffMain", FXMLLoader.load(getClass().getResource("/application/StaffMain.fxml")));
 			ScreenController.getScreenController().addScreen("supervisor_processesMain", FXMLLoader.load(getClass().getResource("/application/Supervisor_ProcessesMain.fxml")));
+			ScreenController.getScreenController().addScreen("active_reports", FXMLLoader.load(getClass().getResource("/application/ActiveReports.fxml")));
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
