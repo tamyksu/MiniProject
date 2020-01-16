@@ -19,7 +19,7 @@ public class MyHashMaps {
 		processStages.put((double) 7, "Performance Leader is defining execution stage due time");
 		processStages.put((double) 7.5, "Supervisor declining the execution stage due time");
 		processStages.put((double) 8, "Supervisor approving the execution stage due time");
-		processStages.put((double) 9, "Prfomance Leader is executing");
+		processStages.put((double) 9, "Perfomance Leader is executing");
 		processStages.put((double) 10, "Appointing Examiner");
 		processStages.put((double) 11, "Examiner is working");
 		processStages.put((double) 12, "Supervisor is closing the process");

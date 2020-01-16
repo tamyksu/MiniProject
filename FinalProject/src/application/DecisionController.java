@@ -108,8 +108,12 @@ public class DecisionController implements Initializable{
     		if(Client.instance.getRole().compareTo("Manager") == 0)
         		Client.instance.getRelatedMessages("Manager");
     		else
-        		Client.instance.getRelatedMessages(Client.instance.getUserID());
-
+    		{
+        		if(Client.instance.getRole().compareTo("Chairman") == 0)
+            		Client.instance.getRelatedMessages("Chairman");
+        		else
+            		Client.instance.getRelatedMessages(Client.instance.getUserID());
+    		}
     	}
     }
 

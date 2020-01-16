@@ -173,7 +173,7 @@ public class Supervisor_ProcessMain_Controller implements Initializable{
     		return;
     	}
     	
-    	if(this.process_stage != Constants.STAGE_OF_APPRAISER && this.process_stage != Constants.STAGE_OF_EXECUTION)
+    	if(this.process_stage != Constants.STAGE_OF_APPOINTING_APPRAISER && this.process_stage != Constants.STAGE_OF_EXECUTION)
     	{
     		return;
     	}
@@ -208,14 +208,23 @@ public class Supervisor_ProcessMain_Controller implements Initializable{
     	this.apprairsID = appraisersID;
     	this.appraisersNames = appraisersNames;
     	
-    	if(process_stage==Constants.STAGE_OF_APPRAISER)
+    	if(process_stage==Constants.STAGE_OF_APPOINTING_APPRAISER)
     	{
     		appoint_appraiser_comboBox.setDisable(false);
     		if(appraisersForCB != null)
     		{
-    			appoint_appraiser_comboBox.setItems(appraisersForCB);
-    			appoint_appraiser_comboBox.setValue(appraisersForCB.get(0));
-    			appoint_appraiser_btn.setDisable(false);
+    			Platform.runLater(new Runnable(){
+
+					@Override
+					public void run() {
+						// TODO Auto-generated method stub
+		    			appoint_appraiser_comboBox.setItems(appraisersForCB);
+		    			appoint_appraiser_comboBox.setValue(appraisersForCB.get(0));
+		    			appoint_appraiser_btn.setDisable(false);
+					}
+    				// ...
+    				});
+
     		}
     	}
     		
@@ -247,7 +256,7 @@ public class Supervisor_ProcessMain_Controller implements Initializable{
     	String chosenAppraiser;
     	try
     	{
-    		if(this.process_stage == Constants.STAGE_OF_APPRAISER)
+    		if(this.process_stage == Constants.STAGE_OF_APPOINTING_APPRAISER)
     		{
         		chosenAppraiser = appoint_appraiser_comboBox.getValue();
         		current_appraiser_text.setText(chosenAppraiser);
@@ -267,7 +276,7 @@ public class Supervisor_ProcessMain_Controller implements Initializable{
     		check.add(chosenID);
     		
     		check.add(this.procID);//check.add(2);//check.add(processID);
-    		if(process_stage == Constants.STAGE_OF_APPRAISER)
+    		if(process_stage == Constants.STAGE_OF_APPOINTING_APPRAISER)
     			check.add("Appraiser");
     		else
     			check.add("Performance Leader");
@@ -275,7 +284,7 @@ public class Supervisor_ProcessMain_Controller implements Initializable{
     		Translator translator = new Translator(OptionsOfAction.APPOINT_APPRAISER_OR_PERFORMANCE_LEADER, check);
     		client.handleMessageFromClientGUI(translator);
     		
-    		if(process_stage == Constants.STAGE_OF_APPRAISER)
+    		if(process_stage == Constants.STAGE_OF_APPOINTING_APPRAISER)
     		{
     			add_extension__time_btn.setDisable(true);
         		decline_extension_request_btn.setDisable(true);
@@ -325,7 +334,7 @@ public class Supervisor_ProcessMain_Controller implements Initializable{
     		return;
     	}
     		
-    	if(process_stage >= Constants.STAGE_OF_APPRAISER)
+    	if(process_stage > Constants.STAGE_OF_APPOINTING_APPRAISER)
     	{        	
         	ArrayList<Object> arr = new ArrayList<Object>();
         	arr.add(this.procID);
@@ -338,7 +347,7 @@ public class Supervisor_ProcessMain_Controller implements Initializable{
     {
     	System.out.println("setLabels: process_stage = " + process_stage);
     	
-    	Platform.runLater(new Runnable() {//avoiding java.lang.IllegalStateException “Not on FX application thread”
+    	Platform.runLater(new Runnable() {  //avoiding java.lang.IllegalStateException “Not on FX application thread”
     	    public void run() {
     	    	if(arr.size() == 0)
     	    	{
@@ -371,24 +380,32 @@ public class Supervisor_ProcessMain_Controller implements Initializable{
     
     public void setDueTimeRequest(ArrayList<Object> msgData)
     {
-    	this.notifications = msgData;
     	
-    	if(due_time_text.isDisable() || msgData.size() == 0)
-    		return;
-    	
-    	System.out.println("setDueTimeExtension: msgData: " + msgData);
-    	for(int i=0 ; i<msgData.size() ; i = i+6)
+    	if(msgData==null)
     	{
-    		if(this.procID == (int)(msgData.get(i)))
-    		{
-    			if(((String)msgData.get(i+1)).compareTo("define execution stage due time") == 0)
-    			{
-    				due_time_text.setText(String.valueOf(msgData.get(i+2)));
-    				return;
-    			}
-    		}
+    		System.out.println("msgData is empty");
+    		due_time_text.setText("Not Set");
     	}
-    	System.out.println("setDueTime - failed");
+    	else
+    	{
+	    	this.notifications = msgData;
+	    	
+	    	if(due_time_text.isDisable() || msgData.size() == 0)
+	    		return;
+	    	
+	    	System.out.println("setDueTimeExtension: msgData: " + msgData);
+	    	for(int i=0 ; i<msgData.size() ; i = i+6)
+	    	{
+	    		if(this.procID == (int)(msgData.get(i)))
+	    		{
+	    			if(((String)msgData.get(i+1)).compareTo("define execution stage due time") == 0)
+	    			{
+	    				due_time_text.setText(String.valueOf(msgData.get(i+2)));
+	    				return;
+	    			}
+	    		}
+	    	}
+    	}
     }
     
     

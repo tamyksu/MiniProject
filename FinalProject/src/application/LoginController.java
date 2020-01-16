@@ -45,7 +45,9 @@ public class LoginController {
 
 	public void initialize() throws IOException {
 		instance = this;
-		client = new Client("localhost", 5555);
+		client = new Client("localhost", 25565);
+		//client = new Client("192.168.162.52", 25565);
+
 	}
 
 	@FXML

@@ -1,5 +1,6 @@
 package client;
 import ocsf.client.*;
+import server.DBConnector;
 import translator.OptionsOfAction;
 import translator.Translator;
 import java.io.*;
@@ -604,32 +605,42 @@ public void handleMessageFromServerExecutionCompleted(Object rs) {
 		System.out.println(result);
 		
 		Supervisor_ProcessMain_Controller.instance.setAppraiserOrPerformanceLeaderDataInCB(result);
+		
+		//TODO: SEND NOTIFICATION TO APPRAISER , get appraiser in rs
 
 	}
 	
 	public void handlerMessageFromServerGetAppOrPLofProc(Object rs)
 	{
 		
-		//TODO: HANDLE A SCENARIO WHERE RS="NO EMPLOYEES WERE FOUND"
 		ArrayList <String> names = (ArrayList<String>)rs;
 		ArrayList <String> fullNames = new ArrayList <String>();
-		int procID = Integer.parseInt(names.get(0));
 		
-		if(names.size() == 4)//must be Appraiser because you can't have Performance LeaderL without Appraiser
+		if((names.get(0)).toString().equals("NO EMPLOYEES WERE FOUND"))
 		{
-			fullNames.add(new String (names.get(1) + " " + names.get(2)));
+			fullNames.add(new String("Not Selected"));//appraiser
+			fullNames.add(new String("Not Selected"));//performance leader
 		}
-		if(names.size() == 7)
+		else
 		{
-			if(names.get(3).compareTo("Appraiser") == 0)
+			int procID = Integer.parseInt(names.get(0));
+			
+			if(names.size() == 4)//must be Appraiser because you can't have Performance LeaderL without Appraiser
 			{
-				fullNames.add(new String (names.get(1) + " " + names.get(2)));//appraiser
-				fullNames.add(new String (names.get(4) + " " + names.get(5)));//performance leader
+				fullNames.add(new String (names.get(1) + " " + names.get(2)));
 			}
-			else
+			if(names.size() == 7)
 			{
-				fullNames.add(new String (names.get(4) + " " + names.get(5)));//appraiser
-				fullNames.add(new String (names.get(1) + " " + names.get(2)));//performance leader
+				if(names.get(3).compareTo("Appraiser") == 0)
+				{
+					fullNames.add(new String (names.get(1) + " " + names.get(2)));//appraiser
+					fullNames.add(new String (names.get(4) + " " + names.get(5)));//performance leader
+				}
+				else
+				{
+					fullNames.add(new String (names.get(4) + " " + names.get(5)));//appraiser
+					fullNames.add(new String (names.get(1) + " " + names.get(2)));//performance leader
+				}
 			}
 		}
 		

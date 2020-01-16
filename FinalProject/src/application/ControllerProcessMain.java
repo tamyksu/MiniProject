@@ -40,7 +40,7 @@ public class ControllerProcessMain implements Initializable {
 	
 	private String roleInProc;
 	
-	private String procStage;
+	private String procStage = "";
 
 	@FXML
 	private TableView<Person> tableView;
@@ -294,14 +294,14 @@ public class ControllerProcessMain implements Initializable {
 		case "appraiser":
 			fitAppraiser();
 			break;
-		case "chairman":
-			fitChairman();
-			break;
 		case "performance leader":
 			fitPerformanceLeaderDisabled();
 			break;	
 		case "examiner":
 			fitExaminerDisabled();
+			break;
+		case "chairman":
+			fitChairman();
 			break;
 		default:
 			//disable all but newRequest button
@@ -332,6 +332,15 @@ public class ControllerProcessMain implements Initializable {
 				else
 					fitSupervisor();
 				break;	
+				
+			case "chairman":
+				if(processStatus.toLowerCase().equals("suspended"))
+					fitChairmanDisabled();
+				else if(processStatus.toLowerCase().equals("shutdown"))
+					fitChairmanDisabled();
+				else
+					fitChairman();
+				break;
 		
 			default:
 				break;
@@ -343,7 +352,7 @@ public class ControllerProcessMain implements Initializable {
 	private void fitChairman() {
 		if(this.procStage.compareTo("5") == 0)
 		{
-			newRequestBtn.setDisable(false);
+			newRequestBtn.setDisable(true);
 			extension_btn.setDisable(false);
 			extension_request_text.setDisable(false);
 			evaluation_btn.setDisable(true);
@@ -357,11 +366,11 @@ public class ControllerProcessMain implements Initializable {
 		
 		else
 		{
-			newRequestBtn.setDisable(false);
+			newRequestBtn.setDisable(true);
 			extension_btn.setDisable(true);
 			extension_request_text.setDisable(true);
 			evaluation_btn.setDisable(true);
-			decision_btn.setDisable(false);
+			decision_btn.setDisable(true);
 			execution_btn.setDisable(true);
 			examination_btn.setDisable(true);
 			supervisor_mode_btn.setDisable(true);
@@ -373,7 +382,7 @@ public class ControllerProcessMain implements Initializable {
 	//change button disability in accordance to appraiser
 	private void fitAppraiser() {
 	
-		if(this.procStage.compareTo("4") == 0)
+		if(Integer.parseInt(this.procStage) == Constants.STAGE_OF_APPRAISER_EVALUATION || Integer.parseInt(this.procStage) == Constants.STAGE_OF_APPRAISER_EVALUATION_DUE_TIME)
 		{
 			newRequestBtn.setDisable(false);
 			extension_btn.setDisable(false);
@@ -392,7 +401,7 @@ public class ControllerProcessMain implements Initializable {
 			newRequestBtn.setDisable(false);
 			extension_btn.setDisable(true);
 			extension_request_text.setDisable(true);
-			evaluation_btn.setDisable(false);
+			evaluation_btn.setDisable(true);
 			decision_btn.setDisable(true);
 			execution_btn.setDisable(true);
 			examination_btn.setDisable(true);
@@ -442,6 +451,19 @@ public class ControllerProcessMain implements Initializable {
 		supervisor_mode_btn.setDisable(true);
 		director_btn.setDisable(true);
 		defrost_btn.setDisable(true);
+	}
+	
+	private void fitChairmanDisabled() {
+			newRequestBtn.setDisable(true);
+			extension_btn.setDisable(true);
+			extension_request_text.setDisable(true);
+			evaluation_btn.setDisable(true);
+			decision_btn.setDisable(true);
+			execution_btn.setDisable(true);
+			examination_btn.setDisable(true);
+			supervisor_mode_btn.setDisable(true);
+			director_btn.setDisable(true);
+			defrost_btn.setDisable(true);
 	}
 	
 	private void fitManagerDisabled()
@@ -783,6 +805,10 @@ public class ControllerProcessMain implements Initializable {
 		case "Manager":
 			Client.getInstance().getAllProcessesFromServer();
 			fitManager();
+			break;
+		case "Chairman":
+			Client.getInstance().getAllProcessesFromServer();
+			fitChairman();
 			break;
 		default:
 			Client.getInstance().getProcessesFromServer();

@@ -1237,7 +1237,12 @@ System.out.println("id "+translator.getParmas().get(0));
 					stmt.executeUpdate();
 					setNextStageByOne(processID); // Process is set to next stage;
 					evaluateNumberOfDaysAnswer.add(true);
+					
+					sendNotification((int)translator.getParmas().get(0), "Evaluation Due time was set by Appraiser",(int)translator.getParmas().get(3) ,
+							"Supervisor", "Appraiser", null);
+					
 					return fillNumberOfDaysAnswer;
+					
 				}
 				catch (SQLException e) {
 					e.printStackTrace();
@@ -1262,6 +1267,10 @@ System.out.println("id "+translator.getParmas().get(0));
 					stmt.executeUpdate();
 					setNextStageByOne(processID); // Process is set to next stage;
 					evaluateNumberOfDaysAnswer.add(true);
+					
+					sendNotification((int)translator.getParmas().get(0), "Evaluation Due time was set by Appraiser",(int)translator.getParmas().get(3) ,
+							"Supervisor", "Appraiser", null);
+					
 					return fillNumberOfDaysAnswer;
 				}
 				catch (SQLException e) {
@@ -1280,7 +1289,7 @@ System.out.println("id "+translator.getParmas().get(0));
 			Translator evaluationFormTranslator = new Translator(OptionsOfAction.Fill_Evalution_Number_Of_Days, evaluationFormInserted);
 			try {
 				stmt = conn.prepareStatement("UPDATE icmdb.evaluation_reports SET"
-						+ "requested_change=?, result=?, constraits_and_risks=?"
+						+ " requested_change=?, result=?, constraits_and_risks=?"
 						+ " WHERE process_id=?"); // The Requested change
 
 				stmt.setString(1,translator.getParmas().get(1).toString()); // The Requested change
@@ -1878,6 +1887,10 @@ System.out.println("id "+translator.getParmas().get(0));
 			stmt.setInt(3, days);
 			stmt.setString(4, toWho);
 			stmt.setString(5, fromWho);
+			
+			if(reason == null)
+				reason = "";
+			
 			stmt.setString(6, reason);
 			stmt.setDate(7, date);
 			
