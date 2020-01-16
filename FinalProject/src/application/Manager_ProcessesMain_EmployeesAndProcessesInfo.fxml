@@ -1,0 +1,203 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.Rectangle?>
+<?import javafx.scene.text.Font?>
+
+
+<Pane xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <SplitPane dividerPositions="0.07349665924276169" orientation="VERTICAL" prefHeight="900.0" prefWidth="1300.0">
+        <items>
+          <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="0.0" minWidth="0.0" prefHeight="62.0" prefWidth="1298.0">
+               <children>
+                  <Label layoutX="18.0" layoutY="11.0" prefHeight="26.0" prefWidth="62.0" text="ICM">
+                     <font>
+                        <Font size="27.0" />
+                     </font>
+                  </Label>
+               </children>
+            </AnchorPane>
+          <AnchorPane focusTraversable="true" minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
+               <children>
+                  <Button layoutX="22.0" layoutY="22.0" mnemonicParsing="false" text="Back" />
+                  <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#1f93ff00" height="284.0" layoutX="29.0" layoutY="73.0" opacity="0.14" stroke="BLACK" strokeType="INSIDE" width="535.0" />
+                  <Label layoutX="151.0" layoutY="76.0" text="Processes Table">
+                     <font>
+                        <Font name="System Bold" size="21.0" />
+                     </font>
+                  </Label>
+                  <TableView layoutX="49.0" layoutY="125.0" prefHeight="193.0" prefWidth="481.0">
+                    <columns>
+                      <TableColumn prefWidth="96.6667251586914" text="Process ID" />
+                      <TableColumn prefWidth="152.6666259765625" text="Information System" />
+                        <TableColumn prefWidth="230.666748046875" text="Date" />
+                    </columns>
+                  </TableView>
+                  <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#1f93ff00" height="657.0" layoutX="760.0" layoutY="53.0" opacity="0.14" stroke="BLACK" strokeType="INSIDE" width="524.0" />
+                  <Label layoutX="924.0" layoutY="57.0" text="Process Information">
+                     <font>
+                        <Font name="System Bold" size="21.0" />
+                     </font>
+                  </Label>
+                  <HBox layoutX="776.0" layoutY="92.0" prefHeight="615.0" prefWidth="495.0">
+                     <children>
+                        <VBox layoutX="709.0" layoutY="90.0" prefHeight="621.0" prefWidth="175.0">
+                           <children>
+                              <Label text="Initiator Name:">
+                                 <font>
+                                    <Font size="17.0" />
+                                 </font>
+                              </Label>
+                              <Label layoutX="10.0" layoutY="10.0" text="Initiator Email:">
+                                 <font>
+                                    <Font size="17.0" />
+                                 </font>
+                                 <VBox.margin>
+                                    <Insets top="7.0" />
+                                 </VBox.margin>
+                              </Label>
+                              <Label layoutX="10.0" layoutY="31.0" text="Initiator Profession:">
+                                 <font>
+                                    <Font size="17.0" />
+                                 </font>
+                                 <VBox.margin>
+                                    <Insets top="7.0" />
+                                 </VBox.margin>
+                              </Label>
+                              <Label text="Information System:">
+                                 <font>
+                                    <Font size="17.0" />
+                                 </font>
+                                 <VBox.margin>
+                                    <Insets top="7.0" />
+                                 </VBox.margin>
+                              </Label>
+                              <Label layoutX="10.0" layoutY="60.0" text="Current State:">
+                                 <font>
+                                    <Font size="17.0" />
+                                 </font>
+                                 <VBox.margin>
+                                    <Insets top="7.0" />
+                                 </VBox.margin>
+                              </Label>
+                              <Label layoutX="10.0" layoutY="35.0" text="Requested Change:">
+                                 <font>
+                                    <Font size="16.0" />
+                                 </font>
+                                 <VBox.margin>
+                                    <Insets top="46.0" />
+                                 </VBox.margin>
+                              </Label>
+                              <Label layoutX="10.0" layoutY="60.0" text="Explanation:">
+                                 <font>
+                                    <Font size="16.0" />
+                                 </font>
+                                 <VBox.margin>
+                                    <Insets top="44.0" />
+                                 </VBox.margin>
+                              </Label>
+                              <Label layoutX="10.0" layoutY="85.0" text="Notes:">
+                                 <font>
+                                    <Font size="16.0" />
+                                 </font>
+                                 <VBox.margin>
+                                    <Insets top="47.0" />
+                                 </VBox.margin>
+                              </Label>
+                              <Label layoutX="10.0" layoutY="135.0" text="Request Date:">
+                                 <font>
+                                    <Font size="16.0" />
+                                 </font>
+                                 <VBox.margin>
+                                    <Insets top="46.0" />
+                                 </VBox.margin>
+                              </Label>
+                              <Label layoutX="10.0" layoutY="160.0" text="Request ID:">
+                                 <font>
+                                    <Font size="16.0" />
+                                 </font>
+                                 <VBox.margin>
+                                    <Insets top="8.0" />
+                                 </VBox.margin>
+                              </Label>
+                              <Label layoutX="10.0" layoutY="110.0" text="Documents:">
+                                 <font>
+                                    <Font size="16.0" />
+                                 </font>
+                                 <VBox.margin>
+                                    <Insets top="7.0" />
+                                 </VBox.margin>
+                              </Label>
+                              <Label prefHeight="25.0" prefWidth="93.0" text="Status:">
+                                 <font>
+                                    <Font size="16.0" />
+                                 </font>
+                                 <VBox.margin>
+                                    <Insets top="38.0" />
+                                 </VBox.margin>
+                              </Label>
+                              <Label prefHeight="25.0" prefWidth="175.0" text="Current Stage Due Time:">
+                                 <font>
+                                    <Font size="16.0" />
+                                 </font>
+                                 <VBox.margin>
+                                    <Insets top="7.0" />
+                                 </VBox.margin>
+                              </Label>
+                           </children>
+                        </VBox>
+                        <VBox layoutX="901.0" layoutY="88.0" prefHeight="610.0" prefWidth="320.0">
+                           <children>
+                              <Label prefHeight="32.0" prefWidth="320.0" text="label" />
+                              <Label layoutX="10.0" layoutY="10.0" prefHeight="32.0" prefWidth="320.0" text="label" />
+                              <Label layoutX="10.0" layoutY="42.0" prefHeight="32.0" prefWidth="320.0" text="label" />
+                              <Label layoutX="10.0" layoutY="74.0" prefHeight="32.0" prefWidth="320.0" text="label" />
+                              <Label layoutX="10.0" layoutY="106.0" prefHeight="71.0" prefWidth="320.0" text="label">
+                                 <VBox.margin>
+                                    <Insets top="1.0" />
+                                 </VBox.margin>
+                              </Label>
+                              <Label layoutX="10.0" layoutY="138.0" prefHeight="71.0" prefWidth="320.0" text="label" />
+                              <Label layoutX="10.0" layoutY="209.0" prefHeight="71.0" prefWidth="320.0" text="label" />
+                              <Label layoutX="10.0" layoutY="280.0" prefHeight="71.0" prefWidth="320.0" text="label" />
+                              <Label layoutX="10.0" layoutY="106.0" prefHeight="32.0" prefWidth="320.0" text="label" />
+                              <Label layoutX="10.0" layoutY="422.0" prefHeight="32.0" prefWidth="320.0" text="label" />
+                              <Label layoutX="10.0" layoutY="454.0" prefHeight="62.0" prefWidth="320.0" text="label" />
+                              <Label layoutX="10.0" layoutY="106.0" prefHeight="32.0" prefWidth="320.0" text="label" />
+                              <Label layoutX="10.0" layoutY="548.0" prefHeight="32.0" prefWidth="320.0" text="label" />
+                           </children>
+                        </VBox>
+                     </children>
+                  </HBox>
+                  <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#1f93ff00" height="373.0" layoutX="7.0" layoutY="382.0" opacity="0.14" stroke="BLACK" strokeType="INSIDE" width="736.0" />
+                  <Label layoutX="297.0" layoutY="399.0" text="Employees Table">
+                     <font>
+                        <Font name="System Bold" size="21.0" />
+                     </font>
+                  </Label>
+                  <TableView layoutX="12.0" layoutY="437.0" prefHeight="295.0" prefWidth="725.0">
+                     <columns>
+                        <TableColumn prefWidth="146.0" text="ID" />
+                        <TableColumn prefWidth="88.0" text="Imployee #" />
+                        <TableColumn prefWidth="103.0" text="First Name" />
+                        <TableColumn prefWidth="106.0" text="Last Name" />
+                        <TableColumn prefWidth="139.0" text="Email" />
+                        <TableColumn prefWidth="142.0" text="Department" />
+                     </columns>
+                  </TableView>
+               </children>
+            </AnchorPane>
+        </items>
+      </SplitPane>
+   </children>
+</Pane>

@@ -20,7 +20,7 @@ public class Main extends Application {
 			baseScene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
 			primaryStage.setScene(baseScene);
 			primaryStage.show();
-		
+			
 			initializeScreenController(baseScene);
 			ScreenController.getScreenController().activate("login");
 	

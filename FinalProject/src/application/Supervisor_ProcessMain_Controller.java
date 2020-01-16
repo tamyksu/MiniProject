@@ -36,6 +36,7 @@ public class Supervisor_ProcessMain_Controller implements Initializable{
 	
 	private int procID;
 	
+	private ArrayList<Object> notifications;
 	@FXML
     private ComboBox<String> appoint_appraiser_comboBox;
 
@@ -70,7 +71,7 @@ public class Supervisor_ProcessMain_Controller implements Initializable{
     private Button freeze_process_btn;
     
     @FXML
-    private TextField due_time_text;
+    private TextField  due_time_text;
     
     @FXML
     private TextField extension_time_text;
@@ -120,6 +121,10 @@ public class Supervisor_ProcessMain_Controller implements Initializable{
     @FXML
     private Label current_stage_due_time_text;
     
+    @FXML
+    private Label add_extension_explanation_text;
+    
+    
 
     @Override
 	public void initialize(URL location, ResourceBundle resources) {
@@ -152,7 +157,7 @@ public class Supervisor_ProcessMain_Controller implements Initializable{
     	
     	try
     	{
-    		this.procID = processID = ControllerProcessMain.instance.getSelectedRowNumber();//needs rows in the processes table
+    		this.procID = processID = ControllerProcessMain.instance.getSelectedRowProcID();//needs rows in the processes table
     	}
     	catch(NullPointerException e)
     	{
@@ -207,18 +212,22 @@ public class Supervisor_ProcessMain_Controller implements Initializable{
     	{
     		appoint_appraiser_comboBox.setDisable(false);
     		if(appraisersForCB != null)
+    		{
     			appoint_appraiser_comboBox.setItems(appraisersForCB);
-    		//appoint_appraiser_comboBox.setPromptText("Make a choice");
-    		appoint_appraiser_btn.setDisable(false);
+    			appoint_appraiser_comboBox.setValue(appraisersForCB.get(0));
+    			appoint_appraiser_btn.setDisable(false);
+    		}
     	}
     		
     	if(process_stage == Constants.STAGE_OF_EXECUTION)
     	{
 			appoint_performance_leader_comboBox.setDisable(false);
 			if(appraisersForCB != null)
+			{
 				appoint_performance_leader_comboBox.setItems(appraisersForCB);
-    		//appoint_performance_leader_comboBox.setPromptText("Make a choice");
-    		appoint_performance_leader_btn.setDisable(false);
+				appoint_performance_leader_comboBox.setValue(appraisersForCB.get(0));
+		   		appoint_performance_leader_btn.setDisable(false);
+			}
     	}
     	
     	if(listSize == 0)
@@ -360,6 +369,29 @@ public class Supervisor_ProcessMain_Controller implements Initializable{
     	
     }
     
+    public void setDueTimeRequest(ArrayList<Object> msgData)
+    {
+    	this.notifications = msgData;
+    	
+    	if(due_time_text.isDisable() || msgData.size() == 0)
+    		return;
+    	
+    	System.out.println("setDueTimeExtension: msgData: " + msgData);
+    	for(int i=0 ; i<msgData.size() ; i = i+6)
+    	{
+    		if(this.procID == (int)(msgData.get(i)))
+    		{
+    			if(((String)msgData.get(i+1)).compareTo("define execution stage due time") == 0)
+    			{
+    				due_time_text.setText(String.valueOf(msgData.get(i+2)));
+    				return;
+    			}
+    		}
+    	}
+    	System.out.println("setDueTime - failed");
+    }
+    
+    
     public void ApproveDueTimeRequest(ActionEvent e)
     {
     	//int processID = ControllerProcessMain.instance.getSelectedRowNumber();
@@ -368,10 +400,11 @@ public class Supervisor_ProcessMain_Controller implements Initializable{
     	
     	arr.add(this.procID);//process/request id
     	arr.add(due_time_text.getText());
+    	arr.add(this.process_stage);
     	
     	Translator translator = new Translator(OptionsOfAction.SET_EVALUATION_OR_EXECUTION_DUE_TIME, arr);
     	client.handleMessageFromClientGUI(translator);
-    	due_time_text.clear();
+    	due_time_text.setText("");
     	approve_due_time_request_btn.setDisable(true);
 		decline_due_time_request_btn.setDisable(true);
 		due_time_text.setDisable(true);
@@ -379,13 +412,50 @@ public class Supervisor_ProcessMain_Controller implements Initializable{
     
     public void DeclineDueTimeRequest(ActionEvent e)
     {
-    	Alert alert = new Alert(AlertType.INFORMATION);
+    	ArrayList <Object> arr = new ArrayList<Object>();
+
+    	arr.add(this.procID);//process/request id
+    	arr.add(due_time_text.getText());
+    	arr.add(this.process_stage);
     	
-    	due_time_text.clear();
-        alert.setTitle("ALERT");
-        alert.setHeaderText("THERE ARE NO MESSAGES");
-        alert.setContentText("need to send a message to the appraiser or the performance leader to resend a request");
-        alert.showAndWait();
+    	Translator translator = new Translator(OptionsOfAction.DECLINE_EVALUATION_OR_EXECUTION_DUE_TIME, arr);
+    	client.handleMessageFromClientGUI(translator);
+    	due_time_text.setText("");
+    	approve_due_time_request_btn.setDisable(true);
+		decline_due_time_request_btn.setDisable(true);
+		due_time_text.setDisable(true);
+    }
+    
+    public void setDueTimeExtensionExplanation()
+    {
+    	if(add_extension__time_btn.isDisable())
+    		return;
+    	
+    	ArrayList<Object> notes = this.notifications;
+    	
+    	for(int i=0 ; i<notes.size() ; i=i+6)
+    	{
+    		if(this.procID == (int)(notes.get(i)) && ((String)notes.get(i+1)).compareTo("add due time extension") == 0)
+    		{
+    			try
+    			{
+    				add_extension_explanation_text.setText(((String)notes.get(i+4)).toString());
+    				if(add_extension_explanation_text.getText().compareTo("") == 0)
+    					System.out.println("Supervisor_ProcessMain_Controller - setDueTimeExtensionExplanation - "
+        						+ "the explanation for the due time extension request is empty");
+        			break;
+    			}
+    			
+    			catch(NullPointerException e)
+    			{
+    				System.out.println("Supervisor_ProcessMain_Controller - setDueTimeExtensionExplanation - "
+    						+ "the explanation for the due time extension request is null");
+    				add_extension_explanation_text.setText("");
+    				return;
+    			}
+    		}
+    	}
+    	
     }
     
     public void addDueTimeExtension(ActionEvent e)
@@ -412,6 +482,7 @@ public class Supervisor_ProcessMain_Controller implements Initializable{
     	
     	arr.add(this.procID);//process/request id
     	arr.add(Integer.parseInt(extension_time_text.getText()));
+    	arr.add(this.process_stage);
     	
     	Translator translator = new Translator(OptionsOfAction.ADD_EVALUATION_OR_EXECUTION_EXTENSION_TIME, arr);
     	client.handleMessageFromClientGUI(translator);
@@ -420,13 +491,25 @@ public class Supervisor_ProcessMain_Controller implements Initializable{
     
     public void declineDueTimeExtension(ActionEvent e)
     {
-    	Alert alert = new Alert(AlertType.INFORMATION);
+    	ArrayList <Object> arr = new ArrayList<Object>();
+
+    	arr.add(this.procID);//process/request id
+    	arr.add(this.process_stage);
     	
+    	Translator translator = new Translator(OptionsOfAction.DECLINE_EVALUATION_OR_EXECUTION_EXTENSION_TIME, arr);
+    	client.handleMessageFromClientGUI(translator);
     	extension_time_text.clear();
-    	alert.setTitle("ALERT");
-        alert.setHeaderText("THERE ARE NO MESSAGES");
-        alert.setContentText("need to send a message to the appraiser or the performance leader to resend a request");
-        alert.showAndWait();
+    	add_extension__time_btn.setDisable(true);
+    	decline_extension_request_btn.setDisable(true);
+		extension_time_text.setDisable(true);
+
+    }
+    
+    
+    
+    public void setProcessID(int proc)
+    {
+    	Supervisor_ProcessMain_Controller.instance.procID = proc;
     }
     
     void initializeChosenProcessScreen(String processStage)
@@ -463,8 +546,10 @@ public class Supervisor_ProcessMain_Controller implements Initializable{
 			appoint_performance_leader_btn.setDisable(true);
     		break;
     		
-    	case "4":
-    	case "9":
+    	case "4.5":
+    	case "5.5":
+    	case "9.5":
+    	case "11.5":
     		add_extension__time_btn.setDisable(false);
         	decline_extension_request_btn.setDisable(false);
         	extension_time_text.setDisable(false);
@@ -500,6 +585,17 @@ public class Supervisor_ProcessMain_Controller implements Initializable{
     void back_click(ActionEvent event) {
     	ScreenController.getScreenController().activate(ScreenController.getScreenController().getLastScreen());
     	ControllerProcessMain.instance.getTheUpdateProcessesFromDB();
+    	System.out.println("Client.instance.getUserID() = " + Client.instance.getUserID());
+    	if(Client.instance.getRole().compareTo("Supervisor") == 0)
+    		Client.instance.getRelatedMessages("Supervisor");
+    	else
+    	{
+    		if(Client.instance.getRole().compareTo("Manager") == 0)
+        		Client.instance.getRelatedMessages("Manager");
+    		else
+        		Client.instance.getRelatedMessages(Client.instance.getUserID());
+
+    	}
     }
     
     public void updateProcessInformation()
@@ -509,7 +605,7 @@ public class Supervisor_ProcessMain_Controller implements Initializable{
 		initiator_email_text.setText(process.getEmail());
 		initiator_role_text.setText(process.getRole());
 		information_system_text.setText("" + process.getSystem_num());
-		current_stage_text.setText(process.getProcess_stage());
+		current_stage_text.setText(MyHashMaps.getProcessStageText(Double.parseDouble(process.getProcess_stage())));
 		requested_change_text.setText(process.getRequest_description());
 		explanation_text.setText(process.getExplanaton());
 		notes_text.setText(process.getNotes());

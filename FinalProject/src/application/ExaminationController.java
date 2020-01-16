@@ -139,7 +139,17 @@ public class ExaminationController implements Initializable{
     void back_click(ActionEvent event) {
     	ScreenController.getScreenController().activate(ScreenController.getScreenController().getLastScreen());
     	ControllerProcessMain.instance.getTheUpdateProcessesFromDB();
-    	
+    	System.out.println("Client.instance.getUserID() = " + Client.instance.getUserID());
+    	if(Client.instance.getRole().compareTo("Supervisor") == 0)
+    		Client.instance.getRelatedMessages("Supervisor");
+    	else
+    	{
+    		if(Client.instance.getRole().compareTo("Manager") == 0)
+        		Client.instance.getRelatedMessages("Manager");
+    		else
+        		Client.instance.getRelatedMessages(Client.instance.getUserID());
+
+    	}
     	request_id_textbox.clear();
     	failure_explanation.clear();
     	
@@ -185,7 +195,7 @@ public class ExaminationController implements Initializable{
             return;
     	}
     	
-    	check.add(requestID);
+    	//check.add(requestID);
     	check.add(this.processID);
 		check.add(failure_explanation.getText());
 		
@@ -243,7 +253,7 @@ public class ExaminationController implements Initializable{
 		initiator_email_text.setText(process.getEmail());
 		initiator_role_text.setText(process.getRole());
 		information_system_text.setText("" + process.getSystem_num());
-		current_stage_text.setText(process.getProcess_stage());
+		current_stage_text.setText(MyHashMaps.getProcessStageText(Double.parseDouble(process.getProcess_stage())));
 		requested_change_text.setText(process.getRequest_description());
 		explanation_text.setText(process.getExplanaton());
 		notes_text.setText(process.getNotes());

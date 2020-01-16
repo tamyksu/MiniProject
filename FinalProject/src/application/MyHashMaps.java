@@ -4,6 +4,7 @@ import java.util.HashMap;
 public class MyHashMaps {
 	public static MyHashMaps instance = new MyHashMaps();
 	public static HashMap<Double, String> processStages;
+	public static HashMap<Double, String> informationSystems;
 	
 	
 	private MyHashMaps() {
@@ -31,5 +32,11 @@ public class MyHashMaps {
 	public static String getProcessStageText(double num) {
 		return processStages.get((Double) num);		
 	}
+	
+	public static String getInformationSystemText(int num) {
+		return processStages.get(num);		
+	}
+	
+	
 
 }

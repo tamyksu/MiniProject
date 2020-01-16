@@ -77,8 +77,7 @@ public class Server extends AbstractServer
    */
   protected void serverStarted()
   {
-    System.out.println
-      ("Server listening for connections on port " + getPort());
+    System.out.println("Server listening for connections on port " + getPort());
   }
   
   /**
@@ -87,8 +86,7 @@ public class Server extends AbstractServer
    */
   protected void serverStopped()
   {
-    System.out.println
-      ("Server has stopped listening for connections.");
+    System.out.println("Server has stopped listening for connections.");
   }
   
   //Class methods ***************************************************
@@ -126,17 +124,17 @@ public class Server extends AbstractServer
       System.out.println("ERROR - Could not listen for clients!");
     }
     
-	Timer timer = new Timer();
-	
-	Calendar calendar = Calendar.getInstance();
-	calendar.set(Calendar.HOUR_OF_DAY, 10);
-	calendar.set(Calendar.MINUTE, 15);
-	calendar.set(Calendar.SECOND, 0);
-	
-	Date time = calendar.getTime();
-	//checkDueDateOfProcesses();
-	
-	timer.schedule(new checkDueDateOfProcessesTask(), time);
+//	Timer timer = new Timer();
+//	
+//	Calendar calendar = Calendar.getInstance();
+//	calendar.set(Calendar.HOUR_OF_DAY, 10);
+//	calendar.set(Calendar.MINUTE, 15);
+//	calendar.set(Calendar.SECOND, 0);
+//	
+//	Date time = calendar.getTime();
+//	//checkDueDateOfProcesses();
+//	
+//	timer.schedule(new checkDueDateOfProcessesTask(), time);
     
   }
   
