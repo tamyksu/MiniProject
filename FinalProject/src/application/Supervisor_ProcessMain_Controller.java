@@ -32,7 +32,9 @@ public class Supervisor_ProcessMain_Controller implements Initializable{
 	
 	ArrayList<String> appraisersNames;
 	
-	private int process_stage = 1;
+	private String stringProcess_stage;
+	
+	private int intProcess_stage = 1;
 	
 	private int procID;
 	
@@ -173,7 +175,7 @@ public class Supervisor_ProcessMain_Controller implements Initializable{
     		return;
     	}
     	
-    	if(this.process_stage != Constants.STAGE_OF_APPRAISER && this.process_stage != Constants.STAGE_OF_EXECUTION)
+    	if(this.intProcess_stage != Constants.STAGE_OF_APPRAISER && this.intProcess_stage != Constants.STAGE_OF_EXECUTION)
     	{
     		return;
     	}
@@ -208,7 +210,7 @@ public class Supervisor_ProcessMain_Controller implements Initializable{
     	this.apprairsID = appraisersID;
     	this.appraisersNames = appraisersNames;
     	
-    	if(process_stage==Constants.STAGE_OF_APPRAISER)
+    	if(intProcess_stage==Constants.STAGE_OF_APPRAISER)
     	{
     		appoint_appraiser_comboBox.setDisable(false);
     		if(appraisersForCB != null)
@@ -219,7 +221,7 @@ public class Supervisor_ProcessMain_Controller implements Initializable{
     		}
     	}
     		
-    	if(process_stage == Constants.STAGE_OF_EXECUTION)
+    	if(intProcess_stage == Constants.STAGE_OF_EXECUTION)
     	{
 			appoint_performance_leader_comboBox.setDisable(false);
 			if(appraisersForCB != null)
@@ -247,7 +249,7 @@ public class Supervisor_ProcessMain_Controller implements Initializable{
     	String chosenAppraiser;
     	try
     	{
-    		if(this.process_stage == Constants.STAGE_OF_APPRAISER)
+    		if(this.intProcess_stage == Constants.STAGE_OF_APPRAISER)
     		{
         		chosenAppraiser = appoint_appraiser_comboBox.getValue();
         		current_appraiser_text.setText(chosenAppraiser);
@@ -267,7 +269,7 @@ public class Supervisor_ProcessMain_Controller implements Initializable{
     		check.add(chosenID);
     		
     		check.add(this.procID);//check.add(2);//check.add(processID);
-    		if(process_stage == Constants.STAGE_OF_APPRAISER)
+    		if(intProcess_stage == Constants.STAGE_OF_APPRAISER)
     			check.add("Appraiser");
     		else
     			check.add("Performance Leader");
@@ -275,7 +277,7 @@ public class Supervisor_ProcessMain_Controller implements Initializable{
     		Translator translator = new Translator(OptionsOfAction.APPOINT_APPRAISER_OR_PERFORMANCE_LEADER, check);
     		client.handleMessageFromClientGUI(translator);
     		
-    		if(process_stage == Constants.STAGE_OF_APPRAISER)
+    		if(intProcess_stage == Constants.STAGE_OF_APPRAISER)
     		{
     			add_extension__time_btn.setDisable(true);
         		decline_extension_request_btn.setDisable(true);
@@ -287,10 +289,10 @@ public class Supervisor_ProcessMain_Controller implements Initializable{
         		appoint_appraiser_btn.setDisable(true);
     			appoint_performance_leader_comboBox.setDisable(true);
     			appoint_performance_leader_btn.setDisable(true);
-        		process_stage = 2;
+        		intProcess_stage = 2;
     		}
     		else
-    		if(process_stage == Constants.STAGE_OF_EXECUTION)
+    		if(intProcess_stage == Constants.STAGE_OF_EXECUTION)
     		{
     			add_extension__time_btn.setDisable(true);
         		decline_extension_request_btn.setDisable(true);
@@ -302,7 +304,7 @@ public class Supervisor_ProcessMain_Controller implements Initializable{
         		appoint_appraiser_btn.setDisable(true);
     			appoint_performance_leader_comboBox.setDisable(true);
     			appoint_performance_leader_btn.setDisable(true);
-        		process_stage = Constants.STAGE_OF_EXECUTION;
+        		intProcess_stage = Constants.STAGE_OF_EXECUTION;
     		}
 
     	}
@@ -325,7 +327,7 @@ public class Supervisor_ProcessMain_Controller implements Initializable{
     		return;
     	}
     		
-    	if(process_stage >= Constants.STAGE_OF_APPRAISER)
+    	if(intProcess_stage >= Constants.STAGE_OF_APPRAISER)
     	{        	
         	ArrayList<Object> arr = new ArrayList<Object>();
         	arr.add(this.procID);
@@ -336,7 +338,7 @@ public class Supervisor_ProcessMain_Controller implements Initializable{
     
     public void setAppraiserAndPerformanceLeaderLabels(ArrayList <String> arr)
     {
-    	System.out.println("setLabels: process_stage = " + process_stage);
+    	System.out.println("setLabels: process_stage = " + intProcess_stage);
     	
     	Platform.runLater(new Runnable() {//avoiding java.lang.IllegalStateException “Not on FX application thread”
     	    public void run() {
@@ -400,7 +402,7 @@ public class Supervisor_ProcessMain_Controller implements Initializable{
     	
     	arr.add(this.procID);//process/request id
     	arr.add(due_time_text.getText());
-    	arr.add(this.process_stage);
+    	arr.add(this.intProcess_stage);
     	
     	Translator translator = new Translator(OptionsOfAction.SET_EVALUATION_OR_EXECUTION_DUE_TIME, arr);
     	client.handleMessageFromClientGUI(translator);
@@ -416,7 +418,7 @@ public class Supervisor_ProcessMain_Controller implements Initializable{
 
     	arr.add(this.procID);//process/request id
     	arr.add(due_time_text.getText());
-    	arr.add(this.process_stage);
+    	arr.add(this.intProcess_stage);
     	
     	Translator translator = new Translator(OptionsOfAction.DECLINE_EVALUATION_OR_EXECUTION_DUE_TIME, arr);
     	client.handleMessageFromClientGUI(translator);
@@ -439,10 +441,18 @@ public class Supervisor_ProcessMain_Controller implements Initializable{
     		{
     			try
     			{
-    				add_extension_explanation_text.setText(((String)notes.get(i+4)).toString());
-    				if(add_extension_explanation_text.getText().compareTo("") == 0)
-    					System.out.println("Supervisor_ProcessMain_Controller - setDueTimeExtensionExplanation - "
-        						+ "the explanation for the due time extension request is empty");
+    				String str = ((String)notes.get(i+4)).toString();//can't use i in the thread
+    				
+    				Platform.runLater(new Runnable() {//avoiding java.lang.IllegalStateException “Not on FX application thread”
+    		    	    public void run() {
+    		    	    	add_extension_explanation_text.setDisable(false);
+    		    	    	add_extension_explanation_text.setText(str.toString());
+    	    				if(add_extension_explanation_text.getText().compareTo("") == 0)
+    	    					System.out.println("Supervisor_ProcessMain_Controller - setDueTimeExtensionExplanation - "
+    	        						+ "the explanation for the due time extension request is empty");
+    		    	    }
+    		    	});
+    				
         			break;
     			}
     			
@@ -450,6 +460,7 @@ public class Supervisor_ProcessMain_Controller implements Initializable{
     			{
     				System.out.println("Supervisor_ProcessMain_Controller - setDueTimeExtensionExplanation - "
     						+ "the explanation for the due time extension request is null");
+    				System.out.println(e.getMessage());
     				add_extension_explanation_text.setText("");
     				return;
     			}
@@ -482,7 +493,7 @@ public class Supervisor_ProcessMain_Controller implements Initializable{
     	
     	arr.add(this.procID);//process/request id
     	arr.add(Integer.parseInt(extension_time_text.getText()));
-    	arr.add(this.process_stage);
+    	arr.add(this.stringProcess_stage);
     	
     	Translator translator = new Translator(OptionsOfAction.ADD_EVALUATION_OR_EXECUTION_EXTENSION_TIME, arr);
     	client.handleMessageFromClientGUI(translator);
@@ -494,7 +505,7 @@ public class Supervisor_ProcessMain_Controller implements Initializable{
     	ArrayList <Object> arr = new ArrayList<Object>();
 
     	arr.add(this.procID);//process/request id
-    	arr.add(this.process_stage);
+    	arr.add(this.stringProcess_stage);
     	
     	Translator translator = new Translator(OptionsOfAction.DECLINE_EVALUATION_OR_EXECUTION_EXTENSION_TIME, arr);
     	client.handleMessageFromClientGUI(translator);
@@ -519,14 +530,16 @@ public class Supervisor_ProcessMain_Controller implements Initializable{
     		return;
     	try
     	{
-    		this.process_stage = Integer.parseInt(processStage);
+    		this.intProcess_stage = Integer.parseInt(processStage);
         	
     	}
     	catch(NumberFormatException e)
     	{
     		double temp = Double.parseDouble(processStage);
-    		this.process_stage = (int)temp;
+    		this.intProcess_stage = (int)temp;
     	}
+    	
+    	this.stringProcess_stage = processStage;
     	
     	switch(processStage)
     	{
@@ -546,9 +559,13 @@ public class Supervisor_ProcessMain_Controller implements Initializable{
 			appoint_performance_leader_btn.setDisable(true);
     		break;
     		
+    	case "4.2":
     	case "4.5":
+    	case "5.2":
     	case "5.5":
+    	case "9.2":
     	case "9.5":
+    	case "11.2":
     	case "11.5":
     		add_extension__time_btn.setDisable(false);
         	decline_extension_request_btn.setDisable(false);

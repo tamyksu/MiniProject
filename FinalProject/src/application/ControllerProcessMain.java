@@ -286,7 +286,7 @@ public class ControllerProcessMain implements Initializable {
 
 	//The function responsible for matching buttons to the process is indicated in the table
 	private void ButtonAdjustment(String userRole) {
-		System.out.println("ButtonAdjustment: userRole = " + userRole);
+		System.out.println("ButtonAdjustment: userRole1 = " + userRole);
 		switch (userRole.toLowerCase()) {
 		case "initiator":
 			fitInitiator();
@@ -313,7 +313,7 @@ public class ControllerProcessMain implements Initializable {
 	
 	//The function responsible for matching buttons to the process is indicated in the table
 	public void ButtonAdjustmentSuperUser(String userRole, String processStatus) {
-		System.out.println("ButtonAdjustmentSuperUser: userRole = " + userRole);
+		System.out.println("ButtonAdjustmentSuperUser: userRole2 = " + userRole);
 		switch (userRole.toLowerCase())
 		{
 			case "manager":
@@ -506,7 +506,7 @@ public class ControllerProcessMain implements Initializable {
 	
 	private void fitExaminerDisabled()
 	{
-		if(this.procStage.compareTo("11") == 0)
+		if(this.procStage.compareTo("11") == 0 || this.procStage.compareTo("11.1") == 0)
 		{
 			newRequestBtn.setDisable(false);
 			extension_btn.setDisable(false);
@@ -625,10 +625,10 @@ public class ControllerProcessMain implements Initializable {
 		    	}
 		    	ArrayList <Object> arr = new ArrayList<Object>();
 		    	
-		    	arr.add(getSelectedRowProcID());//process/request id
-		    	arr.add(extension_request_text.getText());
-		    	arr.add(getSelectedRowRole());
-		    	arr.add(this.procStage);
+		    	arr.add(getSelectedRowProcID());//process id
+		    	arr.add(extension_request_text.getText());//reason
+		    	arr.add(getSelectedRowRole());//role
+		    	arr.add(this.procStage);//process stage
 		    	
 		    	Translator translator = new Translator(OptionsOfAction.SEND_EXTENSION_REQUEST, arr);
 		    	Client.getInstance().handleMessageFromClientGUI(translator);
@@ -657,7 +657,7 @@ public class ControllerProcessMain implements Initializable {
 			new Alert(AlertType.ERROR, "Unabble to evaluate, not yet!").show();
 			return;
 		}
-		if(Double.parseDouble(process.getProcess_stage())>4) {
+		if(Double.parseDouble(process.getProcess_stage())>=5) {
 			new Alert(AlertType.ERROR, "Already evaluated!").show();
 			return;
 		}

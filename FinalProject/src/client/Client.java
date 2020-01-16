@@ -554,7 +554,7 @@ public void handleMessageFromServerExecutionCompleted(Object rs) {
 				process.setSystem_num((int)result.get(i).get(1));
 				//Get values from string array
 				process.setRole(Client.getInstance().getRole());
-				process.setRole((String)result.get(i+1).get(0));
+				//process.setRole((String)result.get(i+1).get(0));
 				process.setIntiatorId((String)result.get(i+1).get(0));
 				process.setProblem_description((String)result.get(i+1).get(1));
 				process.setRequest_description((String)result.get(i+1).get(2));

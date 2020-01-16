@@ -182,7 +182,7 @@
                      </font>
                   </Label>
                   <Button fx:id="approve_due_time_request_btn" layoutX="77.0" layoutY="475.0" mnemonicParsing="false" onAction="#ApproveDueTimeRequest" prefHeight="32.0" prefWidth="175.0" text="approve due time request" textAlignment="CENTER" />
-                  <TextField fx:id="due_time_text" layoutX="274.0" layoutY="475.0" prefHeight="32.0" prefWidth="134.0" />
+                  <TextField fx:id="due_time_text" editable="false" layoutX="274.0" layoutY="475.0" prefHeight="32.0" prefWidth="134.0" />
                   <Button fx:id="add_extension__time_btn" layoutX="58.0" layoutY="221.0" mnemonicParsing="false" onAction="#addDueTimeExtension" prefHeight="32.0" prefWidth="175.0" text="Add extension time" />
                   <Button fx:id="decline_due_time_request_btn" layoutX="431.0" layoutY="475.0" mnemonicParsing="false" onAction="#DeclineDueTimeRequest" prefHeight="32.0" prefWidth="175.0" text="decline due time request" textAlignment="CENTER" />
                   <Label layoutX="269.0" layoutY="422.0" prefHeight="39.0" prefWidth="212.0" styleClass="textstyle" text="Stage due time">
@@ -190,7 +190,7 @@
                         <Font name="System Bold" size="21.0" />
                      </font>
                   </Label>
-                  <Label layoutX="24.0" layoutY="290.0" prefHeight="107.0" prefWidth="664.0" styleClass="textstyle" text="explanation">
+                  <Label fx:id="add_extension_explanation_text" layoutX="24.0" layoutY="290.0" prefHeight="107.0" prefWidth="664.0" styleClass="textstyle" text="explanation">
                      <font>
                         <Font size="17.0" />
                      </font>

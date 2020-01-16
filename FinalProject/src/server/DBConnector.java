@@ -857,20 +857,29 @@ System.out.println("id "+translator.getParmas().get(0));
 				System.out.println("Extension Due Time Update Was Succeeded!");
 				
 				String toWho="";
-				int procStage = (int)translator.getParmas().get(2);
+				String procStage = translator.getParmas().get(2).toString();
+				
 				switch(procStage)
 				{
-				case 4:
+				case "4.5":
+					procStage = "4.6";
 					toWho = "Appraiser";
 					break;
-				case 5:
+				case "5.5":
+					procStage = "5.6";
 					toWho = "Chairman";
 					break;
-				case 9:
+				case "9.5":
+					procStage = "9.6";
 					toWho = "Performance Leader";
 					break;
-				case 11:
-					toWho = "Examinator";
+				case "11.2":
+					procStage = "11.3";
+					toWho = "Examiner";
+					break;
+				case "11.5":
+					procStage = "11.6";
+					toWho = "Examiner";
 					break;
 				}
 				
@@ -878,7 +887,7 @@ System.out.println("id "+translator.getParmas().get(0));
 						toWho, "Supervisor", null);
 				deleteNotification((int)translator.getParmas().get(0), "add due time extension", 0,
 						"Supervisor", toWho);
-				setNextStageByInput((int)translator.getParmas().get(0), (String.valueOf(procStage) + "0.6"));
+				setNextStageByInput((int)translator.getParmas().get(0), procStage);
 			}
 			catch(SQLException e) {
 				 //TODO Auto-generated catch block
@@ -1030,18 +1039,21 @@ System.out.println("id "+translator.getParmas().get(0));
 						+ "(request_id, failure_explanation) "
 						+ "values(?,?)");
 						
-				//stmt.setInt(1, (int)translator.getParmas().get(0));
-				stmt.setInt(2, (int)translator.getParmas().get(0));
-				stmt.setString(3, translator.getParmas().get(1).toString());
+				stmt.setInt(1, (int)translator.getParmas().get(0));
+				stmt.setString(2, translator.getParmas().get(1).toString());
 				
 				stmt.executeUpdate();
-				setNextStageByInput((int)translator.getParmas().get(1), "7");
+				
+				System.out.println("INSERT_FAILURE_REPORT - insert failure report succeeded");
+				
+				setNextStageByInput((int)translator.getParmas().get(0), "7");
 			}
 			catch (SQLException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 
 				System.out.println("INSERT_FAILURE_REPORT: SQL EXCEPTION");
+				System.out.println(e.getMessage());
 
 			}
 			
@@ -1172,7 +1184,23 @@ System.out.println("id "+translator.getParmas().get(0));
 		}
 			
 		case FILL_FAILURE_REPORT_CLICK:
-			setNextStageByInput((int)translator.getParmas().get(0), "11.5");
+			
+			String pStage = translator.getParmas().get(1).toString();
+			
+			System.out.println("FILL_FAILURE_REPORT_CLICK: pStage = " + pStage);
+			
+			switch(pStage)
+			{
+			case "11":
+				pStage = "11.1";
+				break;
+			case "11.5":
+				pStage = "11.2";
+				break;
+
+			}
+			setNextStageByInput((int)translator.getParmas().get(0), pStage);
+			
 			break;
 			
 		case Fill_Evalution_Number_Of_Days: // Appraiser evaluate the required number of days.
@@ -1192,6 +1220,8 @@ System.out.println("id "+translator.getParmas().get(0));
 					stmt.setString(4, Evaluation_Options.Waiting.toString()); // Evaluation status (currently waiting)
 
 					stmt.executeUpdate();
+					sendNotification(processID, "define execution stage due time",
+							(int) translator.getParmas().get(3), "Supervisor", "Appraiser", null);
 					setNextStageByOne(processID); // Process is set to next stage;
 					evaluateNumberOfDaysAnswer.add(true);
 					return fillNumberOfDaysAnswer;
@@ -1200,7 +1230,8 @@ System.out.println("id "+translator.getParmas().get(0));
 					e.printStackTrace();
 					evaluateNumberOfDaysAnswer.add(false);
 
-					System.out.println("Insert Evaluation Days: SQL EXCEPTION");
+					System.out.println("Insert Evaluation Days: SQL EXCEPTION 1");
+					System.out.println(e.getMessage());
 					return fillNumberOfDaysAnswer;
 				}
 			}
@@ -1217,6 +1248,8 @@ System.out.println("id "+translator.getParmas().get(0));
 					stmt.setInt(4, processID); // The process ID.
 
 					stmt.executeUpdate();
+					sendNotification(processID, "define execution stage due time",
+							(int) translator.getParmas().get(3), "Supervisor", "Appraiser", null);
 					setNextStageByOne(processID); // Process is set to next stage;
 					evaluateNumberOfDaysAnswer.add(true);
 					return fillNumberOfDaysAnswer;
@@ -1225,20 +1258,21 @@ System.out.println("id "+translator.getParmas().get(0));
 					//e.printStackTrace();
 					evaluateNumberOfDaysAnswer.add(false);
 
-					System.out.println("Insert Evaluation Days: SQL EXCEPTION");
+					System.out.println("Insert Evaluation Days: SQL EXCEPTION 2");
+					System.out.println(e.getMessage());
 					return fillNumberOfDaysAnswer;
 				}
 			}
 			break;
 		case Fill_Evalution_Form: /*******   Fill Evaluation Form (Appraiser) ******/
 			int processID1 = (int) translator.getParmas().get(0); // The process ID.
-			String processStage1 = translator.getParmas().get(1).toString(); // The process ID.
+			
+			//String processStage1 = translator.getParmas().get(1).toString(); // The process ID.
 			ArrayList<Boolean> evaluationFormInserted = new ArrayList<>();
-			Translator evaluationFormTranslator = new Translator(OptionsOfAction.Fill_Evalution_Number_Of_Days, evaluationFormInserted);
+			Translator evaluationFormTranslator = new Translator(OptionsOfAction.Fill_Evalution_Form, evaluationFormInserted);
 			try {
-				stmt = conn.prepareStatement("UPDATE icmdb.evaluation_reports SET"
-						+ "requested_change=?, result=?, constraits_and_risks=?"
-						+ " WHERE process_id=?"); // The Requested change
+				stmt = conn.prepareStatement("UPDATE icmdb.evaluation_reports SET requested_change = ?,result = ?,"
+						+ "constraits_and_risks = ? WHERE process_id = ?"); // The Requested change
 
 				stmt.setString(1,translator.getParmas().get(1).toString()); // The Requested change
 				stmt.setString(2, translator.getParmas().get(2).toString()); // Result
@@ -1254,7 +1288,8 @@ System.out.println("id "+translator.getParmas().get(0));
 				//e.printStackTrace();
 				evaluationFormInserted.add(false);
 
-				System.out.println("Insert Evaluation Days: SQL EXCEPTION");
+				System.out.println("Insert Evaluation Days: SQL EXCEPTION 3");
+				System.out.println(e.getMessage());
 				return evaluationFormTranslator;
 			}
 			
@@ -1339,6 +1374,8 @@ System.out.println("id "+translator.getParmas().get(0));
 					stmt.setInt(3,(int) translator.getParmas().get(3)); // The evaluated number of days for execution
 					
 					stmt.executeUpdate();
+					sendNotification(processID2, "define execution stage due time",
+							(int) translator.getParmas().get(3), "Supervisor", "Performance Leader", null);
 					setNextStageByOne(processID2); // Process is set to next stage;
 					executeNumberOfDaysAnswer.add(true);
 					return executeNumberOfDaysTranslator;
@@ -1348,6 +1385,7 @@ System.out.println("id "+translator.getParmas().get(0));
 					executeNumberOfDaysAnswer.add(false);
 
 					System.out.println("Insert Evaluation Days: SQL EXCEPTION");
+					System.out.println(e.getMessage());
 					return executeNumberOfDaysTranslator;
 				}
 			}
@@ -1364,6 +1402,8 @@ System.out.println("id "+translator.getParmas().get(0));
 					stmt.setInt(3, processID2); // The process ID.
 
 					stmt.executeUpdate();
+					sendNotification(processID2, "define execution stage due time",
+							(int) translator.getParmas().get(3), "Supervisor", "Performance Leader", null);
 					setNextStageByOne(processID2); // Process is set to next stage;
 					executeNumberOfDaysAnswer.add(true);
 					return executeNumberOfDaysTranslator;
@@ -1373,6 +1413,7 @@ System.out.println("id "+translator.getParmas().get(0));
 					executeNumberOfDaysAnswer.add(false);
 
 					System.out.println("Insert Evaluation Days: SQL EXCEPTION");
+					System.out.println(e.getMessage());
 					return executeNumberOfDaysTranslator;
 				}
 			}
@@ -1513,26 +1554,37 @@ System.out.println("id "+translator.getParmas().get(0));
 			}
 
 			break;
-		case DECLINE_EVALUATION_OR_EXECUTION_EXTENSION_TIME:
+		case DECLINE_EVALUATION_OR_EXECUTION_EXTENSION_TIME://for all stages (not just evaluation and execution)
 			try
 			{
 				String toWho="";
-				int procStage = (int)translator.getParmas().get(1);
+				String procStage = translator.getParmas().get(1).toString();
+				
 				switch(procStage)
 				{
-				case 4:
+				case "4.5":
+					procStage = "4";
 					toWho = "Appraiser";
 					break;
-				case 5:
+				case "5.5":
+					procStage = "5";
 					toWho = "Chairman";
 					break;
-				case 9:
+				case "9.5":
+					procStage = "9";
 					toWho = "Performance Leader";
 					break;
-				case 11:
-					toWho = "Examinator";
+					
+				case "11.2":
+					procStage = "11.1";
+					toWho = "Examiner";
+					break;
+				case "11.5":
+					procStage = "11";
+					toWho = "Examiner";
 					break;
 				}
+			System.out.println("DECLINE_EVALUATION_OR_EXECUTION_EXTENSION_TIME: toWho = " + toWho);
 			
 				sendNotification((int)translator.getParmas().get(0), "due time extension was declined", 0,
 						toWho, "Supervisor", null);
@@ -1540,7 +1592,7 @@ System.out.println("id "+translator.getParmas().get(0));
 				deleteNotification((int)translator.getParmas().get(0), "add due time extension", 0,
 						"Supervisor", toWho);
 				
-				setNextStageByInput((int)translator.getParmas().get(0), String.valueOf(procStage));
+				setNextStageByInput((int)translator.getParmas().get(0), procStage);
 			
 				
 			}
@@ -1664,9 +1716,28 @@ System.out.println("id "+translator.getParmas().get(0));
 			sendNotification((int)translator.getParmas().get(0), "add due time extension", 0,
 					"Supervisor", translator.getParmas().get(2).toString(), translator.getParmas().get(1).toString());
 			
-			double stage = Double.parseDouble(translator.getParmas().get(3).toString());
-			stage += 0.5;
-			setNextStageByInput((int)translator.getParmas().get(0), String.valueOf(stage));
+			String procStage = translator.getParmas().get(3).toString();
+			
+			switch(procStage)
+			{
+			case "4":
+				procStage = "4.5";
+				break;
+			case "5":
+				procStage = "5.5";
+				break;
+			case "9":
+				procStage = "9.5";
+				break;
+			case "11":
+				procStage = "11.5";
+				break;
+			case "11.1":
+				procStage = "11.2";
+				break;
+			}
+			
+			setNextStageByInput((int)translator.getParmas().get(0), procStage);
 			break;
 			
 		default:
@@ -1744,9 +1815,19 @@ System.out.println("id "+translator.getParmas().get(0));
 				nextProcStage = "4";
 				break;
 			case "4":
+			case "4.1":
+			case "4.2":
+			case "4.3":
+			case "4.5":
+			case "4.6":
 				nextProcStage = "5";
 				break;
 			case "5":
+			case "5.1":
+			case "5.2":
+			case "5.3":
+			case "5.5":
+			case "5.6":
 				nextProcStage = "6";
 				break;
 			case "6":
@@ -1760,13 +1841,22 @@ System.out.println("id "+translator.getParmas().get(0));
 				nextProcStage = "9";
 				break;
 			case "9":
+			case "9.1":
+			case "9.2":
+			case "9.3":
+			case "9.5":
+			case "9.6":
 				nextProcStage = "10";
 				break;
 			case "10":
 				nextProcStage = "11";
 				break;
 			case "11":
+			case "11.1":
+			case "11.2":
+			case "11.3":
 			case "11.5":
+			case "11.6":
 				nextProcStage = "12";
 				break;
 			case "12":
@@ -1798,6 +1888,8 @@ System.out.println("id "+translator.getParmas().get(0));
 		try
 		{
 			PreparedStatement stmt;
+			
+			System.out.println("setNextStageByInput: procID = " + procID + ", nextStage = " + nextStage);
 			
 			stmt = conn.prepareStatement("UPDATE icmdb.processes SET process_stage = ? WHERE request_id = ?");
 			

@@ -23,7 +23,7 @@ public class ExaminationController implements Initializable{
 	
 	Client client = Client.getInstance();
 	
-	private int process_stage = 1;
+	private String process_stage;
 	
 	private int processID;
 	
@@ -92,23 +92,17 @@ public class ExaminationController implements Initializable{
     public void initializeChosenProcessScreen(String processStage)
     {
     	System.out.println("ExaminationController: initializeChosenProcessScreen: Stage: " + processStage);
+    	
     	if(processStage == null)
     		return;
     	
-    	try
-    	{
-    		this.process_stage = Integer.parseInt(processStage);
-        	
-    	}
-    	catch(NumberFormatException e)
-    	{
-    		double temp = Double.parseDouble(processStage);
-    		this.process_stage = (int)temp;
-    	}
-    	
+    	this.process_stage = processStage;        	
+
     	switch(processStage)
     	{
     	case "11":
+    	case "11.5":
+    	case "11.6":
     		examination_completed_btn.setDisable(false);
         	fill_failure_report_btn.setDisable(false);
         	failure_explanation.setDisable(true);
@@ -116,7 +110,9 @@ public class ExaminationController implements Initializable{
         	submit_failure_report_btn.setDisable(true);
     		break;
     		
-    	case "11.5":
+    	case "11.1":
+    	case "11.2":
+    	case "11.3":
     		examination_completed_btn.setDisable(true);
         	fill_failure_report_btn.setDisable(false);
         	failure_explanation.setDisable(false);
@@ -160,26 +156,8 @@ public class ExaminationController implements Initializable{
 
     @FXML
     void submit_failure_report_click(ActionEvent event) {
-    	ArrayList<Object> check = new ArrayList<Object>();
-    	int requestID;
     	
-    	try
-    	{
-    		requestID = Integer.parseInt(request_id_textbox.getText());
-    	}
-    	catch(NumberFormatException ex)
-    	{
-    		System.out.println("Wrong input");
-    		
-    		Alert alert = new Alert(AlertType.INFORMATION);
-        	
-    		request_id_textbox.clear();
-        	alert.setTitle("ALERT");
-            alert.setHeaderText("NO FAILURE REPORT ID WAS SET");
-            alert.setContentText("Please insert a valid ID");
-            alert.showAndWait();
-            return;
-    	}
+    	ArrayList<Object> check = new ArrayList<Object>();
     	
     	if(failure_explanation.getText().compareTo("") == 0)
     	{
@@ -195,7 +173,6 @@ public class ExaminationController implements Initializable{
             return;
     	}
     	
-    	//check.add(requestID);
     	check.add(this.processID);
 		check.add(failure_explanation.getText());
 		
@@ -221,6 +198,8 @@ public class ExaminationController implements Initializable{
     	ArrayList<Object> check = new ArrayList<Object>();
     	
     	check.add(this.processID);
+    	check.add(this.process_stage);
+    	
     	Translator translator = new Translator(OptionsOfAction.FILL_FAILURE_REPORT_CLICK, check);
 		client.handleMessageFromClientGUI(translator);
     }
@@ -230,7 +209,8 @@ public class ExaminationController implements Initializable{
     void examination_completed_click(ActionEvent event) {
     	
     	examination_completed_btn.setDisable(true);
-    	
+    	fill_failure_report_btn.setDisable(true);
+
     	ArrayList<Object> check = new ArrayList<Object>();
     	check.add(this.processID);
     	
