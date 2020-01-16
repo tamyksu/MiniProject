@@ -122,6 +122,18 @@ public class NewRequestController implements Initializable {
     @FXML
     void backClick(ActionEvent event) {
     	ScreenController.getScreenController().activate(ScreenController.getScreenController().getLastScreen());
+    	ControllerProcessMain.instance.getTheUpdateProcessesFromDB();
+    	System.out.println("Client.instance.getUserID() = " + Client.instance.getUserID());
+    	if(Client.instance.getRole().compareTo("Supervisor") == 0)
+    		Client.instance.getRelatedMessages("Supervisor");
+    	else
+    	{
+    		if(Client.instance.getRole().compareTo("Manager") == 0)
+        		Client.instance.getRelatedMessages("Manager");
+    		else
+        		Client.instance.getRelatedMessages(Client.instance.getUserID());
+
+    	}
     }
 
     

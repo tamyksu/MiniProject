@@ -1,6 +1,8 @@
 package server;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.sql.Connection;
@@ -177,6 +179,7 @@ public class DBConnector {
 			} catch (SQLException e) {
 				// TODO Auto-generated catch block
 				System.out.println("SQL EXCEPTION!");
+				System.out.println(e.getMessage());
 				failed.add(new Boolean(false));
 				answer = new Translator(OptionsOfAction.NEWREQUEST,failed);
 				return answer;
@@ -663,7 +666,9 @@ System.out.println("id "+translator.getParmas().get(0));
 					ArrayList<ArrayList<?>> empty = new ArrayList<ArrayList<?>>();
 					empty.add(ar);
 
-					return new Translator(translator.getRequest(), empty);
+					Translator newTranslator = new Translator(translator.getRequest(), empty);
+
+					return newTranslator;
 				}
 				
 				rs.previous();
@@ -698,9 +703,10 @@ System.out.println("id "+translator.getParmas().get(0));
 					}
 					processes.add(intArray);
 					processes.add(stringArray);
+					processes.add(getRelatedFilesName(rs.getInt(1)));
 				}
-				
-				return new Translator(translator.getRequest(), processes);
+				Translator newTranslator = new Translator(translator.getRequest(), processes);
+				return newTranslator;
 			} catch (SQLException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -872,6 +878,7 @@ System.out.println("id "+translator.getParmas().get(0));
 						toWho, "Supervisor", null);
 				deleteNotification((int)translator.getParmas().get(0), "add due time extension", 0,
 						"Supervisor", toWho);
+				setNextStageByInput((int)translator.getParmas().get(0), (String.valueOf(procStage) + "0.6"));
 			}
 			catch(SQLException e) {
 				 //TODO Auto-generated catch block
@@ -923,7 +930,7 @@ System.out.println("id "+translator.getParmas().get(0));
 					}
 					processes.add(intArray);
 					processes.add(stringArray);
-					
+					processes.add(getRelatedFilesName(rs.getInt(1)));
 				}
 				
 				return new Translator(translator.getRequest(), processes);
@@ -1401,10 +1408,10 @@ System.out.println("id "+translator.getParmas().get(0));
 						System.out.println("GET_RELATED_MESSAGES 2");
 						if(rs.first() == false) {
 							System.out.println("GET_RELATED_MESSAGES - No messages were found");
-							ar.add("No messages were found");
-							ArrayList<ArrayList<?>> empty = new ArrayList<ArrayList<?>>();
-							empty.add(ar);
-							Translator newTranslator = new Translator(translator.getRequest(), empty);
+							//ar.add("No messages were found");
+							ArrayList<String> empty = new ArrayList<String>();
+							empty.add("No messages were found");
+							Translator newTranslator = new Translator(OptionsOfAction.GET_RELATED_MESSAGES, empty);
 							return newTranslator;
 						}
 						
@@ -1532,6 +1539,8 @@ System.out.println("id "+translator.getParmas().get(0));
 				
 				deleteNotification((int)translator.getParmas().get(0), "add due time extension", 0,
 						"Supervisor", toWho);
+				
+				setNextStageByInput((int)translator.getParmas().get(0), String.valueOf(procStage));
 			
 				
 			}
@@ -1624,6 +1633,42 @@ System.out.println("id "+translator.getParmas().get(0));
 			e.printStackTrace();
 			}
 			break;
+			
+		case DOWNLOADFILE:
+			{
+	        	ArrayList<MyFile> fileToServer = new ArrayList<MyFile>();
+	    		MyFile msg= new MyFile((String) translator.getParmas().get(0));
+	    		  try{
+	    			      File newFile = new File ((String) translator.getParmas().get(0));      
+	    			      byte [] mybytearray  = new byte [(int)newFile.length()];
+	    			      FileInputStream fis = new FileInputStream(newFile);
+	    			      BufferedInputStream bis = new BufferedInputStream(fis);			  
+	    			      
+	    			      msg.initArray(mybytearray.length);
+	    			      msg.setSize(mybytearray.length);
+	    			      
+	    			      bis.read(msg.getMybytearray(),0,mybytearray.length);
+	    			      fileToServer.add(msg);	
+	    			    Translator newTranslator = new Translator(translator.getRequest(), fileToServer);
+	    				return newTranslator;
+	    			    }
+	    			catch (Exception e) {
+	    				System.out.println("Error: Can't send files to Server");
+	    				System.out.println(e.getMessage());
+	    			}
+					
+			}
+
+		break;
+		case SEND_EXTENSION_REQUEST:
+			sendNotification((int)translator.getParmas().get(0), "add due time extension", 0,
+					"Supervisor", translator.getParmas().get(2).toString(), translator.getParmas().get(1).toString());
+			
+			double stage = Double.parseDouble(translator.getParmas().get(3).toString());
+			stage += 0.5;
+			setNextStageByInput((int)translator.getParmas().get(0), String.valueOf(stage));
+			break;
+			
 		default:
 			System.out.println("default");
 			break;
@@ -1774,7 +1819,8 @@ System.out.println("id "+translator.getParmas().get(0));
 	
 	private static void sendNotification(int procID, String content, int days, String toWho, String fromWho, String reason)
 	{
-
+		System.out.println(procID+" "+content+" "+days+" "+toWho+" "+fromWho+" "+reason);
+		
 		try
 		{
 			java.sql.Date date = new java.sql.Date(new java.util.Date().getTime());
@@ -1801,6 +1847,7 @@ System.out.println("id "+translator.getParmas().get(0));
 		catch (SQLException e) {
 		// TODO Auto-generated catch block
 		System.out.println("SQL Exception DBController - sendNotification()");
+		System.out.println(e.getMessage());
 		}	
 		
 		
@@ -1892,6 +1939,29 @@ System.out.println("id "+translator.getParmas().get(0));
 			e.printStackTrace();
 			return null;
 		}	
+	}
 	
+	private static ArrayList<String> getRelatedFilesName(int requestID) {
+		ArrayList<String> filesNames = new ArrayList<String>();
+		String tempString;
+		PreparedStatement stmt;
+		try {
+			stmt = conn.prepareStatement("SELECT file FROM files WHERE files.request_id=?");
+			stmt.setInt(1, requestID);
+			ResultSet rs = stmt.executeQuery();
+			if(rs.first() == false) {
+				return null;
+			}
+			rs.previous();
+			while (rs.next()) {
+				tempString =rs.getString(1);
+				filesNames.add(tempString);
+			}
+			return filesNames;
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}		
+		return null;
 	}
 }

@@ -157,7 +157,7 @@ public class Supervisor_ProcessMain_Controller implements Initializable{
     	
     	try
     	{
-    		this.procID = processID = ControllerProcessMain.instance.getSelectedRowNumber();//needs rows in the processes table
+    		this.procID = processID = ControllerProcessMain.instance.getSelectedRowProcID();//needs rows in the processes table
     	}
     	catch(NullPointerException e)
     	{
@@ -546,10 +546,10 @@ public class Supervisor_ProcessMain_Controller implements Initializable{
 			appoint_performance_leader_btn.setDisable(true);
     		break;
     		
-    	case "4":
-    	case "5":
-    	case "9":
-    	case "11":
+    	case "4.5":
+    	case "5.5":
+    	case "9.5":
+    	case "11.5":
     		add_extension__time_btn.setDisable(false);
         	decline_extension_request_btn.setDisable(false);
         	extension_time_text.setDisable(false);

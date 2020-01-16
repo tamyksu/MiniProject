@@ -100,7 +100,7 @@ public class Client extends AbstractClient {
 
 		case DEFROST_PROCESS:
 			handleMessageFromServerDefrostProcess(result.getParmas());
-
+			break;
 		case Fill_Evalution_Number_Of_Days:
 			handleMessageFromServerFillEvalutionNumberOfDays(result.getParmas());
 			break;
@@ -125,7 +125,9 @@ public class Client extends AbstractClient {
 			break;	
 		case SHUTDOWN_PROCESS:
 			handleMessageFromServerShutdownProcess(result.getParmas());
+			break;
 		case GET_RELATED_MESSAGES:
+			System.out.println("GET_RELATED_MESSAGES reached");
 			setRelatedMessages(result.getParmas());
 			break;
 		case RECOVER_PASSWORD:
@@ -133,6 +135,9 @@ public class Client extends AbstractClient {
 			break;
 		case REJECTE_PROCESS:
 			handleMessageFromServerREJECTE_PROCESS(result.getParmas());
+			break;
+		case DOWNLOADFILE:
+			handleMessageFromServerDownloadFile(result.getParmas());
 			break;
 		default:
 			break;
@@ -495,7 +500,7 @@ public void handleMessageFromServerExecutionCompleted(Object rs) {
 	//In case we got processes to display from this database, this function will make sure to save them to the client
 	//and also send them to the tag on the appropriate screen
 	@SuppressWarnings("unchecked")
-	/*****************************************handlerMessageFromServerProcesses*****************************************************/
+	/*****************************************	*****************************************************/
 	public void handlerMessageFromServerProcesses(Object rs) {
 		Processes processes = new Processes();
     	ArrayList<ArrayList<?>> result = new ArrayList<ArrayList<?>>();	
@@ -549,7 +554,7 @@ public void handleMessageFromServerExecutionCompleted(Object rs) {
 				process.setSystem_num((int)result.get(i).get(1));
 				//Get values from string array
 				process.setRole(Client.getInstance().getRole());
-				//process.setRole((String)result.get(i+1).get(0));
+				process.setRole((String)result.get(i+1).get(0));
 				process.setIntiatorId((String)result.get(i+1).get(0));
 				process.setProblem_description((String)result.get(i+1).get(1));
 				process.setRequest_description((String)result.get(i+1).get(2));
@@ -641,6 +646,8 @@ public void handleMessageFromServerExecutionCompleted(Object rs) {
 		System.out.println("setRelatedMessages");
 		ArrayList<Object> result = (ArrayList<Object>)rs;
 		ArrayList<String> messages = new ArrayList<String>();
+		
+		
 		System.out.println("setRelatedMessages" + result.size());
 
 		for(int i=0 ; i < result.size()/6 ; i++)
