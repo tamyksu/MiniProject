@@ -526,7 +526,13 @@ public void handleMessageFromServerExecutionCompleted(Object rs) {
 				process.setInitiatorLastName((String)result.get(i+1).get(12));
 				process.setEmail((String)result.get(i+1).get(13));
 				process.setDepartment((String)result.get(i+1).get(14));
-				if(result.get(i+2) != null) process.setRelatedDocuments((ArrayList<String>) result.get(i+2));
+				try{
+					if(result.get(i+2) != null) process.setRelatedDocuments((ArrayList<String>) result.get(i+2));
+				}
+				catch(IndexOutOfBoundsException ex)
+				{
+					System.out.println("no files?");
+				}
 				processes.getMyProcess().put(new Integer((int)result.get(i).get(0)), process);
 				processes.getMyProcessesInArrayList().add(process);
 				
@@ -554,7 +560,7 @@ public void handleMessageFromServerExecutionCompleted(Object rs) {
 				process.setSystem_num((int)result.get(i).get(1));
 				//Get values from string array
 				process.setRole(Client.getInstance().getRole());
-				process.setRole((String)result.get(i+1).get(0));
+				//process.setRole((String)result.get(i+1).get(0));
 				process.setIntiatorId((String)result.get(i+1).get(0));
 				process.setProblem_description((String)result.get(i+1).get(1));
 				process.setRequest_description((String)result.get(i+1).get(2));

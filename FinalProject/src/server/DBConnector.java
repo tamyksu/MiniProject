@@ -66,6 +66,7 @@ public class DBConnector {
 		PreparedStatement stmt;
 		ArrayList<String> ar = new ArrayList<String>() ;
 		switch (translator.getRequest()) {
+		
 		case NEWREQUEST:
 
 			ArrayList<Boolean> failed = new ArrayList<Boolean>();
@@ -377,8 +378,8 @@ public class DBConnector {
 			 ArrayList<Date> CreateDate=new ArrayList<Date>();
 			 ArrayList<String> FinalDate=new ArrayList<String>();
 			 end_index=start_index.plusDays(num_days);
-			
-		
+			while(!start_index.isAfter(end_date))
+			{
 		
 			/*stmt = conn.prepareStatement("SELECT COUNT(*) FROM icmdb.processes_state where "
 			
@@ -706,9 +707,7 @@ System.out.println("id "+translator.getParmas().get(0));
 					ArrayList<ArrayList<?>> empty = new ArrayList<ArrayList<?>>();
 					empty.add(ar);
 
-					Translator newTranslator = new Translator(translator.getRequest(), empty);
-
-					return newTranslator;
+					return new Translator(translator.getRequest(), empty);
 				}
 				
 				rs.previous();
@@ -745,8 +744,8 @@ System.out.println("id "+translator.getParmas().get(0));
 					processes.add(stringArray);
 					processes.add(getRelatedFilesName(rs.getInt(1)));
 				}
-				Translator newTranslator = new Translator(translator.getRequest(), processes);
-				return newTranslator;
+				
+				return new Translator(translator.getRequest(), processes);
 			} catch (SQLException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -793,7 +792,7 @@ System.out.println("id "+translator.getParmas().get(0));
 				System.out.println(workersWithoutRole);
 				
 				return  new Translator(translator.getRequest(), workersWithoutRole);
-			
+				
 			} catch (SQLException e) {
 				// TODO Auto-generated catch block
 				System.out.println("Catch");
@@ -801,23 +800,23 @@ System.out.println("id "+translator.getParmas().get(0));
 			}
 			break;
 		case APPOINT_APPRAISER_OR_PERFORMANCE_LEADER:
-				
-				try {
-					stmt = conn.prepareStatement("INSERT INTO users_requests(user_id, process_id, role)" +
-				"VALUES (?, ?, ?)");
-					stmt.setString(1, translator.getParmas().get(0).toString());
-					stmt.setInt(2, (int)translator.getParmas().get(1));
-					stmt.setString(3, translator.getParmas().get(2).toString());
-					
-					stmt.executeUpdate();
-					
-					System.out.println("APPOINT_APPRAISER_OR_PERFORMANCE_LEADER Insert is working");
-					setNextStageByOne((int)translator.getParmas().get(1));
-				}
-				catch (SQLException e) {
-					// TODO Auto-generated catch block
-					System.out.println("SQL EXCEPTION on APPOINT_APPRAISER_OR_PERFORMANCE_LEADER");
-				}
+
+			try {
+				stmt = conn.prepareStatement("INSERT INTO users_requests(user_id, process_id, role)" +
+						"VALUES (?, ?, ?)");
+				stmt.setString(1, translator.getParmas().get(0).toString());
+				stmt.setInt(2, (int)translator.getParmas().get(1));
+				stmt.setString(3, translator.getParmas().get(2).toString());
+
+				stmt.executeUpdate();
+
+				System.out.println("APPOINT_APPRAISER_OR_PERFORMANCE_LEADER Insert is working");
+				setNextStageByOne((int)translator.getParmas().get(1));
+			}
+			catch (SQLException e) {
+				// TODO Auto-generated catch block
+				System.out.println("SQL EXCEPTION on APPOINT_APPRAISER_OR_PERFORMANCE_LEADER");
+			}
 			break;
 		case SET_EVALUATION_OR_EXECUTION_DUE_TIME:
 			try {
@@ -861,6 +860,9 @@ System.out.println("id "+translator.getParmas().get(0));
 			break;
 		case ADD_EVALUATION_OR_EXECUTION_EXTENSION_TIME:
 			try {
+				
+				
+				
 				stmt = conn.prepareStatement("SELECT current_stage_due_date FROM icmdb.processes WHERE request_id = ?");
 				stmt.setInt(1, (int)translator.getParmas().get(0));
 				
@@ -887,12 +889,6 @@ System.out.println("id "+translator.getParmas().get(0));
 				
 				date = date.valueOf(date.toLocalDate().plusDays((int)translator.getParmas().get(1)));
 				
-				stmt = conn.prepareStatement("UPDATE icmdb.processes_state SET current_stage_due_date = ? "
-						+ "WHERE request_id = ?");
-				stmt.setString(1, String.valueOf(newDueTime).toString());
-				stmt.setInt(2, (int)translator.getParmas().get(0));
-				stmt.executeUpdate();
-				//////////////////////////////
 				stmt = conn.prepareStatement("UPDATE icmdb.processes SET current_stage_due_date = ? "
 						+ "WHERE request_id = ?");
 				
@@ -990,10 +986,10 @@ System.out.println("id "+translator.getParmas().get(0));
 		case GET_APPRAISER_AND_PERFORMANCE_LEADER_OF_PROC:
 			try {
 				System.out.println("GET_APPRAISER_AND_PERFORMANCE_LEADER_OF_PROC 1");
-				stmt = conn.prepareStatement("SELECT first_name, last_name, id, role\r\n" + 
+				stmt = conn.prepareStatement("SELECT first_name, last_name, id, users_requests.role\r\n" + 
 						"FROM icmdb.workers\r\n" + 
 						"		JOIN icmdb.users_requests ON id = user_id\r\n" + 
-						"						WHERE (role = 'Appraiser' OR role = 'Performance Leader')\r\n" + 
+						"						WHERE (users_requests.role = 'Appraiser' OR users_requests.role = 'Performance Leader')\r\n" + 
 						"						AND process_id = ?	");
 				stmt.setInt(1, (int)translator.getParmas().get(0));
 				
@@ -1069,16 +1065,17 @@ System.out.println("id "+translator.getParmas().get(0));
 				return new Translator(translator.getRequest(),ar);
 
 			}
+
 		}
 		case INSERT_FAILURE_REPORT:
 			try {
 				stmt = conn.prepareStatement("insert into icmdb.failure_reports "
-						+ "(request_id, failure_explanation) "
-						+ "values(?,?)");
+						+ "(failure_report_id,request_id, failure_explanation) "
+						+ "values(?,?,?)");
 						
-				//stmt.setInt(1, (int)translator.getParmas().get(0));
-				stmt.setInt(2, (int)translator.getParmas().get(0));
-				stmt.setString(3, translator.getParmas().get(1).toString());
+				stmt.setInt(1, (int)translator.getParmas().get(0));
+				stmt.setInt(2, (int)translator.getParmas().get(1));
+				stmt.setString(3, translator.getParmas().get(2).toString());
 				
 				stmt.executeUpdate();
 				setNextStageByInput((int)translator.getParmas().get(1), "7");
@@ -1096,7 +1093,6 @@ System.out.println("id "+translator.getParmas().get(0));
 		case EXAMINATION_COMPLETED:
 			setNextStageByOne((int)translator.getParmas().get(0));
 			break;
-
 		case REJECTE_PROCESS:
 			try {
 				
@@ -1126,6 +1122,7 @@ System.out.println("id "+translator.getParmas().get(0));
 				return new Translator(translator.getRequest(),ar);
 
 			}
+		
 		catch (SQLException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -1134,7 +1131,7 @@ System.out.println("id "+translator.getParmas().get(0));
 				return new Translator(translator.getRequest(),ar);
 
 			}
-	
+			
 		case FREEZE_PROCESS:
 		{
 			try {
@@ -1186,11 +1183,11 @@ System.out.println("id "+translator.getParmas().get(0));
 				stmt.setString(1, (String) translator.getParmas().get(0));
 
 				int rs = stmt.executeUpdate();
-
+				
 				if(rs == 1)
 				{
 					/*************************************************************************/
-
+					
 					PreparedStatement stmt9 = conn.prepareStatement("insert into icmdb.processes_state (request_id,status1,date) "
 							+"values(?,?,CURRENT_TIMESTAMP)");
 					stmt9.setString(1, (String) translator.getParmas().get(0));
@@ -1204,24 +1201,24 @@ System.out.println("id "+translator.getParmas().get(0));
 				{
 					ar.add("Failed To Shutdown");
 				}
-
+				
 				return new Translator(translator.getRequest(),ar);
 
 
 			} catch (SQLException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
-
+				
 				ar.add("SQL Error");
 				return new Translator(translator.getRequest(),ar);
-			}
+			}						
 		}
 			
 		case FILL_FAILURE_REPORT_CLICK:
 			setNextStageByInput((int)translator.getParmas().get(0), "11.5");
 			break;
-			
-		case Fill_Evalution_Number_Of_Days: // Appraiser evaluate the required number of days.
+
+	case Fill_Evalution_Number_Of_Days: // Appraiser evaluate the required number of days.
 			ArrayList<Boolean> evaluateNumberOfDaysAnswer = new ArrayList<>();
 			Translator fillNumberOfDaysAnswer = new Translator(OptionsOfAction.Fill_Evalution_Number_Of_Days, evaluateNumberOfDaysAnswer);
 			int processID = (int) translator.getParmas().get(0); // The process ID.
@@ -1857,8 +1854,8 @@ System.out.println("id "+translator.getParmas().get(0));
 		}
 		
 		catch (SQLException e) {
-		// TODO Auto-generated catch block
-		System.out.println("SQL Exception setNextStageByInput()");
+			// TODO Auto-generated catch block
+			System.out.println("SQL Exception setNextStageByInput()");
 		}	
 		
 	}
@@ -2009,6 +2006,5 @@ System.out.println("id "+translator.getParmas().get(0));
 			e.printStackTrace();
 		}		
 		return null;
-		
 	}
 }
