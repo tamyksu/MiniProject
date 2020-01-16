@@ -12,12 +12,13 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.time.temporal.ChronoUnit;
-
+import java.time.format.DateTimeFormatter;
 import org.omg.CORBA.INTERNAL;
-
+import java.time.*;
 import com.mysql.cj.exceptions.DataReadException;
 
 import translator.*;
@@ -366,42 +367,81 @@ public class DBConnector {
 			arr.add(rejected);
 			
 			/***************************************************************************************/
-			System.out.println("**************************");
+		/*	System.out.println("**************************");
 			
 			 start_index=start_date;
 			 ArrayList<Integer>TotalDays=new ArrayList<Integer>();
+			 ArrayList<Date> CreateDate=new ArrayList<Date>();
+			 ArrayList<String> FinalDate=new ArrayList<String>();
 			 end_index=start_index.plusDays(num_days);
-			while(!start_index.isAfter(end_date))
-			{
+			
 		
-			stmt = conn.prepareStatement("SELECT COUNT(*) FROM icmdb.processes_state where "
+		
+			/*stmt = conn.prepareStatement("SELECT COUNT(*) FROM icmdb.processes_state where "
 			
 					+"date>=? and date<? group by workdays");
-							
+							*/
+				stmt = conn.prepareStatement("SELECT creation_date,IFNULL(current_stage_due_date, 0) FROM icmdb.processes");
 			//LocalDate local=(LocalDate)translator.getParmas().get(0);
 			//LocalDate local_end=(LocalDate)translator.getParmas().get(1);
-			Timestamp start=Timestamp.valueOf(start_index.atTime(LocalTime.MIDNIGHT));
-			Timestamp end=Timestamp.valueOf(end_index.atTime(LocalTime.MIDNIGHT));
+			//Timestamp start=Timestamp.valueOf(start_index.atTime(LocalTime.MIDNIGHT));
+			//Timestamp end=Timestamp.valueOf(end_index.atTime(LocalTime.MIDNIGHT));
 			
-			  stmt.setTimestamp(1,start);
-			  stmt.setTimestamp(2,end);
+			 // stmt.setTimestamp(1,start);
+			  //stmt.setTimestamp(2,end);
 			 
 			//stmt.setString(2,s_end);
-			ResultSet rs = stmt.executeQuery();
+			/*ResultSet rs = stmt.executeQuery();
 			rs.previous();
 			int i=0;
+			System.out.println("bfore re.next");
 			while (rs.next())  // get the processID from the Select query
 			{
-				System.out.println("rejected"+rs.getInt(1));
-				TotalDays.add(rs.getInt(1));
+				
+				CreateDate.add(rs.getDate(1));
+				FinalDate.add(rs.getString(2));
+				System.out.println(CreateDate.get(i)+" "+CreateDate.get(i));
 			//System.out.println(TotalDays.get(i));
 				i++;
 			}
+			ArrayList<LocalDate> final_date= new ArrayList<>();
+			ArrayList<LocalDate> create_date= new ArrayList<>();
+			System.out.println("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^");
+			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+			System.out.println(FinalDate.size()+"FinalDate.size()");
+			for( i=0;i<FinalDate.size();i++) {
+				System.out.println(FinalDate.get(i)+"FinalDate.get(i)");
+				
+			//	formatter = formatter.withLocale( FinalDate.get(i) );  // Locale specifies human language for translating, and cultural norms for lowercase/uppercase and abbreviations and such. Example: Locale.US or Locale.CANADA_FRENCH
+				//LocalDate date = LocalDate.parse("2005-nov-12", formatter);
+				
+				 LocalDate fDate = formatter.parseLocalDate(FinalDate.get(i));
+				//LocalDate fDate = LocalDate.parse(FinalDate.get(i),formatter);
+				final_date.add(fDate);
+				System.out.println(fDate+"final date");
+				LocalDate date = CreateDate.get(i).toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+				create_date.add(date);
+				System.out.println(create_date+"create_date");
+				//System.out.println(final_date.get(i)+""+ create_date.get(i));
+			}
+			  LocalDate now = LocalDate.now();  
+			  int total_days;
+			  System.out.println("___________________________________________________");
+			for( i=0;i<FinalDate.size();i++)
+			{
+				if(now.isAfter(final_date.get(i)))
+				{
+					
+					TotalDays.add(total_days = (int) ChronoUnit.DAYS.between(create_date.get(i),final_date.get(i)));
+					
+				}
+				else {
+					TotalDays.add(total_days = (int) ChronoUnit.DAYS.between(create_date.get(i),now));
+				}
+			}
 
 		
-		start_index=end_index;
-		end_index= end_index.plusDays(num_days);
-		}
+	
 			
 			arr.add(TotalDays);
 			
@@ -827,11 +867,11 @@ System.out.println("id "+translator.getParmas().get(0));
 				newDueTime += (int)translator.getParmas().get(1);
 				////////////////////////////need to check-not delete//////////
 				
-			/*	stmt = conn.prepareStatement("UPDATE icmdb.processes_state SET current_stage_due_date = ? "
+				stmt = conn.prepareStatement("UPDATE icmdb.processes_state SET current_stage_due_date = ? "
 						+ "WHERE request_id = ?");
 				stmt.setString(1, String.valueOf(newDueTime).toString());
 				stmt.setInt(2, (int)translator.getParmas().get(0));
-				stmt.executeUpdate();*/
+				stmt.executeUpdate();
 				//////////////////////////////
 				stmt = conn.prepareStatement("UPDATE icmdb.processes SET current_stage_due_date = ? "
 						+ "WHERE request_id = ?");
