@@ -15,12 +15,13 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.time.temporal.ChronoUnit;
-
+import java.time.format.DateTimeFormatter;
 import org.omg.CORBA.INTERNAL;
-
+import java.time.*;
 import com.mysql.cj.exceptions.DataReadException;
 
 import translator.*;
@@ -369,36 +370,77 @@ public class DBConnector {
 			arr.add(rejected);
 			
 			/***************************************************************************************/
-			System.out.println("**************************");
+		/*	System.out.println("**************************");
 			
 			 start_index=start_date;
 			 ArrayList<Integer>TotalDays=new ArrayList<Integer>();
+			 ArrayList<Date> CreateDate=new ArrayList<Date>();
+			 ArrayList<String> FinalDate=new ArrayList<String>();
 			 end_index=start_index.plusDays(num_days);
 			while(!start_index.isAfter(end_date))
 			{
 		
-			stmt = conn.prepareStatement("SELECT COUNT(*) FROM icmdb.processes_state where "
+			/*stmt = conn.prepareStatement("SELECT COUNT(*) FROM icmdb.processes_state where "
 			
 					+"date>=? and date<? group by workdays");
-							
+							*/
+				stmt = conn.prepareStatement("SELECT creation_date,IFNULL(current_stage_due_date, 0) FROM icmdb.processes");
 			//LocalDate local=(LocalDate)translator.getParmas().get(0);
 			//LocalDate local_end=(LocalDate)translator.getParmas().get(1);
-			Timestamp start=Timestamp.valueOf(start_index.atTime(LocalTime.MIDNIGHT));
-			Timestamp end=Timestamp.valueOf(end_index.atTime(LocalTime.MIDNIGHT));
+			//Timestamp start=Timestamp.valueOf(start_index.atTime(LocalTime.MIDNIGHT));
+			//Timestamp end=Timestamp.valueOf(end_index.atTime(LocalTime.MIDNIGHT));
 			
-			  stmt.setTimestamp(1,start);
-			  stmt.setTimestamp(2,end);
+			 // stmt.setTimestamp(1,start);
+			  //stmt.setTimestamp(2,end);
 			 
 			//stmt.setString(2,s_end);
-			ResultSet rs = stmt.executeQuery();
+			/*ResultSet rs = stmt.executeQuery();
 			rs.previous();
 			int i=0;
+			System.out.println("bfore re.next");
 			while (rs.next())  // get the processID from the Select query
 			{
-				System.out.println("rejected"+rs.getInt(1));
-				TotalDays.add(rs.getInt(1));
+				
+				CreateDate.add(rs.getDate(1));
+				FinalDate.add(rs.getString(2));
+				System.out.println(CreateDate.get(i)+" "+CreateDate.get(i));
 			//System.out.println(TotalDays.get(i));
 				i++;
+			}
+			ArrayList<LocalDate> final_date= new ArrayList<>();
+			ArrayList<LocalDate> create_date= new ArrayList<>();
+			System.out.println("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^");
+			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+			System.out.println(FinalDate.size()+"FinalDate.size()");
+			for( i=0;i<FinalDate.size();i++) {
+				System.out.println(FinalDate.get(i)+"FinalDate.get(i)");
+				
+			//	formatter = formatter.withLocale( FinalDate.get(i) );  // Locale specifies human language for translating, and cultural norms for lowercase/uppercase and abbreviations and such. Example: Locale.US or Locale.CANADA_FRENCH
+				//LocalDate date = LocalDate.parse("2005-nov-12", formatter);
+				
+				 LocalDate fDate = formatter.parseLocalDate(FinalDate.get(i));
+				//LocalDate fDate = LocalDate.parse(FinalDate.get(i),formatter);
+				final_date.add(fDate);
+				System.out.println(fDate+"final date");
+				LocalDate date = CreateDate.get(i).toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+				create_date.add(date);
+				System.out.println(create_date+"create_date");
+				//System.out.println(final_date.get(i)+""+ create_date.get(i));
+			}
+			  LocalDate now = LocalDate.now();  
+			  int total_days;
+			  System.out.println("___________________________________________________");
+			for( i=0;i<FinalDate.size();i++)
+			{
+				if(now.isAfter(final_date.get(i)))
+				{
+					
+					TotalDays.add(total_days = (int) ChronoUnit.DAYS.between(create_date.get(i),final_date.get(i)));
+					
+				}
+				else {
+					TotalDays.add(total_days = (int) ChronoUnit.DAYS.between(create_date.get(i),now));
+				}
 			}
 
 		
@@ -666,9 +708,7 @@ System.out.println("id "+translator.getParmas().get(0));
 					ArrayList<ArrayList<?>> empty = new ArrayList<ArrayList<?>>();
 					empty.add(ar);
 
-					Translator newTranslator = new Translator(translator.getRequest(), empty);
-
-					return newTranslator;
+					return new Translator(translator.getRequest(), empty);
 				}
 				
 				rs.previous();
@@ -705,8 +745,8 @@ System.out.println("id "+translator.getParmas().get(0));
 					processes.add(stringArray);
 					processes.add(getRelatedFilesName(rs.getInt(1)));
 				}
-				Translator newTranslator = new Translator(translator.getRequest(), processes);
-				return newTranslator;
+				
+				return new Translator(translator.getRequest(), processes);
 			} catch (SQLException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -753,7 +793,7 @@ System.out.println("id "+translator.getParmas().get(0));
 				System.out.println(workersWithoutRole);
 				
 				return  new Translator(translator.getRequest(), workersWithoutRole);
-			
+				
 			} catch (SQLException e) {
 				// TODO Auto-generated catch block
 				System.out.println("Catch");
@@ -953,10 +993,10 @@ System.out.println("id "+translator.getParmas().get(0));
 		case GET_APPRAISER_AND_PERFORMANCE_LEADER_OF_PROC:
 			try {
 				System.out.println("GET_APPRAISER_AND_PERFORMANCE_LEADER_OF_PROC 1");
-				stmt = conn.prepareStatement("SELECT first_name, last_name, id, role\r\n" + 
+				stmt = conn.prepareStatement("SELECT first_name, last_name, id, users_requests.role\r\n" + 
 						"FROM icmdb.workers\r\n" + 
 						"		JOIN icmdb.users_requests ON id = user_id\r\n" + 
-						"						WHERE (role = 'Appraiser' OR role = 'Performance Leader')\r\n" + 
+						"						WHERE (users_requests.role = 'Appraiser' OR users_requests.role = 'Performance Leader')\r\n" + 
 						"						AND process_id = ?	");
 				stmt.setInt(1, (int)translator.getParmas().get(0));
 				
@@ -1032,6 +1072,7 @@ System.out.println("id "+translator.getParmas().get(0));
 				return new Translator(translator.getRequest(),ar);
 
 			}
+
 		}
 		case INSERT_FAILURE_REPORT:
 			try {

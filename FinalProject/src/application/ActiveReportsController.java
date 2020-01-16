@@ -10,6 +10,8 @@ import javafx.scene.chart.XYChart;
 import javafx.scene.control.Button;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.TextField;
+import javafx.scene.text.Text;
+
 import java.lang.Runnable;
 
 
@@ -19,6 +21,7 @@ import java.net.URL;
 import java.sql.Connection;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.ResourceBundle;
 
 import com.sun.org.apache.xalan.internal.xsltc.compiler.sym;
@@ -36,7 +39,30 @@ public class ActiveReportsController implements Initializable{
 		
     @FXML
     private DatePicker end_date_button;
+    @FXML
+    private Text sdActive_txt;
+    @FXML
+    private Text sdWorkdays_txt;
+    @FXML
+    private Text sdRejected_txt;
+    @FXML
+    private Text sdClosed_txt;
 
+    @FXML
+    private Text sdSuspended_txt;
+    @FXML
+    private Text total_workdays_txt;
+    @FXML
+    private Text rejected_median_txt;
+
+    @FXML
+    private Text closed_median;
+
+
+    @FXML
+    private Text suspended_median_txt;
+    @FXML
+    private Text active_median_txt;
     @FXML
     private DatePicker start_date_button;
     @FXML
@@ -121,6 +147,7 @@ public class ActiveReportsController implements Initializable{
 								start_index=end_index;
 								end_index= end_index.plusDays(num);
 						}
+						
 
  		Translator translator= new Translator(OptionsOfAction.Get_Active_Statistic,all);
  		Client.getInstance().handleMessageFromClientGUI(translator);
@@ -145,7 +172,8 @@ public class ActiveReportsController implements Initializable{
 				public void run() {
 				
 				ArrayList<Integer> arr= status_counter.get(0);
-				ArrayList<Integer> median=new ArrayList<Integer>();
+				//ArrayList<Double> median=new ArrayList<Double>();
+				ArrayList<Double> median=new ArrayList<>();
 					System.out.println(arr.size()+"size ?7");
 					DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-LLLL-yyyy");
 				/*	for(int i=0;i<arr.size();i++) 
@@ -161,20 +189,28 @@ public class ActiveReportsController implements Initializable{
 							if(arr.size()%2==1)
 							{
 								
-								median.add(arr.get(arr.size()/2));
+								median.add((arr.get(arr.size()/2))/1.0);
 								System.out.println(median.get(i));
 							}
 							else
 							{
-								
-								median.add(arr.get((arr.size()/2)+arr.get(arr.size()/2-1)/2));
+								int n=arr.get(arr.size()/2)+arr.get(arr.size()/2-1);
+								median.add(((Double)(n/2.0)));
 								System.out.println(median.get(i));
 							}
 							
 							
 						}
+					
+					active_median_txt.setText(Double.toString(median.get(0)));
+					suspended_median_txt.setText(Double.toString( median.get(1)));
+					closed_median.setText(Double.toString( median.get(2)));
+					rejected_median_txt.setText(Double.toString( median.get(3)));
 					//the total days dosent have the same arr size
-					arr= status_counter.get(4);
+					
+					
+			
+			/*	arr= status_counter.get(4);
 					System.out.println("*******************");
 				for(int i=0;i<arr.size();i++)
 				{
@@ -196,7 +232,7 @@ public class ActiveReportsController implements Initializable{
 							System.out.println("****");
 							System.out.println(median.get(4));
 						}
-						
+						*/
 						
 			
 					
@@ -242,6 +278,7 @@ public class ActiveReportsController implements Initializable{
     			System.out.println("active sum what in root"+sum);
     		}
     		 standard_deviation_active=(Math.sqrt(sum/arr.size()));
+    		 sdActive_txt.setText(Double. toString(standard_deviation_active));
     /**************************************************Suspend****************************************************/
     		sum=0;
     		arr= status_counter.get(1);
@@ -261,6 +298,7 @@ public class ActiveReportsController implements Initializable{
     			System.out.println("suspend sum what in root"+sum);
     		}
     		 standard_deviation_suspend=(Math.sqrt(sum/arr.size()));
+    		 sdSuspended_txt.setText(Double. toString(standard_deviation_suspend));
   /***********************************************Shutdown****************************************************/  		
     		arr= status_counter.get(2);
     		sum=0;
@@ -279,6 +317,7 @@ public class ActiveReportsController implements Initializable{
     			sum+=Math.pow(arr.get(i)-shutdown_avg,2);
     		}
     		 standard_deviation_shutdown=(Math.sqrt(sum/arr.size()));
+    		 sdClosed_txt.setText(Double. toString(standard_deviation_shutdown));
    /*****************************************Rejected***************************************************************/
     		arr= status_counter.get(3);
     		sum=0;
@@ -297,8 +336,9 @@ public class ActiveReportsController implements Initializable{
     			sum+=Math.pow(arr.get(i)-rejected_avg,2);
     		}
     		 standard_deviation_rejected=(Math.sqrt(sum/arr.size()));
+    		 sdRejected_txt.setText(Double. toString(standard_deviation_rejected));
    /**************************************************TotalDays***************************************************************/
-    		arr= status_counter.get(4);
+    	/*	arr= status_counter.get(4);
     		sum=0;
     		for(int i=0;i<arr.size();i++)
     		{
