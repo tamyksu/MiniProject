@@ -12,6 +12,8 @@ import java.util.concurrent.TimeUnit;
 import com.sun.scenario.effect.Effect.AccelType;
 
 import client.Client;
+import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -27,6 +29,7 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.stage.Stage;
 import translator.OptionsOfAction;
 import translator.Translator;
 import javafx.event.ActionEvent;
@@ -40,7 +43,7 @@ public class ControllerProcessMain implements Initializable {
 	
 	private String roleInProc;
 	
-	private String procStage;
+	private String procStage = "";
 
 	@FXML
 	private TableView<Person> tableView;
@@ -122,6 +125,9 @@ public class ControllerProcessMain implements Initializable {
 	
 	@FXML
 	private Button director_btn;
+	
+    @FXML
+    public Button logout_btn;
 	
 	 @FXML
 	private TextArea notifications_text;
@@ -286,7 +292,7 @@ public class ControllerProcessMain implements Initializable {
 
 	//The function responsible for matching buttons to the process is indicated in the table
 	private void ButtonAdjustment(String userRole) {
-		System.out.println("ButtonAdjustment: userRole = " + userRole);
+		System.out.println("ButtonAdjustment: userRole1 = " + userRole);
 		switch (userRole.toLowerCase()) {
 		case "initiator":
 			fitInitiator();
@@ -294,14 +300,14 @@ public class ControllerProcessMain implements Initializable {
 		case "appraiser":
 			fitAppraiser();
 			break;
-		case "chairman":
-			fitChairman();
-			break;
 		case "performance leader":
 			fitPerformanceLeaderDisabled();
 			break;	
 		case "examiner":
 			fitExaminerDisabled();
+			break;
+		case "chairman":
+			fitChairman();
 			break;
 		default:
 			//disable all but newRequest button
@@ -313,7 +319,7 @@ public class ControllerProcessMain implements Initializable {
 	
 	//The function responsible for matching buttons to the process is indicated in the table
 	public void ButtonAdjustmentSuperUser(String userRole, String processStatus) {
-		System.out.println("ButtonAdjustmentSuperUser: userRole = " + userRole);
+		System.out.println("ButtonAdjustmentSuperUser: userRole2 = " + userRole);
 		switch (userRole.toLowerCase())
 		{
 			case "manager":
@@ -332,6 +338,15 @@ public class ControllerProcessMain implements Initializable {
 				else
 					fitSupervisor();
 				break;	
+				
+			case "chairman":
+				if(processStatus.toLowerCase().equals("suspended"))
+					fitChairmanDisabled();
+				else if(processStatus.toLowerCase().equals("shutdown"))
+					fitChairmanDisabled();
+				else
+					fitChairman();
+				break;
 		
 			default:
 				break;
@@ -343,7 +358,7 @@ public class ControllerProcessMain implements Initializable {
 	private void fitChairman() {
 		if(this.procStage.compareTo("5") == 0)
 		{
-			newRequestBtn.setDisable(false);
+			newRequestBtn.setDisable(true);
 			extension_btn.setDisable(false);
 			extension_request_text.setDisable(false);
 			evaluation_btn.setDisable(true);
@@ -357,11 +372,11 @@ public class ControllerProcessMain implements Initializable {
 		
 		else
 		{
-			newRequestBtn.setDisable(false);
+			newRequestBtn.setDisable(true);
 			extension_btn.setDisable(true);
 			extension_request_text.setDisable(true);
 			evaluation_btn.setDisable(true);
-			decision_btn.setDisable(false);
+			decision_btn.setDisable(true);
 			execution_btn.setDisable(true);
 			examination_btn.setDisable(true);
 			supervisor_mode_btn.setDisable(true);
@@ -373,7 +388,7 @@ public class ControllerProcessMain implements Initializable {
 	//change button disability in accordance to appraiser
 	private void fitAppraiser() {
 	
-		if(this.procStage.compareTo("4") == 0)
+		if(Integer.parseInt(this.procStage) == Constants.STAGE_OF_APPRAISER_EVALUATION || Integer.parseInt(this.procStage) == Constants.STAGE_OF_APPRAISER_EVALUATION_DUE_TIME)
 		{
 			newRequestBtn.setDisable(false);
 			extension_btn.setDisable(false);
@@ -392,7 +407,7 @@ public class ControllerProcessMain implements Initializable {
 			newRequestBtn.setDisable(false);
 			extension_btn.setDisable(true);
 			extension_request_text.setDisable(true);
-			evaluation_btn.setDisable(false);
+			evaluation_btn.setDisable(true);
 			decision_btn.setDisable(true);
 			execution_btn.setDisable(true);
 			examination_btn.setDisable(true);
@@ -442,6 +457,19 @@ public class ControllerProcessMain implements Initializable {
 		supervisor_mode_btn.setDisable(true);
 		director_btn.setDisable(true);
 		defrost_btn.setDisable(true);
+	}
+	
+	private void fitChairmanDisabled() {
+			newRequestBtn.setDisable(true);
+			extension_btn.setDisable(true);
+			extension_request_text.setDisable(true);
+			evaluation_btn.setDisable(true);
+			decision_btn.setDisable(true);
+			execution_btn.setDisable(true);
+			examination_btn.setDisable(true);
+			supervisor_mode_btn.setDisable(true);
+			director_btn.setDisable(true);
+			defrost_btn.setDisable(true);
 	}
 	
 	private void fitManagerDisabled()
@@ -506,7 +534,7 @@ public class ControllerProcessMain implements Initializable {
 	
 	private void fitExaminerDisabled()
 	{
-		if(this.procStage.compareTo("11") == 0)
+		if(this.procStage.compareTo("11") == 0 || this.procStage.compareTo("11.1") == 0)
 		{
 			newRequestBtn.setDisable(false);
 			extension_btn.setDisable(false);
@@ -625,10 +653,10 @@ public class ControllerProcessMain implements Initializable {
 		    	}
 		    	ArrayList <Object> arr = new ArrayList<Object>();
 		    	
-		    	arr.add(getSelectedRowProcID());//process/request id
-		    	arr.add(extension_request_text.getText());
-		    	arr.add(getSelectedRowRole());
-		    	arr.add(this.procStage);
+		    	arr.add(getSelectedRowProcID());//process id
+		    	arr.add(extension_request_text.getText());//reason
+		    	arr.add(getSelectedRowRole());//role
+		    	arr.add(this.procStage);//process stage
 		    	
 		    	Translator translator = new Translator(OptionsOfAction.SEND_EXTENSION_REQUEST, arr);
 		    	Client.getInstance().handleMessageFromClientGUI(translator);
@@ -657,7 +685,7 @@ public class ControllerProcessMain implements Initializable {
 			new Alert(AlertType.ERROR, "Unabble to evaluate, not yet!").show();
 			return;
 		}
-		if(Double.parseDouble(process.getProcess_stage())>4) {
+		if(Double.parseDouble(process.getProcess_stage())>=5) {
 			new Alert(AlertType.ERROR, "Already evaluated!").show();
 			return;
 		}
@@ -784,6 +812,10 @@ public class ControllerProcessMain implements Initializable {
 			Client.getInstance().getAllProcessesFromServer();
 			fitManager();
 			break;
+		case "Chairman":
+			Client.getInstance().getAllProcessesFromServer();
+			fitChairman();
+			break;
 		default:
 			Client.getInstance().getProcessesFromServer();
 			initializeButtons();
@@ -826,13 +858,16 @@ public class ControllerProcessMain implements Initializable {
 	
     @FXML
     void logout_click(ActionEvent event) {
-    	try {
-			Client.instance.closeConnection();
-	    	System.exit(0);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+//			try {
+//				Client.instance.closeConnection();
+//			} catch (IOException e) {
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//			}
+//			//ScreenController.getScreenController().activate("login");
+//			Main.primaryStage.close();
+//			Main.launch();
+//			//  Platform.runLater( () -> new Main().main().start( new Stage() ) );
     }
     
     public void setRelatedMessages(ArrayList <String> messages, ArrayList<Object> msgData)

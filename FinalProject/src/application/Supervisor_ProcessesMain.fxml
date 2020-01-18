@@ -1,11 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import javafx.geometry.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
-<?import javafx.scene.shape.*?>
-<?import javafx.scene.text.*?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ComboBox?>
@@ -19,7 +13,7 @@
 <?import javafx.scene.shape.Rectangle?>
 <?import javafx.scene.text.Font?>
 
-<Pane xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.Supervisor_ProcessMain_Controller">
+<Pane xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.Supervisor_ProcessMain_Controller">
    <children>
       <SplitPane dividerPositions="0.07349665924276169" orientation="VERTICAL" prefHeight="900.0" prefWidth="1300.0">
         <items>
@@ -37,8 +31,6 @@
                   <Pane layoutY="589.0" prefHeight="203.0" prefWidth="778.0" />
                   <Button fx:id="back_btn" layoutX="22.0" layoutY="22.0" mnemonicParsing="false" onAction="#back_click" text="Back" />
                   <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#1f93ff00" height="235.0" layoutX="18.0" layoutY="172.0" opacity="0.14" stroke="BLACK" strokeType="INSIDE" width="676.0" />
-                  <Button fx:id="freeze_process_btn" layoutX="481.0" layoutY="111.0" mnemonicParsing="false" onAction="#freeze_process_btn_click" prefHeight="32.0" prefWidth="175.0" text="Freeze Process" />
-                  <Button fx:id="shut_down_process_btn" layoutX="57.0" layoutY="111.0" mnemonicParsing="false" onAction="#shut_down_process_btn_click" prefHeight="31.0" prefWidth="178.0" text="Shut Down Process" />
                   <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#1f93ff00" height="658.0" layoutX="710.0" layoutY="52.0" opacity="0.14" stroke="BLACK" strokeType="INSIDE" width="564.0" />
                   <Label layoutX="914.0" layoutY="57.0" styleClass="textstyle" text="Process Information">
                      <font>
@@ -62,7 +54,7 @@
                                     <Insets top="7.0" />
                                  </VBox.margin>
                               </Label>
-                              <Label layoutX="10.0" layoutY="31.0" styleClass="textstyle" text="Initiator Profession:">
+                              <Label layoutX="10.0" layoutY="31.0" styleClass="textstyle" text="Role:">
                                  <font>
                                     <Font size="17.0" />
                                  </font>
@@ -182,7 +174,7 @@
                      </font>
                   </Label>
                   <Button fx:id="approve_due_time_request_btn" layoutX="77.0" layoutY="475.0" mnemonicParsing="false" onAction="#ApproveDueTimeRequest" prefHeight="32.0" prefWidth="175.0" text="approve due time request" textAlignment="CENTER" />
-                  <TextField fx:id="due_time_text" layoutX="274.0" layoutY="475.0" prefHeight="32.0" prefWidth="134.0" />
+                  <TextField fx:id="due_time_text" editable="false" layoutX="274.0" layoutY="475.0" prefHeight="32.0" prefWidth="134.0" />
                   <Button fx:id="add_extension__time_btn" layoutX="58.0" layoutY="221.0" mnemonicParsing="false" onAction="#addDueTimeExtension" prefHeight="32.0" prefWidth="175.0" text="Add extension time" />
                   <Button fx:id="decline_due_time_request_btn" layoutX="431.0" layoutY="475.0" mnemonicParsing="false" onAction="#DeclineDueTimeRequest" prefHeight="32.0" prefWidth="175.0" text="decline due time request" textAlignment="CENTER" />
                   <Label layoutX="269.0" layoutY="422.0" prefHeight="39.0" prefWidth="212.0" styleClass="textstyle" text="Stage due time">
@@ -190,7 +182,7 @@
                         <Font name="System Bold" size="21.0" />
                      </font>
                   </Label>
-                  <Label layoutX="24.0" layoutY="290.0" prefHeight="107.0" prefWidth="664.0" styleClass="textstyle" text="explanation">
+                  <Label fx:id="add_extension_explanation_text" layoutX="24.0" layoutY="290.0" prefHeight="107.0" prefWidth="664.0" styleClass="textstyle" text="explanation">
                      <font>
                         <Font size="17.0" />
                      </font>
@@ -219,6 +211,7 @@
                         <Font name="System Bold" size="17.0" />
                      </font>
                   </Label>
+                  <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#1f93ff00" height="90.0" layoutX="19.0" layoutY="66.0" opacity="0.14" stroke="BLACK" strokeType="INSIDE" width="676.0" />
                   <Label fx:id="current_appraiser_text" layoutX="47.0" layoutY="615.0" prefHeight="26.0" prefWidth="221.0" styleClass="textstyle" text="None">
                      <font>
                         <Font size="17.0" />
@@ -229,8 +222,9 @@
                         <Font size="17.0" />
                      </font>
                   </Label>
+                  <Button fx:id="freeze_process_btn" layoutX="481.0" layoutY="111.0" mnemonicParsing="false" onAction="#freeze_process_btn_click" prefHeight="32.0" prefWidth="175.0" text="Freeze Process" />
+                  <Button fx:id="shut_down_process_btn" layoutX="57.0" layoutY="111.0" mnemonicParsing="false" onAction="#shut_down_process_btn_click" prefHeight="31.0" prefWidth="178.0" text="Shut Down Process" />
                   <Label layoutX="22.0" layoutY="269.0" text="Extension Request Explanation:" />
-                  <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#1f93ff00" height="90.0" layoutX="19.0" layoutY="66.0" opacity="0.14" stroke="BLACK" strokeType="INSIDE" width="676.0" />
                   <Label layoutX="220.0" layoutY="65.0" prefHeight="31.0" prefWidth="265.0" styleClass="textstyle" text="Shut Down/Freeze Process">
                      <font>
                         <Font name="System Bold" size="21.0" />

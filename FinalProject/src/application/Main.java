@@ -3,6 +3,7 @@ package application;
 import java.io.IOException;
 
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.stage.Stage;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -11,30 +12,59 @@ import javafx.scene.layout.BorderPane;
 
 public class Main extends Application {
 	
+	public static Stage primaryStage;
+	Scene baseScene;
+	
 	@Override
 	public void start(Stage primaryStage) {
 		try {
 			
 			Parent root = FXMLLoader.load(getClass().getResource("/application/basePanel.fxml"));
-			Scene baseScene = new Scene(root, 1500,1500);
+			baseScene = new Scene(root, 1500,1500);
 			baseScene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
 			primaryStage.setScene(baseScene);
-			primaryStage.show();
 			
 			initializeScreenController(baseScene);
+			
+		    ControllerProcessMain.getInstance().logout_btn.setOnAction( __ ->
+		    {
+		      System.out.println( "Logout app!" );
+		      primaryStage.close();
+		      finalizeScreenController();
+		      ScreenController.setScreenController(null);
+		      Platform.runLater( () -> new Main().start( new Stage() ) );
+		    } );
+			
 			ScreenController.getScreenController().activate("login");
-	
+			
+			primaryStage.show();
+
 			
 		} catch(Exception e) {
 			e.printStackTrace();
 		}
 	}
 	
+	
 	@Override
 	public void stop() throws Exception {
 		// TODO Auto-generated method stub
-		super.stop();
-		System.exit(0);
+			super.stop();
+			System.exit(0);
+	}
+	
+	public void finalizeScreenController()
+	{
+		ScreenController.getScreenController().removeScreen("login");
+		ScreenController.getScreenController().removeScreen("processesMain");
+		ScreenController.getScreenController().removeScreen("evaluation");
+		ScreenController.getScreenController().removeScreen("decisionMaking");
+		ScreenController.getScreenController().removeScreen("execution");
+		ScreenController.getScreenController().removeScreen("examination");
+		ScreenController.getScreenController().removeScreen("newRequest");
+		ScreenController.getScreenController().removeScreen("staffMain");
+		ScreenController.getScreenController().removeScreen("supervisor_processesMain");
+		ScreenController.getScreenController().removeScreen("active_reports");
 	}
 	
 	public void initializeScreenController(Scene baseScene)
@@ -64,6 +94,7 @@ public class Main extends Application {
 	
 	public static void main(String[] args) {
 		launch(args);
+		///launch(args);
 	}
 	
 }

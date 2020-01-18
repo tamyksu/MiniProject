@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="lib" path="Libs/activation-1.1.1.jar"/>
+	<classpathentry kind="lib" path="Libs/mailapi.jar"/>
+	<classpathentry kind="lib" path="Libs/mysql-connector-java-8.0.13.jar"/>
+	<classpathentry kind="lib" path="Libs/smtp.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/OCSF"/>
+	<classpathentry kind="con" path="org.eclipse.fx.ide.jdt.core.JAVAFX_CONTAINER"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="lib" path="C:/מטלה3 שיטות/project/groupProject/Libs/javamail-1.4.5/lib/smtp.jar"/>
-	<classpathentry kind="lib" path="C:/מטלה3 שיטות/project/groupProject/Libs/javamail-1.4.5/lib/mailapi.jar"/>
-	<classpathentry kind="lib" path="C:/מטלה3 שיטות/project/groupProject/Libs/activation-1.1.1.jar"/>
-	<classpathentry kind="lib" path="C:/מטלה3 שיטות/project/groupProject/FinalProject/mysql-connector-java-8.0.13.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
