@@ -333,14 +333,14 @@ public class ControllerProcessMain implements Initializable {
 					fitSupervisor();
 				break;	
 				
-			case "chairman":
+			/*case "chairman":
 				if(processStatus.toLowerCase().equals("suspended"))
 					fitChairmanDisabled();
 				else if(processStatus.toLowerCase().equals("shutdown"))
 					fitChairmanDisabled();
 				else
 					fitChairman();
-				break;
+				break;*/
 		
 			default:
 				break;
@@ -350,8 +350,8 @@ public class ControllerProcessMain implements Initializable {
 	
 	//change button disability in accordance to appraiser
 	private void fitChairman() {
-		if(this.procStage.compareTo("5") == 0)
-		{
+		/*if(this.procStage.compareTo("5") == 0)
+		{*/
 			newRequestBtn.setDisable(true);
 			extension_btn.setDisable(false);
 			extension_request_text.setDisable(false);
@@ -362,7 +362,7 @@ public class ControllerProcessMain implements Initializable {
 			supervisor_mode_btn.setDisable(true);
 			director_btn.setDisable(true);
 			defrost_btn.setDisable(true);
-		}
+		/*}
 		
 		else
 		{
@@ -376,7 +376,7 @@ public class ControllerProcessMain implements Initializable {
 			supervisor_mode_btn.setDisable(true);
 			director_btn.setDisable(true);
 			defrost_btn.setDisable(true);
-		}
+		}*/
 	}
 
 	//change button disability in accordance to appraiser
@@ -718,20 +718,48 @@ public class ControllerProcessMain implements Initializable {
 			return;
 		}
 		
-		if(Double.parseDouble(process.getProcess_stage())>5) {
-			new Alert(AlertType.ERROR, "Already made a decision!").show();
+		if(Double.parseDouble(process.getProcess_stage())>=6 && Double.parseDouble(process.getProcess_stage())<10) {
+			new Alert(AlertType.ERROR, "Already made a decision, still early to appoint examnier.").show();
 			return;
 		}
 		
-		ArrayList<Integer> arr = new ArrayList<>();
-		arr.add(process.getRequest_id()); 
-		Translator translator = new Translator(OptionsOfAction.Get_Evaluation_Report_For_Process_ID, arr);
-		Client.getInstance().handleMessageFromClientGUI(translator);
-		try { Thread.sleep(500); } catch (InterruptedException e) {System.out.println("Can't Sleep");}
+		if(Double.parseDouble(process.getProcess_stage())>10) {
+			new Alert(AlertType.ERROR, "Already made a decision appointed examiner").show();
+			return;
+		}
+		
+		
+		if(Double.parseDouble(process.getProcess_stage())>=5 && Double.parseDouble(process.getProcess_stage())<6) {
+			ArrayList<Integer> arr = new ArrayList<>();
+			arr.add(process.getRequest_id()); 
+			Translator translator = new Translator(OptionsOfAction.Get_Evaluation_Report_For_Process_ID, arr);
+			Client.getInstance().handleMessageFromClientGUI(translator);
+			//try { Thread.sleep(750); } catch (InterruptedException e) {System.out.println("Can't Sleep");}
+			//DecisionController.getInstance().loadPage(evaluationReports);
+		}
+		if(Double.parseDouble(process.getProcess_stage())==10) {
+			DecisionController.getInstance().loadPage(new EvaluationReport());
+			ArrayList<Object> arr = new ArrayList<>();
+			Translator translator = new Translator(OptionsOfAction.Get_All_Change_Board_Members, arr);
+			Client.getInstance().handleMessageFromClientGUI(translator);
+		}
+		
+		//ScreenController.getScreenController().activate("decisionMaking");
+		//DecisionController.instance.updateProcessInformation();
+	}
+	
+	public void continueChairman1() {
 		DecisionController.getInstance().loadPage(evaluationReports);
 		ScreenController.getScreenController().activate("decisionMaking");
 		DecisionController.instance.updateProcessInformation();
 	}
+	
+	public void continueChairman2() {
+		
+		ScreenController.getScreenController().activate("decisionMaking");
+		DecisionController.instance.updateProcessInformation();
+	}
+	
 
 	@FXML
 	void execution_click(ActionEvent event) {

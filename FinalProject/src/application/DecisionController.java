@@ -5,11 +5,13 @@ import java.util.ArrayList;
 import java.util.ResourceBundle;
 
 import client.Client;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.Alert.AlertType;
@@ -64,7 +66,13 @@ public class DecisionController implements Initializable{
 
     @FXML
     private Label documents_text;
+    
+    @FXML
+    private Button appointBtn;
 
+    @FXML
+    private ComboBox examinerCombobox;
+    
     @FXML
     private Label status_text;
 
@@ -88,6 +96,9 @@ public class DecisionController implements Initializable{
 	public EvaluationReport evaluationReport;
 	private boolean answerFromServerApprove;
 	private boolean answerFromServerMoreInfo;
+	private boolean answerFromServerAppointExaminer;
+	
+	private ArrayList<ChangeBoardMember> listForComboBox;
 	
     @Override
 	public void initialize(URL location, ResourceBundle resources) {
@@ -133,8 +144,8 @@ public class DecisionController implements Initializable{
     	paramaeters.add(process.getRequest_id());
     	Translator translator = new Translator(OptionsOfAction.Approve_Decision, paramaeters);
     	Client.getInstance().handleMessageFromClientGUI(translator);
-    	try { Thread.sleep(500); } catch (InterruptedException e) {System.out.println("Can't Sleep");}
-    	showActionApproveMessage(answerFromServerApprove);
+    	//try { Thread.sleep(500); } catch (InterruptedException e) {System.out.println("Can't Sleep");}
+    	//showActionApproveMessage(answerFromServerApprove);
     	
     }
 
@@ -144,13 +155,27 @@ public class DecisionController implements Initializable{
     	paramaeters.add(process.getRequest_id());
     	Translator translator = new Translator(OptionsOfAction.More_Info_Decision, paramaeters);
     	Client.getInstance().handleMessageFromClientGUI(translator);
-    	try { Thread.sleep(500); } catch (InterruptedException e) {System.out.println("Can't Sleep");}
-    	showActionMoreInfoMessage(answerFromServerMoreInfo);
+    	//try { Thread.sleep(500); } catch (InterruptedException e) {System.out.println("Can't Sleep");}
+    	//showActionMoreInfoMessage(answerFromServerMoreInfo);
+    }
+    
+
+    @FXML
+    void appointExaminer(ActionEvent event) {
+    	ArrayList<Object> arr = new ArrayList<>();
+    	arr.add((int)process.getRequest_id()); // Process ID
+    	String examinerName = examinerCombobox.getSelectionModel().getSelectedItem().toString();
+    	String examinerID = getChangeBoardMemberIDFromList(examinerName);
+    	arr.add(examinerID); // examinerID
+    	Translator translator = new Translator(OptionsOfAction.Appoint_Examiner, arr);
+    	Client.getInstance().handleMessageFromClientGUI(translator);
+
+    	
     }
 
     public void updateProcessInformation()
     {
-		process = Client.getInstance().getProcesses().getMyProcess().get(Integer.parseInt(ControllerProcessMain.getInstance().getRequestID()));
+		
 		initiator_name_text.setText(process.getIntiatorId());
 		initiator_email_text.setText(process.getEmail());
 		initiator_role_text.setText(process.getRole());
@@ -194,11 +219,26 @@ public class DecisionController implements Initializable{
         	disableAllButtons();
     	}
     	else {
-    		Alert alert =new Alert(AlertType.ERROR, "Could not ask for more information.");
+    		Alert alert = new Alert(AlertType.ERROR, "Could not ask for more information.");
         	alert.setTitle("Error");
         	alert.show();
     	}
     }
+    
+    public void showActionAppointExaminer(boolean val) {
+    	if(val==true) {
+    		Alert alert =new Alert(AlertType.INFORMATION, "Appointed Examiner.");
+        	alert.setTitle("Approved!");
+        	alert.show();
+        	disableAllButtons();
+    	}
+    	else {
+    		Alert alert = new Alert(AlertType.ERROR, "Could not appointed Examiner.");
+        	alert.setTitle("Error");
+        	alert.show();
+    	}
+    }
+    
     public void setAnswerFromServerApprove(boolean answerFromServerApprove) {
 		this.answerFromServerApprove = answerFromServerApprove;
 	}
@@ -207,29 +247,85 @@ public class DecisionController implements Initializable{
 		this.answerFromServerMoreInfo = answerFromServerMoreInfo;
 	}
 
+	
+	
+	public void setAnswerFromServerAppointExaminer(boolean answerFromServerAppointExaminer) {
+		this.answerFromServerAppointExaminer = answerFromServerAppointExaminer;
+	}
+
 	/**
      * Function that set the form in the way it needs to be
      * every time you load it.
      * @param er
      */
     public void loadPage(EvaluationReport er) {
+    	process = Client.getInstance().getProcesses().getMyProcess().get(Integer.parseInt(ControllerProcessMain.getInstance().getRequestID()));
     	answerFromServerApprove=false;
 		answerFromServerMoreInfo=false;
-    	evaluationReport = new EvaluationReport(er);
-    	requestedChangeText.setText(er.getRequestedChange());
-    	resultText.setText(er.getResult());
-    	constraitsAndRisksText.setText(er.getConstraitsAndRisks());
-    	enableAllButtons();
+		answerFromServerAppointExaminer=false;
+		if(Double.parseDouble(process.getProcess_stage())>=5 && Double.parseDouble(process.getProcess_stage())<6) {
+			evaluationReport = new EvaluationReport(er);
+	    	requestedChangeText.setText(er.getRequestedChange());
+	    	resultText.setText(er.getResult());
+	    	constraitsAndRisksText.setText(er.getConstraitsAndRisks());
+	    	enableDecisionMakingButtons();
+		}
+		else{
+			if(Double.parseDouble(process.getProcess_stage())==10) {
+				clearForm();
+				enableAppointExaminerButton();
+				
+			}
+			else {
+				disableAllButtons();
+			}
+		}
+
+    	
+    }
+    
+    public void clearForm() {
+    	requestedChangeText.clear();
+    	resultText.clear();
+    	constraitsAndRisksText.clear();
     }
     
     public void disableAllButtons() {
     	approve_btn.setDisable(true);
     	deny_btn.setDisable(true);
     	request_more_btn.setDisable(true);
+    	appointBtn.setDisable(true);
+    	examinerCombobox.setDisable(true);
+    	
     }
-    public void enableAllButtons() {
+    public void enableDecisionMakingButtons() {
     	approve_btn.setDisable(false);
     	deny_btn.setDisable(false);
     	request_more_btn.setDisable(false);
+    	appointBtn.setDisable(true);
+    	examinerCombobox.setDisable(true);
     }
+    
+    public void enableAppointExaminerButton() {
+    	approve_btn.setDisable(true);
+    	deny_btn.setDisable(true);
+    	request_more_btn.setDisable(true);
+    	//appointBtn.setDisable(false);
+    }
+    
+    public void setComboBox(ArrayList<ChangeBoardMember> arr) {
+    	listForComboBox = new ArrayList<>(arr);
+    	for(ChangeBoardMember i:listForComboBox) {
+    		examinerCombobox.getItems().add(i.getName());
+    	}
+    }
+    public String getChangeBoardMemberIDFromList(String name1) {
+    	for(ChangeBoardMember i:listForComboBox) {
+    		if(i.getName().equals(name1)) {
+    			return i.getId();
+    		}
+    	}
+    	return null;
+    }
+    
 }

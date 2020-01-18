@@ -34,6 +34,10 @@ public class EvaluationReport {
 	}
 	
 	
+	public EvaluationReport() {
+	}
+
+
 	// ************************ Getters and Setters ************************
 	public String getRequestedChange() {
 		return requestedChange;

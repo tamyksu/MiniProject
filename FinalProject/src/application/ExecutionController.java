@@ -111,8 +111,8 @@ public class ExecutionController implements Initializable{
     	arr.add(Integer.parseInt(days_textbox.getText().toString()));
     	Translator translator = new Translator(OptionsOfAction.Execution_Suggest_Number_Of_Days, arr);
     	Client.getInstance().handleMessageFromClientGUI(translator);
-    	try { Thread.sleep(500); } catch (InterruptedException e) {System.out.println("Can't Sleep");}
-    	showActionSetDays();
+    	//try { Thread.sleep(500); } catch (InterruptedException e) {System.out.println("Can't Sleep");}
+    	//showActionSetDays();
     	
     }
 
@@ -124,13 +124,13 @@ public class ExecutionController implements Initializable{
     	
     	Translator translator = new Translator(OptionsOfAction.Execution_Completed, arr);
     	Client.getInstance().handleMessageFromClientGUI(translator);
-    	try { Thread.sleep(500); } catch (InterruptedException e) {System.out.println("Can't Sleep");}
-    	showActionExecutionCompleted();
+    	//try { Thread.sleep(500); } catch (InterruptedException e) {System.out.println("Can't Sleep");}
+    	//showActionExecutionCompleted();
     	
     }
     
-    public void showActionSetDays() {
-    	if(answerFromServerSubmitDays==true) {
+    public void showActionSetDays(boolean val) {
+    	if(val==true) {
     		Alert alert =new Alert(AlertType.INFORMATION, "You've sent your evaluation");
         	alert.setTitle("Approved!");
         	alert.show();
@@ -143,8 +143,8 @@ public class ExecutionController implements Initializable{
     	}
     }
     
-    public void showActionExecutionCompleted() {
-    	if(answerFromServerExecutionCompleted==true) {
+    public void showActionExecutionCompleted(boolean val) {
+    	if(val==true) {
     		Alert alert = new Alert(AlertType.INFORMATION, "Execution completed.");
         	alert.setTitle("Completed!");
         	alert.show();

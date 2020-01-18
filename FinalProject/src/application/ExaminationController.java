@@ -213,7 +213,7 @@ public class ExaminationController implements Initializable{
 
     	ArrayList<Object> check = new ArrayList<Object>();
     	check.add(this.processID);
-    	
+    	check.add(Client.getInstance().getUserID());
     	Translator translator = new Translator(OptionsOfAction.EXAMINATION_COMPLETED, check);
 		client.handleMessageFromClientGUI(translator);
     }

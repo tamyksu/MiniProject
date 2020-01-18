@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.ResourceBundle;
 
 import client.Client;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -195,15 +196,16 @@ public class NewRequestController implements Initializable {
     		Translator translator = new Translator(OptionsOfAction.NEWREQUEST, params);
     		Client.getInstance().handleMessageFromClientGUI(translator);
     		
-    		try { Thread.sleep(1000); } catch (InterruptedException e) {System.out.println("Can't Sleep");}
+    		//try { Thread.sleep(1000); } catch (InterruptedException e) {System.out.println("Can't Sleep");}
     		
+    		/*
     		if(answerFromServer==true) {
     			showSeccessAlert();
     		}
     		else {
     			showFailureAlert();
     		}
-    		
+    		*/
     		
     	}
     }
@@ -234,6 +236,21 @@ public class NewRequestController implements Initializable {
     	return true;
     }
     
+    public void showAllert(boolean val) {
+    	if(val==true) {
+    		deleteAll();
+        	Alert alert =new Alert(AlertType.INFORMATION, "Your request was received.");
+        	alert.setTitle("Request Received!");
+        	alert.show();
+    	}
+    	else {
+    		//new Alert(AlertType.ERROR, "Your request could not be recieved, please try again.").show();
+    		Alert alert =new Alert(AlertType.ERROR, "Your request could not be recieved, please try again.");
+        	alert.setTitle("ERROR!");
+        	alert.show();
+    	}
+    }
+    
     public void showSeccessAlert() {
     	deleteAll();
     	Alert alert =new Alert(AlertType.INFORMATION, "Your request was received.");
@@ -242,7 +259,7 @@ public class NewRequestController implements Initializable {
     }
     
     public void showFailureAlert() {
-    	new Alert(AlertType.ERROR, "Your request could not be recieved, please try again.").show();
+    	
     }
 
   /**

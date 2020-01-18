@@ -127,11 +127,11 @@ public class EvaluationController implements Initializable{
     		Translator translator = new Translator(OptionsOfAction.Fill_Evalution_Number_Of_Days, arr); // new Translator
     		Client.getInstance().handleMessageFromClientGUI(translator);
 
-    		try { Thread.sleep(1000); } catch (InterruptedException e) {System.out.println("Can't Sleep");}
+    		//try { Thread.sleep(1000); } catch (InterruptedException e) {System.out.println("Can't Sleep");}
 
-    		if(answerFromServerSubmitDays==true) {
-    			pageLoad(3);
-    		}
+    		//if(answerFromServerSubmitDays==true) {
+    		//	pageLoad(3);
+    		//}
     	}
     }
 
@@ -153,10 +153,10 @@ public class EvaluationController implements Initializable{
     		Translator translator = new Translator(OptionsOfAction.Fill_Evalution_Form, arrForm);
     		Client.getInstance().handleMessageFromClientGUI(translator);
     		
-    		try { Thread.sleep(500); } catch (InterruptedException e) {System.out.println("Can't Sleep");}
-    		if(answerFromServerSubmitForm==true) {
-    			pageLoad(5);
-    		}
+    		//try { Thread.sleep(500); } catch (InterruptedException e) {System.out.println("Can't Sleep");}
+    		//if(answerFromServerSubmitForm==true) {
+    			
+    		//}
     	}
     }
     
@@ -207,7 +207,34 @@ public class EvaluationController implements Initializable{
 	public void submitionSuccesseded() {
 		new Alert(AlertType.INFORMATION, "Submition received.");
 	}
+	
+	public void showActionSubmitEvaluation(boolean val) {
+    	if(val==true) {
+    		Alert alert = new Alert(AlertType.INFORMATION, "Evaluation Submitted.");
+        	alert.setTitle("Completed!");
+        	alert.show();
+        	pageLoad(5);
+    	}
+    	else {
+    		Alert alert = new Alert(AlertType.ERROR, "Evaluation could not be submitted");
+        	alert.setTitle("Error");
+        	alert.show();
+    	}
+    }
 
+	public void showActionSubmiDays(boolean val) {
+    	if(val==true) {
+    		Alert alert = new Alert(AlertType.INFORMATION, "Evaluation Submitted.");
+        	alert.setTitle("Completed!");
+        	alert.show();
+        	pageLoad(3);
+    	}
+    	else {
+    		Alert alert = new Alert(AlertType.ERROR, "Evaluation could not be submitted");
+        	alert.setTitle("Error");
+        	alert.show();
+    	}
+	}
 	public void submitionFailed() {
 		new Alert(AlertType.ERROR, "Failed, please try again.").show();
 	}
