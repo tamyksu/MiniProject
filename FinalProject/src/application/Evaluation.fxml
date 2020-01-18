@@ -18,27 +18,27 @@
    <children>
       <SplitPane dividerPositions="0.5" orientation="VERTICAL" prefHeight="843.0" prefWidth="1441.0">
         <items>
-          <AnchorPane styleClass="idp" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="0.0" minWidth="0.0" prefHeight="62.0" prefWidth="1500.0">
+          <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="0.0" minWidth="0.0" prefHeight="62.0" prefWidth="1500.0" styleClass="idp">
                <children>
-                  <Text styleClass="styleICM" fill="#8d8cc6" layoutX="517.0" layoutY="57.0" strokeType="OUTSIDE" strokeWidth="0.0" text="ICM" wrappingWidth="276.0970458984375">
+                  <Text fill="#8d8cc6" layoutX="517.0" layoutY="57.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="styleICM" text="ICM" wrappingWidth="276.0970458984375">
                      <font>
                         <Font size="41.0" />
                      </font>
                   </Text>
                </children>
             </AnchorPane>
-          <AnchorPane styleClass="idPane" focusTraversable="true" minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
+          <AnchorPane focusTraversable="true" minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0" styleClass="idPane">
                <children>
                   <Rectangle arcHeight="5.0" arcWidth="4.0" fill="#ffffff00" height="98.0" layoutX="81.0" layoutY="34.0" stroke="BLACK" strokeType="INSIDE" width="554.0" />
                   <Rectangle arcHeight="5.0" arcWidth="4.0" fill="#ffffff00" height="531.0" layoutX="81.0" layoutY="164.0" stroke="BLACK" strokeType="INSIDE" width="554.0" />
-                  <Label styleClass="textstyle" layoutX="415.0" layoutY="76.0" text="Days">
+                  <Label layoutX="415.0" layoutY="76.0" styleClass="textstyle" text="Days">
                      <font>
                         <Font size="14.0" />
                      </font>
                   </Label>
                   <Button fx:id="submit_duetime_btn" layoutX="550.0" layoutY="86.0" mnemonicParsing="false" onAction="#submit_duetime_click" text="Submit" />
-                  <Label styleClass="textstyle" layoutX="86.0" layoutY="77.0" text="Define Due Time Of Valuation Report:" />
-                  <Label styleClass="textstyle" layoutX="203.0" layoutY="36.0" prefHeight="0.0" prefWidth="298.0" text="Due Time Of Valuation Report">
+                  <Label layoutX="86.0" layoutY="77.0" styleClass="textstyle" text="Define Due Time Of Valuation Report:" />
+                  <Label layoutX="203.0" layoutY="36.0" prefHeight="0.0" prefWidth="298.0" styleClass="textstyle" text="Due Time Of Valuation Report">
                      <font>
                         <Font name="System Bold" size="21.0" />
                      </font>
@@ -55,7 +55,7 @@
                                     <Font size="17.0" />
                                  </font>
                               </Label>
-                              <Label styleClass="textstyle" layoutX="10.0" layoutY="10.0" text="Initiator Email:">
+                              <Label layoutX="10.0" layoutY="10.0" styleClass="textstyle" text="Initiator Email:">
                                  <font>
                                     <Font size="17.0" />
                                  </font>
@@ -63,7 +63,7 @@
                                     <Insets top="7.0" />
                                  </VBox.margin>
                               </Label>
-                              <Label styleClass="textstyle" layoutX="10.0" layoutY="31.0" text="Initiator Profession:">
+                              <Label layoutX="10.0" layoutY="31.0" styleClass="textstyle" text="Role:">
                                  <font>
                                     <Font size="17.0" />
                                  </font>
@@ -79,7 +79,7 @@
                                     <Insets top="7.0" />
                                  </VBox.margin>
                               </Label>
-                              <Label styleClass="textstyle" layoutX="10.0" layoutY="60.0" text="Current State:">
+                              <Label layoutX="10.0" layoutY="60.0" styleClass="textstyle" text="Current State:">
                                  <font>
                                     <Font size="17.0" />
                                  </font>
@@ -87,7 +87,7 @@
                                     <Insets top="7.0" />
                                  </VBox.margin>
                               </Label>
-                              <Label styleClass="textstyle" layoutX="10.0" layoutY="35.0" text="Requested Change:">
+                              <Label layoutX="10.0" layoutY="35.0" styleClass="textstyle" text="Requested Change:">
                                  <font>
                                     <Font size="16.0" />
                                  </font>
@@ -95,7 +95,7 @@
                                     <Insets top="46.0" />
                                  </VBox.margin>
                               </Label>
-                              <Label styleClass="textstyle" layoutX="10.0" layoutY="60.0" text="Explanation:">
+                              <Label layoutX="10.0" layoutY="60.0" styleClass="textstyle" text="Explanation:">
                                  <font>
                                     <Font size="16.0" />
                                  </font>
@@ -103,7 +103,7 @@
                                     <Insets top="44.0" />
                                  </VBox.margin>
                               </Label>
-                              <Label styleClass="textstyle" layoutX="10.0" layoutY="85.0" text="Notes:">
+                              <Label layoutX="10.0" layoutY="85.0" styleClass="textstyle" text="Notes:">
                                  <font>
                                     <Font size="16.0" />
                                  </font>
@@ -111,7 +111,7 @@
                                     <Insets top="47.0" />
                                  </VBox.margin>
                               </Label>
-                              <Label styleClass="textstyle" layoutX="10.0" layoutY="135.0" text="Request Date:">
+                              <Label layoutX="10.0" layoutY="135.0" styleClass="textstyle" text="Request Date:">
                                  <font>
                                     <Font size="16.0" />
                                  </font>
@@ -119,7 +119,7 @@
                                     <Insets top="46.0" />
                                  </VBox.margin>
                               </Label>
-                              <Label styleClass="textstyle" layoutX="10.0" layoutY="160.0" text="Request ID:">
+                              <Label layoutX="10.0" layoutY="160.0" styleClass="textstyle" text="Request ID:">
                                  <font>
                                     <Font size="16.0" />
                                  </font>
@@ -127,7 +127,7 @@
                                     <Insets top="8.0" />
                                  </VBox.margin>
                               </Label>
-                              <Label styleClass="textstyle" layoutX="10.0" layoutY="110.0" text="Documents:">
+                              <Label layoutX="10.0" layoutY="110.0" styleClass="textstyle" text="Documents:">
                                  <font>
                                     <Font size="16.0" />
                                  </font>
@@ -135,7 +135,7 @@
                                     <Insets top="7.0" />
                                  </VBox.margin>
                               </Label>
-                              <Label styleClass="textstyle" prefHeight="25.0" prefWidth="93.0" text="Status:">
+                              <Label prefHeight="25.0" prefWidth="93.0" styleClass="textstyle" text="Status:">
                                  <font>
                                     <Font size="16.0" />
                                  </font>
@@ -143,7 +143,7 @@
                                     <Insets top="38.0" />
                                  </VBox.margin>
                               </Label>
-                              <Label styleClass="textstyle" prefHeight="25.0" prefWidth="175.0" text="Current Stage Due Time:">
+                              <Label prefHeight="25.0" prefWidth="175.0" styleClass="textstyle" text="Current Stage Due Time:">
                                  <font>
                                     <Font size="16.0" />
                                  </font>
@@ -176,16 +176,16 @@
                         </VBox>
                      </children>
                   </HBox>
-                  <Label styleClass="textstyle" layoutX="821.0" layoutY="3.0" text="Process Information">
+                  <Label layoutX="821.0" layoutY="3.0" styleClass="textstyle" text="Process Information">
                      <font>
                         <Font name="System Bold" size="21.0" />
                      </font>
                   </Label>
                   <TextField fx:id="days_textbox" layoutX="344.0" layoutY="70.0" prefHeight="31.0" prefWidth="59.0" />
-                  <Label styleClass="textstyle" layoutX="95.0" layoutY="491.0" text="Constraints And Risks:" />
-                  <Label styleClass="textstyle" layoutX="95.0" layoutY="216.0" text="Requested Change:" />
+                  <Label layoutX="95.0" layoutY="491.0" styleClass="textstyle" text="Constraints And Risks:" />
+                  <Label layoutX="95.0" layoutY="216.0" styleClass="textstyle" text="Requested Change:" />
                   <TextArea fx:id="result_textbox" layoutX="95.0" layoutY="381.0" prefHeight="98.0" prefWidth="503.0" />
-                  <Label styleClass="textstyle" layoutX="247.0" layoutY="164.0" text="Evaluation Report">
+                  <Label layoutX="247.0" layoutY="164.0" styleClass="textstyle" text="Evaluation Report">
                      <font>
                         <Font name="System Bold" size="26.0" />
                      </font>
@@ -197,7 +197,7 @@
                   </TextArea>
                   <Button fx:id="submit_btn" layoutX="511.0" layoutY="648.0" mnemonicParsing="false" onAction="#submit_click" text="Submit Form" />
                   <TextArea fx:id="constraints_textbox" layoutX="93.0" layoutY="512.0" prefHeight="98.0" prefWidth="503.0" />
-                  <Label styleClass="textstyle" layoutX="93.0" layoutY="355.0" text="Result:" />
+                  <Label layoutX="93.0" layoutY="355.0" styleClass="textstyle" text="Result:" />
                </children>
             </AnchorPane>
         </items>
