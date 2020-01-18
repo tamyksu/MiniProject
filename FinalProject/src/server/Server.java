@@ -183,6 +183,8 @@ public class Server extends AbstractServer
 				process.setDepartment((String)result.get(i+1).get(13));
 				
 				try {
+					if(process.getCurrent_stage_due_date() == null)
+						continue;
 					Date dueDate = new SimpleDateFormat("yyyy-MM-dd").parse(process.getCurrent_stage_due_date());
 					Date currentDate = new SimpleDateFormat("yyyy-MM-dd").parse(LocalDate.now().toString());
 					
@@ -223,6 +225,7 @@ public class Server extends AbstractServer
 				} catch (ParseException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
+					System.out.println(e.getMessage());
 				}
 				catch(NullPointerException ex)
 				{

@@ -23,7 +23,6 @@
             <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0" styleClass="idPane">
                <children>
                   <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#cdbebe" height="468.0" layoutX="256.0" layoutY="145.0" opacity="0.0" stroke="BLACK" strokeType="INSIDE" width="940.0" />
-                  <Button layoutX="1341.0" layoutY="14.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="143.0" text="Log out" />
                   <BarChart fx:id="extension_reports" layoutX="460.0" layoutY="43.0" prefHeight="535.0" prefWidth="872.0" styleClass="styleTexts" title="Extension Reports">
                      <xAxis>
                         <CategoryAxis label=" number day extension" side="BOTTOM" styleClass="styleTexts" tickLabelFill="#eec9c9" fx:id="x" />

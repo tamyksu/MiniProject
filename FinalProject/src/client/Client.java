@@ -135,7 +135,7 @@ public class Client extends AbstractClient {
 			setRelatedMessages(result.getParmas());
 			break;
 		case RECOVER_PASSWORD:
-			sendRecoveredPassword(result.getParmas());
+			handleMessageFromServerSendRecoveredPassword(result.getParmas());
 			break;
 		case REJECTE_PROCESS:
 			handleMessageFromServerREJECTE_PROCESS(result.getParmas());
@@ -143,13 +143,19 @@ public class Client extends AbstractClient {
 		case DOWNLOADFILE:
 			handleMessageFromServerDownloadFile(result.getParmas());
 			break;
+		case GET_TEMPORARY_WORKERS_FROM_DB:
+			handleMessageFromServerGetTemporaryWorkersFromDB(result.getParmas());
+			break;
+		case GET_PERMANENT_WORKERS_FROM_DB:
+			handleMessageFromServerGetPermanentWorkersFromDB(result.getParmas());
+			break;
 		case Get_All_Change_Board_Members:
 			handleMessageFromServerGetAllChangeBoardMembers(result.getParmas());
 			break;
 		case Appoint_Examiner:
 			handleMessageFromServerAppointExaminer(result.getParmas());
 			break;	
-				case SelectDelayReport:
+		case SelectDelayReport:
 			handleMessageSelectDelayReport(result.getParmas());
 			break;
 		case SelectExtensionReport:
@@ -825,12 +831,68 @@ public class Client extends AbstractClient {
 		ControllerProcessMain.instance.setRelatedMessages(messages, result);
 	}
 
-	private void sendRecoveredPassword(Object arr)
+	private void handleMessageFromServerSendRecoveredPassword(Object arr)
 	{
 		ArrayList <String> emailAndPassword = (ArrayList <String>)arr;
-
+		
 		System.out.println("Client - sendRecoveredPassword - emailAndPassword = " + emailAndPassword);
 		LoginController.instance.sendRecoveredPasswordToUserEmail(emailAndPassword);
 	}
-
+	
+	private void handleMessageFromServerGetTemporaryWorkersFromDB(Object rs)
+	{
+		ArrayList<Object> result = (ArrayList<Object>) rs;
+		ArrayList<Object> fixedName = new ArrayList<Object>();
+		
+		if(result.size() == 1)
+		{
+			System.out.println("Client - handleMessageFromServerGetTemporaryWorkersFromDB - result.size() = 1");
+			return;
+		}
+		
+		System.out.println("Client - handleMessageFromServerGetTemporaryWorkersFromDB 1");
+		
+		for(int i=0; i<result.size() ; i++)
+		{
+			if(i%5 != 1)
+				fixedName.add(result.get(i));
+			else
+			{
+				fixedName.add(new String ((String)result.get(i) + " " + (String)result.get(i+1)));
+				i++;
+			}
+		}
+		System.out.println(fixedName);
+		
+		StaffMainController.instance.setTemporaryWorkersInTable(fixedName);
+	}
+	
+	private void handleMessageFromServerGetPermanentWorkersFromDB(Object rs)
+	{
+		ArrayList<Object> result = (ArrayList<Object>) rs;
+		ArrayList<Object> fixedName = new ArrayList<Object>();
+		
+		if(result.size() == 1)
+		{
+			System.out.println("Client - handleMessageFromServerGetPermanentWorkersFromDB - result.size() = 1");
+			return;
+		}
+		
+		System.out.println("Client - handleMessageFromServerGetPermanentWorkersFromDB 1");
+		
+		for(int i=0; i<result.size() ; i++)
+		{
+			if(i%4 != 1)
+				fixedName.add(result.get(i));
+			else
+			{
+				fixedName.add(new String ((String)result.get(i) + " " + (String)result.get(i+1)));
+				i++;
+			}
+		}
+		System.out.println(fixedName);
+		
+		StaffMainController.instance.setPermanentWorkersInTable(fixedName);
+	}
+	
 }

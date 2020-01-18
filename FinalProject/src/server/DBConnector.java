@@ -403,7 +403,7 @@ public class DBConnector {
 			{
 				System.out.println("rejected"+rs.getInt(1));
 				rejected.add(i, rs.getInt(1));
-			//System.out.println(active.get(i));
+	
 				i++;
 			}
 
@@ -491,31 +491,27 @@ public class DBConnector {
 					long endTime = nowGet.getTime();
 					long diffTime = endTime - startTime;
 					long diffDays = diffTime / (1000 * 60 * 60 * 24);
-					System.out.println(diffDays);
-							//total_days =(nowGet.getTime()-satrt_date.getTime());
-							System.out.println(nowGet.getTime()+ " "+satrt_date.getTime());
+					
 							int convert_to_int=(int)diffDays;
-							System.out.println(convert_to_int+"now we before end date");
+				
 							TotalDays.add(convert_to_int);
 					
 				}
 			}
 			
-		
-			System.out.println(Collections.max(TotalDays));
+
 			int arr_counter[] =new int[	Collections.max(TotalDays)];
-			System.out.println(arr_counter.length+" size arr");
+	
 			for( i=0;i<arr_counter.length;i++)
 			{
 				arr_counter[i]=0;
 			}
-			System.out.println(TotalDays.size()+"total days size");
+		
 			for( i=0;i<TotalDays.size();i++)
 			{
-				System.out.println(arr_counter[TotalDays.get(i)-1]); 
+				
 				arr_counter[TotalDays.get(i)-1]=arr_counter[TotalDays.get(i)-1]+1;
-				System.out.println(arr_counter[TotalDays.get(i)-1]); 
-				System.out.println(TotalDays.get(i)+"value");
+			
 			}
 			ArrayList<Integer> counter_arr=new ArrayList<>();
 			ArrayList<Integer> total_days_arr=new ArrayList<>();
@@ -797,7 +793,8 @@ System.out.println("id "+translator.getParmas().get(0));
 						"FROM users_requests\r\n" + 
 						"INNER JOIN processes\r\n" + 
 						"ON users_requests.process_id = processes.request_id\r\n"+
-						"WHERE users_requests.user_id=?");
+						"WHERE users_requests.user_id=?"
+						+ " ORDER BY status1, creation_date DESC");
 				stmt.setString(1, (String) translator.getParmas().get(0));
 				ResultSet rs = stmt.executeQuery();		
 				if(rs.first() == false) {
@@ -1063,7 +1060,7 @@ System.out.println("id "+translator.getParmas().get(0));
 			
 		case GETALLPROCESSES:
 			try {
-				stmt = conn.prepareStatement("SELECT * FROM icmdb.processes;");
+				stmt = conn.prepareStatement("SELECT * FROM icmdb.processes ORDER BY status1, creation_date DESC;");
 				ResultSet rs = stmt.executeQuery();		
 				if(rs.first() == false) {
 					ar.add("No processes");
@@ -1328,7 +1325,8 @@ System.out.println("id "+translator.getParmas().get(0));
 		{
 			try {
 				stmt = conn.prepareStatement("UPDATE processes SET status1='Shutdown',process_stage='13' WHERE request_id=?");
-				stmt.setString(1, (String) translator.getParmas().get(0));
+				
+				stmt.setInt(1, Integer.parseInt((String) translator.getParmas().get(0)));
 
 				int rs = stmt.executeUpdate();
 
@@ -1404,9 +1402,6 @@ System.out.println("id "+translator.getParmas().get(0));
 					setNextStageByOne(processID); // Process is set to next stage;
 					evaluateNumberOfDaysAnswer.add(true);
 					
-					sendNotification((int)translator.getParmas().get(0), "Evaluation Due time was set by Appraiser",(int)translator.getParmas().get(3) ,
-							"Supervisor", "Appraiser", null);
-					
 					return fillNumberOfDaysAnswer;
 					
 				}
@@ -1436,9 +1431,6 @@ System.out.println("id "+translator.getParmas().get(0));
 							(int) translator.getParmas().get(3), "Supervisor", "Appraiser", null);
 					setNextStageByOne(processID); // Process is set to next stage;
 					evaluateNumberOfDaysAnswer.add(true);
-					
-					sendNotification((int)translator.getParmas().get(0), "Evaluation Due time was set by Appraiser",(int)translator.getParmas().get(3) ,
-							"Supervisor", "Appraiser", null);
 					
 					return fillNumberOfDaysAnswer;
 				}
@@ -1970,6 +1962,99 @@ System.out.println("id "+translator.getParmas().get(0));
 			}
 			
 			setNextStageByInput((int)translator.getParmas().get(0), procStage);
+			break;
+			
+		case GET_TEMPORARY_WORKERS_FROM_DB:
+			
+			try {
+				stmt = conn.prepareStatement("SELECT id, first_name, last_name, process_id, users_requests.role\r\n" + 
+						"FROM icmdb.workers\r\n" + 
+						"JOIN icmdb.users_requests \r\n" + 
+						"ON users_requests.user_id = workers.id\r\n");
+				
+				ResultSet rs = stmt.executeQuery();	
+				
+				System.out.println("GET_TEMPORARY_WORKERS_FROM_DB 1");
+				
+				if(rs.first() == false) {
+					System.out.println("GET_TEMPORARY_WORKERS_FROM_DB - error 1");
+					//ar.add("No messages were found");
+					ArrayList<String> empty = new ArrayList<String>();
+					empty.add("error");
+					Translator newTranslator = new Translator(OptionsOfAction.GET_TEMPORARY_WORKERS_FROM_DB, empty);
+					return newTranslator;
+				}
+				
+				rs.previous();
+				
+				ArrayList<Object> temporaryWorkers = new ArrayList<Object>();
+			
+				while(rs.next()) {	
+					temporaryWorkers.add(rs.getString(1));
+					temporaryWorkers.add(rs.getString(2));
+					temporaryWorkers.add(rs.getString(3));
+					temporaryWorkers.add(rs.getInt(4));
+					temporaryWorkers.add(rs.getString(5));
+				}
+				
+				System.out.println("GET_TEMPORARY_WORKERS_FROM_DB 2");
+				
+				Translator newTranslator = new Translator(translator.getRequest(), temporaryWorkers);
+				return newTranslator;
+				
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				System.out.println("SQL EXCEPTION - GET_TEMPORARY_WORKERS_FROM_DB");
+				System.out.println(e.getMessage());
+			}
+			
+			break;
+			
+		case GET_PERMANENT_WORKERS_FROM_DB:
+			
+			try {
+				stmt = conn.prepareStatement("SELECT id, first_name, last_name, permanent_roles.role\r\n" + 
+						"FROM icmdb.workers\r\n" + 
+						"JOIN icmdb.permanent_roles \r\n" + 
+						"ON permanent_roles.user_id = workers.id\r\n");
+				
+				ResultSet rs = stmt.executeQuery();	
+				
+				System.out.println("GET_PERMANENT_WORKERS_FROM_DB 1");
+				
+				if(rs.first() == false) {
+					System.out.println("GET_PERMANENT_WORKERS_FROM_DB - error 1");
+					//ar.add("No messages were found");
+					ArrayList<String> empty = new ArrayList<String>();
+					empty.add("error");
+					Translator newTranslator = new Translator(OptionsOfAction.GET_PERMANENT_WORKERS_FROM_DB, empty);
+					return newTranslator;
+				}
+				
+				rs.previous();
+				
+				ArrayList<Object> temporaryWorkers = new ArrayList<Object>();
+			
+				while(rs.next()) {	
+					temporaryWorkers.add(rs.getString(1));
+					temporaryWorkers.add(rs.getString(2));
+					temporaryWorkers.add(rs.getString(3));
+					temporaryWorkers.add(rs.getString(4));
+				}
+				
+				System.out.println("GET_PERMANENT_WORKERS_FROM_DB 2");
+				
+				Translator newTranslator = new Translator(translator.getRequest(), temporaryWorkers);
+				return newTranslator;
+				
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				System.out.println("SQL EXCEPTION - GET_PERMANENT_WORKERS_FROM_DB");
+				System.out.println(e.getMessage());
+			}
+			
 			break;
 			
 		default:

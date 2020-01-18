@@ -7,6 +7,8 @@ import javafx.scene.control.Button;
 import java.sql.DriverManager;
 import application.DelayReportsController;
 import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.cell.PropertyValueFactory;
+
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.net.URL;
@@ -26,6 +28,8 @@ import java.sql.ResultSet;
 
 
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
 import javafx.scene.text.Text;
 import javafx.scene.control.Alert.AlertType;
 import translator.OptionsOfAction;
@@ -63,6 +67,30 @@ public class StaffMainController implements Initializable{
 	private ComboBox<String> secondIE_comboBox;
 	@FXML
 	private ComboBox<String> supervisor_comboBox;
+	@FXML
+	private TableView<PermanentWorker> permanent_workers_table;
+	@FXML
+	private TableColumn<PermanentWorker, String> PERuserId;
+
+	@FXML
+	private TableColumn<PermanentWorker, String> PERuserFullName;
+
+	@FXML
+	private TableColumn<PermanentWorker, String> PERrole;
+
+	@FXML
+	private TableView<TemporaryWorker> temporary_workers_table;
+	@FXML
+	private TableColumn<TemporaryWorker, String> TEMPuserID;
+
+	@FXML
+	private TableColumn<TemporaryWorker, String> TEMPuserFullName;
+
+	@FXML
+	private TableColumn<TemporaryWorker, Integer> TEMPprocessID;
+
+	@FXML
+	private TableColumn<TemporaryWorker, String> TEMProle;
 	@FXML
 	String save_role="";
 	int choosen_person_not_available=0;
@@ -243,17 +271,17 @@ public class StaffMainController implements Initializable{
 		else if(WorkersName.get(3).equals("3") && WorkersName.get(2).equals("Supervisor"))
 		{
 			
-			print_supervisor.setText("Current in " + WorkersName.get(2) + "position:\n" + (WorkersName.get(0)+" " +WorkersName.get(1)));
+			print_supervisor.setText("Current in " + WorkersName.get(2) + " position:\n" + (WorkersName.get(0)+" " +WorkersName.get(1)));
 		}
 		else if(WorkersName.get(3).equals("4") && WorkersName.get(2).equals("Change Board Member-1")) // Information Engineer
 		{
 			System.out.println("Change Board Member-1 not empty"); // Information Engineer
-			print_IE1.setText("Current in " + WorkersName.get(2) + "position:\n" + (WorkersName.get(0)+" " +WorkersName.get(1)));
+			print_IE1.setText("Current in " + WorkersName.get(2) + " position:\n" + (WorkersName.get(0)+" " +WorkersName.get(1)));
 		}
 		else if(WorkersName.get(3).equals("5") && WorkersName.get(2).equals("Change Board Member-2")) // Information Engineer
 		{
 		
-			print_IE2.setText("Current in " + WorkersName.get(2) + "position:\n" + (WorkersName.get(0)+" " +WorkersName.get(1)));
+			print_IE2.setText("Current in " + WorkersName.get(2) + " position:\n" + (WorkersName.get(0)+" " +WorkersName.get(1)));
 		}
 		
 		
@@ -336,8 +364,6 @@ public class StaffMainController implements Initializable{
 				Client.getInstance().handleMessageFromClientGUI(translator);
 				params.remove(0);
 			}
-	
-
 		}
 	
 	
@@ -377,63 +403,148 @@ public class StaffMainController implements Initializable{
 	else if(WorkersName.get(0).equals("Supervisor"))
 		print_supervisor.setText("empty position");
 	
-else if(WorkersName.get(0).equals("Change Board Member-1")) // Information Engineer
-	print_IE1.setText("empty position");
-
-else if(WorkersName.get(0).equals("Change Board Member-2")) // Information Engineer
-	print_IE2.setText("empty position");
-}
+	else if(WorkersName.get(0).equals("Change Board Member-1")) // Information Engineer
+		print_IE1.setText("empty position");
+	
+	else if(WorkersName.get(0).equals("Change Board Member-2")) // Information Engineer
+		print_IE2.setText("empty position");
+	}
 
 /*********************************************checkBefore**********************************************************************/	
-
-	/**
+		/**
 	 * Check before appointing
 	 * @param role
 	 * @param option
 	 */
 	public void checkBefore(String role,String option)
-{
+	{
+	
+	
+		ArrayList<Object> params = new ArrayList<Object>();
+		params.add(role);
+		params.add(option);
+	
+		Translator translator = new Translator(OptionsOfAction.checkDB, params);//check in db if this role empty
+		Client.getInstance().handleMessageFromClientGUI(translator);//it will return flag of chair man
+	}
 
+	
+	@FXML
+	void active_reports(ActionEvent event) {
+	
+	}
+	
+	/**
+	 * execution reports
+	 * @param event
+	 */
+	 @FXML
+	void execution_reports(ActionEvent event) {
+		ScreenController.getScreenController().activate("extension_reports");
+		ExtensionReportsController.instance.get_information();
+	}
 
-	ArrayList<Object> params = new ArrayList<Object>();
-	params.add(role);
-	params.add(option);
-
-	Translator translator = new Translator(OptionsOfAction.checkDB, params);//check in db if this role empty
-	Client.getInstance().handleMessageFromClientGUI(translator);//it will return flag of chair man
-}
-
-
-@FXML
-void active_reports(ActionEvent event) {
-
-}
-
+	/**
+	 * delay execution
+	 * @param event
+	 */
+	@FXML
+	void delay_execution(ActionEvent event) {
+		
+		ScreenController.getScreenController().activate("delay_reports");
+		DelayReportsController.instance.get_information();
+		
+	}
 /**
- * execution reports
- * @param event
+ * brings the data of the workers in the icmdb.workers table from the DB for the Temporary Table
  */
-@FXML
-void execution_reports(ActionEvent event) {
-	ScreenController.getScreenController().activate("extension_reports");
-	ExtensionReportsController.instance.get_information();
-}
-
-/**
- * delay execution
- * @param event
- */
-@FXML
-void delay_execution(ActionEvent event) {
+	public void getTemporaryWorkersFromDB()
+	{
+		ArrayList<Object> check = new ArrayList<Object>();
+		
+		Translator translator = new Translator(OptionsOfAction.GET_TEMPORARY_WORKERS_FROM_DB, check);
+		Client.instance.handleMessageFromClientGUI(translator);
+	}
 	
-	ScreenController.getScreenController().activate("delay_reports");
-	DelayReportsController.instance.get_information();
+	/**
+	 * sets the data of the workers in the icmdb.workers table from the DB in the Temporary Table
+	 * @param rs
+	 */
+	public void setTemporaryWorkersInTable(ArrayList <Object> rs)
+	{
+		//temporary_workers_table
+		
+		//System.out.println(rs);
+		ObservableList<TemporaryWorker> data;
+		ArrayList<TemporaryWorker> workersList = new ArrayList<TemporaryWorker>();
+
+		if (this.temporary_workers_table.isEditable() == false) {
+			this.temporary_workers_table.setEditable(true);
+		}
+		
+		for (int i = 0; i < rs.size(); i=i+4) {
+			TemporaryWorker tempworker = new TemporaryWorker((String)rs.get(i).toString(), 
+					(String)rs.get(i+1).toString(),(int)(rs.get(i+2)),(String)rs.get(i+3).toString());
+			workersList.add(tempworker);
+		}
+		
+		//System.out.println("StaffMainController - setTemporaryWorkersInTable - workersList:\n" + workersList);
+		
+		data = FXCollections.observableArrayList(workersList);
+		this.TEMPuserID.setCellValueFactory(new PropertyValueFactory<TemporaryWorker, String>("userID"));
+		this.TEMPuserFullName.setCellValueFactory(new PropertyValueFactory<TemporaryWorker, String>("userFullName"));
+		this.TEMPprocessID.setCellValueFactory(new PropertyValueFactory<TemporaryWorker, Integer>("processID"));
+		this.TEMProle.setCellValueFactory(new PropertyValueFactory<TemporaryWorker, String>("role"));
+		this.temporary_workers_table.setItems(data);
+	}
 	
+	/**
+	 * brings the data of the workers in the icmdb.permanent_roles table from the DB for the Permanent Table
+	 */
+	public void getPermanentWorkersFromDB()
+	{
+		ArrayList<Object> check = new ArrayList<Object>();
+		
+		Translator translator = new Translator(OptionsOfAction.GET_PERMANENT_WORKERS_FROM_DB, check);
+		Client.instance.handleMessageFromClientGUI(translator);
+	}
+	
+	/**
+	 * sets the data of the workers in the icmdb.permanent_roles table from the DB in the Permanent Table
+	 * @param rs
+	 */
+	public void setPermanentWorkersInTable(ArrayList <Object> rs)
+	{
+		//permanent_workers_table
+		
+		//System.out.println(rs);
+		ObservableList<PermanentWorker> data;
+		ArrayList<PermanentWorker> workersList = new ArrayList<PermanentWorker>();
+
+		if (this.permanent_workers_table.isEditable() == false) {
+			this.permanent_workers_table.setEditable(true);
+		}
+
+		for (int i = 0; i < rs.size(); i=i+3) {
+			PermanentWorker tempworker = new PermanentWorker((String)rs.get(i).toString(), 
+					(String)rs.get(i+1).toString(),(String)rs.get(i+2).toString());
+			workersList.add(tempworker);
+		}
+		
+		//System.out.println("StaffMainController - setTemporaryWorkersInTable - workersList:\n" + workersList);
+		
+		data = FXCollections.observableArrayList(workersList);
+		this.PERuserId.setCellValueFactory(new PropertyValueFactory<PermanentWorker, String>("userID"));
+		this.PERuserFullName.setCellValueFactory(new PropertyValueFactory<PermanentWorker, String>("userFullName"));
+		this.PERrole.setCellValueFactory(new PropertyValueFactory<PermanentWorker, String>("role"));
+		this.permanent_workers_table.setItems(data);
+	}
+	
+
 }
+	
 
 
-}
-	
 
     
 

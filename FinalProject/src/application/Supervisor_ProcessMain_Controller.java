@@ -12,6 +12,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
+import sun.misc.Cleaner;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
@@ -132,7 +133,7 @@ public class Supervisor_ProcessMain_Controller implements Initializable{
 	}
     
     /**
-     * Freeze a process
+     * Freeze a process (suspends the process)
      * @param event
      */
     @FXML
@@ -202,7 +203,7 @@ public class Supervisor_ProcessMain_Controller implements Initializable{
     }
     
     /**
-     * 
+     * set appraiser/performance leader data in their combo boxes
      * @param appraisersList
      */
     public void setAppraiserOrPerformanceLeaderDataInCB(ArrayList<String> appraisersList)
@@ -265,7 +266,7 @@ public class Supervisor_ProcessMain_Controller implements Initializable{
     }
     
     /**
-     * Appoint Appraiser of performance leader data
+     * Appoint Appraiser or performance leader
      * @param e - event
      */
     public void appointAppraiserOrPerformanceLeader(ActionEvent e)
@@ -405,7 +406,7 @@ public class Supervisor_ProcessMain_Controller implements Initializable{
     }
     
     /**
-     * Set due time for a request
+     * Set due time from a due time request from the appraiser or the performance leader
      * @param msgData
      */
     public void setDueTimeRequest(ArrayList<Object> msgData)
@@ -440,7 +441,7 @@ public class Supervisor_ProcessMain_Controller implements Initializable{
     
     
     /**
-     * Approve a due time for a request
+     * Approve the requested  due time from the appraiser or performance leader
      * @param e
      */
     public void ApproveDueTimeRequest(ActionEvent e)
@@ -462,7 +463,7 @@ public class Supervisor_ProcessMain_Controller implements Initializable{
     }
     
     /**
-     * Decline a due time for a request
+     * Decline a due time request from the appraiser or the performance leader
      * @param e
      */
     public void DeclineDueTimeRequest(ActionEvent e)
@@ -483,7 +484,7 @@ public class Supervisor_ProcessMain_Controller implements Initializable{
     
     
     /**
-     * Set a due time extension explanation
+     * Set a due time extension explanation in its text area
      */
     public void setDueTimeExtensionExplanation()
     {
