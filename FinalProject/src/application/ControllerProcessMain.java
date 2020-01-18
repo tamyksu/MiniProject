@@ -266,6 +266,7 @@ public class ControllerProcessMain implements Initializable {
 
 		}
    	}
+	
 	/////////////////func related to documents//////////////////////////////////////////
 	@FXML
 	public void downloadFiles() {
@@ -388,7 +389,7 @@ public class ControllerProcessMain implements Initializable {
 	//change button disability in accordance to appraiser
 	private void fitAppraiser() {
 	
-		if(Integer.parseInt(this.procStage) == Constants.STAGE_OF_APPRAISER_EVALUATION || Integer.parseInt(this.procStage) == Constants.STAGE_OF_APPRAISER_EVALUATION_DUE_TIME)
+		if(Integer.parseInt(this.procStage) == Constants.STAGE_OF_APPRAISER_EVALUATION )
 		{
 			newRequestBtn.setDisable(false);
 			extension_btn.setDisable(false);
@@ -632,7 +633,7 @@ public class ControllerProcessMain implements Initializable {
 	void extension_click(ActionEvent event) {
 		//Check if days to due time <= 3
 		Date dueDate;
-		/*try {
+		try {
 			dueDate = new SimpleDateFormat("yyyy-MM-dd").parse(CurrentStageDueTime.getText());
 			Date currentDate = new SimpleDateFormat("yyyy-MM-dd").parse(LocalDate.now().toString());
 			
@@ -644,7 +645,7 @@ public class ControllerProcessMain implements Initializable {
 		    	new Alert(AlertType.INFORMATION,"You can ask for extention only when 3 or less days left until due date").show();
 		    }
 		    
-		    else*/
+		    else
 		    {
 		    	if(extension_request_text.getText().compareTo("") == 0)
 		    	{
@@ -663,10 +664,10 @@ public class ControllerProcessMain implements Initializable {
 		    	extension_request_text.clear();
 		    	getTheUpdateProcessesFromDB();
 		    }
-		//} catch (ParseException e) {
-			// TODO Auto-generated catch block
-			//e.printStackTrace();
-		//}
+		} catch (ParseException e) {
+			e.printStackTrace();
+	    	new Alert(AlertType.ERROR,"This process doesn't have a due date").show();
+		}
 	    
 	}
 
@@ -720,7 +721,7 @@ public class ControllerProcessMain implements Initializable {
 		}
 		
 		if(Double.parseDouble(process.getProcess_stage())<5) {
-			new Alert(AlertType.ERROR, "Unabble to make a decision, not yet!").show();
+			new Alert(AlertType.ERROR, "Unable to make a decision, not yet!").show();
 			return;
 		}
 		
@@ -855,20 +856,6 @@ public class ControllerProcessMain implements Initializable {
 	{
 		return this.RequestID.getText();
 	}
-	
-    @FXML
-    void logout_click(ActionEvent event) {
-//			try {
-//				Client.instance.closeConnection();
-//			} catch (IOException e) {
-//				// TODO Auto-generated catch block
-//				e.printStackTrace();
-//			}
-//			//ScreenController.getScreenController().activate("login");
-//			Main.primaryStage.close();
-//			Main.launch();
-//			//  Platform.runLater( () -> new Main().main().start( new Stage() ) );
-    }
     
     public void setRelatedMessages(ArrayList <String> messages, ArrayList<Object> msgData)
     {

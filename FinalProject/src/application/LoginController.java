@@ -2,7 +2,6 @@ package application;
 
 import java.io.IOException;
 import java.util.ArrayList;
-
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -20,6 +19,8 @@ public class LoginController {
 	public static LoginController instance;
 
 	Client client;
+	String ip;
+	int port;
 
 	@FXML
 	private Button login;
@@ -32,6 +33,12 @@ public class LoginController {
 
     @FXML
     private TextField message;
+
+    @FXML
+    private TextField ip_text;
+
+    @FXML
+    private TextField port_text;
     
 	public TextField getMessageField() {
 		return message;
@@ -43,20 +50,45 @@ public class LoginController {
 
 	public void initialize() throws IOException {
 		instance = this;
-		client = new Client("localhost", 25565);
-		//client = new Client("192.168.162.52", 25565);
-
+	    ip_text.setText(Main.ip);
+	    port_text.setText(String.valueOf(Main.port));
 	}
-
+	/**
+	 * 
+	 * @param event
+	 * event handler for login button
+	 */
 	@FXML
 	void loginFunc(ActionEvent event) {
-		ArrayList<String> check = new ArrayList<String>();
-		check.add(userName.getText());
-		check.add(password.getText());
-		password.clear();
-		//userName.clear();
-		Translator translator = new Translator(OptionsOfAction.LOGIN, check);
-		client.handleMessageFromClientGUI(translator);
+				
+		try {
+			
+			this.ip = ip_text.getText();
+			this.port = Integer.parseInt(port_text.getText());
+
+			client = new Client(ip, port);
+			
+			ArrayList<String> check = new ArrayList<String>();
+			check.add(userName.getText());
+			check.add(password.getText());
+			password.clear();
+			
+			//userName.clear();
+			Translator translator = new Translator(OptionsOfAction.LOGIN, check);
+			client.handleMessageFromClientGUI(translator);
+			
+		} catch (IOException e) {
+			if(e.getMessage().equals("Connection refused: connect"))
+				new Alert(AlertType.WARNING,"Can't connect to server").show();
+			else
+				new Alert(AlertType.WARNING,"Server Port Or IP are not in correct format").show();
+
+		}
+		catch (NumberFormatException e)
+		{
+			new Alert(AlertType.WARNING,"Server Port is not in correct format").show();
+		}
+
 	}
 	
 
@@ -65,18 +97,31 @@ public class LoginController {
 		 return instance; 
 	}
 	
+	 /**
+	  * 
+	  * @param event
+	  * event handler for login button
+	  */
 	public void recoverPasswordFromDB(ActionEvent event)
 	{
+		try {
 		ArrayList<String> check = new ArrayList<String>();
 		check.add(userName.getText());
-		
-		//password.clear();
-		//userName.clear();
-		
+
 		Translator translator = new Translator(OptionsOfAction.RECOVER_PASSWORD, check);
 		client.handleMessageFromClientGUI(translator);
+		}
+		catch(NullPointerException e)
+		{
+			new Alert(AlertType.WARNING,"Please enter your user name to recover the password").show();
+		}
 	}
 	
+	/**
+	 * 
+	 * @param emailAndPassword
+	 * Gets the password and sends it to user email
+	 */
 	public void sendRecoveredPasswordToUserEmail(ArrayList<String> emailAndPassword)
 	{
 		if(emailAndPassword.get(0).compareTo("No email was found") == 0)

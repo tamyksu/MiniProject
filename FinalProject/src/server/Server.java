@@ -12,7 +12,6 @@ import java.util.concurrent.TimeUnit;
 import application.Processes;
 import application.UserProcess;
 import ocsf.server.*;
-import sun.awt.NullComponentPeer;
 
 /**
  * This class overrides some of the methods in the abstract 
@@ -138,6 +137,12 @@ public class Server extends AbstractServer
     
   }
   
+  /**
+   * This function is running a check for each process if it passed its due date using thread that runs once a day
+   * And notifies the handler and the people that should be updated.
+   * @author amirgroi
+   *
+   */
   static class checkDueDateOfProcessesTask extends TimerTask{
 	  @Override
 	public void run() {

@@ -1466,7 +1466,6 @@ System.out.println("id "+translator.getParmas().get(0));
 						OptionsOfAction.Execution_Completed, completeExecutionAnswer);
 				return completeExecutionTranslator;
 			
-		
 		case GET_RELATED_MESSAGES:
 			String role = (String)translator.getParmas().get(0);
 			
