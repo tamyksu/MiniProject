@@ -81,7 +81,6 @@
                   </Label>
                   <ComboBox fx:id="supervisor_comboBox" layoutX="37.0" layoutY="516.0" prefHeight="31.0" prefWidth="295.0" promptText="Select Supervisor" />
                   <Button fx:id="AppointSupervisor" layoutX="129.0" layoutY="560.0" mnemonicParsing="false" onAction="#AppointSupervisor_click" text="Appoint Supervisor" />
-                  <Button fx:id="log_out_btn" layoutX="1116.0" layoutY="22.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="148.0" text="Log out" />
                   <Button fx:id="Appoint_Chiarman" layoutX="116.0" layoutY="357.0" mnemonicParsing="false" onAction="#Appoint_Chiarman_click" text="Appoint Chiarman" />
                   <Button fx:id="Appoint_firstIE" layoutX="487.0" layoutY="357.0" mnemonicParsing="false" onAction="#AppointfirstIEclick" prefHeight="31.0" prefWidth="295.0" text="Appoint #1 Change Board Member" />
                   <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#1f93ff00" height="192.0" layoutX="140.0" layoutY="447.0" opacity="0.18" stroke="BLACK" strokeType="INSIDE" width="400.0" x="300.0" />
