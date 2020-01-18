@@ -4,6 +4,9 @@ import java.util.HashMap;
 import javafx.scene.Scene;
 import javafx.scene.layout.Pane;
 
+/**
+ * This class is responsible for managing the screens and switching between them
+ */
 public class ScreenController {
 	
 	private static ScreenController screenController;

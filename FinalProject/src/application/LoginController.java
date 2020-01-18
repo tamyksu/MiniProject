@@ -14,11 +14,13 @@ import translator.OptionsOfAction;
 import translator.Translator;
 import client.Client;
 
+/**
+ * The class of the Login screen controller
+ */
 public class LoginController {
 
 	public static LoginController instance;
 
-	Client client;
 	String ip;
 	int port;
 
@@ -31,8 +33,8 @@ public class LoginController {
 	@FXML
 	private TextField userName;
 
-    @FXML
-    private TextField message;
+//    @FXML
+//    private TextField message;
 
     @FXML
     private TextField ip_text;
@@ -40,14 +42,18 @@ public class LoginController {
     @FXML
     private TextField port_text;
     
-	public TextField getMessageField() {
-		return message;
-	}
+//	public TextField getMessageField() {
+//		return message;
+//	}
+//
+//	public void setMessage(TextField message) {
+//		this.message = message;
+//	}
 
-	public void setMessage(TextField message) {
-		this.message = message;
-	}
-
+	/**
+	 * Initializes the controller
+	 * @throws IOException
+	 */
 	public void initialize() throws IOException {
 		instance = this;
 	    ip_text.setText(Main.ip);
@@ -66,7 +72,7 @@ public class LoginController {
 			this.ip = ip_text.getText();
 			this.port = Integer.parseInt(port_text.getText());
 
-			client = new Client(ip, port);
+			new Client(ip, port);
 			
 			ArrayList<String> check = new ArrayList<String>();
 			check.add(userName.getText());
@@ -75,7 +81,7 @@ public class LoginController {
 			
 			//userName.clear();
 			Translator translator = new Translator(OptionsOfAction.LOGIN, check);
-			client.handleMessageFromClientGUI(translator);
+			Client.getInstance().handleMessageFromClientGUI(translator);
 			
 		} catch (IOException e) {
 			if(e.getMessage().equals("Connection refused: connect"))
@@ -113,7 +119,7 @@ public class LoginController {
 		check.add(userName.getText());
 
 		Translator translator = new Translator(OptionsOfAction.RECOVER_PASSWORD, check);
-		client.handleMessageFromClientGUI(translator);
+		Client.getInstance().handleMessageFromClientGUI(translator);
 		}
 		catch(NullPointerException e)
 		{

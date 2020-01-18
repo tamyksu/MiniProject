@@ -24,7 +24,6 @@ import java.lang.Runnable;
 
 
 public class ExtensionReportsController extends StatisticReports implements Initializable{ 
-	Client client = Client.getInstance();
 	public static ExtensionReportsController instance;
     @FXML
     private Text median_dayExtension;

@@ -6,8 +6,10 @@ import javax.mail.*;
 import javax.mail.internet.*;
 import javax.activation.*;
 
-
-public class SendMail {//Example:  SendMail.sendMail("avishimon@gmail.com", "Password Recovery", "Your password is: 123456");
+/**
+ * This class is responsible for sending emails
+ */
+public class SendMail {//Example of usage:  SendMail.sendMail("avishimon@gmail.com", "Password Recovery", "Your password is: 123456");
 
 	public static void sendMail(String receiverEmail, String messageTitle, String messageBody) throws Exception {
 

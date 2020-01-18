@@ -25,8 +25,12 @@ import application.Evaluation_Options;
 import application.MyFile;
 import application.Request;
 import application.MyHashMaps;
-
 import java.sql.ResultSet;
+
+/**
+ * This class is responsible for interacting with the DB
+ *
+ */
 public class DBConnector {
 
 	private static Connection conn;

@@ -15,13 +15,11 @@ import translator.OptionsOfAction;
 import translator.Translator;
 import java.lang.Runnable;
 import java.net.URL;
-import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
 public class DelayReportsController extends StatisticReports implements Initializable{ 
-	Client client = Client.getInstance();
+	
 	public static DelayReportsController instance;
-
 
     @FXML
     private Button back_btn;

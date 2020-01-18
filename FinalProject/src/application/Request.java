@@ -5,6 +5,9 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
 
+/**
+ * Class that holds a single request
+ */
 public class Request implements Serializable {
 	
 	private String userID;
@@ -15,7 +18,15 @@ public class Request implements Serializable {
 	private String notes;
 	
 	
-	/* ********************   Constructor   ******************** */
+	/**
+	 * Constructor
+	 * @param userId - the id of the user
+	 * @param informationSystemNumber - number of information system
+	 * @param problemDescription - description of the problem
+	 * @param requestDescription - description of the requested state
+	 * @param explanation - explanation of the required change
+	 * @param notes - extra notes
+	 */
 	public Request(String userId ,int informationSystemNumber, String problemDescription, String requestDescription,
 			String explanation, String notes) {
 		super();

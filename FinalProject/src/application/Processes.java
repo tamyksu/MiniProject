@@ -4,10 +4,12 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+/**
+ * 
+ *Holds the processes that have been retrieved from DB
+ */
 public class Processes implements Serializable{
-	/**
-	 * 
-	 */
+
 	private static final long serialVersionUID = 1L;
 	private HashMap<Integer, UserProcess> myprocess = new HashMap<Integer, UserProcess>();
 	private ArrayList<UserProcess> myProcessesInArrayList = new ArrayList<UserProcess>(); 	

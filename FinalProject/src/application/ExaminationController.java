@@ -20,9 +20,7 @@ import translator.Translator;
 public class ExaminationController implements Initializable{
 
 	public static ExaminationController instance;
-	
-	Client client = Client.getInstance();
-	
+		
 	private String process_stage;
 	
 	private int processID;
@@ -194,7 +192,7 @@ public class ExaminationController implements Initializable{
     	submit_failure_report_btn.setDisable(true);
     	
 		Translator translator = new Translator(OptionsOfAction.INSERT_FAILURE_REPORT, check);
-		client.handleMessageFromClientGUI(translator);
+		Client.getInstance().handleMessageFromClientGUI(translator);
     }
 
     /**
@@ -215,7 +213,7 @@ public class ExaminationController implements Initializable{
     	check.add(this.process_stage);
     	
     	Translator translator = new Translator(OptionsOfAction.FILL_FAILURE_REPORT_CLICK, check);
-		client.handleMessageFromClientGUI(translator);
+    	Client.getInstance().handleMessageFromClientGUI(translator);
     }
 
 
@@ -234,7 +232,7 @@ public class ExaminationController implements Initializable{
     	check.add(this.processID);
     	check.add(Client.getInstance().getUserID());
     	Translator translator = new Translator(OptionsOfAction.EXAMINATION_COMPLETED, check);
-		client.handleMessageFromClientGUI(translator);
+    	Client.getInstance().handleMessageFromClientGUI(translator);
     }
     
     

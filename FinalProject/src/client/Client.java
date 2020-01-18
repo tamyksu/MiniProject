@@ -28,13 +28,21 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonType;
 
-
+/**
+ * The client that holds the connection to the server and handles messages
+ */
 public class Client extends AbstractClient {
 	private String userID;
 	private Processes processes = new Processes();
 	private String role = "";
 	public static Client instance;
 
+	/**
+	 * Constructor of client
+	 * @param host - the IP of the connection to the server
+	 * @param port - the port of the connection to the server
+	 * @throws IOException
+	 */
 	public Client(String host, int port) throws IOException {
 		super(host, port); // Call the superclass constructor
 		openConnection();
@@ -45,14 +53,12 @@ public class Client extends AbstractClient {
 		return instance;
 	}
 
-	// Instance methods ************************************************
 
 	/**
 	 * This method handles all data that comes in from the server.
 	 *
 	 * @param msg The message from the server.
 	 */
-
 	public void handleMessageFromServer(Object rs) {
 		Translator result = (Translator)rs; 
 		switch (result.getRequest()) {
@@ -73,9 +79,6 @@ public class Client extends AbstractClient {
 			break;
 		case GET_APPRAISER_AND_PERFORMANCE_LEADER_OF_PROC:
 			handlerMessageFromServerGetAppOrPLofProc(result.getParmas());
-			break;
-		case GETALLINFORMATIONSYSTEMS:
-			//fillListForComboBox(result.getParmas());	
 			break;
 		case INITIALIZE_COMBO_BOX:
 			handlerMessageFromServerSelectChairMan(result.getParmas());
@@ -98,7 +101,6 @@ public class Client extends AbstractClient {
 		case Get_Active_Statistic:
 			handleMessageFromServerGet_Active_Statistic(result.getParmas());
 			break;
-
 		case DEFROST_PROCESS:
 			handleMessageFromServerDefrostProcess(result.getParmas());
 			break;
@@ -130,7 +132,6 @@ public class Client extends AbstractClient {
 			handleMessageFromServerShutdownProcess(result.getParmas());
 			break;
 		case GET_RELATED_MESSAGES:
-			System.out.println("GET_RELATED_MESSAGES reached");
 			setRelatedMessages(result.getParmas());
 			break;
 		case RECOVER_PASSWORD:
@@ -159,6 +160,9 @@ public class Client extends AbstractClient {
 
 	}
 
+	/**
+	 * @param rs - the result that was received from server after the appointment
+	 */
 	public void handleMessageFromServerAppointExaminer(Object rs) {
 		ArrayList<Boolean> answer = (ArrayList<Boolean>) rs;
 		DecisionController.getInstance().setAnswerFromServerAppointExaminer(answer.get(0));
@@ -172,6 +176,9 @@ public class Client extends AbstractClient {
 		});
 	}
 
+	/**
+	 * @param rs - the change board members that were received from server
+	 */
 	public void handleMessageFromServerGetAllChangeBoardMembers(Object rs) {
 		ArrayList<ChangeBoardMember> changeBoardMembers = (ArrayList<ChangeBoardMember>) rs;
 		DecisionController.getInstance().setComboBox(changeBoardMembers);
@@ -184,6 +191,9 @@ public class Client extends AbstractClient {
 		});
 	}
 
+	/**
+	 * @param rs - information that has been received from server for further calculations
+	 */
 	public void handleMessageSelectExtensionReport(Object rs)
 	{
 		
@@ -191,11 +201,18 @@ public class Client extends AbstractClient {
 		ExtensionReportsController.instance.calculate(result);
 	}
 	
+	/**
+	 * @param rs - information that has been received from server for further calculations
+	 */
 	public void handleMessageSelectDelayReport(Object rs)
 	{
 		ArrayList<ArrayList<Integer>> result = (ArrayList<ArrayList<Integer>> ) rs;
 		DelayReportsController.instance.calculate(result);
 	}
+	
+	/**
+	 * @param rs - information that has been received from server for further calculations
+	 */
 	public void handleMessageFromServerExecutionCompleted(Object rs) {
 		@SuppressWarnings("unchecked")
 		ArrayList<Boolean> result = (ArrayList<Boolean>) rs;
@@ -365,6 +382,10 @@ public class Client extends AbstractClient {
 		new Alert(AlertType.ERROR,"There was an issue to suspend this process").show();
 }
 	
+	/**
+	 * 
+	 * @param message - the result of the shutdown action
+	 */
 	private void handleMessageFromServerShutdownProcess(Object message) {
 		ArrayList<String> arr= (ArrayList<String>) message;
 
@@ -383,6 +404,10 @@ public class Client extends AbstractClient {
     	});
 	}
 
+	/**
+	 * 
+	 * @param message - the result of the defrost action
+	 */
 	private void handleMessageFromServerDefrostProcess(Object message) {
 		ArrayList<String> arr= (ArrayList<String>) message;
 
@@ -411,7 +436,6 @@ public class Client extends AbstractClient {
 
 
 	}
-
 
 
 	public void handlerMessageFromServerCURRENT_IN_ROLE(Object message)
@@ -470,6 +494,9 @@ public class Client extends AbstractClient {
 		}
 	}
 
+	/**
+	 * Handles client quit
+	 */
 	public void quit() {
 		try {
 			closeConnection();
@@ -490,8 +517,11 @@ public class Client extends AbstractClient {
 	public void setProcesses(Processes processes) {
 		this.processes = processes;
 	}
-	//get the processes related this client
+	
 	/*******************************************getProcessesFromServer*******************************************************/
+	/**
+	 * Gets the processes that related to client from server
+	 */
 	public void getProcessesFromServer() {
 		ArrayList<String> ar = new ArrayList<String>();
 		ar.add(userID);
@@ -520,6 +550,10 @@ public class Client extends AbstractClient {
 	}
 	/*****************************************handlerMessageFromServerNewRequest*************************************************************/	
 
+	/**
+	 * Handles messages from server when a new request was submitted
+	 * @param rs - the server's result of the new request
+	 */
 	public void handlerMessageFromServerNewRequest(Object rs) {
 		@SuppressWarnings("unchecked")
 		ArrayList<Boolean> result = (ArrayList<Boolean>) rs;
@@ -534,7 +568,10 @@ public class Client extends AbstractClient {
 		});
 	}
 	/*********************************************handlerMessageFromServerLogin*************************************************/	
-	//In case we want to tell you, what is the server's answer regarding the client's connection experience
+	/**
+	 * handles the login result from the server
+	 * @param rs - result of the login to the server, holds the answer of the role of the logged in user
+	 */
 	public void handlerMessageFromServerLogin(Object rs) {
 		@SuppressWarnings("unchecked")
 		ArrayList<String> result = (ArrayList<String>) rs;
@@ -572,22 +609,6 @@ public class Client extends AbstractClient {
 			getAllProcessesFromServer();
 			getRelatedMessages("Chairman");
 			break;
-			/*case "Change Board Member-1":
-			Client.getInstance().setName(result.get(1));
-			this.setRule(result.get(0));
-			ScreenController.getScreenController().activate("processesMain");
-			ControllerProcessMain.instance.ButtonAdjustmentSuperUser(result.get(0),"Active");
-			System.out.println("hhhcheck");
-			getAllProcessesFromServer();
-			break;	
-		case "Change Board Member-2":
-			Client.getInstance().setName(result.get(1));
-			this.setRule(result.get(0));
-			ScreenController.getScreenController().activate("processesMain");
-			ControllerProcessMain.instance.ButtonAdjustmentSuperUser(result.get(0),"Active");
-			System.out.println("hhhcheck");
-			getAllProcessesFromServer();
-			break;*/	
 		case "Login failed, username and password did not match":
 			Platform.runLater(new Runnable() {//avoiding java.lang.IllegalStateException “Not on FX application thread”
 				public void run() {
@@ -605,7 +626,7 @@ public class Client extends AbstractClient {
 			break;
 		}
 	}
-
+	
 	public void getAllProcessesFromServer() {
 		ArrayList<String> ar = new ArrayList<String>();
 		ar.add(userID);

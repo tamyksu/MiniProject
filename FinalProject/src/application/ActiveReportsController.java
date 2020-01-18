@@ -33,7 +33,7 @@ import javafx.event.ActionEvent;
 import translator.OptionsOfAction;
 import translator.Translator;
 public class ActiveReportsController extends StatisticReports implements Initializable { 
-	Client client = Client.getInstance();
+	
 	  ArrayList<LocalDate> date_graph;
 		private static Connection conn;
 		

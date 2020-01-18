@@ -88,9 +88,7 @@ public class DecisionController implements Initializable{
     
     @FXML
     private Label current_stage_due_time_text;
-    
-	Client client = Client.getInstance();
-	
+    	
 	UserProcess process;
 	
 	public EvaluationReport evaluationReport;
@@ -142,7 +140,7 @@ public class DecisionController implements Initializable{
 
     	processInfo.add(ControllerProcessMain.getInstance().getRequestID());
 		Translator translator= new Translator(OptionsOfAction.REJECTE_PROCESS,processInfo);
-		client/*Client.getInstance()*/.handleMessageFromClientGUI(translator);
+		Client.getInstance().handleMessageFromClientGUI(translator);
 		disableAllButtons();
     }
 

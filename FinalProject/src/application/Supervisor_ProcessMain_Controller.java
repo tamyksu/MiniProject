@@ -12,7 +12,6 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
-import sun.misc.Cleaner;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
@@ -20,11 +19,12 @@ import javafx.scene.control.TextField;
 import translator.OptionsOfAction;
 import translator.Translator;
 
+/**
+ * This class is the controller of supervisor screen
+ */
 public class Supervisor_ProcessMain_Controller implements Initializable{
 	
 	public static Supervisor_ProcessMain_Controller instance;
-	
-	Client client = Client.getInstance();
 	
 	ArrayList<String> apprairsID;
 	
@@ -142,7 +142,7 @@ public class Supervisor_ProcessMain_Controller implements Initializable{
     	processInfo.add(ControllerProcessMain.getInstance().getRequestID());//process/request id
     	
     	Translator translator = new Translator(OptionsOfAction.FREEZE_PROCESS, processInfo);
-    	client.handleMessageFromClientGUI(translator);
+    	Client.getInstance().handleMessageFromClientGUI(translator);
     }
 
     /**
@@ -156,11 +156,11 @@ public class Supervisor_ProcessMain_Controller implements Initializable{
     	processInfo.add(ControllerProcessMain.getInstance().getRequestID());//process/request id
     	
     	Translator translator = new Translator(OptionsOfAction.SHUTDOWN_PROCESS, processInfo);
-    	client.handleMessageFromClientGUI(translator);
+    	Client.getInstance().handleMessageFromClientGUI(translator);
     }
     
     /**
-     * Get appraiser/performance leader data
+     * Get appraiser/performance leader data to put in the combo-boxes
      */
     public void getAppraiserOrPerformanceLeaderCBData()
     {
@@ -194,7 +194,7 @@ public class Supervisor_ProcessMain_Controller implements Initializable{
     		//check.add(2);//process id
     		check.add(processID);
     		Translator translator = new Translator(OptionsOfAction.GET_APPRAISER_AND_PERFORMANCE_LEADER_CB_DATA, check);
-    		client.handleMessageFromClientGUI(translator);
+    		Client.getInstance().handleMessageFromClientGUI(translator);
     	}
     	catch(Exception e){
     		System.out.println("EXCEPTION: Supervisor_ProcessMain_Controller - get ComboBox Data");
@@ -266,7 +266,7 @@ public class Supervisor_ProcessMain_Controller implements Initializable{
     
     /**
      * Appoint Appraiser of performance leader data
-     * @param e
+     * @param e - event
      */
     public void appointAppraiserOrPerformanceLeader(ActionEvent e)
     {
@@ -301,7 +301,7 @@ public class Supervisor_ProcessMain_Controller implements Initializable{
     			check.add("Performance Leader");
     		
     		Translator translator = new Translator(OptionsOfAction.APPOINT_APPRAISER_OR_PERFORMANCE_LEADER, check);
-    		client.handleMessageFromClientGUI(translator);
+    		Client.getInstance().handleMessageFromClientGUI(translator);
     		
     		if(intProcess_stage == Constants.STAGE_OF_APPOINTING_APPRAISER)
     		{
@@ -342,6 +342,9 @@ public class Supervisor_ProcessMain_Controller implements Initializable{
     
     }
     
+    /**
+     * Gets the appraiser and the performance leader labels
+     */
     public void getAppraiserAndPerformanceLeaderLabels()
     {
     	current_appraiser_text.setText("None");
@@ -362,6 +365,10 @@ public class Supervisor_ProcessMain_Controller implements Initializable{
     	}
     }
     
+    /**
+	* Sets the appraiser and the performance leader labels
+     * @param arr - array of data to set
+     */
     public void setAppraiserAndPerformanceLeaderLabels(ArrayList <String> arr)
     {
     	System.out.println("setLabels: process_stage = " + intProcess_stage);
@@ -447,7 +454,7 @@ public class Supervisor_ProcessMain_Controller implements Initializable{
     	arr.add(this.intProcess_stage);
     	
     	Translator translator = new Translator(OptionsOfAction.SET_EVALUATION_OR_EXECUTION_DUE_TIME, arr);
-    	client.handleMessageFromClientGUI(translator);
+    	Client.getInstance().handleMessageFromClientGUI(translator);
     	due_time_text.setText("");
     	approve_due_time_request_btn.setDisable(true);
 		decline_due_time_request_btn.setDisable(true);
@@ -467,7 +474,7 @@ public class Supervisor_ProcessMain_Controller implements Initializable{
     	arr.add(this.intProcess_stage);
     	
     	Translator translator = new Translator(OptionsOfAction.DECLINE_EVALUATION_OR_EXECUTION_DUE_TIME, arr);
-    	client.handleMessageFromClientGUI(translator);
+    	Client.getInstance().handleMessageFromClientGUI(translator);
     	due_time_text.setText("");
     	approve_due_time_request_btn.setDisable(true);
 		decline_due_time_request_btn.setDisable(true);
@@ -520,8 +527,8 @@ public class Supervisor_ProcessMain_Controller implements Initializable{
     }
     
     /**
-     * Add a due tome extention
-     * @param e
+     * Add due time extention
+     * @param e - event
      */
     public void addDueTimeExtension(ActionEvent e)
     {    	
@@ -550,7 +557,7 @@ public class Supervisor_ProcessMain_Controller implements Initializable{
     	arr.add(this.stringProcess_stage);
     	
     	Translator translator = new Translator(OptionsOfAction.ADD_EVALUATION_OR_EXECUTION_EXTENSION_TIME, arr);
-    	client.handleMessageFromClientGUI(translator);
+    	Client.getInstance().handleMessageFromClientGUI(translator);
     	extension_time_text.clear();
     }
     
@@ -566,7 +573,7 @@ public class Supervisor_ProcessMain_Controller implements Initializable{
     	arr.add(this.stringProcess_stage);
     	
     	Translator translator = new Translator(OptionsOfAction.DECLINE_EVALUATION_OR_EXECUTION_EXTENSION_TIME, arr);
-    	client.handleMessageFromClientGUI(translator);
+    	Client.getInstance().handleMessageFromClientGUI(translator);
     	extension_time_text.clear();
     	add_extension__time_btn.setDisable(true);
     	decline_extension_request_btn.setDisable(true);
@@ -584,6 +591,10 @@ public class Supervisor_ProcessMain_Controller implements Initializable{
     	Supervisor_ProcessMain_Controller.instance.procID = proc;
     }
     
+    /**
+     * Initializes the chosen process screen with the relevant data.
+     * @param processStage - stage number of the relevant process
+     */
     void initializeChosenProcessScreen(String processStage)
     {
     	System.out.println("Supervisor_ProcessesMain: initializeChosenProcessScreen: Stage: " + processStage);

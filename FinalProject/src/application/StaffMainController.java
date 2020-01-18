@@ -31,10 +31,11 @@ import javafx.scene.control.Alert.AlertType;
 import translator.OptionsOfAction;
 import translator.Translator;
 
-
+/**
+ * This is the controller class of the director screen
+ */
 public class StaffMainController implements Initializable{
 	
-	Client client = Client.getInstance();
 	public static StaffMainController instance;
 	PreparedStatement stmt;
 	private static Connection conn;
@@ -184,7 +185,7 @@ public class StaffMainController implements Initializable{
 			print_message.setVisible(false);
 		ArrayList<String> check= new ArrayList<String>();
 		Translator translator= new Translator(OptionsOfAction.INITIALIZE_COMBO_BOX,check);
-		client/*Client.getInstance()*/.handleMessageFromClientGUI(translator);
+		Client.getInstance().handleMessageFromClientGUI(translator);
 	}
 		catch(Exception e){}
 	}

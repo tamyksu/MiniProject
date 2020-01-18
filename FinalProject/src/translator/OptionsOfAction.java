@@ -43,7 +43,8 @@ public enum OptionsOfAction {
 	Get_All_Change_Board_Members,
 	Appoint_Examiner,
 	SelectDelayReport,
-	SelectExtensionReport;
+	SelectExtensionReport,
+	GET_HANDLER_ID_OF_PROCESS_ID,
 }
 
 

@@ -2,7 +2,9 @@ package application;
 
 import java.util.ArrayList;
 
-//
+/**
+ * Class that represents the information of a User Process with all of its details
+ */
 public class UserProcess {
 	private int    request_id;
 	private int    system_num;

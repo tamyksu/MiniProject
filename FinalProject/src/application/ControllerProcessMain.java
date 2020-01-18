@@ -1,6 +1,5 @@
 package application;
 
-import java.io.IOException;
 import java.net.URL;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -9,11 +8,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.ResourceBundle;
 import java.util.concurrent.TimeUnit;
-import com.sun.scenario.effect.Effect.AccelType;
-
 import client.Client;
-import javafx.application.Application;
-import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -29,19 +24,19 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.stage.Stage;
 import translator.OptionsOfAction;
 import translator.Translator;
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler.*; 
 import javafx.event.EventHandler;
 
+/**
+ * Controller of ProcessMain window - the main window
+ */
 public class ControllerProcessMain implements Initializable {
+	
 	public static ControllerProcessMain instance;
 	
 	private ArrayList<Object> messagesData;
-	
-	private String roleInProc;
 	
 	private String procStage = "";
 
@@ -163,6 +158,9 @@ public class ControllerProcessMain implements Initializable {
 		ScreenController.getScreenController().activate("newRequest");
 	}
 
+	/**
+	 * Initialization of the window
+	 */
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		instance = this;
@@ -174,6 +172,10 @@ public class ControllerProcessMain implements Initializable {
 		return instance;
 	}
 
+	/**
+	 * Sets the 
+	 * @param rs contains the processes to insert to the table
+	 */
 	public void SetInTable(Object rs) {
 		Processes processes = (Processes) rs;
 		ObservableList<Person> data;
@@ -222,6 +224,7 @@ public class ControllerProcessMain implements Initializable {
 					updateFieldsOfRequestMarked(tableView.getSelectionModel().getSelectedItem());
 				}
 			});
+			
 			return row;
 		});
 	}
@@ -274,7 +277,7 @@ public class ControllerProcessMain implements Initializable {
         }; 
 		for (int i = 0; i < arrayList1.size(); i++) {
         	MenuItem m1 = new MenuItem(arrayList1.get(i)); 
-            // add action events to the menuitems 
+            // add action events to the menu items 
             m1.setOnAction(event1);
             DocumentsMenu.getItems().add(m1); 
 
@@ -296,6 +299,10 @@ public class ControllerProcessMain implements Initializable {
 		Client.getInstance().handleMessageFromClientGUI(translator);
 		showSeccessAlert();
 	}
+	
+	/**
+	 * Show alert when file received successfully
+	 */
     public void showSeccessAlert() {
     	Alert alert =new Alert(AlertType.INFORMATION, "File was received.");
     	alert.setTitle("Successfully downloaded");
@@ -384,7 +391,9 @@ public class ControllerProcessMain implements Initializable {
 	
 	}
 	
-	//change button disability in accordance to appraiser
+	/**
+	 * Change button disability in accordance to appraiser
+	 */
 	private void fitChairman() {
 		if(this.procStage.compareTo("5") == 0 || this.procStage.compareTo("5.6") == 0 || this.procStage.compareTo("10") == 0)
 		{
@@ -482,9 +491,9 @@ public class ControllerProcessMain implements Initializable {
 		defrost_btn.setDisable(true);
 	}
 
-	//
+	
 	/**
-	 * 
+	 * Change button disability in accordance to Initiator
 	 */
 	private void fitInitiator() {
 		newRequestBtn.setDisable(false);
@@ -499,7 +508,9 @@ public class ControllerProcessMain implements Initializable {
 		defrost_btn.setDisable(true);
 	}
 	
-	
+	/**
+	 * Change button disability in accordance to Chairman when selected process is suspended or shutdown
+	 */
 	private void fitChairmanDisabled() {
 			newRequestBtn.setDisable(true);
 			extension_btn.setDisable(true);
@@ -514,7 +525,7 @@ public class ControllerProcessMain implements Initializable {
 	}
 	
 	/**
-	 * 
+	 * Change button disability in accordance to Manager when selected process is suspended or shutdown
 	 */
 	private void fitManagerDisabled()
 	{
@@ -546,7 +557,7 @@ public class ControllerProcessMain implements Initializable {
 	}
 	
 	/**
-	 * Performance Leader Options
+	 * Performance Leader Options when process is disabled
 	 */
 	private void fitPerformanceLeaderDisabled()
 	{
@@ -580,7 +591,7 @@ public class ControllerProcessMain implements Initializable {
 	}
 	
 	/**
-	 * Examiner Options
+	 * Examiner Options when process is disabled
 	 */
 	private void fitExaminerDisabled()
 	{
@@ -691,11 +702,10 @@ public class ControllerProcessMain implements Initializable {
 	void director_click(ActionEvent event) {
 		ScreenController.getScreenController().activate("staffMain");
 		StaffMainController.instance.getChairManData();
-		
 	}
 	
 	/**
-	 * Extention
+	 * Handle extension of stage
 	 * @param event
 	 */
 	@FXML
@@ -823,8 +833,7 @@ public class ControllerProcessMain implements Initializable {
 			arr.add(process.getRequest_id()); 
 			Translator translator = new Translator(OptionsOfAction.Get_Evaluation_Report_For_Process_ID, arr);
 			Client.getInstance().handleMessageFromClientGUI(translator);
-			//try { Thread.sleep(750); } catch (InterruptedException e) {System.out.println("Can't Sleep");}
-			//DecisionController.getInstance().loadPage(evaluationReports);
+
 		}
 		if(Double.parseDouble(process.getProcess_stage())==10) {
 			DecisionController.getInstance().loadPage(new EvaluationReport());
@@ -832,9 +841,7 @@ public class ControllerProcessMain implements Initializable {
 			Translator translator = new Translator(OptionsOfAction.Get_All_Change_Board_Members, arr);
 			Client.getInstance().handleMessageFromClientGUI(translator);
 		}
-		
-		//ScreenController.getScreenController().activate("decisionMaking");
-		//DecisionController.instance.updateProcessInformation();
+
 	}
 	
 	/**
@@ -921,7 +928,7 @@ public class ControllerProcessMain implements Initializable {
 	}
 	
 	/**
-	 * Shut down
+	 * Shut down process
 	 * @param event
 	 */
 	@FXML
@@ -960,11 +967,18 @@ public class ControllerProcessMain implements Initializable {
 			
 	}
 	
+	/**
+	 * @return the role of the selected role
+	 */
 	public String getSelectedRowRole()
 	{
 		return tableView.getSelectionModel().getSelectedItem().getRole();
 	}
 	
+	/**
+	 * 
+	 * @return the selected row processID
+	 */
 	public int getSelectedRowProcID()
 	{		
 		try
@@ -989,8 +1003,7 @@ public class ControllerProcessMain implements Initializable {
 	
 	
 	/**
-	 * Get the ID of the user
-	 * @return
+	 * @return the ID of the user
 	 */
 	public String getRequestID()
 	{
