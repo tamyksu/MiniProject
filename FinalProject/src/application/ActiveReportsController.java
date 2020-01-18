@@ -7,14 +7,16 @@ import javafx.scene.chart.BarChart;
 import javafx.scene.chart.CategoryAxis;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.TextField;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.text.Text;
 import application.StatisticReports;
 import java.lang.Runnable;
-
-
+import java.lang.reflect.InvocationTargetException;
+import java.time.Duration;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.net.URL;
@@ -23,7 +25,6 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
-
 
 
 import javafx.application.Platform;
@@ -105,6 +106,7 @@ public class ActiveReportsController extends StatisticReports implements Initial
 		instance = this;	
 
 	}
+	
 	@FXML
 	public void back_click(ActionEvent event) {
     	active_reports.getData().clear();
@@ -134,38 +136,109 @@ public class ActiveReportsController extends StatisticReports implements Initial
     	work_days_report.getData().clear();
     	 ArrayList<Object> all= new ArrayList<>();
     	 ArrayList<LocalDate> dates= new ArrayList<LocalDate>();
-    	LocalDate start_date=start_date_button.getValue();//get start date
-    	 end_date=end_date_button.getValue();//get end date
-    	  System.out.println(" LocalDate start"+start_date );
-    	   //num_days.getText();
-    	 ArrayList<Long> days= new ArrayList<Long>();
-    	  num = Long.parseLong(num_days.getText());
-    	
-    	 days.add(num);
-    	   start_index=start_date;
-			 end_index=start_index.plusDays(num);
-    	 // Integer total_days=(Integer)(end_date- start_date);
-    	 dates.add(start_date);
-    	 dates.add(end_date);
-    	   all.add(dates);
-    	   all.add(days);
-    		date_graph= new ArrayList<LocalDate>();
-			    	    start_index=start_date;
-						 end_index=start_index.plusDays(num);
-						 System.out.println("start date" +start_date );
-						while(!start_index.isAfter(end_date))
-						{
-							 date_graph.add(start_index);
-								start_index=end_index;
-								end_index= end_index.plusDays(num);
-						}
-						
 
- 		Translator translator= new Translator(OptionsOfAction.Get_Active_Statistic,all);
- 		Client.getInstance().handleMessageFromClientGUI(translator);
-						
-    }
+
+				
+					// TODO Auto-generated method stub
+    	 ArrayList<Long> days;
+    		try
+        	{
+    		
+    				LocalDate start_date=start_date_button.getValue();//get start date
+    		    	 end_date=end_date_button.getValue();//get end date
+    		    	  System.out.println(" LocalDate start"+start_date );
+    		    	   //num_days.getText();
+    		    	 days= new ArrayList<Long>();
+    			 num = Long.parseLong(num_days.getText());
+    			
+    	 			
+    			 if(num<1)
+    			 {
+    				
+    				 Platform.runLater(new Runnable(){
+    			@Override
+				public void run() {
+    				 Alert alert = new Alert(AlertType.INFORMATION);
+    	            	
+    	                alert.setTitle("ALERT");
+    	                alert.setHeaderText("incorrect input!");
+    	                alert.setContentText("Please fill with positive number");
+    	                alert.showAndWait();
+    					// ...
+    		}
+    			}); 
+    				 return;
+    				 }
+    			
+    			
+    			 days.add(num);
+    	    	   start_index=start_date;
+    				 end_index=start_index.plusDays(num);
+    	    	
+    	    	 dates.add(start_date);
+    	    	 dates.add(end_date);
+    	    	   all.add(dates);
+    	    	   all.add(days);
+    	    		date_graph= new ArrayList<LocalDate>();
+    				    	    start_index=start_date;
+    							 end_index=start_index.plusDays(num);
+    							 System.out.println("start date" +start_date );
+    							while(!start_index.isAfter(end_date))
+    							{
+    								 date_graph.add(start_index);
+    									start_index=end_index;
+    									end_index= end_index.plusDays(num);
+    							}
+    							System.out.println(date_graph+"date graph size");
+    							 date_graph.add(end_date);
+
+    	 		Translator translator= new Translator(OptionsOfAction.Get_Active_Statistic,all);
+    	 		Client.getInstance().handleMessageFromClientGUI(translator);
+    			
+    			 
+    		
+   
+    			
+        	}
+     		
+        	catch(NullPointerException e)
+        	{
+        		Platform.runLater(new Runnable(){
+        			@Override
+    				public void run() {
+        		Alert alert = new Alert(AlertType.INFORMATION);
+            	
+                alert.setTitle("ALERT");
+                alert.setHeaderText("No data was input!");
+                alert.setContentText("Please select date and number of days");
+                alert.showAndWait();
+        			}
+        			});
+        		return;
+        		}
+        			catch(NumberFormatException e)
+                	{
+                		Platform.runLater(new Runnable(){
+                			@Override
+            				public void run() {
+                		Alert alert = new Alert(AlertType.INFORMATION);
+                    	
+                        alert.setTitle("ALERT");
+                        alert.setHeaderText("No data was input!");
+                        alert.setContentText("Please select date and number of days");
+                        alert.showAndWait();
+                     
+                		}
+    		});
+        		
+        		   return;
+        	}
+    	  
+    		
+    	
     
+ 		/***********************************************************/
+    }
     
     
    /*****************************************calaulate**************************************************/ 
@@ -173,37 +246,23 @@ public class ActiveReportsController extends StatisticReports implements Initial
 	public void calaulate(ArrayList<ArrayList<Integer>> status_counter)
     {
     	
-    	active_reports.getData().clear();
-    	
-    	System.out.println("calculate");
-    
- 
-    
+    //	active_reports.getData().clear();
+  
     	Platform.runLater(new Runnable(){
 
 				@Override
 				public void run() {
 				
 				ArrayList<Integer> arr= status_counter.get(0);
-				//ArrayList<Double> median=new ArrayList<Double>();
+			
 				ArrayList<Double> median=new ArrayList<>();
-					System.out.println(arr.size()+"size ?7");
+			
 					DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-LLLL-yyyy");
-				/*	for(int i=0;i<arr.size();i++) 
-						{
-						String formattedString = date_graph.get(i).format(formatter);
-						System.out.println(formattedString); 
-						}*/
+		
 					 arr= status_counter.get(4);
-					ArrayList<Integer> arr_days= status_counter.get(5);
-						for(int i=0;i<arr.size();i++)
-						{
-							
-							System.out.println(arr.get(i)+"counter");
-							System.out.println(arr_days.get(i)+"days");
-						}
+				
 /**************************************************************median		*/		
-					StatisticReports send_data;
+
 					for(int i=0;i<6;i++)	
 					{
 						 arr= status_counter.get(i);
@@ -242,7 +301,7 @@ public class ActiveReportsController extends StatisticReports implements Initial
 					xyTotalDays.setName("Workdays");
 					 formatter = DateTimeFormatter.ofPattern("dd-LLLL-yyyy");
 	/*****************************************Active***************************************************/	
-		int sum=0;
+	
 		double standard_deviation_suspend;
 		double standard_deviation_active;
 		double standard_deviation_shutdown;
@@ -253,9 +312,8 @@ public class ActiveReportsController extends StatisticReports implements Initial
 				
     		for(int i=0;i<arr.size();i++) 
     		{
-    			
-    		//	sum+=arr.get(i);
-    		String formattedString = date_graph.get(i).format(formatter);
+    		
+    		String formattedString = date_graph.get(i+1).format(formatter);
     		System.out.println(formattedString);
     	    xyActive.getData().add(new XYChart.Data(formattedString.toString(),arr.get(arr.size()-i-1)));
     		}
@@ -264,68 +322,68 @@ public class ActiveReportsController extends StatisticReports implements Initial
     		 active =String.format("%.2f",standard_deviation_active);
     		 sdActive_txt.setText(active);
     /**************************************************Suspend****************************************************/
-    		sum=0;
+    		
     		arr= status_counter.get(1);
     		for(int i=0;i<arr.size();i++)
     		{
     	//		sum+=arr.get(i);
-    		String formattedString = date_graph.get(i).format(formatter);
+    		String formattedString = date_graph.get(i+1).format(formatter);
     		xySuspend.getData().add(new XYChart.Data(formattedString,arr.get(arr.size()-i-1)));
     		}
     
     		 standard_deviation_suspend= standard_deviation(arr);
     		// sdSuspended_txt.setText(Double. toString(standard_deviation_suspend));
-    		 suspend =String.format("%.2f",standard_deviation_active);
+    		 suspend =String.format("%.2f",standard_deviation_suspend);
     		 sdSuspended_txt.setText(suspend);
   /***********************************************Shutdown****************************************************/  		
     		arr= status_counter.get(2);
-    		sum=0;
+    		
     		for(int i=0;i<arr.size();i++)
     		{
     		//	sum+=arr.get(i);
-    		String formattedString = date_graph.get(i).format(formatter);
+    		String formattedString = date_graph.get(i+1).format(formatter);
     		xyShutdown.getData().add(new XYChart.Data(formattedString,arr.get(arr.size()-i-1)));
     		}
     
     		 standard_deviation_shutdown= standard_deviation(arr);
     		// sdClosed_txt.setText(Double. toString(standard_deviation_shutdown));
-    		 closed =String.format("%.2f",standard_deviation_active);
+    		 closed =String.format("%.2f",standard_deviation_shutdown);
     		 sdClosed_txt.setText(closed);
    /*****************************************Rejected***************************************************************/
     		arr= status_counter.get(3);
-    		sum=0;
+    	
     		for(int i=0;i<arr.size();i++)
     		{
     		//	sum+=arr.get(i);
-    		String formattedString = date_graph.get(i).format(formatter);
+    		String formattedString = date_graph.get(i+1).format(formatter);
     		xyRejected.getData().add(new XYChart.Data(formattedString,arr.get(arr.size()-i-1)));
     		}
      		
 
     		standard_deviation_rejected= standard_deviation(arr);
     		// sdRejected_txt.setText(Double. toString(standard_deviation_rejected));
-    		rejected =String.format("%.2f",standard_deviation_active);
+    		rejected =String.format("%.2f",standard_deviation_rejected);
     		sdRejected_txt.setText(rejected);
    /**************************************************TotalDays***************************************************************/
     		arr= status_counter.get(4);
-    		ArrayList<Integer>count_workdays= status_counter.get(5);
-    		sum=0;
+    		ArrayList<Integer>days_workdays= status_counter.get(5);
+    		
     		for(int i=0;i<arr.size();i++)
     		{
     		
     		
     		
-    		xyTotalDays.getData().add(new XYChart.Data(Integer.toString( count_workdays.get(i)),arr.get(i)));
+    		xyTotalDays.getData().add(new XYChart.Data(Integer.toString( days_workdays.get(i)),arr.get(i)));
     		}
     		standard_deviation_TotslDsys= standard_deviation(arr);
     	//	sdWorkdays_txt.setText(Double. toString(standard_deviation_TotslDsys));
-    		days_work =String.format("%.2f",standard_deviation_active);
+    		days_work =String.format("%.2f",standard_deviation_TotslDsys);
     		sdWorkdays_txt.setText(days_work);
     		
     		
-   		standard_deviation_TotslDsys_count= standard_deviation(count_workdays);
+   		standard_deviation_TotslDsys_count= standard_deviation(days_workdays);
    		//sdWorkdays_count.setText(Double. toString(standard_deviation_TotslDsys_count));
-   		count_work =String.format("%.2f",standard_deviation_active);
+   		count_work =String.format("%.2f",standard_deviation_TotslDsys_count);
    		sdWorkdays_count.setText(count_work);
     	/*****************************************************************************************************/
     		active_reports.getData().addAll(xyActive,xySuspend,xyShutdown,xyRejected);

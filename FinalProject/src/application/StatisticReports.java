@@ -16,14 +16,7 @@ public class StatisticReports  implements Initializable {
 
 
 	{
-		System.out.println("*************median*********************");
-		for(int i=0;i<arr.size();i++)
-		{
-			
-			System.out.println(arr.get(i)+"values");
-		}
-		
-
+	
 	
 			if(arr.size()%2==1)
 			{
@@ -45,12 +38,7 @@ public class StatisticReports  implements Initializable {
 	public Double standard_deviation(ArrayList<Integer> arr)
 	{
 		
-		System.out.println("***************sd*******************");
-		for(int i=0;i<arr.size();i++)
-		{
-			
-			System.out.println(arr.get(i)+"values");
-		}
+	
 		
 		int sum=0;
 		for(int i=0;i<arr.size();i++) 

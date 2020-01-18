@@ -18,6 +18,9 @@
 {
 	-fx-fill: white;
 }
+.axis-label {
+  -fx-text-fill: white;
+}
 .styleICM
 {
 	-fx-fill: white;
@@ -30,6 +33,10 @@
 .idPane{
 		-fx-background-image: url("/application/1.jpg");
      	-fx-background-size: 100% 100%;
+}
+.chart-title {
+  -fx-text-fill: white;
+ 
 }
 
 #color{

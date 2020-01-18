@@ -407,7 +407,7 @@ public class DBConnector {
 			{
 				System.out.println("rejected"+rs.getInt(1));
 				rejected.add(i, rs.getInt(1));
-			//System.out.println(active.get(i));
+	
 				i++;
 			}
 
@@ -495,31 +495,27 @@ public class DBConnector {
 					long endTime = nowGet.getTime();
 					long diffTime = endTime - startTime;
 					long diffDays = diffTime / (1000 * 60 * 60 * 24);
-					System.out.println(diffDays);
-							//total_days =(nowGet.getTime()-satrt_date.getTime());
-							System.out.println(nowGet.getTime()+ " "+satrt_date.getTime());
+					
 							int convert_to_int=(int)diffDays;
-							System.out.println(convert_to_int+"now we before end date");
+				
 							TotalDays.add(convert_to_int);
 					
 				}
 			}
 			
-		
-			System.out.println(Collections.max(TotalDays));
+
 			int arr_counter[] =new int[	Collections.max(TotalDays)];
-			System.out.println(arr_counter.length+" size arr");
+	
 			for( i=0;i<arr_counter.length;i++)
 			{
 				arr_counter[i]=0;
 			}
-			System.out.println(TotalDays.size()+"total days size");
+		
 			for( i=0;i<TotalDays.size();i++)
 			{
-				System.out.println(arr_counter[TotalDays.get(i)-1]); 
+				
 				arr_counter[TotalDays.get(i)-1]=arr_counter[TotalDays.get(i)-1]+1;
-				System.out.println(arr_counter[TotalDays.get(i)-1]); 
-				System.out.println(TotalDays.get(i)+"value");
+			
 			}
 			ArrayList<Integer> counter_arr=new ArrayList<>();
 			ArrayList<Integer> total_days_arr=new ArrayList<>();
