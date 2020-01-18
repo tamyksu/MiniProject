@@ -119,6 +119,9 @@ public class Client extends AbstractClient {
 		case Execution_Completed:
 			handleMessageFromServerExecutionCompleted(result.getParmas());
 			break;	
+		case DOWNLOADFILE:
+			handleMessageFromServerDownloadFile(result.getParmas());
+			break;
 		case SHUTDOWN_PROCESS:
 			handleMessageFromServerShutdownProcess(result.getParmas());
 			break;
