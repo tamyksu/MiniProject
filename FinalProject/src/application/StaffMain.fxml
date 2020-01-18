@@ -22,82 +22,109 @@
             </AnchorPane>
           <AnchorPane focusTraversable="true" minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0" styleClass="idPane">
                <children>
-                  <Text fx:id="print_IE2" fill="#ccd4da" layoutX="840.0" layoutY="414.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Current  this position is empty" wrappingWidth="415.13671875">
+                  <Text fx:id="print_IE2" fill="#ccd4da" layoutX="865.0" layoutY="577.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Current  this position is empty" wrappingWidth="415.13671875">
                      <font>
                         <Font size="18.0" />
                      </font>
                   </Text>
-                  <Text fx:id="print_supervisor" fill="#ccd4da" layoutX="21.0" layoutY="625.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Current  this position is empty" wrappingWidth="415.13671875">
+                  <Text fx:id="print_supervisor" fill="#ccd4da" layoutX="46.0" layoutY="788.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Current  this position is empty" wrappingWidth="415.13671875">
                      <font>
                         <Font size="18.0" />
                      </font>
                   </Text>
-                  <Text fx:id="print_IE1" fill="#ccd4da" layoutX="444.0" layoutY="414.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Current  this position is empty" wrappingWidth="339.13671875">
+                  <Text fx:id="print_IE1" fill="#ccd4da" layoutX="469.0" layoutY="577.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Current  this position is empty" wrappingWidth="339.13671875">
                      <font>
                         <Font size="18.0" />
                      </font>
                   </Text>
-                  <Text fx:id="print_Chaiman" fill="#ccd4da" layoutX="21.0" layoutY="415.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Current  this position is empty" wrappingWidth="415.13671875">
+                  <Text fx:id="print_Chaiman" fill="#ccd4da" layoutX="46.0" layoutY="578.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Current  this position is empty" wrappingWidth="415.13671875">
                      <font>
                         <Font size="18.0" />
                      </font>
                   </Text>
-                  <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#1f93ff00" height="192.0" layoutX="-283.0" layoutY="447.0" opacity="0.18" stroke="BLACK" strokeType="INSIDE" width="400.0" x="300.0" />
-                  <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#1f93ff00" height="227.0" layoutX="17.0" layoutY="205.0" opacity="0.18" stroke="BLACK" strokeType="INSIDE" width="1247.0" />
+                  <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#1f93ff00" height="192.0" layoutX="-258.0" layoutY="610.0" opacity="0.18" stroke="BLACK" strokeType="INSIDE" width="400.0" x="300.0" />
+                  <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#1f93ff00" height="203.0" layoutX="42.0" layoutY="392.0" opacity="0.18" stroke="BLACK" strokeType="INSIDE" width="1247.0" />
                   <Button fx:id="back_btn" layoutX="22.0" layoutY="22.0" mnemonicParsing="false" onAction="#back_click" text="Back" />
-                  <Button fx:id="Appoint_secondIE" layoutX="935.0" layoutY="357.0" mnemonicParsing="false" onAction="#AppointsecondIEclick" prefHeight="31.0" prefWidth="295.0" text="Appoint #2 Change Board Member" />
-                  <ComboBox fx:id="chairman_comboBox" layoutX="62.0" layoutY="303.0" prefHeight="31.0" prefWidth="295.0" promptText="Select Chairman" />
-                  <Label layoutX="444.0" layoutY="183.0" styleClass="brightText" text="Appoint Changes Control Board">
+                  <Button fx:id="Appoint_secondIE" layoutX="955.0" layoutY="519.0" mnemonicParsing="false" onAction="#AppointsecondIEclick" prefHeight="31.0" prefWidth="295.0" text="Appoint #2 Change Board Member" />
+                  <ComboBox fx:id="chairman_comboBox" layoutX="82.0" layoutY="466.0" prefHeight="31.0" prefWidth="295.0" promptText="Select Chairman" />
+                  <Label layoutX="503.0" layoutY="392.0" styleClass="brightText" text="Appoint Changes Control Board">
                      <font>
-                        <Font name="System Bold" size="18.0" />
+                        <Font name="System Bold" size="20.0" />
                      </font>
                   </Label>
-                  <Label layoutX="172.0" layoutY="269.0" styleClass="brightText" text="Chairman:">
-                     <font>
-                        <Font size="17.0" />
-                     </font>
-                  </Label>
-                  <Label layoutX="990.0" layoutY="269.0" styleClass="brightText" text="#2 Change Board Member:">
+                  <Label layoutX="192.0" layoutY="432.0" styleClass="brightText" text="Chairman:">
                      <font>
                         <Font size="17.0" />
                      </font>
                   </Label>
-                  <ComboBox fx:id="firstIE_comboBox" layoutX="492.0" layoutY="303.0" prefHeight="31.0" prefWidth="295.0" promptText="Select Change Board Member:" />
-                  <Label layoutX="547.0" layoutY="269.0" styleClass="brightText" text="#1 Change Board Member:">
+                  <Label layoutX="1001.0" layoutY="432.0" styleClass="brightText" text="#2 Change Board Member:">
                      <font>
                         <Font size="17.0" />
                      </font>
                   </Label>
-                  <ComboBox fx:id="secondIE_comboBox" layoutX="935.0" layoutY="303.0" prefHeight="31.0" prefWidth="295.0" promptText="Select Change Board Member:" />
-                  <Label layoutX="102.0" layoutY="450.0" styleClass="brightText" text="Appoint Supervisor">
-                     <font>
-                        <Font name="System Bold" size="18.0" />
-                     </font>
-                  </Label>
-                  <Label layoutX="146.0" layoutY="490.0" styleClass="brightText" text="Supervisor:">
+                  <ComboBox fx:id="firstIE_comboBox" layoutX="516.0" layoutY="466.0" prefHeight="31.0" prefWidth="295.0" promptText="Select Change Board Member:" />
+                  <Label layoutX="551.0" layoutY="432.0" styleClass="brightText" text="#1 Change Board Member:">
                      <font>
                         <Font size="17.0" />
                      </font>
                   </Label>
-                  <ComboBox fx:id="supervisor_comboBox" layoutX="37.0" layoutY="516.0" prefHeight="31.0" prefWidth="295.0" promptText="Select Supervisor" />
-                  <Button fx:id="AppointSupervisor" layoutX="129.0" layoutY="560.0" mnemonicParsing="false" onAction="#AppointSupervisor_click" text="Appoint Supervisor" />
+                  <ComboBox fx:id="secondIE_comboBox" layoutX="955.0" layoutY="466.0" prefHeight="31.0" prefWidth="295.0" promptText="Select Change Board Member:" />
+                  <Label layoutX="151.0" layoutY="609.0" styleClass="brightText" text="Appoint Supervisor">
+                     <font>
+                        <Font name="System Bold" size="20.0" />
+                     </font>
+                  </Label>
+                  <Label layoutX="196.0" layoutY="656.0" styleClass="brightText" text="Supervisor:">
+                     <font>
+                        <Font size="17.0" />
+                     </font>
+                  </Label>
+                  <ComboBox fx:id="supervisor_comboBox" layoutX="87.0" layoutY="682.0" prefHeight="31.0" prefWidth="295.0" promptText="Select Supervisor" />
+                  <Button fx:id="AppointSupervisor" layoutX="179.0" layoutY="726.0" mnemonicParsing="false" onAction="#AppointSupervisor_click" text="Appoint Supervisor" />
                   <Button fx:id="log_out_btn" layoutX="1116.0" layoutY="22.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="148.0" text="Log out" />
-                  <Button fx:id="Appoint_Chiarman" layoutX="116.0" layoutY="357.0" mnemonicParsing="false" onAction="#Appoint_Chiarman_click" text="Appoint Chiarman" />
-                  <Button fx:id="Appoint_firstIE" layoutX="487.0" layoutY="357.0" mnemonicParsing="false" onAction="#AppointfirstIEclick" prefHeight="31.0" prefWidth="295.0" text="Appoint #1 Change Board Member" />
-                  <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#1f93ff00" height="192.0" layoutX="140.0" layoutY="447.0" opacity="0.18" stroke="BLACK" strokeType="INSIDE" width="400.0" x="300.0" />
-                  <Label layoutX="551.0" layoutY="458.0" styleClass="brightText" text="Statistic Reports">
+                  <Button fx:id="Appoint_Chiarman" layoutX="159.0" layoutY="519.0" mnemonicParsing="false" onAction="#Appoint_Chiarman_click" text="Appoint Chiarman" />
+                  <Button fx:id="Appoint_firstIE" layoutX="515.0" layoutY="519.0" mnemonicParsing="false" onAction="#AppointfirstIEclick" prefHeight="31.0" prefWidth="295.0" text="Appoint #1 Change Board Member" />
+                  <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#1f93ff00" height="192.0" layoutX="165.0" layoutY="610.0" opacity="0.18" stroke="BLACK" strokeType="INSIDE" width="400.0" x="300.0" />
+                  <Label layoutX="586.0" layoutY="609.0" styleClass="brightText" text="Statistic Reports">
                      <font>
-                        <Font name="System Bold" size="18.0" />
+                        <Font name="System Bold" size="20.0" />
                      </font>
                   </Label>
-                  <Button layoutX="534.0" layoutY="512.0" mnemonicParsing="false" onAction="#active_reports_button" prefHeight="24.0" prefWidth="208.0" text="Active Reports " />
-                  <Button layoutX="534.0" layoutY="546.0" mnemonicParsing="false" onAction="#execution_reports" prefHeight="24.0" prefWidth="208.0" text="Execution Reports " />
-                  <Button layoutX="536.0" layoutY="584.0" mnemonicParsing="false" onAction="#delay_execution" prefHeight="24.0" prefWidth="208.0" text="Delay Execution" />
-                  <Text fx:id="print_message" fill="#f3f8fc" layoutX="9.0" layoutY="673.0" strokeType="OUTSIDE" strokeWidth="0.0" text="fff" visible="false" wrappingWidth="415.13671875">
+                  <Button layoutX="559.0" layoutY="667.0" mnemonicParsing="false" onAction="#active_reports_button" prefHeight="24.0" prefWidth="208.0" text="Active Reports " />
+                  <Button layoutX="559.0" layoutY="706.0" mnemonicParsing="false" onAction="#execution_reports" prefHeight="24.0" prefWidth="208.0" text="Execution Reports " />
+                  <Button layoutX="559.0" layoutY="745.0" mnemonicParsing="false" onAction="#delay_execution" prefHeight="24.0" prefWidth="208.0" text="Delay Execution" />
+                  <Text fx:id="print_message" fill="#f3f8fc" layoutX="34.0" layoutY="836.0" strokeType="OUTSIDE" strokeWidth="0.0" text="fff" visible="false" wrappingWidth="415.13671875">
                      <font>
                         <Font size="18.0" />
                      </font>
                   </Text>
+                  <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#1f93ff00" height="257.0" layoutX="-239.0" layoutY="87.0" opacity="0.18" stroke="BLACK" strokeType="INSIDE" width="530.0" x="300.0" />
+                  <Label layoutX="204.0" layoutY="90.0" styleClass="brightText" text="Temporary Workers Table">
+                     <font>
+                        <Font name="System Bold" size="20.0" />
+                     </font>
+                  </Label>
+                  <TableView fx:id="temporary_workers_table" layoutX="74.0" layoutY="131.0" prefHeight="200.0" prefWidth="504.0">
+                    <columns>
+                      <TableColumn fx:id="TEMPuserID" prefWidth="126.0" text="User ID" />
+                      <TableColumn fx:id="TEMPuserFullName" prefWidth="133.0" text="User Full Name" />
+                        <TableColumn fx:id="TEMPprocessID" prefWidth="126.0" text="Process ID" />
+                        <TableColumn fx:id="TEMProle" prefWidth="118.0" text="Role" />
+                    </columns>
+                  </TableView>
+                  <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#1f93ff00" height="257.0" layoutX="477.0" layoutY="87.0" opacity="0.18" stroke="BLACK" strokeType="INSIDE" width="472.0" x="300.0" />
+                  <Label layoutX="891.0" layoutY="90.0" styleClass="brightText" text="Permanent Workers Table">
+                     <font>
+                        <Font name="System Bold" size="20.0" />
+                     </font>
+                  </Label>
+                  <TableView fx:id="permanent_workers_table" layoutX="791.0" layoutY="131.0" prefHeight="200.0" prefWidth="444.0">
+                     <columns>
+                        <TableColumn fx:id="PERuserId" prefWidth="141.0" text="User ID" />
+                        <TableColumn fx:id="PERuserFullName" prefWidth="149.0" text="User Full Name" />
+                        <TableColumn fx:id="PERrole" prefWidth="153.0" text="Permanent Role" />
+                     </columns>
+                  </TableView>
                </children>
             </AnchorPane>
         </items>

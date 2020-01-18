@@ -1190,7 +1190,8 @@ System.out.println("id "+translator.getParmas().get(0));
 		{
 			try {
 				stmt = conn.prepareStatement("UPDATE processes SET status1='Shutdown',process_stage='13' WHERE request_id=?");
-				stmt.setString(1, (String) translator.getParmas().get(0));
+				
+				stmt.setInt(1, Integer.parseInt((String) translator.getParmas().get(0)));
 
 				int rs = stmt.executeUpdate();
 
@@ -1266,9 +1267,6 @@ System.out.println("id "+translator.getParmas().get(0));
 					setNextStageByOne(processID); // Process is set to next stage;
 					evaluateNumberOfDaysAnswer.add(true);
 					
-					sendNotification((int)translator.getParmas().get(0), "Evaluation Due time was set by Appraiser",(int)translator.getParmas().get(3) ,
-							"Supervisor", "Appraiser", null);
-					
 					return fillNumberOfDaysAnswer;
 					
 				}
@@ -1298,9 +1296,6 @@ System.out.println("id "+translator.getParmas().get(0));
 							(int) translator.getParmas().get(3), "Supervisor", "Appraiser", null);
 					setNextStageByOne(processID); // Process is set to next stage;
 					evaluateNumberOfDaysAnswer.add(true);
-					
-					sendNotification((int)translator.getParmas().get(0), "Evaluation Due time was set by Appraiser",(int)translator.getParmas().get(3) ,
-							"Supervisor", "Appraiser", null);
 					
 					return fillNumberOfDaysAnswer;
 				}
@@ -1789,6 +1784,99 @@ System.out.println("id "+translator.getParmas().get(0));
 			}
 			
 			setNextStageByInput((int)translator.getParmas().get(0), procStage);
+			break;
+			
+		case GET_TEMPORARY_WORKERS_FROM_DB:
+			
+			try {
+				stmt = conn.prepareStatement("SELECT id, first_name, last_name, process_id, users_requests.role\r\n" + 
+						"FROM icmdb.workers\r\n" + 
+						"JOIN icmdb.users_requests \r\n" + 
+						"ON users_requests.user_id = workers.id\r\n");
+				
+				ResultSet rs = stmt.executeQuery();	
+				
+				System.out.println("GET_TEMPORARY_WORKERS_FROM_DB 1");
+				
+				if(rs.first() == false) {
+					System.out.println("GET_TEMPORARY_WORKERS_FROM_DB - error 1");
+					//ar.add("No messages were found");
+					ArrayList<String> empty = new ArrayList<String>();
+					empty.add("error");
+					Translator newTranslator = new Translator(OptionsOfAction.GET_TEMPORARY_WORKERS_FROM_DB, empty);
+					return newTranslator;
+				}
+				
+				rs.previous();
+				
+				ArrayList<Object> temporaryWorkers = new ArrayList<Object>();
+			
+				while(rs.next()) {	
+					temporaryWorkers.add(rs.getString(1));
+					temporaryWorkers.add(rs.getString(2));
+					temporaryWorkers.add(rs.getString(3));
+					temporaryWorkers.add(rs.getInt(4));
+					temporaryWorkers.add(rs.getString(5));
+				}
+				
+				System.out.println("GET_TEMPORARY_WORKERS_FROM_DB 2");
+				
+				Translator newTranslator = new Translator(translator.getRequest(), temporaryWorkers);
+				return newTranslator;
+				
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				System.out.println("SQL EXCEPTION - GET_TEMPORARY_WORKERS_FROM_DB");
+				System.out.println(e.getMessage());
+			}
+			
+			break;
+			
+		case GET_PERMANENT_WORKERS_FROM_DB:
+			
+			try {
+				stmt = conn.prepareStatement("SELECT id, first_name, last_name, permanent_roles.role\r\n" + 
+						"FROM icmdb.workers\r\n" + 
+						"JOIN icmdb.permanent_roles \r\n" + 
+						"ON permanent_roles.user_id = workers.id\r\n");
+				
+				ResultSet rs = stmt.executeQuery();	
+				
+				System.out.println("GET_PERMANENT_WORKERS_FROM_DB 1");
+				
+				if(rs.first() == false) {
+					System.out.println("GET_PERMANENT_WORKERS_FROM_DB - error 1");
+					//ar.add("No messages were found");
+					ArrayList<String> empty = new ArrayList<String>();
+					empty.add("error");
+					Translator newTranslator = new Translator(OptionsOfAction.GET_PERMANENT_WORKERS_FROM_DB, empty);
+					return newTranslator;
+				}
+				
+				rs.previous();
+				
+				ArrayList<Object> temporaryWorkers = new ArrayList<Object>();
+			
+				while(rs.next()) {	
+					temporaryWorkers.add(rs.getString(1));
+					temporaryWorkers.add(rs.getString(2));
+					temporaryWorkers.add(rs.getString(3));
+					temporaryWorkers.add(rs.getString(4));
+				}
+				
+				System.out.println("GET_PERMANENT_WORKERS_FROM_DB 2");
+				
+				Translator newTranslator = new Translator(translator.getRequest(), temporaryWorkers);
+				return newTranslator;
+				
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				System.out.println("SQL EXCEPTION - GET_PERMANENT_WORKERS_FROM_DB");
+				System.out.println(e.getMessage());
+			}
+			
 			break;
 			
 		default:

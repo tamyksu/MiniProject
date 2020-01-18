@@ -124,17 +124,17 @@ public class Server extends AbstractServer
       System.out.println("ERROR - Could not listen for clients!");
     }
     
-//	Timer timer = new Timer();
-//	
-//	Calendar calendar = Calendar.getInstance();
-//	calendar.set(Calendar.HOUR_OF_DAY, 10);
-//	calendar.set(Calendar.MINUTE, 15);
-//	calendar.set(Calendar.SECOND, 0);
-//	
-//	Date time = calendar.getTime();
-//	//checkDueDateOfProcesses();
-//	
-//	timer.schedule(new checkDueDateOfProcessesTask(), time);
+	Timer timer = new Timer();
+	
+	Calendar calendar = Calendar.getInstance();
+	calendar.set(Calendar.HOUR_OF_DAY, 10);
+	calendar.set(Calendar.MINUTE, 15);
+	calendar.set(Calendar.SECOND, 0);
+	
+	Date time = calendar.getTime();
+	//checkDueDateOfProcesses();
+	
+	timer.schedule(new checkDueDateOfProcessesTask(), time);
     
   }
   
@@ -168,6 +168,8 @@ public class Server extends AbstractServer
 				process.setDepartment((String)result.get(i+1).get(13));
 				
 				try {
+					if(process.getCurrent_stage_due_date() == null)
+						continue;
 					Date dueDate = new SimpleDateFormat("yyyy-MM-dd").parse(process.getCurrent_stage_due_date());
 					Date currentDate = new SimpleDateFormat("yyyy-MM-dd").parse(LocalDate.now().toString());
 					
@@ -189,6 +191,7 @@ public class Server extends AbstractServer
 				} catch (ParseException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
+					System.out.println(e.getMessage());
 				}
 
 				processes.getMyProcess().put(new Integer((int)result.get(i).get(0)), process);
