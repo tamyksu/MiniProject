@@ -52,6 +52,10 @@ public class ExtensionReportsController extends StatisticReports implements Init
 
     
 
+    /**
+     * Back to the previous screen
+     * @param event
+     */
     @FXML
     void back_click(ActionEvent event) {
     	extension_reports_display.getData().clear();

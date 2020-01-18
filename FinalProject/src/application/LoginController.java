@@ -61,10 +61,19 @@ public class LoginController {
 	
 
 
+	 /**
+     * Get the instance instance of LoginController
+     * (The only one)
+     * @return the only instance of LoginController
+     */
 	 public static LoginController getInstance() {
 		 return instance; 
 	}
 	
+	 /**
+	  * Recover password from database
+	  * @param event
+	  */
 	public void recoverPasswordFromDB(ActionEvent event)
 	{
 		ArrayList<String> check = new ArrayList<String>();
@@ -77,6 +86,10 @@ public class LoginController {
 		client.handleMessageFromClientGUI(translator);
 	}
 	
+	/**
+	 * Send the recovered password thought email
+	 * @param emailAndPassword
+	 */
 	public void sendRecoveredPasswordToUserEmail(ArrayList<String> emailAndPassword)
 	{
 		if(emailAndPassword.get(0).compareTo("No email was found") == 0)

@@ -83,6 +83,11 @@ public class EvaluationController implements Initializable{
     private boolean answerFromServerSubmitDays;
     private boolean answerFromServerSubmitForm;
     
+    
+    /**
+     * Go back to the previous screen
+     * @param event
+     */
     @FXML
     void back_click(ActionEvent event) {
     	ScreenController.getScreenController().activate(ScreenController.getScreenController().getLastScreen());
@@ -108,9 +113,8 @@ public class EvaluationController implements Initializable{
      */
     void submit_duetime_click(ActionEvent event) {
     	UserProcess process = Client.getInstance().getProcesses().getMyProcess().get(Integer.parseInt(ControllerProcessMain.getInstance().getRequestID()));
-    	/**
-    	 * Form validation:
-    	 */
+    	
+    	 // Form validation:
     	if(days_textbox.getText().trim().isEmpty() || !NewRequestController.isNumeric(days_textbox.getText())) {
     		new Alert(AlertType.ERROR, "You must fill all the details!").show();
     	}
@@ -193,6 +197,11 @@ public class EvaluationController implements Initializable{
 		current_stage_due_time_text.setText(process.getCurrent_stage_due_date());
     }
 
+    /**
+     * Get the instance instance of EvaluationController
+     * (The only one)
+     * @return the only instance of EvaluationController
+     */
     public static EvaluationController getInstance() {
 		return instance;
 	}
@@ -204,10 +213,15 @@ public class EvaluationController implements Initializable{
 		this.answerFromServerSubmitForm=false;
 	}
 	
+	
 	public void submitionSuccesseded() {
 		new Alert(AlertType.INFORMATION, "Submition received.");
 	}
 	
+	 /**
+     * Show message from server about submitting the evaluation
+     * @param val
+     */
 	public void showActionSubmitEvaluation(boolean val) {
     	if(val==true) {
     		Alert alert = new Alert(AlertType.INFORMATION, "Evaluation Submitted.");
@@ -222,6 +236,10 @@ public class EvaluationController implements Initializable{
     	}
     }
 
+	/**
+     * Show message from server about submitting the days for the evaluation
+     * @param val
+     */
 	public void showActionSubmiDays(boolean val) {
     	if(val==true) {
     		Alert alert = new Alert(AlertType.INFORMATION, "Evaluation Submitted.");

@@ -131,6 +131,10 @@ public class Supervisor_ProcessMain_Controller implements Initializable{
 		instance = this;
 	}
     
+    /**
+     * Freeze a process
+     * @param event
+     */
     @FXML
     void freeze_process_btn_click(ActionEvent event) {
     	ArrayList <Object> processInfo = new ArrayList<Object>();
@@ -141,6 +145,10 @@ public class Supervisor_ProcessMain_Controller implements Initializable{
     	client.handleMessageFromClientGUI(translator);
     }
 
+    /**
+     * Shutdown a process
+     * @param event
+     */
     @FXML
     void shut_down_process_btn_click(ActionEvent event) {
     	ArrayList <Object> processInfo = new ArrayList<Object>();
@@ -151,6 +159,9 @@ public class Supervisor_ProcessMain_Controller implements Initializable{
     	client.handleMessageFromClientGUI(translator);
     }
     
+    /**
+     * Get appraiser/performance leader data
+     */
     public void getAppraiserOrPerformanceLeaderCBData()
     {
     	int processID;
@@ -190,6 +201,10 @@ public class Supervisor_ProcessMain_Controller implements Initializable{
     	}
     }
     
+    /**
+     * 
+     * @param appraisersList
+     */
     public void setAppraiserOrPerformanceLeaderDataInCB(ArrayList<String> appraisersList)
     {
     	int listSize = appraisersList.size()/3;
@@ -249,6 +264,10 @@ public class Supervisor_ProcessMain_Controller implements Initializable{
 
     }
     
+    /**
+     * Appoint Appraiser of performance leader data
+     * @param e
+     */
     public void appointAppraiserOrPerformanceLeader(ActionEvent e)
     {
     	//int processID = ControllerProcessMain.instance.getSelectedRowNumber();
@@ -378,6 +397,10 @@ public class Supervisor_ProcessMain_Controller implements Initializable{
     	
     }
     
+    /**
+     * Set due time for a request
+     * @param msgData
+     */
     public void setDueTimeRequest(ArrayList<Object> msgData)
     {
     	
@@ -409,6 +432,10 @@ public class Supervisor_ProcessMain_Controller implements Initializable{
     }
     
     
+    /**
+     * Approve a due time for a request
+     * @param e
+     */
     public void ApproveDueTimeRequest(ActionEvent e)
     {
     	//int processID = ControllerProcessMain.instance.getSelectedRowNumber();
@@ -427,6 +454,10 @@ public class Supervisor_ProcessMain_Controller implements Initializable{
 		due_time_text.setDisable(true);
     }
     
+    /**
+     * Decline a due time for a request
+     * @param e
+     */
     public void DeclineDueTimeRequest(ActionEvent e)
     {
     	ArrayList <Object> arr = new ArrayList<Object>();
@@ -443,6 +474,10 @@ public class Supervisor_ProcessMain_Controller implements Initializable{
 		due_time_text.setDisable(true);
     }
     
+    
+    /**
+     * Set a due time extension explanation
+     */
     public void setDueTimeExtensionExplanation()
     {
     	if(add_extension__time_btn.isDisable())
@@ -484,6 +519,10 @@ public class Supervisor_ProcessMain_Controller implements Initializable{
     	
     }
     
+    /**
+     * Add a due tome extention
+     * @param e
+     */
     public void addDueTimeExtension(ActionEvent e)
     {    	
     	try
@@ -515,6 +554,10 @@ public class Supervisor_ProcessMain_Controller implements Initializable{
     	extension_time_text.clear();
     }
     
+    /** 
+     * Decline Due Time Extension
+     * @param e
+     */
     public void declineDueTimeExtension(ActionEvent e)
     {
     	ArrayList <Object> arr = new ArrayList<Object>();
@@ -532,7 +575,10 @@ public class Supervisor_ProcessMain_Controller implements Initializable{
     }
     
     
-    
+    /** 
+     * Set process ID
+     * @param proc
+     */
     public void setProcessID(int proc)
     {
     	Supervisor_ProcessMain_Controller.instance.procID = proc;
@@ -613,6 +659,10 @@ public class Supervisor_ProcessMain_Controller implements Initializable{
 		 return instance; 
 	}
     
+    /**
+     * Go back to the previous screen
+     * @param event
+     */
     @FXML
     public void back_click(ActionEvent event) {
     	ScreenController.getScreenController().activate(ScreenController.getScreenController().getLastScreen());
@@ -630,6 +680,9 @@ public class Supervisor_ProcessMain_Controller implements Initializable{
     	}
     }
     
+    /**
+     * Update the table with the process' information
+     */
     public void updateProcessInformation()
     {
 		UserProcess process = Client.getInstance().getProcesses().getMyProcess().get(Integer.parseInt(ControllerProcessMain.getInstance().getRequestID()));
@@ -647,6 +700,9 @@ public class Supervisor_ProcessMain_Controller implements Initializable{
 		current_stage_due_time_text.setText(process.getCurrent_stage_due_date());
     }
     
+    /**
+     * Adjust Suspended Buttons
+     */
     public void adjustSuspendedButtons()
     {
 		freeze_process_btn.setDisable(true);

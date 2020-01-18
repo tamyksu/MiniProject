@@ -107,6 +107,10 @@ public class DecisionController implements Initializable{
 		answerFromServerMoreInfo=false;
 	}
     
+    /**
+     * Go back to previous screen
+     * @param event
+     */
     @FXML
     void back_click(ActionEvent event) {
     	ScreenController.getScreenController().activate(ScreenController.getScreenController().getLastScreen());
@@ -128,6 +132,10 @@ public class DecisionController implements Initializable{
     	}
     }
 
+    /**
+     * Deny Execution
+     * @param event
+     */
     @FXML
     void deny_click(ActionEvent event) {
     	ArrayList <Object> processInfo = new ArrayList<Object>();
@@ -138,6 +146,10 @@ public class DecisionController implements Initializable{
 		disableAllButtons();
     }
 
+    /**
+     * Approve Execution
+     * @param event
+     */
     @FXML
     void approve_click(ActionEvent event) {
     	ArrayList<Integer> paramaeters = new ArrayList<>(); 
@@ -149,6 +161,11 @@ public class DecisionController implements Initializable{
     	
     }
 
+    /**
+     * Request for more information
+     * Set the process back to the evaluation stage
+     * @param event
+     */
     @FXML
     void request_more_click(ActionEvent event) {
     	ArrayList<Integer> paramaeters = new ArrayList<>(); 
@@ -160,6 +177,10 @@ public class DecisionController implements Initializable{
     }
     
 
+    /**
+     * Appoint an Examiner
+     * @param event
+     */
     @FXML
     void appointExaminer(ActionEvent event) {
     	ArrayList<Object> arr = new ArrayList<>();
@@ -173,6 +194,10 @@ public class DecisionController implements Initializable{
     	
     }
 
+    
+    /**
+     * Update the table of process's information
+     */
     public void updateProcessInformation()
     {
 		
@@ -190,11 +215,21 @@ public class DecisionController implements Initializable{
 		current_stage_due_time_text.setText(process.getCurrent_stage_due_date());
     }
     
+    
+    /**
+     * Get the instance instance of DecisionController
+     * (The only one)
+     * @return the only instance of DecisionController
+     */
     public static DecisionController getInstance() {
 		return instance;
     }
     
     
+    /**
+     * Show message from server about Approve the execution
+     * @param val
+     */
     public void showActionApproveMessage(boolean val) {
     	if(val==true) {
     		Alert alert =new Alert(AlertType.INFORMATION, "You approved the request.");
@@ -210,7 +245,10 @@ public class DecisionController implements Initializable{
     }
     
     
-    
+    /**
+     * Show message from server about Requesting more information
+     * @param val
+     */
     public void showActionMoreInfoMessage(boolean val) {
     	if(val==true) {
     		Alert alert =new Alert(AlertType.INFORMATION, "Asked for more information.");
@@ -225,6 +263,10 @@ public class DecisionController implements Initializable{
     	}
     }
     
+    /**
+     * Show message from server about Appointing an Examiner
+     * @param val
+     */
     public void showActionAppointExaminer(boolean val) {
     	if(val==true) {
     		Alert alert =new Alert(AlertType.INFORMATION, "Appointed Examiner.");
@@ -238,6 +280,7 @@ public class DecisionController implements Initializable{
         	alert.show();
     	}
     }
+    
     
     public void setAnswerFromServerApprove(boolean answerFromServerApprove) {
 		this.answerFromServerApprove = answerFromServerApprove;
@@ -284,12 +327,18 @@ public class DecisionController implements Initializable{
     	
     }
     
+    /**
+     * Clear the form
+     */
     public void clearForm() {
     	requestedChangeText.clear();
     	resultText.clear();
     	constraitsAndRisksText.clear();
     }
     
+    /**
+     * Disable all the buttons
+     */
     public void disableAllButtons() {
     	approve_btn.setDisable(true);
     	deny_btn.setDisable(true);
@@ -298,6 +347,10 @@ public class DecisionController implements Initializable{
     	examinerCombobox.setDisable(true);
     	
     }
+    
+    /**
+     * Enable the required buttons for making a decision
+     */
     public void enableDecisionMakingButtons() {
     	approve_btn.setDisable(false);
     	deny_btn.setDisable(false);
@@ -306,6 +359,9 @@ public class DecisionController implements Initializable{
     	examinerCombobox.setDisable(true);
     }
     
+    /**
+     * Enable the required buttons for appointing an Examiner
+     */
     public void enableAppointExaminerButton() {
     	approve_btn.setDisable(true);
     	deny_btn.setDisable(true);
@@ -313,12 +369,23 @@ public class DecisionController implements Initializable{
     	//appointBtn.setDisable(false);
     }
     
+    /**
+     * Set the combo box with required values
+     * @param arr
+     */
     public void setComboBox(ArrayList<ChangeBoardMember> arr) {
     	listForComboBox = new ArrayList<>(arr);
     	for(ChangeBoardMember i:listForComboBox) {
     		examinerCombobox.getItems().add(i.getName());
     	}
     }
+    
+    /**
+     * Get the ID of the inserted name
+     * (The name that was chosen on the combo box).
+     * @param name1
+     * @return The ID of the examiner
+     */
     public String getChangeBoardMemberIDFromList(String name1) {
     	for(ChangeBoardMember i:listForComboBox) {
     		if(i.getName().equals(name1)) {

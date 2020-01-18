@@ -33,55 +33,55 @@ public class EvaluationReport {
 		this.constraitsAndRisks = copy.getConstraitsAndRisks();
 	}
 	
-	
+	/**
+	 * Default Constructor
+	 */
 	public EvaluationReport() {
 	}
 
 
 	// ************************ Getters and Setters ************************
+	
+	/**
+	 * Get the Requested Change
+	 * @return the String of getRequestedChange
+	 */
 	public String getRequestedChange() {
 		return requestedChange;
 	}
 
-	public void setRequestedChange(String requestedChange) {
-		this.requestedChange = requestedChange;
-	}
-
+	/**
+	 * Get the Result
+	 * @return String of 
+	 */
 	public String getResult() {
 		return result;
 	}
 
-	public void setResult(String result) {
-		this.result = result;
-	}
-
+	/**
+	 * Get the Constraints And Risks
+	 * @return String of getConstraitsAndRisks
+	 */
 	public String getConstraitsAndRisks() {
 		return constraitsAndRisks;
 	}
 
-	public void setConstraitsAndRisks(String constraitsAndRisks) {
-		this.constraitsAndRisks = constraitsAndRisks;
-	}
-
-
+	/**
+	 * Get the ProcessID
+	 * @return processID
+	 */
 	public int getProcessID() {
 		return processID;
 	}
 
-
-	public void setProcessID(int processID) {
-		this.processID = processID;
-	}
-
-
+	/**
+	 * Get the Appraiser ID
+	 * @return appraiserID
+	 */
 	public String getAppraiserID() {
 		return appraiserID;
 	}
 
-
-	public void setAppraiserID(String appraiserID) {
-		this.appraiserID = appraiserID;
-	}
 	
 	// ************************ END of Getters and Setters ************************
 }
