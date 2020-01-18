@@ -5,7 +5,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import java.sql.DriverManager;
-
+import application.DelayReportsController;
 import javafx.scene.control.Alert.AlertType;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -75,12 +75,20 @@ public class StaffMainController implements Initializable{
 	// Event Listener on Button[#back_btn].onAction
 	
 	
-	
+	/**
+	 * Active reports
+	 */
 	@FXML
 	public void active_reports_button(ActionEvent event) {
+		//DelayReportsController.instance.get_information();
 	 	ScreenController.getScreenController().activate("active_reports");
 	}
 	/****************************************back_click******************************************************************/
+	
+	/**
+	 * Go back to the previous screen
+	 * @param event
+	 */
 	@FXML
 	public void back_click(ActionEvent event) {
    	ScreenController.getScreenController().activate(ScreenController.getScreenController().getLastScreen());
@@ -100,14 +108,23 @@ public class StaffMainController implements Initializable{
 	// Event Listener on Button[#AppointCangesControlBoard].onAction
 	@FXML
 /*******************************************AppointsecondIEclick****************************************************************/	
-    void AppointsecondIEclick(ActionEvent event) {
+    /**
+     * Appoint another Change Board member
+     * @param event
+     */
+	void AppointsecondIEclick(ActionEvent event) {
 	  	ArrayList<Object> params = new ArrayList<Object>();
 			params.add("Change Board Member-2"); // Information Engineer
 
 		checkBefore("Change Board Member-2","2"); // Information Engineer
     }
 /*******************************************AppointfirstIEclick***********************************************************/
-    @FXML
+   
+	 /**
+     * Appoint a Change Board member
+     * @param event
+     */
+	@FXML
     void AppointfirstIEclick(ActionEvent event) {
 
     	ArrayList<Object> params = new ArrayList<Object>();
@@ -117,12 +134,16 @@ public class StaffMainController implements Initializable{
     }
 /*****************************************Appoint_Chiarman_click**********************************************************/
 
+	 /**
+     * Appoint a Chairman
+     * @param event
+     */
 	@FXML
 	public void Appoint_Chiarman_click(ActionEvent event)
 	{
 		ArrayList<Object> params = new ArrayList<Object>();
-		params.add("ChairMan");
-	checkBefore("ChairMan","2");
+		params.add("Chairman");
+	checkBefore("Chairman","2");
 	
 	
 
@@ -132,6 +153,12 @@ public class StaffMainController implements Initializable{
 	
 	/*********************************AppointSupervisor_click*****************************************************************/
 	// Event Listener on Button[#AppointSupervisor].onAction
+	
+	
+	/**
+	 * Appoint a Supervisor
+	 * @param event
+	 */
 	@FXML
 	public void AppointSupervisor_click(ActionEvent event) {
 		ArrayList<Object> params = new ArrayList<Object>();
@@ -149,6 +176,9 @@ public class StaffMainController implements Initializable{
 		print_message.setVisible(false);
 	}
 /*******************************************getChairManData****************************************************************/
+	/**
+	 * Get the chairman data
+	 */
 	public void getChairManData() {
 		try {
 			print_message.setVisible(false);
@@ -159,6 +189,10 @@ public class StaffMainController implements Initializable{
 		catch(Exception e){}
 	}
 /*********************************************setDataChairMan***********************************************************/	
+	/**
+	 * Set the chairman data
+	 * @param WorkersName
+	 */
 	public void setDataChairMan(ArrayList<String> WorkersName)
 	{
 		print_message.setVisible(false);
@@ -176,7 +210,7 @@ public class StaffMainController implements Initializable{
 		supervisor_comboBox.setItems(data);
 		this.FullNameChosenStaff.addAll(data);
 		System.out.println(FullNameChosenStaff);
-		checkBefore("ChairMan","1");
+		checkBefore("Chairman","1");
 		checkBefore("Supervisor","1");
 		checkBefore("Change Board Member-1","1"); // Information Engineer
 		checkBefore("Change Board Member-2","1"); // Information Engineer
@@ -186,9 +220,9 @@ public class StaffMainController implements Initializable{
 		ArrayList<Object> params = new ArrayList<Object>();
 		Integer result = Integer.valueOf(WorkersName.get(0));
 		if(result==1) {//there some one in parmenent table
-			
+			System.out.println("afterSet"+WorkersName.get(1));
 		params.add(WorkersName.get(1));
-		
+		System.out.println("after set role?"+WorkersName.get(1));
 		Translator translator = new Translator(OptionsOfAction.CURRENT_IN_ROLE,params);
 		Client.getInstance().handleMessageFromClientGUI(translator);
 		}
@@ -196,12 +230,14 @@ public class StaffMainController implements Initializable{
 	
 	public void printMessage1(ArrayList<String> WorkersName)
 	{ 
-		System.out.println("Current in " + WorkersName.get(2) + "position:\n" + (WorkersName.get(0)+" " +WorkersName.get(1)));
+		System.out.println(WorkersName.get(2));
+		
+		System.out.println("Current in " + WorkersName.get(2) + " position:\n" + (WorkersName.get(0)+" " +WorkersName.get(1)));
 
-		if(WorkersName.get(3).equals("2")&& WorkersName.get(2).equals("ChairMan"))
+		if(WorkersName.get(3).equals("2")&& WorkersName.get(2).equals("Chairman"))
 		{
 			
-			print_Chaiman.setText("Current in " + WorkersName.get(2) + "position:\n" + (WorkersName.get(0)+" " +WorkersName.get(1)));
+			print_Chaiman.setText("Current in " + WorkersName.get(2) + " position:\n" + (WorkersName.get(0)+" " +WorkersName.get(1)));
 		}
 		else if(WorkersName.get(3).equals("3") && WorkersName.get(2).equals("Supervisor"))
 		{
@@ -227,7 +263,7 @@ public class StaffMainController implements Initializable{
 	{	
 		
 	
-		if(WorkersName.get(3).equals("2")&& WorkersName.get(2).equals("ChairMan"))
+		if(WorkersName.get(3).equals("2")&& WorkersName.get(2).equals("Chairman"))
 		{
 			
 			print_Chaiman.setText("Current in " + WorkersName.get(2) + "position:\n" + (WorkersName.get(0)+" " +WorkersName.get(1)));
@@ -260,6 +296,10 @@ public class StaffMainController implements Initializable{
 		
 	}
 /**************************************************checkApoint**************************************************************/
+	/**
+	 * Check the appoint
+	 * @param WorkersName
+	 */
 	public void checkApoint(ArrayList<String> WorkersName) {
 	
 		Integer result = Integer.valueOf(WorkersName.get(0));	
@@ -268,7 +308,7 @@ public class StaffMainController implements Initializable{
 			ArrayList<Object> params = new ArrayList<Object>();
 			save_role=WorkersName.get(1);
 			String name="";
-			if(WorkersName.get(1).equals("ChairMan"))
+			if(WorkersName.get(1).equals("Chairman"))
 			 name =chairman_comboBox.getValue();
 			else if (WorkersName.get(1).equals("Supervisor"))
 				 name =supervisor_comboBox.getValue();
@@ -300,7 +340,10 @@ public class StaffMainController implements Initializable{
 		}
 	
 	
-		
+	/**
+	 * Check if the person is available for appointing	
+	 * @param WorkersName
+	 */
 	public void check_if_this_man_available(ArrayList<String> WorkersName)
 	{			
 		ArrayList<Object> params = new ArrayList<Object>();
@@ -327,7 +370,7 @@ public class StaffMainController implements Initializable{
 	}
 /**************************************************SET_DELETEPERMANENT**************************************************************/	
 	public void SET_DELETEPERMANENT(ArrayList<String> WorkersName) {
-		if(WorkersName.get(0).equals("ChairMan"))
+		if(WorkersName.get(0).equals("Chairman"))
 			print_Chaiman.setText("empty position");
 		
 	else if(WorkersName.get(0).equals("Supervisor"))
@@ -341,7 +384,13 @@ else if(WorkersName.get(0).equals("Change Board Member-2")) // Information Engin
 }
 
 /*********************************************checkBefore**********************************************************************/	
-public void checkBefore(String role,String option)
+
+	/**
+	 * Check before appointing
+	 * @param role
+	 * @param option
+	 */
+	public void checkBefore(String role,String option)
 {
 
 
@@ -359,14 +408,26 @@ void active_reports(ActionEvent event) {
 
 }
 
+/**
+ * execution reports
+ * @param event
+ */
 @FXML
 void execution_reports(ActionEvent event) {
-
+	ScreenController.getScreenController().activate("extension_reports");
+	ExtensionReportsController.instance.get_information();
 }
 
+/**
+ * delay execution
+ * @param event
+ */
 @FXML
 void delay_execution(ActionEvent event) {
-
+	
+	ScreenController.getScreenController().activate("delay_reports");
+	DelayReportsController.instance.get_information();
+	
 }
 
 

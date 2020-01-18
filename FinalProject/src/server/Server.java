@@ -4,14 +4,22 @@ package server;
 // license found at www.lloseng.com 
 
 import java.io.*;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.util.*;
+import java.sql.Connection;
 import java.util.concurrent.TimeUnit;
 import application.Processes;
 import application.UserProcess;
+import client.Client;
 import ocsf.server.*;
+import translator.OptionsOfAction;
+import translator.Translator;
+import client.Client;
+
 
 /**
  * This class overrides some of the methods in the abstract 
@@ -25,6 +33,8 @@ import ocsf.server.*;
  */
 public class Server extends AbstractServer 
 {
+	Client client = Client.getInstance();
+	private static Connection conn;
   //Class variables *************************************************
   
   /**
@@ -182,6 +192,18 @@ public class Server extends AbstractServer
 				    //hander passed its due date
 				    if(days < 0)
 				    {
+				    	/************************tamy****************************/
+				    try {
+				    	PreparedStatement stmt = conn.prepareStatement("insert into icmdb.delay_reports (request_id,number_days_delay)"
+				    			+"values(?,?)");
+				    	stmt.setInt(1, (int)result.get(i).get(0));
+				    	stmt.setInt(2, (int)(days));
+				    			stmt.executeUpdate();
+				    }catch (SQLException e) {
+						// TODO Auto-generated catch block
+						System.out.println("SQL EXCEPTION!-in server");
+				    }
+				    /********************************tamy***********************/
 				    	//Send a notification to handler
 						DBConnector.sendNotification(process.getRequest_id(), "You exceeded due time for this stage",Math.abs(days),DBConnector.getHandlerRole(process.getRequest_id()), "ICM", "");
 				    	//Send a notification to supervisor
@@ -189,6 +211,7 @@ public class Server extends AbstractServer
 				    	//Send a notification to manager
 						DBConnector.sendNotification(process.getRequest_id(), DBConnector.getHandlerRole(process.getRequest_id())+" exceeded due time for this stage!",Math.abs(days),"Manager", "ICM", "");
 				    }
+				    
 				    //a couple of days left for this stage till due time
 				    else
 				    	if(days>=0 && days < 3)

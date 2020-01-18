@@ -93,14 +93,18 @@ public class LoginController {
 	
 
 
+	 /**
+     * Get the instance instance of LoginController
+     * (The only one)
+     * @return the only instance of LoginController
+     */
 	 public static LoginController getInstance() {
 		 return instance; 
 	}
 	
 	 /**
-	  * 
+	  * Recover password from database
 	  * @param event
-	  * event handler for login button
 	  */
 	public void recoverPasswordFromDB(ActionEvent event)
 	{
@@ -118,9 +122,8 @@ public class LoginController {
 	}
 	
 	/**
-	 * 
+	 * Send the recovered password throguh email
 	 * @param emailAndPassword
-	 * Gets the password and sends it to user email
 	 */
 	public void sendRecoveredPasswordToUserEmail(ArrayList<String> emailAndPassword)
 	{

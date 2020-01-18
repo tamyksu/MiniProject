@@ -80,6 +80,10 @@ public class ExecutionController implements Initializable{
 		
 	}
     
+    /**
+     * Go back to previous screen
+     * @param event
+     */
     @FXML
     void back_click(ActionEvent event) {
     	ScreenController.getScreenController().activate(ScreenController.getScreenController().getLastScreen());
@@ -97,6 +101,10 @@ public class ExecutionController implements Initializable{
     	}
     }
 
+    /**
+     * Evaluate the number of days that is required for the execution
+     * @param event
+     */
     @FXML
     void submit_click(ActionEvent event) {
     	if(days_textbox.getText().trim().isEmpty() || !NewRequestController.isNumeric(days_textbox.getText())) {
@@ -111,11 +119,15 @@ public class ExecutionController implements Initializable{
     	arr.add(Integer.parseInt(days_textbox.getText().toString()));
     	Translator translator = new Translator(OptionsOfAction.Execution_Suggest_Number_Of_Days, arr);
     	Client.getInstance().handleMessageFromClientGUI(translator);
-    	try { Thread.sleep(500); } catch (InterruptedException e) {System.out.println("Can't Sleep");}
-    	showActionSetDays();
+    	//try { Thread.sleep(500); } catch (InterruptedException e) {System.out.println("Can't Sleep");}
+    	//showActionSetDays();
     	
     }
 
+    /**
+     * Execution completed
+     * @param event
+     */
     @FXML
     void execution_completed_click(ActionEvent event) {
     	ArrayList<Object> arr = new ArrayList<>();
@@ -124,13 +136,19 @@ public class ExecutionController implements Initializable{
     	
     	Translator translator = new Translator(OptionsOfAction.Execution_Completed, arr);
     	Client.getInstance().handleMessageFromClientGUI(translator);
-    	try { Thread.sleep(500); } catch (InterruptedException e) {System.out.println("Can't Sleep");}
-    	showActionExecutionCompleted();
+    	//try { Thread.sleep(500); } catch (InterruptedException e) {System.out.println("Can't Sleep");}
+    	//showActionExecutionCompleted();
     	
     }
     
-    public void showActionSetDays() {
-    	if(answerFromServerSubmitDays==true) {
+    
+    /**
+     * The answer that was received from the server about evaluating the required number of
+     * days for the execution
+     * @param val
+     */
+    public void showActionSetDays(boolean val) {
+    	if(val==true) {
     		Alert alert =new Alert(AlertType.INFORMATION, "You've sent your evaluation");
         	alert.setTitle("Approved!");
         	alert.show();
@@ -143,8 +161,12 @@ public class ExecutionController implements Initializable{
     	}
     }
     
-    public void showActionExecutionCompleted() {
-    	if(answerFromServerExecutionCompleted==true) {
+    /**
+     * The answer that was received from the server about completing the execution
+     * @param val
+     */
+    public void showActionExecutionCompleted(boolean val) {
+    	if(val==true) {
     		Alert alert = new Alert(AlertType.INFORMATION, "Execution completed.");
         	alert.setTitle("Completed!");
         	alert.show();
@@ -157,6 +179,9 @@ public class ExecutionController implements Initializable{
     	}
     }
     
+    /**
+     * Update the table of process's information
+     */
     public void updateProcessInformation()
     {
 		process = Client.getInstance().getProcesses().getMyProcess().get(Integer.parseInt(ControllerProcessMain.getInstance().getRequestID()));
@@ -174,6 +199,11 @@ public class ExecutionController implements Initializable{
 		current_stage_due_time_text.setText(process.getCurrent_stage_due_date());
     }
     
+    /**
+     * Get the instance instance of ExecutionController
+     * (The only one)
+     * @return the only instance of ExecutionController
+     */
     public static ExecutionController getInstance() {
     	return instance;
     }
@@ -189,6 +219,12 @@ public class ExecutionController implements Initializable{
 		this.answerFromServerExecutionCompleted = answerFromServerExecutionCompleted;
 	}
 
+	
+	/**
+     * Function that set the form in the way it needs to be
+     * every time you load it.
+     * @param stage
+     */
 	public void loadPage(double stage) { // How to load the page
 		days_textbox.clear();
 		answerFromServerSubmitDays = false;

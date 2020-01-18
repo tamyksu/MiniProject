@@ -9,4 +9,5 @@ public class Constants {
 	public static int STAGE_OF_APPRAISER_EVALUATION = 4;
 	public static int STAGE_OF_CONTROL_BOARD_DECISION = 5;
 	public static int STAGE_OF_EXECUTION = 6;
+	public static int APPOINT_EXAMINER = 10;
 }
