@@ -11,7 +11,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.TextField;
 import javafx.scene.text.Text;
-
+import application.StatisticReports;
 import java.lang.Runnable;
 
 
@@ -19,12 +19,12 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.net.URL;
 import java.sql.Connection;
-
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 
-import com.sun.org.apache.xalan.internal.xsltc.compiler.sym;
+
 
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
@@ -32,7 +32,7 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import translator.OptionsOfAction;
 import translator.Translator;
-public class ActiveReportsController implements Initializable{ 
+public class ActiveReportsController extends StatisticReports implements Initializable { 
 	Client client = Client.getInstance();
 	  ArrayList<LocalDate> date_graph;
 		private static Connection conn;
@@ -47,7 +47,10 @@ public class ActiveReportsController implements Initializable{
     private Text sdRejected_txt;
     @FXML
     private Text sdClosed_txt;
-
+    @FXML
+    private Text median_workdays_count;
+    @FXML
+    private Text sdWorkdays_count;
     @FXML
     private Text sdSuspended_txt;
     @FXML
@@ -73,7 +76,14 @@ public class ActiveReportsController implements Initializable{
 	private Button back_btn;
     @FXML
     private NumberAxis y;
-	
+    @FXML
+    private BarChart<?, ?> work_days_report;
+
+    @FXML
+    private NumberAxis y1;
+
+    @FXML
+    private CategoryAxis x1;
 	long num;
     @FXML
     private BarChart<?, ?> active_reports;
@@ -98,6 +108,7 @@ public class ActiveReportsController implements Initializable{
 	@FXML
 	public void back_click(ActionEvent event) {
     	active_reports.getData().clear();
+    	work_days_report.getData().clear();
     	start_date_button.setValue(null);
     	end_date_button.setValue(null);
     	num_days.clear();
@@ -120,6 +131,7 @@ public class ActiveReportsController implements Initializable{
     void done_button(ActionEvent event) 
     {
     	active_reports.getData().clear();
+    	work_days_report.getData().clear();
     	 ArrayList<Object> all= new ArrayList<>();
     	 ArrayList<LocalDate> dates= new ArrayList<LocalDate>();
     	LocalDate start_date=start_date_button.getValue();//get start date
@@ -154,6 +166,9 @@ public class ActiveReportsController implements Initializable{
 						
     }
     
+    
+    
+   /*****************************************calaulate**************************************************/ 
     @SuppressWarnings({ "rawtypes", "unchecked" })
 	public void calaulate(ArrayList<ArrayList<Integer>> status_counter)
     {
@@ -162,9 +177,7 @@ public class ActiveReportsController implements Initializable{
     	
     	System.out.println("calculate");
     
-    //	DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-LLLL-yyyy");
-    	//System.out.println(arr.size());
-    
+ 
     
     	Platform.runLater(new Runnable(){
 
@@ -180,63 +193,40 @@ public class ActiveReportsController implements Initializable{
 						{
 						String formattedString = date_graph.get(i).format(formatter);
 						System.out.println(formattedString); 
+						}*/
+					 arr= status_counter.get(4);
+					ArrayList<Integer> arr_days= status_counter.get(5);
+						for(int i=0;i<arr.size();i++)
+						{
+							
+							System.out.println(arr.get(i)+"counter");
+							System.out.println(arr_days.get(i)+"days");
 						}
 /**************************************************************median		*/		
-					
-					for(int i=0;i<4;i++)	
+					StatisticReports send_data;
+					for(int i=0;i<6;i++)	
 					{
 						 arr= status_counter.get(i);
-							if(arr.size()%2==1)
-							{
-								
-								median.add((arr.get(arr.size()/2))/1.0);
-								System.out.println(median.get(i));
-							}
-							else
-							{
-								int n=arr.get(arr.size()/2)+arr.get(arr.size()/2-1);
-								median.add(((Double)(n/2.0)));
-								System.out.println(median.get(i));
-							}
-							
-							
+				
+					Double value=medianALL(arr);
+							median.add(value);
 						}
-					
-					active_median_txt.setText(Double.toString(median.get(0)));
-					suspended_median_txt.setText(Double.toString( median.get(1)));
-					closed_median.setText(Double.toString( median.get(2)));
-					rejected_median_txt.setText(Double.toString( median.get(3)));
+				
+					String active =String.format("%.2f", median.get(0));
+					String suspend =String.format("%.2f", median.get(1));
+					String closed =String.format("%.2f", median.get(2));
+					String rejected =String.format("%.2f", median.get(3));
+					String count_work =String.format("%.2f", median.get(4));
+					String days_work =String.format("%.2f", median.get(5));
+					active_median_txt.setText(active );
+					suspended_median_txt.setText(suspend);
+					closed_median.setText(closed);
+					rejected_median_txt.setText(rejected);
+					total_workdays_txt.setText(days_work);
+					median_workdays_count.setText(count_work);
 					//the total days dosent have the same arr size
 					
-					
 			
-			/*	arr= status_counter.get(4);
-					System.out.println("*******************");
-				for(int i=0;i<arr.size();i++)
-				{
-					System.out.println(arr.get(i));
-				}
-				
-						if(arr.size()%2==1)
-						{
-							
-							median.add(arr.get(arr.size()/2));
-							System.out.println((arr.size()/2)+"?");
-							System.out.println(median.get(4));
-						}
-						else
-						{
-							
-							median.add((arr.get(arr.size()/2)+arr.get(arr.size()/2-1))/2);
-							//System.out.println((arr.get(arr.size()/2-1)+"?ff?6\2=3-1=2/2=1--1");
-							System.out.println("****");
-							System.out.println(median.get(4));
-						}
-						*/
-						
-			
-					
-		/*********************************************************************/   	
 			
 					//0-active 1-suspend 2-shutdown 3-rejected
 
@@ -258,112 +248,88 @@ public class ActiveReportsController implements Initializable{
 		double standard_deviation_shutdown;
 		double standard_deviation_rejected;
 		double standard_deviation_TotslDsys;
+		double standard_deviation_TotslDsys_count;
 				arr= status_counter.get(0);
 				
     		for(int i=0;i<arr.size();i++) 
     		{
     			
-    			sum+=arr.get(i);
+    		//	sum+=arr.get(i);
     		String formattedString = date_graph.get(i).format(formatter);
     		System.out.println(formattedString);
     	    xyActive.getData().add(new XYChart.Data(formattedString.toString(),arr.get(arr.size()-i-1)));
     		}
-    		double active_avg=sum/arr.size();
-    		System.out.println("active average"+active_avg);
-    		sum=0;
-    		for(int i=0;i<arr.size();i++) 
-    		{
-    			
-    			sum+=Math.pow(arr.get(i)-active_avg,2);
-    			System.out.println("active sum what in root"+sum);
-    		}
-    		 standard_deviation_active=(Math.sqrt(sum/arr.size()));
-    		 sdActive_txt.setText(Double. toString(standard_deviation_active));
+   
+    		standard_deviation_active=standard_deviation(arr);
+    		 active =String.format("%.2f",standard_deviation_active);
+    		 sdActive_txt.setText(active);
     /**************************************************Suspend****************************************************/
     		sum=0;
     		arr= status_counter.get(1);
     		for(int i=0;i<arr.size();i++)
     		{
-    			sum+=arr.get(i);
+    	//		sum+=arr.get(i);
     		String formattedString = date_graph.get(i).format(formatter);
     		xySuspend.getData().add(new XYChart.Data(formattedString,arr.get(arr.size()-i-1)));
     		}
-    		double suspend_avg=sum/arr.size();
-    		System.out.println("suspend average"+suspend_avg);
-    		sum=0;
-    		for(int i=0;i<arr.size();i++) 
-    		{
-    			
-    			sum+=Math.pow(arr.get(i)-suspend_avg,2);
-    			System.out.println("suspend sum what in root"+sum);
-    		}
-    		 standard_deviation_suspend=(Math.sqrt(sum/arr.size()));
-    		 sdSuspended_txt.setText(Double. toString(standard_deviation_suspend));
+    
+    		 standard_deviation_suspend= standard_deviation(arr);
+    		// sdSuspended_txt.setText(Double. toString(standard_deviation_suspend));
+    		 suspend =String.format("%.2f",standard_deviation_active);
+    		 sdSuspended_txt.setText(suspend);
   /***********************************************Shutdown****************************************************/  		
     		arr= status_counter.get(2);
     		sum=0;
     		for(int i=0;i<arr.size();i++)
     		{
-    			sum+=arr.get(i);
+    		//	sum+=arr.get(i);
     		String formattedString = date_graph.get(i).format(formatter);
     		xyShutdown.getData().add(new XYChart.Data(formattedString,arr.get(arr.size()-i-1)));
     		}
-    		
-    		double shutdown_avg=sum/arr.size();
-    		sum=0;
-    		for(int i=0;i<arr.size();i++) 
-    		{
-    			
-    			sum+=Math.pow(arr.get(i)-shutdown_avg,2);
-    		}
-    		 standard_deviation_shutdown=(Math.sqrt(sum/arr.size()));
-    		 sdClosed_txt.setText(Double. toString(standard_deviation_shutdown));
+    
+    		 standard_deviation_shutdown= standard_deviation(arr);
+    		// sdClosed_txt.setText(Double. toString(standard_deviation_shutdown));
+    		 closed =String.format("%.2f",standard_deviation_active);
+    		 sdClosed_txt.setText(closed);
    /*****************************************Rejected***************************************************************/
     		arr= status_counter.get(3);
     		sum=0;
     		for(int i=0;i<arr.size();i++)
     		{
-    			sum+=arr.get(i);
+    		//	sum+=arr.get(i);
     		String formattedString = date_graph.get(i).format(formatter);
     		xyRejected.getData().add(new XYChart.Data(formattedString,arr.get(arr.size()-i-1)));
     		}
      		
-    		double rejected_avg=sum/arr.size();
-    		sum=0;
-    		for(int i=0;i<arr.size();i++) 
-    		{
-    			
-    			sum+=Math.pow(arr.get(i)-rejected_avg,2);
-    		}
-    		 standard_deviation_rejected=(Math.sqrt(sum/arr.size()));
-    		 sdRejected_txt.setText(Double. toString(standard_deviation_rejected));
+
+    		standard_deviation_rejected= standard_deviation(arr);
+    		// sdRejected_txt.setText(Double. toString(standard_deviation_rejected));
+    		rejected =String.format("%.2f",standard_deviation_active);
+    		sdRejected_txt.setText(rejected);
    /**************************************************TotalDays***************************************************************/
-    	/*	arr= status_counter.get(4);
+    		arr= status_counter.get(4);
+    		ArrayList<Integer>count_workdays= status_counter.get(5);
     		sum=0;
     		for(int i=0;i<arr.size();i++)
     		{
-    			sum+=arr.get(i);
-    		String formattedString = date_graph.get(i).format(formatter);
-    		xyTotalDays.getData().add(new XYChart.Data(formattedString,arr.get(arr.size()-i-1)));
+    		
+    		
+    		
+    		xyTotalDays.getData().add(new XYChart.Data(Integer.toString( count_workdays.get(i)),arr.get(i)));
     		}
-    		double TotslDsysd_avg=sum/arr.size();
-    		System.out.println(TotslDsysd_avg+"TotslDsysd_avg");
-    		System.out.println("suspend TotslDsysd_avg"+TotslDsysd_avg);
-    		sum=0;
-    		for(int i=0;i<arr.size();i++) 
-    		{
-    			
-    			sum+=Math.pow(arr.get(i)-TotslDsysd_avg,2);
-    			System.out.println("total days sum what in root"+sum);
-
-    		}
-    		 standard_deviation_TotslDsys=(Math.sqrt(sum/arr.size()));
-    		 System.out.println("*****");
-	
-			System.out.println(standard_deviation_active+standard_deviation_rejected+standard_deviation_shutdown+standard_deviation_suspend);
-		System.out.println(standard_deviation_TotslDsys);
+    		standard_deviation_TotslDsys= standard_deviation(arr);
+    	//	sdWorkdays_txt.setText(Double. toString(standard_deviation_TotslDsys));
+    		days_work =String.format("%.2f",standard_deviation_active);
+    		sdWorkdays_txt.setText(days_work);
+    		
+    		
+   		standard_deviation_TotslDsys_count= standard_deviation(count_workdays);
+   		//sdWorkdays_count.setText(Double. toString(standard_deviation_TotslDsys_count));
+   		count_work =String.format("%.2f",standard_deviation_active);
+   		sdWorkdays_count.setText(count_work);
     	/*****************************************************************************************************/
-    		active_reports.getData().addAll(xyActive,xySuspend,xyShutdown,xyRejected,xyTotalDays);
+    		active_reports.getData().addAll(xyActive,xySuspend,xyShutdown,xyRejected);
+    		work_days_report.getData().addAll(xyTotalDays);
     	}
     			
     

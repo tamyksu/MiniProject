@@ -4,14 +4,22 @@ package server;
 // license found at www.lloseng.com 
 
 import java.io.*;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.util.*;
+import java.sql.Connection;
 import java.util.concurrent.TimeUnit;
 import application.Processes;
 import application.UserProcess;
+import client.Client;
 import ocsf.server.*;
+import translator.OptionsOfAction;
+import translator.Translator;
+import client.Client;
+
 
 /**
  * This class overrides some of the methods in the abstract 
@@ -25,6 +33,8 @@ import ocsf.server.*;
  */
 public class Server extends AbstractServer 
 {
+	Client client = Client.getInstance();
+	private static Connection conn;
   //Class variables *************************************************
   
   /**
@@ -176,6 +186,17 @@ public class Server extends AbstractServer
 				    
 				    if(days < 0)
 				    {
+				    	
+				    try {
+				    	PreparedStatement stmt = conn.prepareStatement("insert into icmdb.delay_reports (request_id,number_days_delay)"
+				    			+"values(?,?)");
+				    	stmt.setInt(1, (int)result.get(i).get(0));
+				    	stmt.setInt(2, (int)(days));
+				    			stmt.executeUpdate();
+				    }catch (SQLException e) {
+						// TODO Auto-generated catch block
+						System.out.println("SQL EXCEPTION!-in server");
+				    }
 						System.out.println("Send messsage to :"+process.getHandler_id());
 						System.out.println("Send messsage to Supervisor:");
 						System.out.println("Send messsage to Super Super Manager MMM:");

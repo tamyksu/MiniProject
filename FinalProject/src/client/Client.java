@@ -8,9 +8,11 @@ import java.sql.ResultSet;
 import java.sql.PreparedStatement;
 import java.util.ArrayList;
 import java.sql.ResultSet;
+import application.ExtensionReportsController;
 import application.ActiveReportsController;
 import application.ControllerProcessMain;
 import application.DecisionController;
+import application.DelayReportsController;
 import application.EvaluationController;
 import application.EvaluationReport;
 import application.ExecutionController;
@@ -139,12 +141,29 @@ public class Client extends AbstractClient {
 		case DOWNLOADFILE:
 			handleMessageFromServerDownloadFile(result.getParmas());
 			break;
+		case SelectDelayReport:
+			handleMessageSelectDelayReport(result.getParmas());
+			break;
+		case SelectExtensionReport:
+			handleMessageSelectExtensionReport(result.getParmas());
 		default:
 			break;
 		}
 	
 	}
 
+	public void handleMessageSelectExtensionReport(Object rs)
+	{
+		
+		ArrayList<ArrayList<Integer>> result = (ArrayList<ArrayList<Integer>> ) rs;
+		ExtensionReportsController.instance.calculate(result);
+	}
+	
+	public void handleMessageSelectDelayReport(Object rs)
+	{
+		ArrayList<ArrayList<Integer>> result = (ArrayList<ArrayList<Integer>> ) rs;
+		DelayReportsController.instance.calculate(result);
+	}
 public void handleMessageFromServerExecutionCompleted(Object rs) {
 		@SuppressWarnings("unchecked")
 		ArrayList<Boolean> result = (ArrayList<Boolean>) rs;
@@ -301,9 +320,10 @@ public void handleMessageFromServerExecutionCompleted(Object rs) {
 	public void handlerMessageFromServerCURRENT_IN_ROLE(Object message)
 	{
 		ArrayList<String> arr= (ArrayList<String>)message;
+		System.out.println("Role"+arr.get(2)+"  "+arr.size());
 		
 		if(arr.get(2).equals("Chairman"))
-		arr.add("2");///its make it index 3
+		arr.add("2");///its make it index 2
 		else if(arr.get(2).equals("Supervisor"))
 			arr.add("3");
 		else if(arr.get(2).equals("Change Board Member-1")) // Information Engineer
@@ -387,7 +407,7 @@ public void handleMessageFromServerExecutionCompleted(Object rs) {
 		System.out.println("update permanent");
 		
 		
-		if(arr.get(2).equals("ChairMan"))
+		if(arr.get(2).equals("Chairman"))
 			arr.add("2");///its make it index 3
 			else if(arr.get(2).equals("Supervisor"))
 				arr.add("3");

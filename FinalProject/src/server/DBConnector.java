@@ -6,11 +6,14 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.sql.Connection;
-import java.sql.Date;
+//import java.sql.Date;
+import java.util.Date;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -22,7 +25,10 @@ import java.time.temporal.ChronoUnit;
 import java.time.format.DateTimeFormatter;
 import org.omg.CORBA.INTERNAL;
 import java.time.*;
-import com.mysql.cj.exceptions.DataReadException;
+import java.util.concurrent.TimeUnit;
+//import com.mysql.cj.exceptions.DataReadException;
+//import com.mysql.cj.x.protobuf.MysqlxDatatypes.Array;
+//import com.sun.javafx.image.impl.ByteIndexed.ToByteBgraAnyConverter;
 
 import translator.*;
 import application.ActiveReportsController;
@@ -189,7 +195,76 @@ public class DBConnector {
 				e.printStackTrace();
 			}
 			break;
+		case SelectExtensionReport:
+			try {
+				System.out.println("SelectExtensionReport");
+				ArrayList<Integer> days= new ArrayList<Integer>();
+				ArrayList<Integer> count_request= new ArrayList<Integer>();
 			
+				stmt= conn.prepareStatement("select DISTINCT number_days_extension from icmdb.extension_report order by number_days_extension");
+				ResultSet rs = stmt.executeQuery();
+				rs.previous();
+				int i=0;
+				while (rs.next())  // get the processID from the Select query
+				{ 
+					days.add(rs.getInt(1));
+				}
+				
+				 stmt =conn.prepareStatement("select  count(*) from icmdb.extension_report group by number_days_extension order by number_days_extension");
+				 rs = stmt.executeQuery();
+				rs.previous();
+					
+					while (rs.next())  // get the processID from the Select query
+					{ 
+						count_request.add(rs.getInt(1));
+					}
+				ArrayList<ArrayList<Integer>> all =new ArrayList<ArrayList<Integer>>();
+				all.add(days);
+				all.add(count_request);
+					Translator newTranslator = new Translator(translator.getRequest(),all);
+					return newTranslator;
+				}
+			catch (SQLException e) {
+				// TODO Auto-generated catch block
+				System.out.println("SQL EXCEPTION SelectDelayReport!");
+				
+					}
+			break;
+			
+			
+		case SelectDelayReport:
+			try {
+				ArrayList<Integer> days_delay= new ArrayList<Integer>();
+				ArrayList<Integer> count_request_delay= new ArrayList<Integer>();
+			
+				stmt= conn.prepareStatement("select DISTINCT number_days_delay from icmdb.delay_reports order by number_days_delay");
+				ResultSet rs = stmt.executeQuery();
+				rs.previous();
+				int i=0;
+				while (rs.next())  // get the processID from the Select query
+				{ 
+					days_delay.add(rs.getInt(1));
+				}
+				
+				 stmt =conn.prepareStatement("select  count(*) from icmdb.delay_reports group by number_days_delay order by number_days_delay");
+				 rs = stmt.executeQuery();
+				rs.previous();
+					
+					while (rs.next())  // get the processID from the Select query
+					{ 
+						count_request_delay.add(rs.getInt(1));
+					}
+				ArrayList<ArrayList<Integer>> all =new ArrayList<ArrayList<Integer>>();
+				all.add(days_delay);
+				all.add(count_request_delay);
+					Translator newTranslator = new Translator(translator.getRequest(),all);
+					return newTranslator;
+				}
+			catch (SQLException e) {
+				// TODO Auto-generated catch block
+				System.out.println("SQL EXCEPTION SelectDelayReport!");
+		}
+			break;
 	/****************************************Get_Active_Statistic********************************************************/		
 		case Get_Active_Statistic:
 			try {
@@ -200,21 +275,7 @@ public class DBConnector {
 					 ArrayList<Long> days=( ArrayList<Long>)translator.getParmas().get(1);
 					 Long num_days=days.get(0);
 					 Long daysBetween = ChronoUnit.DAYS.between(start_date, end_date);
-					// long startTime = start_date.get
-					 //if(daysBetween <num_days)return 0;
-					/* if((daysBetween%num_days)==0)
-					 {
-					 Long size_array=(daysBetween/num_days);
-					 }else
-					 {
-						 Long size_array=(daysBetween/num_days);
-						 size_array++;
- 
-					 }*/
-				//	 int size=size_array.intValue();
-					 //int num_interval=num_days.intValue();
-				//System.out.println("size Arrays"+size);
-				//System.out.println("num days interval"+num_interval);
+			
 				ArrayList<ArrayList<Integer>> arr=new ArrayList<>();
 				ArrayList<Integer>active=new ArrayList<Integer>();
 				LocalDate start_index=start_date;
@@ -226,22 +287,20 @@ public class DBConnector {
 				
 						+"and date>=? and date<?");
 								
-				//LocalDate local=(LocalDate)translator.getParmas().get(0);
-				//LocalDate local_end=(LocalDate)translator.getParmas().get(1);
+			
 				Timestamp start=Timestamp.valueOf(start_index.atTime(LocalTime.MIDNIGHT));
 				Timestamp end=Timestamp.valueOf(end_index.atTime(LocalTime.MIDNIGHT));
 				
 				  stmt.setTimestamp(1,start);
 				  stmt.setTimestamp(2,end);
-				 
-				//stmt.setString(2,s_end);
+			
 				ResultSet rs = stmt.executeQuery();
 				rs.previous();
 				int i=0;
 				while (rs.next())  // get the processID from the Select query
 				{
 				active.add(i, rs.getInt(1));
-				System.out.println(active.get(i));
+			
 				i++;
 				}
 	
@@ -251,8 +310,7 @@ public class DBConnector {
 			}
 				
 				arr.add(active);
-					//System.out.println(arr.get(0));*/
-				System.out.println("****************");
+		
 			/**************************************************************************************/
 				 start_index=start_date;
 				 ArrayList<Integer>suspended=new ArrayList<Integer>();
@@ -263,16 +321,14 @@ public class DBConnector {
 				stmt = conn.prepareStatement("SELECT COUNT(*) FROM icmdb.processes_state where status1='Suspended'"
 				
 						+"and date>=? and date<?");
-								
-				//LocalDate local=(LocalDate)translator.getParmas().get(0);
-				//LocalDate local_end=(LocalDate)translator.getParmas().get(1);
+	
 				Timestamp start=Timestamp.valueOf(start_index.atTime(LocalTime.MIDNIGHT));
 				Timestamp end=Timestamp.valueOf(end_index.atTime(LocalTime.MIDNIGHT));
 				
 				  stmt.setTimestamp(1,start);
 				  stmt.setTimestamp(2,end);
 				 
-				//stmt.setString(2,s_end);
+			
 				ResultSet rs = stmt.executeQuery();
 				rs.previous();
 				int i=0;
@@ -303,9 +359,7 @@ public class DBConnector {
 			stmt = conn.prepareStatement("SELECT COUNT(*) FROM icmdb.processes_state where status1='Shutdown'"
 			
 					+"and date>=? and date<?");
-							
-			//LocalDate local=(LocalDate)translator.getParmas().get(0);
-			//LocalDate local_end=(LocalDate)translator.getParmas().get(1);
+		
 			Timestamp start=Timestamp.valueOf(start_index.atTime(LocalTime.MIDNIGHT));
 			Timestamp end=Timestamp.valueOf(end_index.atTime(LocalTime.MIDNIGHT));
 			
@@ -342,15 +396,14 @@ public class DBConnector {
 			
 					+"and date>=? and date<?");
 							
-			//LocalDate local=(LocalDate)translator.getParmas().get(0);
-			//LocalDate local_end=(LocalDate)translator.getParmas().get(1);
+		
 			Timestamp start=Timestamp.valueOf(start_index.atTime(LocalTime.MIDNIGHT));
 			Timestamp end=Timestamp.valueOf(end_index.atTime(LocalTime.MIDNIGHT));
 			
 			  stmt.setTimestamp(1,start);
 			  stmt.setTimestamp(2,end);
 			 
-			//stmt.setString(2,s_end);
+	
 			ResultSet rs = stmt.executeQuery();
 			rs.previous();
 			int i=0;
@@ -368,33 +421,18 @@ public class DBConnector {
 		}
 			
 			arr.add(rejected);
-			
-			/***************************************************************************************/
-		/*	System.out.println("**************************");
-			
+/*********************************************************************************/	
 			 start_index=start_date;
 			 ArrayList<Integer>TotalDays=new ArrayList<Integer>();
 			 ArrayList<Date> CreateDate=new ArrayList<Date>();
 			 ArrayList<String> FinalDate=new ArrayList<String>();
 			 end_index=start_index.plusDays(num_days);
-			
-		
-		
-			/*stmt = conn.prepareStatement("SELECT COUNT(*) FROM icmdb.processes_state where "
-			
-					+"date>=? and date<? group by workdays");
-							*/
-				stmt = conn.prepareStatement("SELECT creation_date,IFNULL(current_stage_due_date, 0) FROM icmdb.processes");
-			//LocalDate local=(LocalDate)translator.getParmas().get(0);
-			//LocalDate local_end=(LocalDate)translator.getParmas().get(1);
-			//Timestamp start=Timestamp.valueOf(start_index.atTime(LocalTime.MIDNIGHT));
-			//Timestamp end=Timestamp.valueOf(end_index.atTime(LocalTime.MIDNIGHT));
-			
-			 // stmt.setTimestamp(1,start);
-			  //stmt.setTimestamp(2,end);
 			 
-			//stmt.setString(2,s_end);
-			/*ResultSet rs = stmt.executeQuery();
+		
+	
+				stmt = conn.prepareStatement("SELECT creation_date,IFNULL(current_stage_due_date, 0) FROM icmdb.processes");
+	
+			ResultSet rs = stmt.executeQuery();
 			rs.previous();
 			int i=0;
 			System.out.println("bfore re.next");
@@ -403,51 +441,105 @@ public class DBConnector {
 				
 				CreateDate.add(rs.getDate(1));
 				FinalDate.add(rs.getString(2));
-				System.out.println(CreateDate.get(i)+" "+CreateDate.get(i));
-			//System.out.println(TotalDays.get(i));
-				i++;
+			
+			//	i++;
 			}
 			ArrayList<LocalDate> final_date= new ArrayList<>();
 			ArrayList<LocalDate> create_date= new ArrayList<>();
-			System.out.println("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^");
+	
 			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-			System.out.println(FinalDate.size()+"FinalDate.size()");
+			System.out.println(FinalDate.size()+"FinalDate.size()");//convert to local date
 			for( i=0;i<FinalDate.size();i++) {
-				System.out.println(FinalDate.get(i)+"FinalDate.get(i)");
-				
-			//	formatter = formatter.withLocale( FinalDate.get(i) );  // Locale specifies human language for translating, and cultural norms for lowercase/uppercase and abbreviations and such. Example: Locale.US or Locale.CANADA_FRENCH
-				//LocalDate date = LocalDate.parse("2005-nov-12", formatter);
-				
-				 LocalDate fDate = formatter.parseLocalDate(FinalDate.get(i));
-				//LocalDate fDate = LocalDate.parse(FinalDate.get(i),formatter);
+		
+			
+				 LocalDate fDate = LocalDate.parse(FinalDate.get(i),formatter);
 				final_date.add(fDate);
-				System.out.println(fDate+"final date");
-				LocalDate date = CreateDate.get(i).toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-				create_date.add(date);
-				System.out.println(create_date+"create_date");
-				//System.out.println(final_date.get(i)+""+ create_date.get(i));
+	
+
 			}
-			  LocalDate now = LocalDate.now();  
-			  int total_days;
-			  System.out.println("___________________________________________________");
+			
+		
+			
+			 LocalDate now = LocalDate.now();  
+			  long total_days;
+	
+			  
+			 Date f_Date = null;
+			
 			for( i=0;i<FinalDate.size();i++)
 			{
+				try {
+					f_Date =(Date) new  SimpleDateFormat("yyyy-MM-dd").parse(FinalDate.get(i));
+				} catch (ParseException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} 
 				if(now.isAfter(final_date.get(i)))
 				{
 					
-					TotalDays.add(total_days = (int) ChronoUnit.DAYS.between(create_date.get(i),final_date.get(i)));
+					Date satrt_date=CreateDate.get(i);
+					long startTime = satrt_date.getTime();
+					long endTime = f_Date.getTime();
+					long diffTime = endTime - startTime;
+					long diffDays = diffTime / (1000 * 60 * 60 * 24);
+					System.out.println(diffDays);
+					System.out.println(f_Date.getTime()+ " "+satrt_date.getTime());
+							int convert_to_int=(int)diffDays;
+							System.out.println(convert_to_int+"now we after end date");
+							TotalDays.add(convert_to_int);
 					
 				}
 				else {
-					TotalDays.add(total_days = (int) ChronoUnit.DAYS.between(create_date.get(i),now));
+					
+					Date satrt_date=CreateDate.get(i);
+					
+					Date nowGet =new Date();
+					
+					long startTime = satrt_date.getTime();
+					long endTime = nowGet.getTime();
+					long diffTime = endTime - startTime;
+					long diffDays = diffTime / (1000 * 60 * 60 * 24);
+					System.out.println(diffDays);
+							//total_days =(nowGet.getTime()-satrt_date.getTime());
+							System.out.println(nowGet.getTime()+ " "+satrt_date.getTime());
+							int convert_to_int=(int)diffDays;
+							System.out.println(convert_to_int+"now we before end date");
+							TotalDays.add(convert_to_int);
+					
 				}
 			}
-
+			
 		
+			System.out.println(Collections.max(TotalDays));
+			int arr_counter[] =new int[	Collections.max(TotalDays)];
+			System.out.println(arr_counter.length+" size arr");
+			for( i=0;i<arr_counter.length;i++)
+			{
+				arr_counter[i]=0;
+			}
+			System.out.println(TotalDays.size()+"total days size");
+			for( i=0;i<TotalDays.size();i++)
+			{
+				System.out.println(arr_counter[TotalDays.get(i)-1]); 
+				arr_counter[TotalDays.get(i)-1]=arr_counter[TotalDays.get(i)-1]+1;
+				System.out.println(arr_counter[TotalDays.get(i)-1]); 
+				System.out.println(TotalDays.get(i)+"value");
+			}
+			ArrayList<Integer> counter_arr=new ArrayList<>();
+			ArrayList<Integer> total_days_arr=new ArrayList<>();
+			for( i=0;i<Collections.max(TotalDays);i++)
+			{
+				if(arr_counter[i]!=0)
+				{
+					counter_arr.add((arr_counter[i]));
+					total_days_arr.add(i+1);
+				}
+				
+			}
 	
-			
-			arr.add(TotalDays);
-			
+				
+				arr.add(counter_arr);
+				arr.add(total_days_arr);
 			/***************************************************************************************/
 		//0-active 1-suspend 2-shutdown 3-rejected 4-total days
 				Translator newTranslator = new Translator(translator.getRequest(), arr);
@@ -464,9 +556,11 @@ public class DBConnector {
 		
 			try {
 				
-				stmt = conn.prepareStatement("select first_name, last_name, id from icmdb.workers "						+ "where( id NOT IN(select user_id from icmdb.users_requests) and role ='Information Engineer')");
+				stmt = conn.prepareStatement("select first_name, last_name, id from icmdb.workers "	
+				+ "where( id NOT IN(select user_id from icmdb.users_requests) "
+				+ "and role ='Information Engineer')");
 						//+ "and id NOT IN(select user_id from icmdb.permanent_roles))");
-				
+					
 						
 				ResultSet rs = stmt.executeQuery();
 				String nameWorker;
@@ -538,6 +632,7 @@ public class DBConnector {
 	/***********************************************CHECK_ROLE**********************************************************/
 	case DELETEPERMANENT:
 			try {
+				
 				stmt = conn.prepareStatement("select role from icmdb.permanent_roles where role=? or user_id=? ");
 				stmt.setString(1, (String) translator.getParmas().get(0).toString());
 				stmt.setString(2, (String) translator.getParmas().get(0).toString());
@@ -567,13 +662,23 @@ public class DBConnector {
 	case CURRENT_IN_ROLE:
 		
 	try{
-		
-		stmt = conn.prepareStatement("select first_name, last_name from icmdb.workers "
-				+ "inner join icmdb.permanent_roles ON( icmdb.workers.id=icmdb.permanent_roles.user_id )"
-				+ "and icmdb.permanent_roles.role = ? ");
-		stmt.setString(1, (String) translator.getParmas().get(0));
+		stmt = conn.prepareStatement("select user_id from icmdb.permanent_roles "
+			+"where role=?");
+			stmt.setString(1, (String) translator.getParmas().get(0));
+		//stmt.setString(1, (String) translator.getParmas().get(0));
 		ResultSet rs = stmt.executeQuery();
-
+		rs.previous();
+		String id="";
+		while (rs.next()) { // get the user id
+			 id= new String(rs.getString(1));//
+			
+		}
+		stmt = conn.prepareStatement("select first_name, last_name from icmdb.workers "
+				+ "where icmdb.workers.id = ?");
+				
+		stmt.setString(1, id);
+		 rs = stmt.executeQuery();
+System.out.println(id+"id current in role");
 		if(rs.first() == false) {
 			ar.add("Select chairman failled");
 			Translator newTranslator = new Translator(translator.getRequest(), ar);
@@ -583,7 +688,7 @@ public class DBConnector {
 		while (rs.next()) { // get the processID from the Select query
 			ar.add( new String(rs.getString(1)));//name
 			ar.add( new String(rs.getString(2)));//last name
-	
+	System.out.println("%%");
 			
 		}
 				ar.add( (String) translator.getParmas().get(0));//role
@@ -599,7 +704,7 @@ public class DBConnector {
 	case UPDATEPERMANENT:
 		try {
 			
-			System.out.println("add new person to role");
+			
 			stmt = conn.prepareStatement("insert into icmdb.permanent_roles (user_id,role) values(?,?)");
 			stmt.setString(1, (String) translator.getParmas().get(0));
 			stmt.setString(2, (String) translator.getParmas().get(1));
@@ -607,10 +712,10 @@ System.out.println("id "+translator.getParmas().get(0));
 
 			stmt.executeUpdate();
 			stmt = conn.prepareStatement("select first_name, last_name from icmdb.workers "
-					+ "inner join icmdb.permanent_roles ON icmdb.workers.id=icmdb.permanent_roles.user_id "
-					+ "and icmdb.permanent_roles.role = ? ");
+					+ "where icmdb.workers.id=? ");
+					
 		
-			stmt.setString(1, (String) translator.getParmas().get(1));
+			stmt.setString(1, (String) translator.getParmas().get(0));
 			ResultSet rs = stmt.executeQuery();
 	
 			if(rs.first() == false) {
@@ -822,7 +927,15 @@ System.out.println("id "+translator.getParmas().get(0));
 		case SET_EVALUATION_OR_EXECUTION_DUE_TIME:
 			try {
 				java.sql.Date date = new java.sql.Date(new java.util.Date().getTime());
+				/*********************tamy***********************************/
 				
+				stmt = conn.prepareStatement(" insert into icmdb.extension_report (request_id,number_days_extension) values(?,?)");
+				stmt.setInt(1,  (int)translator.getParmas().get(0));
+				stmt.setInt(2, (Integer.parseInt(translator.getParmas().get(1).toString())));
+				stmt.executeUpdate();
+				
+				/*************************tamy********************************/
+			
 				date = date.valueOf(date.toLocalDate().plusDays(Integer.parseInt(translator.getParmas().get(1).toString())));
 				
 				System.out.println("SET_EVALUATION_OR_EXECUTION_DUE_TIME 1");
@@ -861,6 +974,8 @@ System.out.println("id "+translator.getParmas().get(0));
 			break;
 		case ADD_EVALUATION_OR_EXECUTION_EXTENSION_TIME:
 			try {
+				
+	
 				stmt = conn.prepareStatement("SELECT current_stage_due_date FROM icmdb.processes WHERE request_id = ?");
 				stmt.setInt(1, (int)translator.getParmas().get(0));
 				
@@ -883,15 +998,34 @@ System.out.println("id "+translator.getParmas().get(0));
 					date = rs.getDate(1);
 					}
 				System.out.println(date);
+				/*********************tamy***********************************/
 				
+				
+			     stmt = conn.prepareStatement(" select number_days_extension from  icmdb.extension_report where request_id=?");
+			     stmt.setInt(1, (int)translator.getParmas().get(0));
+			      rs = stmt.executeQuery();
+			     rs.previous();
+			     int days=0;
+			     while(rs.next()) {
+						days = rs.getInt(1);
+						}
+			     days+=(int)translator.getParmas().get(1);
+			     
+				stmt = conn.prepareStatement(" update icmdb.extension_report set  number_days_extension=?"
+						+ "where request_id =?");
+				stmt.setInt(1, days);
+				stmt.setInt(2, (int)translator.getParmas().get(0));
+				stmt.executeUpdate();
+				
+		/*************************tamy********************************/
 				
 				date = date.valueOf(date.toLocalDate().plusDays((int)translator.getParmas().get(1)));
-				
+				/*
 				stmt = conn.prepareStatement("UPDATE icmdb.processes_state SET current_stage_due_date = ? "
 						+ "WHERE request_id = ?");
 				stmt.setString(1, String.valueOf(newDueTime).toString());
 				stmt.setInt(2, (int)translator.getParmas().get(0));
-				stmt.executeUpdate();
+				stmt.executeUpdate();*/
 				//////////////////////////////
 				stmt = conn.prepareStatement("UPDATE icmdb.processes SET current_stage_due_date = ? "
 						+ "WHERE request_id = ?");
