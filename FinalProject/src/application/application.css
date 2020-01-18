@@ -1,6 +1,7 @@
 
 #StyleLogin{
 	-fx-background-image: url("/application/3.jpg");
+	
 	-fx-background-size: 100% 100%;
 }
 #login{
@@ -36,9 +37,11 @@
 }
 .idp{
 		-fx-background-image: url("/application/paneUP.jpg");
+			-fx-background-size: 100% 100%;
 }
 .button{
 	-fx-background-image: url("/application/2.jpg");
+		-fx-background-size: 100% 100%;
 	-fx-text-fill: white;
 }
 .brightText{
@@ -46,6 +49,7 @@
 }
 .idButton{
 -fx-background-image: url("/application/2.jpg");
+	-fx-background-size: 100% 100%;
 	-fx-text-fill: white;
 }
 #idButton:hover

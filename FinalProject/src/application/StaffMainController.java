@@ -5,7 +5,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import java.sql.DriverManager;
-
+import application.DelayReportsController;
 import javafx.scene.control.Alert.AlertType;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -78,6 +78,7 @@ public class StaffMainController implements Initializable{
 	
 	@FXML
 	public void active_reports_button(ActionEvent event) {
+		//DelayReportsController.instance.get_information();
 	 	ScreenController.getScreenController().activate("active_reports");
 	}
 	/****************************************back_click******************************************************************/
@@ -121,8 +122,8 @@ public class StaffMainController implements Initializable{
 	public void Appoint_Chiarman_click(ActionEvent event)
 	{
 		ArrayList<Object> params = new ArrayList<Object>();
-		params.add("ChairMan");
-	checkBefore("ChairMan","2");
+		params.add("Chairman");
+	checkBefore("Chairman","2");
 	
 	
 
@@ -176,7 +177,7 @@ public class StaffMainController implements Initializable{
 		supervisor_comboBox.setItems(data);
 		this.FullNameChosenStaff.addAll(data);
 		System.out.println(FullNameChosenStaff);
-		checkBefore("ChairMan","1");
+		checkBefore("Chairman","1");
 		checkBefore("Supervisor","1");
 		checkBefore("Change Board Member-1","1"); // Information Engineer
 		checkBefore("Change Board Member-2","1"); // Information Engineer
@@ -186,9 +187,9 @@ public class StaffMainController implements Initializable{
 		ArrayList<Object> params = new ArrayList<Object>();
 		Integer result = Integer.valueOf(WorkersName.get(0));
 		if(result==1) {//there some one in parmenent table
-			
+			System.out.println("afterSet"+WorkersName.get(1));
 		params.add(WorkersName.get(1));
-		
+		System.out.println("after set role?"+WorkersName.get(1));
 		Translator translator = new Translator(OptionsOfAction.CURRENT_IN_ROLE,params);
 		Client.getInstance().handleMessageFromClientGUI(translator);
 		}
@@ -196,12 +197,14 @@ public class StaffMainController implements Initializable{
 	
 	public void printMessage1(ArrayList<String> WorkersName)
 	{ 
-		System.out.println("Current in " + WorkersName.get(2) + "position:\n" + (WorkersName.get(0)+" " +WorkersName.get(1)));
+		System.out.println(WorkersName.get(2));
+		
+		System.out.println("Current in " + WorkersName.get(2) + " position:\n" + (WorkersName.get(0)+" " +WorkersName.get(1)));
 
-		if(WorkersName.get(3).equals("2")&& WorkersName.get(2).equals("ChairMan"))
+		if(WorkersName.get(3).equals("2")&& WorkersName.get(2).equals("Chairman"))
 		{
 			
-			print_Chaiman.setText("Current in " + WorkersName.get(2) + "position:\n" + (WorkersName.get(0)+" " +WorkersName.get(1)));
+			print_Chaiman.setText("Current in " + WorkersName.get(2) + " position:\n" + (WorkersName.get(0)+" " +WorkersName.get(1)));
 		}
 		else if(WorkersName.get(3).equals("3") && WorkersName.get(2).equals("Supervisor"))
 		{
@@ -227,7 +230,7 @@ public class StaffMainController implements Initializable{
 	{	
 		
 	
-		if(WorkersName.get(3).equals("2")&& WorkersName.get(2).equals("ChairMan"))
+		if(WorkersName.get(3).equals("2")&& WorkersName.get(2).equals("Chairman"))
 		{
 			
 			print_Chaiman.setText("Current in " + WorkersName.get(2) + "position:\n" + (WorkersName.get(0)+" " +WorkersName.get(1)));
@@ -268,7 +271,7 @@ public class StaffMainController implements Initializable{
 			ArrayList<Object> params = new ArrayList<Object>();
 			save_role=WorkersName.get(1);
 			String name="";
-			if(WorkersName.get(1).equals("ChairMan"))
+			if(WorkersName.get(1).equals("Chairman"))
 			 name =chairman_comboBox.getValue();
 			else if (WorkersName.get(1).equals("Supervisor"))
 				 name =supervisor_comboBox.getValue();
@@ -327,7 +330,7 @@ public class StaffMainController implements Initializable{
 	}
 /**************************************************SET_DELETEPERMANENT**************************************************************/	
 	public void SET_DELETEPERMANENT(ArrayList<String> WorkersName) {
-		if(WorkersName.get(0).equals("ChairMan"))
+		if(WorkersName.get(0).equals("Chairman"))
 			print_Chaiman.setText("empty position");
 		
 	else if(WorkersName.get(0).equals("Supervisor"))
@@ -361,12 +364,16 @@ void active_reports(ActionEvent event) {
 
 @FXML
 void execution_reports(ActionEvent event) {
-
+	ScreenController.getScreenController().activate("extension_reports");
+	ExtensionReportsController.instance.get_information();
 }
 
 @FXML
 void delay_execution(ActionEvent event) {
-
+	
+	ScreenController.getScreenController().activate("delay_reports");
+	DelayReportsController.instance.get_information();
+	
 }
 
 

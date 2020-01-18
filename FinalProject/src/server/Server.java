@@ -4,14 +4,23 @@ package server;
 // license found at www.lloseng.com 
 
 import java.io.*;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.util.*;
+import java.sql.Connection;
 import java.util.concurrent.TimeUnit;
 import application.Processes;
 import application.UserProcess;
+import client.Client;
 import ocsf.server.*;
+import translator.OptionsOfAction;
+import translator.Translator;
+import client.Client;
+import sun.awt.NullComponentPeer;
+
 
 /**
  * This class overrides some of the methods in the abstract 
@@ -25,6 +34,8 @@ import ocsf.server.*;
  */
 public class Server extends AbstractServer 
 {
+	Client client = Client.getInstance();
+	private static Connection conn;
   //Class variables *************************************************
   
   /**
@@ -124,17 +135,16 @@ public class Server extends AbstractServer
       System.out.println("ERROR - Could not listen for clients!");
     }
     
-//	Timer timer = new Timer();
-//	
-//	Calendar calendar = Calendar.getInstance();
-//	calendar.set(Calendar.HOUR_OF_DAY, 10);
-//	calendar.set(Calendar.MINUTE, 15);
-//	calendar.set(Calendar.SECOND, 0);
-//	
-//	Date time = calendar.getTime();
-//	//checkDueDateOfProcesses();
-//	
-//	timer.schedule(new checkDueDateOfProcessesTask(), time);
+	Timer timer = new Timer();
+	
+	Calendar calendar = Calendar.getInstance();
+	calendar.set(Calendar.HOUR_OF_DAY, 23);
+	calendar.set(Calendar.MINUTE, 01);
+	calendar.set(Calendar.SECOND, 0);
+	
+	Date time = calendar.getTime();
+	
+	timer.schedule(new checkDueDateOfProcessesTask(), time);
     
   }
   
@@ -172,23 +182,44 @@ public class Server extends AbstractServer
 					Date currentDate = new SimpleDateFormat("yyyy-MM-dd").parse(LocalDate.now().toString());
 					
 					long diff = dueDate.getTime() - currentDate.getTime();
-				    long days = TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS);
+				    int days = (int)(long)(TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS));
 				    
+				    //hander passed its due date
 				    if(days < 0)
 				    {
-						System.out.println("Send messsage to :"+process.getHandler_id());
-						System.out.println("Send messsage to Supervisor:");
-						System.out.println("Send messsage to Super Super Manager MMM:");
+				    	/************************tamy****************************/
+				    try {
+				    	PreparedStatement stmt = conn.prepareStatement("insert into icmdb.delay_reports (request_id,number_days_delay)"
+				    			+"values(?,?)");
+				    	stmt.setInt(1, (int)result.get(i).get(0));
+				    	stmt.setInt(2, (int)(days));
+				    			stmt.executeUpdate();
+				    }catch (SQLException e) {
+						// TODO Auto-generated catch block
+						System.out.println("SQL EXCEPTION!-in server");
+				    }
+				    /********************************tamy***********************/
+				    	//Send a notification to handler
+						DBConnector.sendNotification(process.getRequest_id(), "You exceeded due time for this stage",Math.abs(days),DBConnector.getHandlerRole(process.getRequest_id()), "ICM", "");
+				    	//Send a notification to supervisor
+						DBConnector.sendNotification(process.getRequest_id(), DBConnector.getHandlerRole(process.getRequest_id())+" exceeded due time for this stage!",Math.abs(days),"Supervisor", "ICM", "");
+				    	//Send a notification to manager
+						DBConnector.sendNotification(process.getRequest_id(), DBConnector.getHandlerRole(process.getRequest_id())+" exceeded due time for this stage!",Math.abs(days),"Manager", "ICM", "");
 				    }
 				    else
-				    	if(days == 1)
+				    	if(days>=0 && days < 3)
 				    	{
-							System.out.println("Send messsage to :"+process.getHandler_id());
+				    		//Send notification to handler
+							DBConnector.sendNotification(process.getRequest_id(), "You have "+days+" days to complete the stage!",0,DBConnector.getHandlerRole(process.getRequest_id()), "ICM", "");
 				    	}
 					
 				} catch (ParseException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
+				}
+				catch(NullPointerException ex)
+				{
+					continue;
 				}
 
 				processes.getMyProcess().put(new Integer((int)result.get(i).get(0)), process);

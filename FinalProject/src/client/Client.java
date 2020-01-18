@@ -1,18 +1,17 @@
 package client;
 import ocsf.client.*;
-import server.DBConnector;
 import translator.OptionsOfAction;
 import translator.Translator;
 import java.io.*;
 import java.sql.Date;
-import java.sql.ResultSet;
-import java.sql.PreparedStatement;
 import java.util.ArrayList;
-import java.sql.ResultSet;
+import java.util.Optional;
+import application.ExtensionReportsController;
 import application.ActiveReportsController;
 import application.ChangeBoardMember;
 import application.ControllerProcessMain;
 import application.DecisionController;
+import application.DelayReportsController;
 import application.EvaluationController;
 import application.EvaluationReport;
 import application.ExecutionController;
@@ -21,13 +20,13 @@ import application.MyFile;
 import application.NewRequestController;
 import application.Processes;
 import application.ScreenController;
-import application.SendMail;
 import application.StaffMainController;
 import application.Supervisor_ProcessMain_Controller;
 import application.UserProcess;
 import javafx.application.Platform;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.ButtonType;
 
 
 public class Client extends AbstractClient {
@@ -117,7 +116,6 @@ public class Client extends AbstractClient {
 			break;
 		case More_Info_Decision:
 			handleMessageFromServerMoreInfoDecision(result.getParmas());
-
 			break;
 		case Execution_Suggest_Number_Of_Days:
 			handleMessageFromServerExecutionSuggestNumberOfDays(result.getParmas());
@@ -125,6 +123,9 @@ public class Client extends AbstractClient {
 		case Execution_Completed:
 			handleMessageFromServerExecutionCompleted(result.getParmas());
 			break;	
+		case FREEZE_PROCESS:
+			handleMessageFromServerFreezeProcess(result.getParmas());
+			break;
 		case SHUTDOWN_PROCESS:
 			handleMessageFromServerShutdownProcess(result.getParmas());
 			break;
@@ -147,6 +148,11 @@ public class Client extends AbstractClient {
 		case Appoint_Examiner:
 			handleMessageFromServerAppointExaminer(result.getParmas());
 			break;	
+				case SelectDelayReport:
+			handleMessageSelectDelayReport(result.getParmas());
+			break;
+		case SelectExtensionReport:
+			handleMessageSelectExtensionReport(result.getParmas());
 		default:
 			break;
 		}
@@ -178,6 +184,18 @@ public class Client extends AbstractClient {
 		});
 	}
 
+	public void handleMessageSelectExtensionReport(Object rs)
+	{
+		
+		ArrayList<ArrayList<Integer>> result = (ArrayList<ArrayList<Integer>> ) rs;
+		ExtensionReportsController.instance.calculate(result);
+	}
+	
+	public void handleMessageSelectDelayReport(Object rs)
+	{
+		ArrayList<ArrayList<Integer>> result = (ArrayList<ArrayList<Integer>> ) rs;
+		DelayReportsController.instance.calculate(result);
+	}
 	public void handleMessageFromServerExecutionCompleted(Object rs) {
 		@SuppressWarnings("unchecked")
 		ArrayList<Boolean> result = (ArrayList<Boolean>) rs;
@@ -328,6 +346,25 @@ public class Client extends AbstractClient {
 
 
 	}
+	
+	private void handleMessageFromServerFreezeProcess(Object message) {
+	ArrayList<String> arr= (ArrayList<String>) message;
+	
+	if(arr.get(0).equals("Succesfully Suspended"))
+	{
+		
+		Platform.runLater(new Runnable() {//avoiding java.lang.IllegalStateException “Not on FX application thread”
+    	    public void run() {
+    			Optional<ButtonType> result = new Alert(AlertType.CONFIRMATION,"Process Successfully suspended",ButtonType.OK).showAndWait();
+    			Supervisor_ProcessMain_Controller.getInstance().updateProcessInformation();
+    			Supervisor_ProcessMain_Controller.getInstance().adjustSuspendedButtons();
+    	    }
+    	});
+	}
+	else
+		new Alert(AlertType.ERROR,"There was an issue to suspend this process").show();
+}
+	
 	private void handleMessageFromServerShutdownProcess(Object message) {
 		ArrayList<String> arr= (ArrayList<String>) message;
 
@@ -336,6 +373,14 @@ public class Client extends AbstractClient {
 		}
 		else
 			new Alert(AlertType.ERROR,"There was an issue to shutdown this process").show();
+		
+		Platform.runLater(new Runnable() {//avoiding java.lang.IllegalStateException “Not on FX application thread”
+    	    public void run() {
+    			Optional<ButtonType> result = new Alert(AlertType.CONFIRMATION,"Process Successfully shutdown , going back to previous page",ButtonType.OK).showAndWait();
+	   			 if(result.get() == ButtonType.OK)
+						Supervisor_ProcessMain_Controller.getInstance().back_click(null);
+    	    }
+    	});
 	}
 
 	private void handleMessageFromServerDefrostProcess(Object message) {
@@ -372,6 +417,7 @@ public class Client extends AbstractClient {
 	public void handlerMessageFromServerCURRENT_IN_ROLE(Object message)
 	{
 		ArrayList<String> arr= (ArrayList<String>)message;
+		System.out.println("Role"+arr.get(2)+"  "+arr.size());
 
 		if(arr.get(2).equals("Chairman"))
 			arr.add("2");///its make it index 3
@@ -458,7 +504,7 @@ public class Client extends AbstractClient {
 		System.out.println("update permanent");
 
 
-		if(arr.get(2).equals("ChairMan"))
+		if(arr.get(2).equals("Chairman"))
 			arr.add("2");///its make it index 3
 		else if(arr.get(2).equals("Supervisor"))
 			arr.add("3");
@@ -524,6 +570,7 @@ public class Client extends AbstractClient {
 			ScreenController.getScreenController().activate("processesMain");
 			ControllerProcessMain.instance.ButtonAdjustmentSuperUser(result.get(0),"Active");
 			getAllProcessesFromServer();
+			getRelatedMessages("Chairman");
 			break;
 			/*case "Change Board Member-1":
 			Client.getInstance().setName(result.get(1));
