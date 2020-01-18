@@ -8,6 +8,7 @@ import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.PreparedStatement;
 import java.util.ArrayList;
+import java.util.Optional;
 import java.sql.ResultSet;
 import application.ActiveReportsController;
 import application.ControllerProcessMain;
@@ -25,8 +26,10 @@ import application.StaffMainController;
 import application.Supervisor_ProcessMain_Controller;
 import application.UserProcess;
 import javafx.application.Platform;
+import javafx.event.ActionEvent;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.ButtonType;
 
 
 public class Client extends AbstractClient {
@@ -116,7 +119,6 @@ public class Client extends AbstractClient {
 			break;
 		case More_Info_Decision:
 			handleMessageFromServerMoreInfoDecision(result.getParmas());
-
 			break;
 		case Execution_Suggest_Number_Of_Days:
 			handleMessageFromServerExecutionSuggestNumberOfDays(result.getParmas());
@@ -124,6 +126,9 @@ public class Client extends AbstractClient {
 		case Execution_Completed:
 			handleMessageFromServerExecutionCompleted(result.getParmas());
 			break;	
+		case FREEZE_PROCESS:
+			handleMessageFromServerFreezeProcess(result.getParmas());
+			break;
 		case SHUTDOWN_PROCESS:
 			handleMessageFromServerShutdownProcess(result.getParmas());
 			break;
@@ -264,11 +269,38 @@ public void handleMessageFromServerExecutionCompleted(Object rs) {
 		
 		
 	}
+	
+	private void handleMessageFromServerFreezeProcess(Object message) {
+	ArrayList<String> arr= (ArrayList<String>) message;
+	
+	if(arr.get(0).equals("Succesfully Suspended"))
+	{
+		
+		Platform.runLater(new Runnable() {//avoiding java.lang.IllegalStateException “Not on FX application thread”
+    	    public void run() {
+    			Optional<ButtonType> result = new Alert(AlertType.CONFIRMATION,"Process Successfully suspended",ButtonType.OK).showAndWait();
+    			Supervisor_ProcessMain_Controller.getInstance().updateProcessInformation();
+    			Supervisor_ProcessMain_Controller.getInstance().adjustSuspendedButtons();
+    	    }
+    	});
+	}
+	else
+		new Alert(AlertType.ERROR,"There was an issue to suspend this process").show();
+}
+	
 	private void handleMessageFromServerShutdownProcess(Object message) {
 	ArrayList<String> arr= (ArrayList<String>) message;
 	
 	if(arr.get(0).equals("Successfully Shutdown"))
 	{
+		
+		Platform.runLater(new Runnable() {//avoiding java.lang.IllegalStateException “Not on FX application thread”
+    	    public void run() {
+    			Optional<ButtonType> result = new Alert(AlertType.CONFIRMATION,"Process Successfully shutdown , going back to previous page",ButtonType.OK).showAndWait();
+	   			 if(result.get() == ButtonType.OK)
+						Supervisor_ProcessMain_Controller.getInstance().back_click(null);
+    	    }
+    	});
 	}
 	else
 		new Alert(AlertType.ERROR,"There was an issue to shutdown this process").show();
@@ -458,6 +490,7 @@ public void handleMessageFromServerExecutionCompleted(Object rs) {
 			ScreenController.getScreenController().activate("processesMain");
 			ControllerProcessMain.instance.ButtonAdjustmentSuperUser(result.get(0),"Active");
 			getAllProcessesFromServer();
+			getRelatedMessages("Chairman");
 			break;
 		case "Change Board Member-1":
 			Client.getInstance().setName(result.get(1));

@@ -1,5 +1,8 @@
 package application;
-
+/**
+ * a class for the workers in the icmdb.permanent_roles table
+ *
+ */
 public class TemporaryWorker {
 
 	private String userID;

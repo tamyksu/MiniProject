@@ -1,5 +1,9 @@
 package application;
 
+/**
+ * class for the workers in the icmdb.workers table
+ *
+ */
 public class PermanentWorker {
 
 	private String userID;

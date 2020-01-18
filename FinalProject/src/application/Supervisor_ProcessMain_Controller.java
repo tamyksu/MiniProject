@@ -3,9 +3,6 @@ package application;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
-import com.sun.org.apache.xerces.internal.util.SynchronizedSymbolTable;
-import com.sun.xml.internal.bind.v2.runtime.reflect.opt.Const;
-
 import client.Client;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
@@ -15,6 +12,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
+import sun.misc.Cleaner;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
@@ -616,7 +614,7 @@ public class Supervisor_ProcessMain_Controller implements Initializable{
 	}
     
     @FXML
-    void back_click(ActionEvent event) {
+    public void back_click(ActionEvent event) {
     	ScreenController.getScreenController().activate(ScreenController.getScreenController().getLastScreen());
     	ControllerProcessMain.instance.getTheUpdateProcessesFromDB();
     	System.out.println("Client.instance.getUserID() = " + Client.instance.getUserID());
@@ -647,6 +645,20 @@ public class Supervisor_ProcessMain_Controller implements Initializable{
 		request_id_text.setText("" + process.getRequest_id());
 		status_text.setText(process.getStatus());
 		current_stage_due_time_text.setText(process.getCurrent_stage_due_date());
+    }
+    
+    public void adjustSuspendedButtons()
+    {
+		freeze_process_btn.setDisable(true);
+		add_extension__time_btn.setDisable(true);
+		decline_extension_request_btn.setDisable(true);
+		add_extension_explanation_text.setDisable(true);
+		approve_due_time_request_btn.setDisable(true);
+		decline_due_time_request_btn.setDisable(true);
+		appoint_appraiser_btn.setDisable(true);
+		appoint_performance_leader_btn.setDisable(true);
+		extension_time_text.setDisable(true);
+		due_time_text.setDisable(true);
     }
     
 }

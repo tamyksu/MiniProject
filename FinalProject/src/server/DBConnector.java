@@ -6,31 +6,19 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.sql.Connection;
-import java.sql.Date;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Timestamp;
-import java.text.SimpleDateFormat;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.time.ZoneId;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.time.temporal.ChronoUnit;
-import java.time.format.DateTimeFormatter;
-import org.omg.CORBA.INTERNAL;
-import java.time.*;
-import com.mysql.cj.exceptions.DataReadException;
-
 import translator.*;
-import application.ActiveReportsController;
 import application.Evaluation_Options;
 import application.MyFile;
+import application.MyHashMaps;
 import application.Request;
-import javafx.print.Collation;
-import javafx.util.converter.LocalDateTimeStringConverter;
 
 import java.sql.ResultSet;
 public class DBConnector {
@@ -700,7 +688,8 @@ System.out.println("id "+translator.getParmas().get(0));
 						"FROM users_requests\r\n" + 
 						"INNER JOIN processes\r\n" + 
 						"ON users_requests.process_id = processes.request_id\r\n"+
-						"WHERE users_requests.user_id=?");
+						"WHERE users_requests.user_id=?"
+						+ " ORDER BY status1, creation_date DESC");
 				stmt.setString(1, (String) translator.getParmas().get(0));
 				ResultSet rs = stmt.executeQuery();		
 				if(rs.first() == false) {
@@ -939,7 +928,7 @@ System.out.println("id "+translator.getParmas().get(0));
 			
 		case GETALLPROCESSES:
 			try {
-				stmt = conn.prepareStatement("SELECT * FROM icmdb.processes;");
+				stmt = conn.prepareStatement("SELECT * FROM icmdb.processes ORDER BY status1, creation_date DESC;");
 				ResultSet rs = stmt.executeQuery();		
 				if(rs.first() == false) {
 					ar.add("No processes");
@@ -1480,7 +1469,7 @@ System.out.println("id "+translator.getParmas().get(0));
 			
 				System.out.println("GET_RELATED_MESSAGES 1");
 			try {
-					if(role.compareTo("Manager") != 0 && role.compareTo("Supervisor") != 0)//role = ID of someone
+					if(role.compareTo("Manager") != 0 && role.compareTo("Supervisor") != 0 && role.compareTo("Chairman") != 0)//role = ID of someone
 					{
 						stmt = conn.prepareStatement("SELECT *\r\n" + 
 								"FROM icmdb.messages\r\n" + 
@@ -1524,8 +1513,8 @@ System.out.println("id "+translator.getParmas().get(0));
 					{
 						stmt = conn.prepareStatement("SELECT *\r\n" + 
 								"FROM icmdb.messages\r\n" + 
-								"WHERE messages.to_who = \"Supervisor\"");
-												
+								"WHERE messages.to_who = ?");
+						stmt.setString(1, role);					
 						
 						ResultSet rs = stmt.executeQuery();	
 						System.out.println("GET_RELATED_MESSAGES 3");
@@ -2048,7 +2037,7 @@ System.out.println("id "+translator.getParmas().get(0));
 		
 	}
 	
-	private static void sendNotification(int procID, String content, int days, String toWho, String fromWho, String reason)
+	public static void sendNotification(int procID, String content, int days, String toWho, String fromWho, String reason)
 	{
 		System.out.println(procID+" "+content+" "+days+" "+toWho+" "+fromWho+" "+reason);
 		
@@ -2199,4 +2188,87 @@ System.out.println("id "+translator.getParmas().get(0));
 		}		
 		return null;
 	}
+	
+	public static int getHandlerId(int requestID)
+	{
+		try {
+			PreparedStatement stmt = conn.prepareStatement("SELECT process_stage FROM processes WHERE request_id=?");
+			stmt.setInt(1, requestID);
+			String stage = "";
+			int handlerID;
+			
+			ResultSet rs = stmt.executeQuery();
+			if(rs.first() == false) {
+				return -1;
+			}
+			rs.previous();
+			while (rs.next()) {
+				 stage = rs.getString(1);
+			}
+			
+			String role = MyHashMaps.getInstance().stageHandlers.get(Double.parseDouble(stage));
+			if(role != null)
+			{
+				stmt = conn.prepareStatement("SELECT user_id FROM users_requests WHERE process_id=? and users_requests.role=?");
+				stmt.setInt(1, requestID);
+				stmt.setString(2, role);
+				
+				rs = stmt.executeQuery();
+				
+				if(rs.first() == false) {
+					
+					stmt = conn.prepareStatement("SELECT user_id FROM permanent_roles WHERE role=?");
+					stmt.setString(1, role);
+					rs = stmt.executeQuery();
+					
+					if(rs.first() == false) {
+						return -1;
+					}
+					rs.previous();
+					while (rs.next()) {
+						 return rs.getInt(1);
+					}
+					
+					}
+				
+				rs.previous();
+				while (rs.next()) {
+					return rs.getInt(1);
+				}
+					
+			}
+
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return -1;
+	}
+	
+	public static String getHandlerRole(int requestID)
+	{
+		try {
+			PreparedStatement stmt = conn.prepareStatement("SELECT process_stage FROM processes WHERE request_id=?");
+			stmt.setInt(1, requestID);
+			String stage = "";
+			int handlerID;
+			
+			ResultSet rs = stmt.executeQuery();
+			if(rs.first() == false) {
+				return null;
+			}
+			rs.previous();
+			while (rs.next()) {
+				 stage = rs.getString(1);
+			}
+			
+			return MyHashMaps.getInstance().stageHandlers.get(Double.parseDouble(stage));
+
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
 }

@@ -13,7 +13,6 @@
 <?import javafx.scene.shape.Rectangle?>
 <?import javafx.scene.text.Font?>
 
-
 <Pane xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <SplitPane dividerPositions="0.07349665924276169" orientation="VERTICAL" prefHeight="900.0" prefWidth="1300.0">
@@ -66,7 +65,7 @@
                                     <Insets top="7.0" />
                                  </VBox.margin>
                               </Label>
-                              <Label layoutX="10.0" layoutY="31.0" text="Initiator Profession:">
+                              <Label layoutX="10.0" layoutY="31.0" text="Role:">
                                  <font>
                                     <Font size="17.0" />
                                  </font>

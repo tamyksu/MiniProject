@@ -12,9 +12,13 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.ResourceBundle;
 import java.util.concurrent.TimeUnit;
+
+import com.mysql.cj.result.Row;
 import com.sun.scenario.effect.Effect.AccelType;
 
 import client.Client;
+import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -30,6 +34,7 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.stage.Stage;
 import translator.OptionsOfAction;
 import translator.Translator;
 import javafx.event.ActionEvent;
@@ -127,6 +132,9 @@ public class ControllerProcessMain implements Initializable {
 	@FXML
 	private Button director_btn;
 	
+    @FXML
+    public Button logout_btn;
+	
 	 @FXML
 	private TextArea notifications_text;
 
@@ -140,7 +148,6 @@ public class ControllerProcessMain implements Initializable {
 	private static EvaluationReport evaluationReports; // current evaluation report
 	
 	
-	
 	public static void setInstance(ControllerProcessMain instance) {
 		ControllerProcessMain.instance = instance;
 	}
@@ -151,7 +158,7 @@ public class ControllerProcessMain implements Initializable {
 	@FXML
 	void newRequest(ActionEvent event) {
 		NewRequestController.getInstance().loadPage();
-		ScreenController.getScreenController().activate("newRequest");
+		ScreenController.getScreenController().activate("newRequest"); 
 	}
 
 	@Override
@@ -166,6 +173,7 @@ public class ControllerProcessMain implements Initializable {
 	}
 
 	public void SetInTable(Object rs) {
+		
 		Processes processes = (Processes) rs;
 		ObservableList<Person> data;
 		ArrayList<Person> personList = new ArrayList<Person>();
@@ -351,6 +359,8 @@ public class ControllerProcessMain implements Initializable {
 		}
 	
 	}
+	
+	
 	
 	//change button disability in accordance to appraiser
 	private void fitChairman() {
@@ -927,13 +937,16 @@ public class ControllerProcessMain implements Initializable {
 	
     @FXML
     void logout_click(ActionEvent event) {
-    	try {
-			Client.instance.closeConnection();
-	    	System.exit(0);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+//			try {
+//				Client.instance.closeConnection();
+//			} catch (IOException e) {
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//			}
+//			//ScreenController.getScreenController().activate("login");
+//			Main.primaryStage.close();
+//			Main.launch();
+//			//  Platform.runLater( () -> new Main().main().start( new Stage() ) );
     }
     
     public void setRelatedMessages(ArrayList <String> messages, ArrayList<Object> msgData)

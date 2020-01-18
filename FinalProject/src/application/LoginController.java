@@ -32,8 +32,6 @@ public class LoginController {
 
     @FXML
     private TextField message;
-
-
     
 	public TextField getMessageField() {
 		return message;
