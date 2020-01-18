@@ -86,6 +86,18 @@ public class EvaluationController implements Initializable{
     @FXML
     void back_click(ActionEvent event) {
     	ScreenController.getScreenController().activate(ScreenController.getScreenController().getLastScreen());
+    	ControllerProcessMain.instance.getTheUpdateProcessesFromDB();
+    	System.out.println("Client.instance.getUserID() = " + Client.instance.getUserID());
+    	if(Client.instance.getRole().compareTo("Supervisor") == 0)
+    		Client.instance.getRelatedMessages("Supervisor");
+    	else
+    	{
+    		if(Client.instance.getRole().compareTo("Manager") == 0)
+        		Client.instance.getRelatedMessages("Manager");
+    		else
+        		Client.instance.getRelatedMessages(Client.instance.getUserID());
+
+    	}
     }
 
 
@@ -133,7 +145,7 @@ public class EvaluationController implements Initializable{
     		UserProcess process = Client.getInstance().getProcesses().getMyProcess().get(Integer.parseInt(ControllerProcessMain.getInstance().getRequestID()));
     		ArrayList<Object> arrForm = new ArrayList<>();
     		arrForm.add(new Integer(process.getRequest_id())); // Process ID   0
-    		arrForm.add(process.getProcess_stage()); // Process Stage   1
+    		//arrForm.add(process.getProcess_stage()); // Process Stage   1
     		arrForm.add(request_change_textbox.getText().toString()); // The Requested change  2
     		arrForm.add(result_textbox.getText().toString()); // Result  3
     		arrForm.add(constraints_textbox.getText().toString()); // Constraints and risks  4
@@ -141,8 +153,9 @@ public class EvaluationController implements Initializable{
     		Translator translator = new Translator(OptionsOfAction.Fill_Evalution_Form, arrForm);
     		Client.getInstance().handleMessageFromClientGUI(translator);
     		
+    		try { Thread.sleep(500); } catch (InterruptedException e) {System.out.println("Can't Sleep");}
     		if(answerFromServerSubmitForm==true) {
-    			pageLoad(3);
+    			pageLoad(5);
     		}
     	}
     }
@@ -211,6 +224,9 @@ public class EvaluationController implements Initializable{
 	 */
 	public void pageLoad(double stage) { // How to load the page
 		days_textbox.clear();
+		answerFromServerSubmitDays = false;
+		answerFromServerSubmitForm = false;
+		
 		if(stage==2 || stage==2.5) {
 			days_textbox.setDisable(false);
 			submit_duetime_btn.setDisable(false);
@@ -219,7 +235,7 @@ public class EvaluationController implements Initializable{
 			result_textbox.setDisable(true);
 			request_change_textbox.setDisable(true);
 		}
-		if(stage==4) {
+		if(stage==4 || stage==4.5 || stage==4.6) {
 			days_textbox.setDisable(true);
 			submit_duetime_btn.setDisable(true);
 			constraints_textbox.setDisable(false);
@@ -227,7 +243,7 @@ public class EvaluationController implements Initializable{
 			result_textbox.setDisable(false);
 			request_change_textbox.setDisable(false);
 		}
-		if(stage<2 || stage>4 || stage==3) {
+		if(stage<2 || stage>=5 || stage==3) {
 			days_textbox.setDisable(true);
 			submit_duetime_btn.setDisable(true);
 			constraints_textbox.setDisable(true);

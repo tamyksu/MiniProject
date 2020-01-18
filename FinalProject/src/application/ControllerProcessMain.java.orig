@@ -37,10 +37,6 @@ public class ControllerProcessMain implements Initializable {
 	public static ControllerProcessMain instance;
 	
 	private ArrayList<Object> messagesData;
-	
-	private String roleInProc;
-	
-	private String procStage = "";
 
 	@FXML
 	private TableView<Person> tableView;
@@ -123,27 +119,30 @@ public class ControllerProcessMain implements Initializable {
 	@FXML
 	private Button director_btn;
 	
+<<<<<<< HEAD
 	 @FXML
 	private TextArea notifications_text;
 
+=======
 	@FXML
 	private MenuButton DocumentsMenu;
+>>>>>>> f0ea820c81a46eb2623146813972162951754973
 	UserProcess process;
-	
-	@FXML
-    private TextArea extension_request_text;
 	
 	private static EvaluationReport evaluationReports; // current evaluation report
 	
+<<<<<<< HEAD
 	
 	
 	public static void setInstance(ControllerProcessMain instance) {
 		ControllerProcessMain.instance = instance;
 	}
 
+=======
 	@FXML
 	private Button DownloadFiles;
 	
+>>>>>>> f0ea820c81a46eb2623146813972162951754973
 	@FXML
 	void newRequest(ActionEvent event) {
 		NewRequestController.getInstance().loadPage();
@@ -224,7 +223,6 @@ public class ControllerProcessMain implements Initializable {
 		RequestID.setText("" + process.getRequest_id());
 		currentStatus.setText(process.getStatus());
 		CurrentStageDueTime.setText(process.getCurrent_stage_due_date());
-		this.procStage = process.getProcess_stage();
 		arrangesTheDocumentsAsClickableStrings(process.getRelatedDocuments());
 		if(process.getRole().toLowerCase().equals("supervisor") || process.getRole().toLowerCase().equals("manager"))
 			ButtonAdjustmentSuperUser(process.getRole(), process.getStatus());
@@ -283,10 +281,13 @@ public class ControllerProcessMain implements Initializable {
 		return ".\\Files_Server_Recieved\\"+currentProcess.getRequestId()+"_"+InitiatorName.getText()+"_"+text;
 	}
 
+	public static void setInstance(ControllerProcessMain instance) {
+		ControllerProcessMain.instance = instance;
+	}
 
 	//The function responsible for matching buttons to the process is indicated in the table
 	private void ButtonAdjustment(String userRole) {
-		System.out.println("ButtonAdjustment: userRole1 = " + userRole);
+		System.out.println("ButtonAdjustment: userRole = " + userRole);
 		switch (userRole.toLowerCase()) {
 		case "initiator":
 			fitInitiator();
@@ -294,15 +295,12 @@ public class ControllerProcessMain implements Initializable {
 		case "appraiser":
 			fitAppraiser();
 			break;
-		case "performance leader":
-			fitPerformanceLeaderDisabled();
-			break;	
-		case "examiner":
-			fitExaminerDisabled();
-			break;
 		case "chairman":
 			fitChairman();
 			break;
+		case "performance leader":
+			fitPerformanceLeaderDisabled();
+			break;	
 		default:
 			//disable all but newRequest button
 			initializeButtons();
@@ -313,7 +311,7 @@ public class ControllerProcessMain implements Initializable {
 	
 	//The function responsible for matching buttons to the process is indicated in the table
 	public void ButtonAdjustmentSuperUser(String userRole, String processStatus) {
-		System.out.println("ButtonAdjustmentSuperUser: userRole2 = " + userRole);
+		System.out.println("ButtonAdjustmentSuperUser: userRole = " + userRole);
 		switch (userRole.toLowerCase())
 		{
 			case "manager":
@@ -332,15 +330,6 @@ public class ControllerProcessMain implements Initializable {
 				else
 					fitSupervisor();
 				break;	
-				
-			case "chairman":
-				if(processStatus.toLowerCase().equals("suspended"))
-					fitChairmanDisabled();
-				else if(processStatus.toLowerCase().equals("shutdown"))
-					fitChairmanDisabled();
-				else
-					fitChairman();
-				break;
 		
 			default:
 				break;
@@ -350,72 +339,34 @@ public class ControllerProcessMain implements Initializable {
 	
 	//change button disability in accordance to appraiser
 	private void fitChairman() {
-		if(this.procStage.compareTo("5") == 0)
-		{
-			newRequestBtn.setDisable(true);
-			extension_btn.setDisable(false);
-			extension_request_text.setDisable(false);
-			evaluation_btn.setDisable(true);
-			decision_btn.setDisable(false);
-			execution_btn.setDisable(true);
-			examination_btn.setDisable(true);
-			supervisor_mode_btn.setDisable(true);
-			director_btn.setDisable(true);
-			defrost_btn.setDisable(true);
-		}
-		
-		else
-		{
-			newRequestBtn.setDisable(true);
-			extension_btn.setDisable(true);
-			extension_request_text.setDisable(true);
-			evaluation_btn.setDisable(true);
-			decision_btn.setDisable(true);
-			execution_btn.setDisable(true);
-			examination_btn.setDisable(true);
-			supervisor_mode_btn.setDisable(true);
-			director_btn.setDisable(true);
-			defrost_btn.setDisable(true);
-		}
+		newRequestBtn.setDisable(false);
+		extension_btn.setDisable(true);
+		evaluation_btn.setDisable(true);
+		decision_btn.setDisable(false);
+		execution_btn.setDisable(true);
+		examination_btn.setDisable(true);
+		supervisor_mode_btn.setDisable(true);
+		director_btn.setDisable(true);
+		defrost_btn.setDisable(true);
 	}
 
 	//change button disability in accordance to appraiser
 	private void fitAppraiser() {
-	
-		if(Integer.parseInt(this.procStage) == Constants.STAGE_OF_APPRAISER_EVALUATION || Integer.parseInt(this.procStage) == Constants.STAGE_OF_APPRAISER_EVALUATION_DUE_TIME)
-		{
-			newRequestBtn.setDisable(false);
-			extension_btn.setDisable(false);
-			extension_request_text.setDisable(false);
-			evaluation_btn.setDisable(false);
-			decision_btn.setDisable(true);
-			execution_btn.setDisable(true);
-			examination_btn.setDisable(true);
-			supervisor_mode_btn.setDisable(true);
-			director_btn.setDisable(true);
-			defrost_btn.setDisable(true);
-		}
-		
-		else
-		{
-			newRequestBtn.setDisable(false);
-			extension_btn.setDisable(true);
-			extension_request_text.setDisable(true);
-			evaluation_btn.setDisable(true);
-			decision_btn.setDisable(true);
-			execution_btn.setDisable(true);
-			examination_btn.setDisable(true);
-			supervisor_mode_btn.setDisable(true);
-			director_btn.setDisable(true);
-			defrost_btn.setDisable(true);
-		}
+		newRequestBtn.setDisable(false);
+		extension_btn.setDisable(true);
+		evaluation_btn.setDisable(false);
+		decision_btn.setDisable(true);
+		execution_btn.setDisable(true);
+		examination_btn.setDisable(true);
+		supervisor_mode_btn.setDisable(true);
+		director_btn.setDisable(true);
+		defrost_btn.setDisable(true);
 	}
 
 	//change button disability in accordance to supervisor
 	private void fitSupervisor() {
 		newRequestBtn.setDisable(true);
 		extension_btn.setDisable(true);
-		extension_request_text.setDisable(true);
 		evaluation_btn.setDisable(true);
 		decision_btn.setDisable(true);
 		execution_btn.setDisable(true);
@@ -428,7 +379,6 @@ public class ControllerProcessMain implements Initializable {
 	private void fitManager() {
 		newRequestBtn.setDisable(true);
 		extension_btn.setDisable(true);
-		extension_request_text.setDisable(true);
 		evaluation_btn.setDisable(true);
 		decision_btn.setDisable(true);
 		execution_btn.setDisable(true);
@@ -443,7 +393,6 @@ public class ControllerProcessMain implements Initializable {
 	private void fitInitiator() {
 		newRequestBtn.setDisable(false);
 		extension_btn.setDisable(true);
-		extension_request_text.setDisable(true);
 		evaluation_btn.setDisable(true);
 		decision_btn.setDisable(true);
 		execution_btn.setDisable(true);
@@ -453,24 +402,10 @@ public class ControllerProcessMain implements Initializable {
 		defrost_btn.setDisable(true);
 	}
 	
-	private void fitChairmanDisabled() {
-			newRequestBtn.setDisable(true);
-			extension_btn.setDisable(true);
-			extension_request_text.setDisable(true);
-			evaluation_btn.setDisable(true);
-			decision_btn.setDisable(true);
-			execution_btn.setDisable(true);
-			examination_btn.setDisable(true);
-			supervisor_mode_btn.setDisable(true);
-			director_btn.setDisable(true);
-			defrost_btn.setDisable(true);
-	}
-	
 	private void fitManagerDisabled()
 	{
 		newRequestBtn.setDisable(true);
 		extension_btn.setDisable(true);
-		extension_request_text.setDisable(true);
 		evaluation_btn.setDisable(true);
 		decision_btn.setDisable(true);
 		execution_btn.setDisable(true);
@@ -485,7 +420,6 @@ public class ControllerProcessMain implements Initializable {
 	{
 		newRequestBtn.setDisable(true);
 		extension_btn.setDisable(true);
-		extension_request_text.setDisable(true);
 		evaluation_btn.setDisable(true);
 		decision_btn.setDisable(true);
 		execution_btn.setDisable(true);
@@ -497,71 +431,21 @@ public class ControllerProcessMain implements Initializable {
 	
 	private void fitPerformanceLeaderDisabled()
 	{
-		if(this.procStage.compareTo("9") == 0)
-		{
-			newRequestBtn.setDisable(false);
-			extension_btn.setDisable(false);
-			extension_request_text.setDisable(false);
-			evaluation_btn.setDisable(true);
-			decision_btn.setDisable(true);
-			execution_btn.setDisable(false);
-			examination_btn.setDisable(true);
-			supervisor_mode_btn.setDisable(true);
-			director_btn.setDisable(true);
-			defrost_btn.setDisable(true);
-		}
-		
-		else
-		{
-			newRequestBtn.setDisable(false);
-			extension_btn.setDisable(true);
-			extension_request_text.setDisable(true);
-			evaluation_btn.setDisable(true);
-			decision_btn.setDisable(true);
-			execution_btn.setDisable(false);
-			examination_btn.setDisable(true);
-			supervisor_mode_btn.setDisable(true);
-			director_btn.setDisable(true);
-			defrost_btn.setDisable(true);
-		}
-	}
-	
-	private void fitExaminerDisabled()
-	{
-		if(this.procStage.compareTo("11") == 0 || this.procStage.compareTo("11.1") == 0)
-		{
-			newRequestBtn.setDisable(false);
-			extension_btn.setDisable(false);
-			extension_request_text.setDisable(false);
-			evaluation_btn.setDisable(true);
-			decision_btn.setDisable(true);
-			execution_btn.setDisable(true);
-			examination_btn.setDisable(false);
-			supervisor_mode_btn.setDisable(true);
-			director_btn.setDisable(true);
-			defrost_btn.setDisable(true);
-		}
-		
-		else
-		{
-			newRequestBtn.setDisable(false);
-			extension_btn.setDisable(true);
-			extension_request_text.setDisable(true);
-			evaluation_btn.setDisable(true);
-			decision_btn.setDisable(true);
-			execution_btn.setDisable(true);
-			examination_btn.setDisable(false);
-			supervisor_mode_btn.setDisable(true);
-			director_btn.setDisable(true);
-			defrost_btn.setDisable(true);
-		}
+		newRequestBtn.setDisable(true);
+		extension_btn.setDisable(true);
+		evaluation_btn.setDisable(true);
+		decision_btn.setDisable(true);
+		execution_btn.setDisable(false);
+		examination_btn.setDisable(true);
+		supervisor_mode_btn.setDisable(true);
+		director_btn.setDisable(true);
+		defrost_btn.setDisable(true);
 	}
 	
 	private void fitSupervisorDisabled() 
 	{
 		newRequestBtn.setDisable(true);
 		extension_btn.setDisable(true);
-		extension_request_text.setDisable(true);
 		evaluation_btn.setDisable(true);
 		decision_btn.setDisable(true);
 		execution_btn.setDisable(true);
@@ -576,7 +460,6 @@ public class ControllerProcessMain implements Initializable {
 	{
 		newRequestBtn.setDisable(false);
 		extension_btn.setDisable(true);
-		extension_request_text.setDisable(true);
 		evaluation_btn.setDisable(true);
 		decision_btn.setDisable(true);
 		execution_btn.setDisable(true);
@@ -590,7 +473,6 @@ public class ControllerProcessMain implements Initializable {
 	{
 		newRequestBtn.setDisable(true);
 		extension_btn.setDisable(true);
-		extension_request_text.setDisable(true);
 		evaluation_btn.setDisable(true);
 		decision_btn.setDisable(true);
 		execution_btn.setDisable(true);
@@ -604,7 +486,6 @@ public class ControllerProcessMain implements Initializable {
 	{
 		newRequestBtn.setDisable(true);
 		extension_btn.setDisable(true);
-		extension_request_text.setDisable(true);
 		evaluation_btn.setDisable(true);
 		decision_btn.setDisable(true);
 		execution_btn.setDisable(true);
@@ -626,7 +507,7 @@ public class ControllerProcessMain implements Initializable {
 	void extension_click(ActionEvent event) {
 		//Check if days to due time <= 3
 		Date dueDate;
-		/*try {
+		try {
 			dueDate = new SimpleDateFormat("yyyy-MM-dd").parse(CurrentStageDueTime.getText());
 			Date currentDate = new SimpleDateFormat("yyyy-MM-dd").parse(LocalDate.now().toString());
 			
@@ -637,36 +518,16 @@ public class ControllerProcessMain implements Initializable {
 		    {
 		    	new Alert(AlertType.INFORMATION,"You can ask for extention only when 3 or less days left until due date").show();
 		    }
-		    
-		    else*/
-		    {
-		    	if(extension_request_text.getText().compareTo("") == 0)
-		    	{
-			    	new Alert(AlertType.INFORMATION,"You must fill explanation for the extension request").show();
-			    	return;
-		    	}
-		    	ArrayList <Object> arr = new ArrayList<Object>();
-		    	
-		    	arr.add(getSelectedRowProcID());//process id
-		    	arr.add(extension_request_text.getText());//reason
-		    	arr.add(getSelectedRowRole());//role
-		    	arr.add(this.procStage);//process stage
-		    	
-		    	Translator translator = new Translator(OptionsOfAction.SEND_EXTENSION_REQUEST, arr);
-		    	Client.getInstance().handleMessageFromClientGUI(translator);
-		    	extension_request_text.clear();
-		    	getTheUpdateProcessesFromDB();
-		    }
-		//} catch (ParseException e) {
+		} catch (ParseException e) {
 			// TODO Auto-generated catch block
-			//e.printStackTrace();
-		//}
+			e.printStackTrace();
+		}
 	    
 	}
 
 	@FXML
 	void evaluation_click(ActionEvent event) {
-		int proc = getSelectedRowProcID();
+		int proc = getSelectedRowNumber();
 		
 		if(proc == -1)
 			return;
@@ -679,7 +540,7 @@ public class ControllerProcessMain implements Initializable {
 			new Alert(AlertType.ERROR, "Unabble to evaluate, not yet!").show();
 			return;
 		}
-		if(Double.parseDouble(process.getProcess_stage())>=5) {
+		if(Double.parseDouble(process.getProcess_stage())>4) {
 			new Alert(AlertType.ERROR, "Already evaluated!").show();
 			return;
 		}
@@ -703,7 +564,7 @@ public class ControllerProcessMain implements Initializable {
 
 	@FXML
 	void decision_click(ActionEvent event) {
-		int proc = getSelectedRowProcID();
+		int proc = getSelectedRowNumber();
 		
 		if(proc == -1)
 			return;
@@ -735,7 +596,7 @@ public class ControllerProcessMain implements Initializable {
 
 	@FXML
 	void execution_click(ActionEvent event) {
-		int proc = getSelectedRowProcID();
+		int proc = getSelectedRowNumber();
 		
 		if(proc == -1)
 			return;
@@ -759,7 +620,7 @@ public class ControllerProcessMain implements Initializable {
 
 	@FXML
 	void examination_click(ActionEvent event) {
-		int proc = getSelectedRowProcID();
+		int proc = getSelectedRowNumber();
 		
 		if(proc == -1)
 			return;
@@ -771,7 +632,7 @@ public class ControllerProcessMain implements Initializable {
 
 	@FXML
 	void supervisorMode_click(ActionEvent event) {
-		int proc = getSelectedRowProcID();
+		int proc = getSelectedRowNumber();
 		
 		if(proc == -1)
 			return;
@@ -806,10 +667,6 @@ public class ControllerProcessMain implements Initializable {
 			Client.getInstance().getAllProcessesFromServer();
 			fitManager();
 			break;
-		case "Chairman":
-			Client.getInstance().getAllProcessesFromServer();
-			fitChairman();
-			break;
 		default:
 			Client.getInstance().getProcessesFromServer();
 			initializeButtons();
@@ -818,12 +675,7 @@ public class ControllerProcessMain implements Initializable {
 			
 	}
 	
-	public String getSelectedRowRole()
-	{
-		return tableView.getSelectionModel().getSelectedItem().getRole();
-	}
-	
-	public int getSelectedRowProcID()
+	public int getSelectedRowNumber()
 	{		
 		try
     	{

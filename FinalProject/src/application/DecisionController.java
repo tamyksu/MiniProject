@@ -99,6 +99,22 @@ public class DecisionController implements Initializable{
     @FXML
     void back_click(ActionEvent event) {
     	ScreenController.getScreenController().activate(ScreenController.getScreenController().getLastScreen());
+    	ControllerProcessMain.instance.getTheUpdateProcessesFromDB();
+    	System.out.println("Client.instance.getUserID() = " + Client.instance.getUserID());
+    	if(Client.instance.getRole().compareTo("Supervisor") == 0)
+    		Client.instance.getRelatedMessages("Supervisor");
+    	else
+    	{
+    		if(Client.instance.getRole().compareTo("Manager") == 0)
+        		Client.instance.getRelatedMessages("Manager");
+    		else
+    		{
+        		if(Client.instance.getRole().compareTo("Chairman") == 0)
+            		Client.instance.getRelatedMessages("Chairman");
+        		else
+            		Client.instance.getRelatedMessages(Client.instance.getUserID());
+    		}
+    	}
     }
 
     @FXML

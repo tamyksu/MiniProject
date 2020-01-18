@@ -1,8 +1,11 @@
 package client;
 import ocsf.client.*;
+import server.DBConnector;
 import translator.OptionsOfAction;
 import translator.Translator;
 import java.io.*;
+import java.sql.Date;
+import java.sql.ResultSet;
 import java.sql.PreparedStatement;
 import java.util.ArrayList;
 import java.sql.ResultSet;
@@ -17,12 +20,14 @@ import application.MyFile;
 import application.NewRequestController;
 import application.Processes;
 import application.ScreenController;
+import application.SendMail;
 import application.StaffMainController;
 import application.Supervisor_ProcessMain_Controller;
 import application.UserProcess;
 import javafx.application.Platform;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
+
 
 public class Client extends AbstractClient {
 	private String userID;
@@ -96,7 +101,7 @@ public class Client extends AbstractClient {
 
 		case DEFROST_PROCESS:
 			handleMessageFromServerDefrostProcess(result.getParmas());
-
+			break;
 		case Fill_Evalution_Number_Of_Days:
 			handleMessageFromServerFillEvalutionNumberOfDays(result.getParmas());
 			break;
@@ -125,8 +130,19 @@ public class Client extends AbstractClient {
 		case SHUTDOWN_PROCESS:
 			handleMessageFromServerShutdownProcess(result.getParmas());
 			break;
+		case GET_RELATED_MESSAGES:
+			System.out.println("GET_RELATED_MESSAGES reached");
+			setRelatedMessages(result.getParmas());
+			break;
+		case RECOVER_PASSWORD:
+			sendRecoveredPassword(result.getParmas());
+			break;
 		case REJECTE_PROCESS:
 			handleMessageFromServerREJECTE_PROCESS(result.getParmas());
+			break;
+		case DOWNLOADFILE:
+			handleMessageFromServerDownloadFile(result.getParmas());
+			break;
 		default:
 			break;
 		}
@@ -336,7 +352,7 @@ public void handleMessageFromServerExecutionCompleted(Object rs) {
 			sendToServer(message);
 		} catch (IOException e) {
 			System.out.println("Could not perform action to server");
-		//	System.out.println(e.getMessage());
+			System.out.println(e.getMessage());
 			quit();
 		}
 	}
@@ -413,6 +429,7 @@ public void handleMessageFromServerExecutionCompleted(Object rs) {
 			Client.getInstance().setName(result.get(1));
 			ScreenController.getScreenController().activate("processesMain");
 			getProcessesFromServer();
+			getRelatedMessages(result.get(1));
 			break;
 		case "Supervisor":
 
@@ -422,6 +439,7 @@ public void handleMessageFromServerExecutionCompleted(Object rs) {
 			ControllerProcessMain.instance.ButtonAdjustmentSuperUser(result.get(0),"Active");
 			System.out.println("hhhcheck");
 			getAllProcessesFromServer();
+			getRelatedMessages("Supervisor");
 			break;
 		case "Manager":
 			Client.getInstance().setName(result.get(1));
@@ -429,6 +447,7 @@ public void handleMessageFromServerExecutionCompleted(Object rs) {
 			ScreenController.getScreenController().activate("processesMain");
 			ControllerProcessMain.instance.ButtonAdjustmentSuperUser(result.get(0),"Active");
 			getAllProcessesFromServer();
+			getRelatedMessages("Manager");
 			break;
 		case "Chairman":
 			Client.getInstance().setName(result.get(1));
@@ -454,8 +473,17 @@ public void handleMessageFromServerExecutionCompleted(Object rs) {
 			getAllProcessesFromServer();
 			break;	
 		case "Login failed, username and password did not match":
-			LoginController.getInstance().getMessageField()
-					.setText("Login failed, username and password did not match");
+			Platform.runLater(new Runnable() {//avoiding java.lang.IllegalStateException “Not on FX application thread”
+	    	    public void run() {
+	    	    	Alert alert = new Alert(AlertType.INFORMATION);
+	            	
+	                alert.setTitle("ERROR");
+	                alert.setHeaderText("Login failed");
+	                alert.setContentText("Username and password did not match");
+	                alert.showAndWait();
+	                return;
+	    	    }
+	    	});
 			break;
 		default:
 			break;
@@ -476,7 +504,7 @@ public void handleMessageFromServerExecutionCompleted(Object rs) {
 	//In case we got processes to display from this database, this function will make sure to save them to the client
 	//and also send them to the tag on the appropriate screen
 	@SuppressWarnings("unchecked")
-	/*****************************************handlerMessageFromServerProcesses*****************************************************/
+	/*****************************************	*****************************************************/
 	public void handlerMessageFromServerProcesses(Object rs) {
 		Processes processes = new Processes();
     	ArrayList<ArrayList<?>> result = new ArrayList<ArrayList<?>>();	
@@ -502,7 +530,13 @@ public void handleMessageFromServerExecutionCompleted(Object rs) {
 				process.setInitiatorLastName((String)result.get(i+1).get(12));
 				process.setEmail((String)result.get(i+1).get(13));
 				process.setDepartment((String)result.get(i+1).get(14));
-				if(result.get(i+2) != null) process.setRelatedDocuments((ArrayList<String>) result.get(i+2));
+				try{
+					if(result.get(i+2) != null) process.setRelatedDocuments((ArrayList<String>) result.get(i+2));
+				}
+				catch(IndexOutOfBoundsException ex)
+				{
+					System.out.println("no files?");
+				}
 				processes.getMyProcess().put(new Integer((int)result.get(i).get(0)), process);
 				processes.getMyProcessesInArrayList().add(process);
 				
@@ -574,36 +608,92 @@ public void handleMessageFromServerExecutionCompleted(Object rs) {
 		System.out.println(result);
 		
 		Supervisor_ProcessMain_Controller.instance.setAppraiserOrPerformanceLeaderDataInCB(result);
+		
+		//TODO: SEND NOTIFICATION TO APPRAISER , get appraiser in rs
 
 	}
 	
 	public void handlerMessageFromServerGetAppOrPLofProc(Object rs)
 	{
 		
-		//TODO: HANDLE A SCENARIO WHERE RS="NO EMPLOYEES WERE FOUND"
 		ArrayList <String> names = (ArrayList<String>)rs;
 		ArrayList <String> fullNames = new ArrayList <String>();
-		int procID = Integer.parseInt(names.get(0));
 		
-		if(names.size() == 4)//must be Appraiser because you can't have Performance LeaderL without Appraiser
+		if((names.get(0)).toString().equals("NO EMPLOYEES WERE FOUND"))
 		{
-			fullNames.add(new String (names.get(1) + " " + names.get(2)));
+			fullNames.add(new String("Not Selected"));//appraiser
+			fullNames.add(new String("Not Selected"));//performance leader
 		}
-		if(names.size() == 7)
+		else
 		{
-			if(names.get(3).compareTo("Appraiser") == 0)
+			int procID = Integer.parseInt(names.get(0));
+			
+			if(names.size() == 4)//must be Appraiser because you can't have Performance LeaderL without Appraiser
 			{
-				fullNames.add(new String (names.get(1) + " " + names.get(2)));//appraiser
-				fullNames.add(new String (names.get(4) + " " + names.get(5)));//performance leader
+				fullNames.add(new String (names.get(1) + " " + names.get(2)));
 			}
-			else
+			if(names.size() == 7)
 			{
-				fullNames.add(new String (names.get(4) + " " + names.get(5)));//appraiser
-				fullNames.add(new String (names.get(1) + " " + names.get(2)));//performance leader
+				if(names.get(3).compareTo("Appraiser") == 0)
+				{
+					fullNames.add(new String (names.get(1) + " " + names.get(2)));//appraiser
+					fullNames.add(new String (names.get(4) + " " + names.get(5)));//performance leader
+				}
+				else
+				{
+					fullNames.add(new String (names.get(4) + " " + names.get(5)));//appraiser
+					fullNames.add(new String (names.get(1) + " " + names.get(2)));//performance leader
+				}
 			}
 		}
 		
 		System.out.println("Client full names: " + fullNames);
 		Supervisor_ProcessMain_Controller.instance.setAppraiserAndPerformanceLeaderLabels(fullNames);
 	}
+	
+	public void getRelatedMessages(String str)
+	{
+		ArrayList<Object> check = new ArrayList<Object>();
+		
+		check.add(str);
+		
+		Translator translator = new Translator(OptionsOfAction.GET_RELATED_MESSAGES, check);
+		Client.getInstance().handleMessageFromClientGUI(translator);
+	}
+
+	public void setRelatedMessages(Object rs)
+	{
+		System.out.println("setRelatedMessages");
+		ArrayList<Object> result = (ArrayList<Object>)rs;
+		ArrayList<String> messages = new ArrayList<String>();
+		
+		
+		System.out.println("setRelatedMessages" + result.size());
+
+		for(int i=0 ; i < result.size()/6 ; i++)
+		{
+			messages.add(new String((Date)result.get(6*i+5) + "  Process ID  " + (int)result.get(6*i) + ":  "
+			+ (String)result.get(6*i+3) + " - " + (String)result.get(6*i+1)));
+			
+			if((int)result.get(6*i+2) == 0)
+			{
+				messages.set(i, messages.get(i) + ".\n");
+			}
+			else
+			{
+				messages.set(i, messages.get(i) + ", " + (int)result.get(6*i+2) + " days.\n");
+			}
+		}
+		System.out.println("!" + messages + "!");
+		ControllerProcessMain.instance.setRelatedMessages(messages, result);
+	}
+	
+	private void sendRecoveredPassword(Object arr)
+	{
+		ArrayList <String> emailAndPassword = (ArrayList <String>)arr;
+		
+		System.out.println("Client - sendRecoveredPassword - emailAndPassword = " + emailAndPassword);
+		LoginController.instance.sendRecoveredPasswordToUserEmail(emailAndPassword);
+	}
+	
 }

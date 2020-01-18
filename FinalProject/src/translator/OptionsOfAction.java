@@ -34,8 +34,13 @@ public enum OptionsOfAction {
 	Approve_Decision,
 	More_Info_Decision,
 	Execution_Suggest_Number_Of_Days,
-	Execution_Completed	
-	}
+	Execution_Completed,
+	GET_RELATED_MESSAGES,
+	DECLINE_EVALUATION_OR_EXECUTION_DUE_TIME,
+	DECLINE_EVALUATION_OR_EXECUTION_EXTENSION_TIME,
+	RECOVER_PASSWORD,
+	SEND_EXTENSION_REQUEST;
+}
 
 
 
