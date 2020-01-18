@@ -75,13 +75,20 @@ public class StaffMainController implements Initializable{
 	// Event Listener on Button[#back_btn].onAction
 	
 	
-	
+	/**
+	 * Active reports
+	 */
 	@FXML
 	public void active_reports_button(ActionEvent event) {
 		//DelayReportsController.instance.get_information();
 	 	ScreenController.getScreenController().activate("active_reports");
 	}
 	/****************************************back_click******************************************************************/
+	
+	/**
+	 * Go back to the previous screen
+	 * @param event
+	 */
 	@FXML
 	public void back_click(ActionEvent event) {
    	ScreenController.getScreenController().activate(ScreenController.getScreenController().getLastScreen());
@@ -101,14 +108,23 @@ public class StaffMainController implements Initializable{
 	// Event Listener on Button[#AppointCangesControlBoard].onAction
 	@FXML
 /*******************************************AppointsecondIEclick****************************************************************/	
-    void AppointsecondIEclick(ActionEvent event) {
+    /**
+     * Appoint another Change Board member
+     * @param event
+     */
+	void AppointsecondIEclick(ActionEvent event) {
 	  	ArrayList<Object> params = new ArrayList<Object>();
 			params.add("Change Board Member-2"); // Information Engineer
 
 		checkBefore("Change Board Member-2","2"); // Information Engineer
     }
 /*******************************************AppointfirstIEclick***********************************************************/
-    @FXML
+   
+	 /**
+     * Appoint a Change Board member
+     * @param event
+     */
+	@FXML
     void AppointfirstIEclick(ActionEvent event) {
 
     	ArrayList<Object> params = new ArrayList<Object>();
@@ -118,6 +134,10 @@ public class StaffMainController implements Initializable{
     }
 /*****************************************Appoint_Chiarman_click**********************************************************/
 
+	 /**
+     * Appoint a Chairman
+     * @param event
+     */
 	@FXML
 	public void Appoint_Chiarman_click(ActionEvent event)
 	{
@@ -133,6 +153,12 @@ public class StaffMainController implements Initializable{
 	
 	/*********************************AppointSupervisor_click*****************************************************************/
 	// Event Listener on Button[#AppointSupervisor].onAction
+	
+	
+	/**
+	 * Appoint a Supervisor
+	 * @param event
+	 */
 	@FXML
 	public void AppointSupervisor_click(ActionEvent event) {
 		ArrayList<Object> params = new ArrayList<Object>();
@@ -150,6 +176,9 @@ public class StaffMainController implements Initializable{
 		print_message.setVisible(false);
 	}
 /*******************************************getChairManData****************************************************************/
+	/**
+	 * Get the chairman data
+	 */
 	public void getChairManData() {
 		try {
 			print_message.setVisible(false);
@@ -160,6 +189,10 @@ public class StaffMainController implements Initializable{
 		catch(Exception e){}
 	}
 /*********************************************setDataChairMan***********************************************************/	
+	/**
+	 * Set the chairman data
+	 * @param WorkersName
+	 */
 	public void setDataChairMan(ArrayList<String> WorkersName)
 	{
 		print_message.setVisible(false);
@@ -263,6 +296,10 @@ public class StaffMainController implements Initializable{
 		
 	}
 /**************************************************checkApoint**************************************************************/
+	/**
+	 * Check the appoint
+	 * @param WorkersName
+	 */
 	public void checkApoint(ArrayList<String> WorkersName) {
 	
 		Integer result = Integer.valueOf(WorkersName.get(0));	
@@ -303,7 +340,10 @@ public class StaffMainController implements Initializable{
 		}
 	
 	
-		
+	/**
+	 * Check if the person is available for appointing	
+	 * @param WorkersName
+	 */
 	public void check_if_this_man_available(ArrayList<String> WorkersName)
 	{			
 		ArrayList<Object> params = new ArrayList<Object>();
@@ -344,7 +384,13 @@ else if(WorkersName.get(0).equals("Change Board Member-2")) // Information Engin
 }
 
 /*********************************************checkBefore**********************************************************************/	
-public void checkBefore(String role,String option)
+
+	/**
+	 * Check before appointing
+	 * @param role
+	 * @param option
+	 */
+	public void checkBefore(String role,String option)
 {
 
 
@@ -362,12 +408,20 @@ void active_reports(ActionEvent event) {
 
 }
 
+/**
+ * execution reports
+ * @param event
+ */
 @FXML
 void execution_reports(ActionEvent event) {
 	ScreenController.getScreenController().activate("extension_reports");
 	ExtensionReportsController.instance.get_information();
 }
 
+/**
+ * delay execution
+ * @param event
+ */
 @FXML
 void delay_execution(ActionEvent event) {
 	

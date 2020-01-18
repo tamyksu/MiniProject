@@ -19,7 +19,6 @@ import ocsf.server.*;
 import translator.OptionsOfAction;
 import translator.Translator;
 import client.Client;
-import sun.awt.NullComponentPeer;
 
 
 /**
@@ -148,6 +147,12 @@ public class Server extends AbstractServer
     
   }
   
+  /**
+   * This function is running a check for each process if it passed its due date using thread that runs once a day
+   * And notifies the handler and the people that should be updated.
+   * @author amirgroi
+   *
+   */
   static class checkDueDateOfProcessesTask extends TimerTask{
 	  @Override
 	public void run() {
@@ -206,6 +211,8 @@ public class Server extends AbstractServer
 				    	//Send a notification to manager
 						DBConnector.sendNotification(process.getRequest_id(), DBConnector.getHandlerRole(process.getRequest_id())+" exceeded due time for this stage!",Math.abs(days),"Manager", "ICM", "");
 				    }
+				    
+				    //a couple of days left for this stage till due time
 				    else
 				    	if(days>=0 && days < 3)
 				    	{

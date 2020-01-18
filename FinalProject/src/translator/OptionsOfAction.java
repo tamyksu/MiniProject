@@ -40,6 +40,8 @@ public enum OptionsOfAction {
 	DECLINE_EVALUATION_OR_EXECUTION_EXTENSION_TIME,
 	RECOVER_PASSWORD,
 	SEND_EXTENSION_REQUEST,
+	Get_All_Change_Board_Members,
+	Appoint_Examiner,
 	SelectDelayReport,
 	SelectExtensionReport;
 }

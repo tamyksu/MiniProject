@@ -83,6 +83,11 @@ public class EvaluationController implements Initializable{
     private boolean answerFromServerSubmitDays;
     private boolean answerFromServerSubmitForm;
     
+    
+    /**
+     * Go back to the previous screen
+     * @param event
+     */
     @FXML
     void back_click(ActionEvent event) {
     	ScreenController.getScreenController().activate(ScreenController.getScreenController().getLastScreen());
@@ -108,9 +113,8 @@ public class EvaluationController implements Initializable{
      */
     void submit_duetime_click(ActionEvent event) {
     	UserProcess process = Client.getInstance().getProcesses().getMyProcess().get(Integer.parseInt(ControllerProcessMain.getInstance().getRequestID()));
-    	/**
-    	 * Form validation:
-    	 */
+    	
+    	 // Form validation:
     	if(days_textbox.getText().trim().isEmpty() || !NewRequestController.isNumeric(days_textbox.getText())) {
     		new Alert(AlertType.ERROR, "You must fill all the details!").show();
     	}
@@ -127,11 +131,11 @@ public class EvaluationController implements Initializable{
     		Translator translator = new Translator(OptionsOfAction.Fill_Evalution_Number_Of_Days, arr); // new Translator
     		Client.getInstance().handleMessageFromClientGUI(translator);
 
-    		try { Thread.sleep(1000); } catch (InterruptedException e) {System.out.println("Can't Sleep");}
+    		//try { Thread.sleep(1000); } catch (InterruptedException e) {System.out.println("Can't Sleep");}
 
-    		if(answerFromServerSubmitDays==true) {
-    			pageLoad(3);
-    		}
+    		//if(answerFromServerSubmitDays==true) {
+    		//	pageLoad(3);
+    		//}
     	}
     }
 
@@ -153,10 +157,10 @@ public class EvaluationController implements Initializable{
     		Translator translator = new Translator(OptionsOfAction.Fill_Evalution_Form, arrForm);
     		Client.getInstance().handleMessageFromClientGUI(translator);
     		
-    		try { Thread.sleep(500); } catch (InterruptedException e) {System.out.println("Can't Sleep");}
-    		if(answerFromServerSubmitForm==true) {
-    			pageLoad(5);
-    		}
+    		//try { Thread.sleep(500); } catch (InterruptedException e) {System.out.println("Can't Sleep");}
+    		//if(answerFromServerSubmitForm==true) {
+    			
+    		//}
     	}
     }
     
@@ -193,6 +197,11 @@ public class EvaluationController implements Initializable{
 		current_stage_due_time_text.setText(process.getCurrent_stage_due_date());
     }
 
+    /**
+     * Get the instance instance of EvaluationController
+     * (The only one)
+     * @return the only instance of EvaluationController
+     */
     public static EvaluationController getInstance() {
 		return instance;
 	}
@@ -204,10 +213,46 @@ public class EvaluationController implements Initializable{
 		this.answerFromServerSubmitForm=false;
 	}
 	
+	
 	public void submitionSuccesseded() {
 		new Alert(AlertType.INFORMATION, "Submition received.");
 	}
+	
+	 /**
+     * Show message from server about submitting the evaluation
+     * @param val
+     */
+	public void showActionSubmitEvaluation(boolean val) {
+    	if(val==true) {
+    		Alert alert = new Alert(AlertType.INFORMATION, "Evaluation Submitted.");
+        	alert.setTitle("Completed!");
+        	alert.show();
+        	pageLoad(5);
+    	}
+    	else {
+    		Alert alert = new Alert(AlertType.ERROR, "Evaluation could not be submitted");
+        	alert.setTitle("Error");
+        	alert.show();
+    	}
+    }
 
+	/**
+     * Show message from server about submitting the days for the evaluation
+     * @param val
+     */
+	public void showActionSubmiDays(boolean val) {
+    	if(val==true) {
+    		Alert alert = new Alert(AlertType.INFORMATION, "Evaluation Submitted.");
+        	alert.setTitle("Completed!");
+        	alert.show();
+        	pageLoad(3);
+    	}
+    	else {
+    		Alert alert = new Alert(AlertType.ERROR, "Evaluation could not be submitted");
+        	alert.setTitle("Error");
+        	alert.show();
+    	}
+	}
 	public void submitionFailed() {
 		new Alert(AlertType.ERROR, "Failed, please try again.").show();
 	}

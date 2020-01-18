@@ -142,7 +142,10 @@ public class ControllerProcessMain implements Initializable {
 	private static EvaluationReport evaluationReports; // current evaluation report
 	
 	
-	
+	/**
+	 * Set instance
+	 * @param instance
+	 */
 	public static void setInstance(ControllerProcessMain instance) {
 		ControllerProcessMain.instance = instance;
 	}
@@ -150,6 +153,10 @@ public class ControllerProcessMain implements Initializable {
 	@FXML
 	private Button DownloadFiles;
 	
+	/**
+	 * Open "New Request" Screen
+	 * @param event
+	 */
 	@FXML
 	void newRequest(ActionEvent event) {
 		NewRequestController.getInstance().loadPage();
@@ -202,8 +209,11 @@ public class ControllerProcessMain implements Initializable {
 		this.tableView.setItems(data);
 		setInfo();
 	}
-	//Identifies that you clicked on a process row in the table and invokes the function 
-	//"updateFieldsOfRequestMarked" to match the table to the process
+	
+	/**
+	 * Identifies that you clicked on a process row in the table and invokes the function 
+	 * "updateFieldsOfRequestMarked" to match the table to the process
+	 */
 	public void setInfo() {
 		tableView.setRowFactory(tv -> {
 			TableRow<Person> row = new TableRow<>();
@@ -215,7 +225,11 @@ public class ControllerProcessMain implements Initializable {
 			return row;
 		});
 	}
-	//Updates the relevant fields by the process that is specified in the process table
+	
+	/**
+	 * /Updates the relevant fields by the process that is specified in the process table
+	 * @param person
+	 */
 	public void updateFieldsOfRequestMarked(Person person) {
         Documents.setText("Document selected");
 		process = Client.getInstance().getProcesses().getMyProcess().get(person.getRequestId());
@@ -266,7 +280,11 @@ public class ControllerProcessMain implements Initializable {
 
 		}
    	}
+	
 	/////////////////func related to documents//////////////////////////////////////////
+	/**
+	 * Download file
+	 */
 	@FXML
 	public void downloadFiles() {
 		//tableView.getSelectionModel().getSelectedItem()
@@ -284,13 +302,21 @@ public class ControllerProcessMain implements Initializable {
     	alert.show();
     }
 
+    /**
+     * Get the path of the file
+     * @param text
+     * @return file's path
+     */
 	private String getFilePath(String text) {
 		Person currentProcess = tableView.getSelectionModel().getSelectedItem();
 		return ".\\Files_Server_Recieved\\"+currentProcess.getRequestId()+"_"+InitiatorName.getText()+"_"+text;
 	}
 
 
-	//The function responsible for matching buttons to the process is indicated in the table
+	/**
+	 * The function responsible for matching buttons to the process is indicated in the table
+	 * @param userRole
+	 */
 	private void ButtonAdjustment(String userRole) {
 		System.out.println("ButtonAdjustment: userRole1 = " + userRole);
 		switch (userRole.toLowerCase()) {
@@ -317,7 +343,11 @@ public class ControllerProcessMain implements Initializable {
 		
 	}
 	
-	//The function responsible for matching buttons to the process is indicated in the table
+	/**
+	 * The function responsible for matching buttons to the process is indicated in the table
+	 * @param userRole
+	 * @param processStatus
+	 */
 	public void ButtonAdjustmentSuperUser(String userRole, String processStatus) {
 		System.out.println("ButtonAdjustmentSuperUser: userRole2 = " + userRole);
 		switch (userRole.toLowerCase())
@@ -356,7 +386,7 @@ public class ControllerProcessMain implements Initializable {
 	
 	//change button disability in accordance to appraiser
 	private void fitChairman() {
-		if(this.procStage.compareTo("5") == 0)
+		if(this.procStage.compareTo("5") == 0 || this.procStage.compareTo("5.6") == 0 || this.procStage.compareTo("10") == 0)
 		{
 			newRequestBtn.setDisable(true);
 			extension_btn.setDisable(false);
@@ -385,10 +415,13 @@ public class ControllerProcessMain implements Initializable {
 		}
 	}
 
-	//change button disability in accordance to appraiser
+
+	/**
+	 * Change button disability in accordance to Appraiser
+	 */
 	private void fitAppraiser() {
 	
-		if(Integer.parseInt(this.procStage) == Constants.STAGE_OF_APPRAISER_EVALUATION || Integer.parseInt(this.procStage) == Constants.STAGE_OF_APPRAISER_EVALUATION_DUE_TIME)
+		if(Integer.parseInt(this.procStage) == Constants.STAGE_OF_APPRAISER_EVALUATION )
 		{
 			newRequestBtn.setDisable(false);
 			extension_btn.setDisable(false);
@@ -417,7 +450,9 @@ public class ControllerProcessMain implements Initializable {
 		}
 	}
 
-	//change button disability in accordance to supervisor
+	/**
+	 * Change button disability in accordance to Supervisor
+	 */
 	private void fitSupervisor() {
 		newRequestBtn.setDisable(true);
 		extension_btn.setDisable(true);
@@ -430,7 +465,10 @@ public class ControllerProcessMain implements Initializable {
 		director_btn.setDisable(true);
 		defrost_btn.setDisable(true);
 	}
-
+	
+	/**
+	 * Change button disability in accordance to Manager
+	 */
 	private void fitManager() {
 		newRequestBtn.setDisable(true);
 		extension_btn.setDisable(true);
@@ -444,8 +482,10 @@ public class ControllerProcessMain implements Initializable {
 		defrost_btn.setDisable(true);
 	}
 
-	//Suitable for the initiator of the process the buttons allowed
-
+	//
+	/**
+	 * 
+	 */
 	private void fitInitiator() {
 		newRequestBtn.setDisable(false);
 		extension_btn.setDisable(true);
@@ -458,6 +498,7 @@ public class ControllerProcessMain implements Initializable {
 		director_btn.setDisable(true);
 		defrost_btn.setDisable(true);
 	}
+	
 	
 	private void fitChairmanDisabled() {
 			newRequestBtn.setDisable(true);
@@ -472,6 +513,9 @@ public class ControllerProcessMain implements Initializable {
 			defrost_btn.setDisable(true);
 	}
 	
+	/**
+	 * 
+	 */
 	private void fitManagerDisabled()
 	{
 		newRequestBtn.setDisable(true);
@@ -501,6 +545,9 @@ public class ControllerProcessMain implements Initializable {
 		defrost_btn.setDisable(true);
 	}
 	
+	/**
+	 * Performance Leader Options
+	 */
 	private void fitPerformanceLeaderDisabled()
 	{
 		if(this.procStage.compareTo("9") == 0)
@@ -532,6 +579,9 @@ public class ControllerProcessMain implements Initializable {
 		}
 	}
 	
+	/**
+	 * Examiner Options
+	 */
 	private void fitExaminerDisabled()
 	{
 		if(this.procStage.compareTo("11") == 0 || this.procStage.compareTo("11.1") == 0)
@@ -563,6 +613,9 @@ public class ControllerProcessMain implements Initializable {
 		}
 	}
 	
+	
+	/* Supervisor options
+	 */
 	private void fitSupervisorDisabled() 
 	{
 		newRequestBtn.setDisable(true);
@@ -577,7 +630,9 @@ public class ControllerProcessMain implements Initializable {
 		defrost_btn.setDisable(true);
 	}
 	
-	//disable all buttons on startup (before choosing a process from the table)
+	/**
+	 * disable all buttons on startup (before choosing a process from the table)
+	 */
 	private void initializeButtons() 
 	{
 		newRequestBtn.setDisable(false);
@@ -592,6 +647,10 @@ public class ControllerProcessMain implements Initializable {
 		defrost_btn.setDisable(true);
 	}
 	
+	
+	/**
+	 * Director options when process is on Shutdown
+	 */
 	private void fitDirectorShutdown() 
 	{
 		newRequestBtn.setDisable(true);
@@ -606,6 +665,10 @@ public class ControllerProcessMain implements Initializable {
 		defrost_btn.setDisable(true);
 	}
 	
+	
+	/**
+	 * Supervisor options when process is on Shutdown
+	 */
 	private void fitSupervisorShutdown() 
 	{
 		newRequestBtn.setDisable(true);
@@ -620,19 +683,26 @@ public class ControllerProcessMain implements Initializable {
 		defrost_btn.setDisable(true);
 	}
 	
-
+	/**
+	 * Open Director screen
+	 * @param event
+	 */
 	@FXML
 	void director_click(ActionEvent event) {
 		ScreenController.getScreenController().activate("staffMain");
 		StaffMainController.instance.getChairManData();
 		
 	}
-
+	
+	/**
+	 * Extention
+	 * @param event
+	 */
 	@FXML
 	void extension_click(ActionEvent event) {
 		//Check if days to due time <= 3
 		Date dueDate;
-		/*try {
+		try {
 			dueDate = new SimpleDateFormat("yyyy-MM-dd").parse(CurrentStageDueTime.getText());
 			Date currentDate = new SimpleDateFormat("yyyy-MM-dd").parse(LocalDate.now().toString());
 			
@@ -644,7 +714,7 @@ public class ControllerProcessMain implements Initializable {
 		    	new Alert(AlertType.INFORMATION,"You can ask for extention only when 3 or less days left until due date").show();
 		    }
 		    
-		    else*/
+		    else
 		    {
 		    	if(extension_request_text.getText().compareTo("") == 0)
 		    	{
@@ -663,13 +733,17 @@ public class ControllerProcessMain implements Initializable {
 		    	extension_request_text.clear();
 		    	getTheUpdateProcessesFromDB();
 		    }
-		//} catch (ParseException e) {
-			// TODO Auto-generated catch block
-			//e.printStackTrace();
-		//}
+		} catch (ParseException e) {
+			e.printStackTrace();
+	    	new Alert(AlertType.ERROR,"This process doesn't have a due date").show();
+		}
 	    
 	}
 
+	/**
+	 * Open evaluation screen
+	 * @param event
+	 */
 	@FXML
 	void evaluation_click(ActionEvent event) {
 		int proc = getSelectedRowProcID();
@@ -696,6 +770,10 @@ public class ControllerProcessMain implements Initializable {
 		EvaluationController.instance.updateProcessInformation();
 	}
 
+	/**
+	 * Defrost process
+	 * @param event
+	 */
 	@FXML
 	void defrost_click(ActionEvent event) {
 		
@@ -706,7 +784,12 @@ public class ControllerProcessMain implements Initializable {
 		Translator translator = new Translator(OptionsOfAction.DEFROST_PROCESS, processInfo);
 		Client.getInstance().handleMessageFromClientGUI(translator);
 	}
+	
 
+	/**
+	 * Chairman Screen
+	 * @param event
+	 */
 	@FXML
 	void decision_click(ActionEvent event) {
 		int proc = getSelectedRowProcID();
@@ -720,25 +803,63 @@ public class ControllerProcessMain implements Initializable {
 		}
 		
 		if(Double.parseDouble(process.getProcess_stage())<5) {
-			new Alert(AlertType.ERROR, "Unabble to make a decision, not yet!").show();
+			new Alert(AlertType.ERROR, "Unable to make a decision, not yet!").show();
 			return;
 		}
 		
-		if(Double.parseDouble(process.getProcess_stage())>5) {
-			new Alert(AlertType.ERROR, "Already made a decision!").show();
+		if(Double.parseDouble(process.getProcess_stage())>=6 && Double.parseDouble(process.getProcess_stage())<10) {
+			new Alert(AlertType.ERROR, "Already made a decision, still early to appoint examnier.").show();
 			return;
 		}
 		
-		ArrayList<Integer> arr = new ArrayList<>();
-		arr.add(process.getRequest_id()); 
-		Translator translator = new Translator(OptionsOfAction.Get_Evaluation_Report_For_Process_ID, arr);
-		Client.getInstance().handleMessageFromClientGUI(translator);
-		try { Thread.sleep(500); } catch (InterruptedException e) {System.out.println("Can't Sleep");}
+		if(Double.parseDouble(process.getProcess_stage())>10) {
+			new Alert(AlertType.ERROR, "Already made a decision appointed examiner").show();
+			return;
+		}
+		
+		
+		if(Double.parseDouble(process.getProcess_stage())>=5 && Double.parseDouble(process.getProcess_stage())<6) {
+			ArrayList<Integer> arr = new ArrayList<>();
+			arr.add(process.getRequest_id()); 
+			Translator translator = new Translator(OptionsOfAction.Get_Evaluation_Report_For_Process_ID, arr);
+			Client.getInstance().handleMessageFromClientGUI(translator);
+			//try { Thread.sleep(750); } catch (InterruptedException e) {System.out.println("Can't Sleep");}
+			//DecisionController.getInstance().loadPage(evaluationReports);
+		}
+		if(Double.parseDouble(process.getProcess_stage())==10) {
+			DecisionController.getInstance().loadPage(new EvaluationReport());
+			ArrayList<Object> arr = new ArrayList<>();
+			Translator translator = new Translator(OptionsOfAction.Get_All_Change_Board_Members, arr);
+			Client.getInstance().handleMessageFromClientGUI(translator);
+		}
+		
+		//ScreenController.getScreenController().activate("decisionMaking");
+		//DecisionController.instance.updateProcessInformation();
+	}
+	
+	/**
+	 * Continue Chairman options when need to Make a decision
+	 */
+	public void continueChairman1() {
 		DecisionController.getInstance().loadPage(evaluationReports);
 		ScreenController.getScreenController().activate("decisionMaking");
 		DecisionController.instance.updateProcessInformation();
 	}
+	
+	/**
+	 * Continue Chairman options when need to appoint an examiner
+	 */
+	public void continueChairman2() {
+		
+		ScreenController.getScreenController().activate("decisionMaking");
+		DecisionController.instance.updateProcessInformation();
+	}
+	
 
+	/**
+	 * Execution Screen
+	 * @param event
+	 */
 	@FXML
 	void execution_click(ActionEvent event) {
 		int proc = getSelectedRowProcID();
@@ -763,6 +884,10 @@ public class ControllerProcessMain implements Initializable {
 		ExecutionController.instance.updateProcessInformation();
 	}
 
+	/**
+	 * Examination Screen
+	 * @param event
+	 */
 	@FXML
 	void examination_click(ActionEvent event) {
 		int proc = getSelectedRowProcID();
@@ -775,6 +900,10 @@ public class ControllerProcessMain implements Initializable {
 
 	}
 
+	/**
+	 * Supervisor options
+	 * @param event
+	 */
 	@FXML
 	void supervisorMode_click(ActionEvent event) {
 		int proc = getSelectedRowProcID();
@@ -791,6 +920,10 @@ public class ControllerProcessMain implements Initializable {
 		
 	}
 	
+	/**
+	 * Shut down
+	 * @param event
+	 */
 	@FXML
 	void shutdown_click(ActionEvent event) {
 		ArrayList<Object> processInfo = new ArrayList<Object>();
@@ -801,6 +934,9 @@ public class ControllerProcessMain implements Initializable {
 		Client.getInstance().handleMessageFromClientGUI(translator);
 	}
 
+	/**
+	 * Update tables
+	 */
 	@FXML
 	public void getTheUpdateProcessesFromDB() {
 		switch (Client.getInstance().getRole()) {
@@ -851,24 +987,15 @@ public class ControllerProcessMain implements Initializable {
     	}
 	}
 	
+	
+	/**
+	 * Get the ID of the user
+	 * @return
+	 */
 	public String getRequestID()
 	{
 		return this.RequestID.getText();
 	}
-	
-    @FXML
-    void logout_click(ActionEvent event) {
-//			try {
-//				Client.instance.closeConnection();
-//			} catch (IOException e) {
-//				// TODO Auto-generated catch block
-//				e.printStackTrace();
-//			}
-//			//ScreenController.getScreenController().activate("login");
-//			Main.primaryStage.close();
-//			Main.launch();
-//			//  Platform.runLater( () -> new Main().main().start( new Stage() ) );
-    }
     
     public void setRelatedMessages(ArrayList <String> messages, ArrayList<Object> msgData)
     {
@@ -881,6 +1008,10 @@ public class ControllerProcessMain implements Initializable {
     		notifications_text.setText("No Notifications");
     }
     
+    /**
+     * Set Evaluation Report
+     * @param evaluationReports
+     */
 	public static void setEvaluationReports(EvaluationReport evaluationReports) {
 		ControllerProcessMain.evaluationReports = evaluationReports;
 	}

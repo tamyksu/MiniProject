@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.ResourceBundle;
 
 import client.Client;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -81,7 +82,11 @@ public class NewRequestController implements Initializable {
     void deleteAll(ActionEvent event) {
     	deleteAll();
     }
-    
+
+    /**
+     * Delete all the fields in the form
+     * NOT FXML function
+     */
     public void deleteAll() {
 
 		ProblemDescription.clear();
@@ -195,15 +200,16 @@ public class NewRequestController implements Initializable {
     		Translator translator = new Translator(OptionsOfAction.NEWREQUEST, params);
     		Client.getInstance().handleMessageFromClientGUI(translator);
     		
-    		try { Thread.sleep(1000); } catch (InterruptedException e) {System.out.println("Can't Sleep");}
+    		//try { Thread.sleep(1000); } catch (InterruptedException e) {System.out.println("Can't Sleep");}
     		
+    		/*
     		if(answerFromServer==true) {
     			showSeccessAlert();
     		}
     		else {
     			showFailureAlert();
     		}
-    		
+    		*/
     		
     	}
     }
@@ -234,17 +240,26 @@ public class NewRequestController implements Initializable {
     	return true;
     }
     
-    public void showSeccessAlert() {
-    	deleteAll();
-    	Alert alert =new Alert(AlertType.INFORMATION, "Your request was received.");
-    	alert.setTitle("Request Received!");
-    	alert.show();
+    
+    /**
+     * Show the answer from the server about submitting a new request
+     * @param val
+     */
+    public void showAllert(boolean val) {
+    	if(val==true) {
+    		deleteAll();
+        	Alert alert =new Alert(AlertType.INFORMATION, "Your request was received.");
+        	alert.setTitle("Request Received!");
+        	alert.show();
+    	}
+    	else {
+    		//new Alert(AlertType.ERROR, "Your request could not be received, please try again.").show();
+    		Alert alert =new Alert(AlertType.ERROR, "Your request could not be recieved, please try again.");
+        	alert.setTitle("ERROR!");
+        	alert.show();
+    	}
     }
     
-    public void showFailureAlert() {
-    	new Alert(AlertType.ERROR, "Your request could not be recieved, please try again.").show();
-    }
-
   /**
    * Check if a number that came out of a String is a valid number
    * @param strNum
@@ -262,7 +277,11 @@ public class NewRequestController implements Initializable {
         return true;
     }
     
-    
+    /**
+     * Get the instance instance of NewRequestController
+     * (The only one)
+     * @return the only instance of NewRequestController
+     */
     public static NewRequestController getInstance() {
     	return instance;
     	
@@ -279,11 +298,18 @@ public class NewRequestController implements Initializable {
 		
 	}
 	
+	
+	/**
+	 * Load the screen with the required state
+	 */
 	public void loadPage() {
 		this.answerFromServer = false;
 		deleteAll();
 	}
 	
+	/**
+	 * initialize the ComboBox
+	 */
 	public void initializeComboBox() {
 		
 		listForComboBox = new ArrayList<InformationSystem>();
@@ -303,6 +329,12 @@ public class NewRequestController implements Initializable {
 		
 	}
 	
+	/**
+	 * Get Information System Number
+	 * @param infoSysName
+	 * @return the information system number from the chosen 
+	 * value on the combo box
+	 */
 	public int getInfoSysNumber(String infoSysName) {
 		for(InformationSystem i:listForComboBox) {
 			if(infoSysName.equals(i.getInfomationSystemName())) {
@@ -311,12 +343,5 @@ public class NewRequestController implements Initializable {
 		}
 		return 0;
 	}
-	
-	public void printList() {
-		for(InformationSystem i:listForComboBox) {
-			System.out.println(i.toString());
-		}
-	}
-    
     
 }

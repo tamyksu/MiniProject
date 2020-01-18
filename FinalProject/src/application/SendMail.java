@@ -36,6 +36,15 @@ public class SendMail {//Example:  SendMail.sendMail("avishimon@gmail.com", "Pas
 		transport.send(message);
 	}
 
+	/**
+	 * Prepare the message
+	 * @param session
+	 * @param myAccountEmail
+	 * @param recepient
+	 * @param messageTitle
+	 * @param messageBody
+	 * @return
+	 */
 	private static Message prepareMessage(Session session, String myAccountEmail, String recepient, String messageTitle, String messageBody)
 	{
 		try

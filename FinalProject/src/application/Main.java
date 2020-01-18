@@ -15,6 +15,9 @@ public class Main extends Application {
 	public static Stage primaryStage;
 	Scene baseScene;
 	
+	public static String ip = "localhost";
+	public static int port = 25565;
+	
 	@Override
 	public void start(Stage primaryStage) {
 		try {
@@ -93,8 +96,12 @@ public class Main extends Application {
 	}
 	
 	public static void main(String[] args) {
+		if(args.length>0)
+		{
+			Main.ip=args[0];
+			Main.port=Integer.parseInt(args[1]);
+		}
 		launch(args);
-		///launch(args);
 	}
 	
 }

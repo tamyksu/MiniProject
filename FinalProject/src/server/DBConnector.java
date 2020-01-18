@@ -11,27 +11,19 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Timestamp;
-import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.time.temporal.ChronoUnit;
 import java.time.format.DateTimeFormatter;
-import org.omg.CORBA.INTERNAL;
-import java.time.*;
-import java.util.concurrent.TimeUnit;
 import translator.*;
-import application.ActiveReportsController;
+import application.ChangeBoardMember;
 import application.Evaluation_Options;
 import application.MyFile;
 import application.Request;
-import javafx.print.Collation;
-import javafx.util.converter.LocalDateTimeStringConverter;
 import application.MyHashMaps;
 
 import java.sql.ResultSet;
@@ -762,14 +754,16 @@ System.out.println("id "+translator.getParmas().get(0));
 
 						ans.add("Chairman");
 					}
+					
 					if(rs1.getString(1).equals("Change Board Member-1") ) {
 
-						ans.add("Change Board Member-1");
+						ans.add("correct match");
 					}
 					if(rs1.getString(1).equals("Change Board Member-2") ) {
 
-						ans.add("Change Board Member-2");
+						ans.add("correct match");
 					}
+					
 					else if(rs1.getString(1).equals("Manager") ){
 						ans.add("Manager");
 					}
@@ -1223,7 +1217,21 @@ System.out.println("id "+translator.getParmas().get(0));
 			break;
 			
 		case EXAMINATION_COMPLETED:
-			setNextStageByOne((int)translator.getParmas().get(0));
+			
+			int processIDExaminComplete = (int) translator.getParmas().get(0);
+			String ExaminIDComplete =  translator.getParmas().get(1).toString();
+			try {
+				stmt = conn.prepareStatement("DELETE FROM icmdb.users_requests"
+						+ " WHERE process_id = ? AND user_id = ?;");
+				stmt.setInt(1,processIDExaminComplete); // Process ID
+				stmt.setString(2,ExaminIDComplete); // Examiner ID
+				stmt.executeUpdate();	
+				
+				setNextStageByOne(processIDExaminComplete);
+			}
+			catch(SQLException EX) {
+				System.out.println("Errot while EXAMINATION_COMPLETED case");
+			}
 			break;
 
 		case REJECTE_PROCESS:
@@ -1600,7 +1608,6 @@ System.out.println("id "+translator.getParmas().get(0));
 						OptionsOfAction.Execution_Completed, completeExecutionAnswer);
 				return completeExecutionTranslator;
 			
-		
 		case GET_RELATED_MESSAGES:
 			String role = (String)translator.getParmas().get(0);
 			
@@ -1885,6 +1892,50 @@ System.out.println("id "+translator.getParmas().get(0));
 			}
 
 		break;
+		case Get_All_Change_Board_Members:
+			
+			ArrayList<ChangeBoardMember> workers = new ArrayList<>();
+			Translator workersTranslator = new Translator(OptionsOfAction.Get_All_Change_Board_Members, workers);
+			try
+			{
+				stmt = conn.prepareStatement("SELECT workers.id,  workers.first_name, workers.last_name From icmdb.workers\r\n" + 
+						"				INNER JOIN icmdb.permanent_roles\r\n" + 
+						"			WHERE (permanent_roles.user_id = workers.id AND (permanent_roles.role=\"Change Board Member-2\""
+						+ " OR permanent_roles.role=\"Change Board Member-1\"));");
+				ResultSet rs = stmt.executeQuery();
+				while(rs.next()) {
+					workers.add(new ChangeBoardMember(rs.getString(1), rs.getString(2)+" "+rs.getString(3)));
+				}
+				return workersTranslator;
+			}
+			catch (SQLException e) {
+				e.printStackTrace();
+				
+			}
+			break;
+		case Appoint_Examiner:
+			ArrayList<Boolean> appointExaminerAnswer = new ArrayList<>();
+			int processAppointExaminerID = (int) translator.getParmas().get(0);
+			String examinerID = translator.getParmas().get(1).toString();
+			Translator appointExaminerAnswerTranslator = new Translator(OptionsOfAction.Appoint_Examiner, 					appointExaminerAnswer);
+			try {
+				stmt = conn.prepareStatement("INSERT INTO icmdb.users_requests (user_id, process_id, role)"
+						+ " VALUES (?,?,?)");
+				
+				stmt.setString(1, examinerID);
+				stmt.setInt(2, processAppointExaminerID);
+				stmt.setString(3, "Examiner");
+				stmt.executeUpdate();
+				appointExaminerAnswer.add(true);
+				setNextStageByOne(processAppointExaminerID);
+				return appointExaminerAnswerTranslator;
+			}
+			catch(SQLException ex) {
+				System.out.println("Error while appointing Examiner!");
+				appointExaminerAnswer.add(false);
+				return appointExaminerAnswerTranslator;
+			}
+		//break;	
 		case SEND_EXTENSION_REQUEST:
 			sendNotification((int)translator.getParmas().get(0), "add due time extension", 0,
 					"Supervisor", translator.getParmas().get(2).toString(), translator.getParmas().get(1).toString());
