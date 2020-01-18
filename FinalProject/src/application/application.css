@@ -1,6 +1,7 @@
 
 #StyleLogin{
 	-fx-background-image: url("/application/3.jpg");
+	
 	-fx-background-size: 100% 100%;
 }
 #login{
@@ -17,6 +18,9 @@
 {
 	-fx-fill: white;
 }
+.axis-label {
+  -fx-text-fill: white;
+}
 .styleICM
 {
 	-fx-fill: white;
@@ -30,15 +34,21 @@
 		-fx-background-image: url("/application/1.jpg");
      	-fx-background-size: 100% 100%;
 }
+.chart-title {
+  -fx-text-fill: white;
+ 
+}
 
 #color{
 	-fx-background-color: blue;
 }
 .idp{
 		-fx-background-image: url("/application/paneUP.jpg");
+			-fx-background-size: 100% 100%;
 }
 .button{
 	-fx-background-image: url("/application/2.jpg");
+		-fx-background-size: 100% 100%;
 	-fx-text-fill: white;
 }
 .brightText{
@@ -46,6 +56,7 @@
 }
 .idButton{
 -fx-background-image: url("/application/2.jpg");
+	-fx-background-size: 100% 100%;
 	-fx-text-fill: white;
 }
 #idButton:hover

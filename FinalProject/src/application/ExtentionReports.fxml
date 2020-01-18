@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import javafx.scene.chart.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.shape.*?>
+<?import javafx.scene.text.*?>
+
+<Pane xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.ExtensionReportsController">
+   <children>
+      <SplitPane dividerPositions="0.5" orientation="VERTICAL" prefHeight="900.0" prefWidth="1500.0">
+         <items>
+            <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="0.0" minWidth="0.0" prefHeight="62.0" prefWidth="1500.0" styleClass="idp">
+               <children>
+                  <Text fill="#8d8cc6" layoutX="349.0" layoutY="49.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="styleICM" text="ICM" textAlignment="CENTER" wrappingWidth="276.0970458984375">
+                     <font>
+                        <Font size="41.0" />
+                     </font>
+                  </Text>
+               </children>
+            </AnchorPane>
+            <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0" styleClass="idPane">
+               <children>
+                  <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#cdbebe" height="468.0" layoutX="256.0" layoutY="145.0" opacity="0.0" stroke="BLACK" strokeType="INSIDE" width="940.0" />
+                  <BarChart fx:id="extension_reports" layoutX="460.0" layoutY="43.0" prefHeight="535.0" prefWidth="872.0" styleClass="styleTexts" title="Extension Reports">
+                     <xAxis>
+                        <CategoryAxis label=" number day extension" side="BOTTOM" styleClass="styleTexts" tickLabelFill="#eec9c9" fx:id="x" />
+                     </xAxis>
+                     <yAxis>
+                        <NumberAxis fx:id="y" label="number request extension" side="LEFT" styleClass="styleTexts" tickLabelFill="#eecccc" />
+                     </yAxis>
+                  </BarChart>
+                  <Button fx:id="back_btn" layoutX="29.0" layoutY="27.0" mnemonicParsing="false" onAction="#back_click" prefHeight="25.0" prefWidth="116.0" text="Back" />
+                  <Text layoutX="15.0" layoutY="166.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="styleTexts" text=" number day extension:" wrappingWidth="164.0">
+                     <font>
+                        <Font size="14.0" />
+                     </font>
+                  </Text>
+                  <Text layoutX="12.0" layoutY="199.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="styleTexts" text="number request extension:" wrappingWidth="171.0">
+                     <font>
+                        <Font size="14.0" />
+                     </font>
+                  </Text>
+                  <Text fx:id="median_dayExtension" layoutX="202.0" layoutY="165.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="styleTexts" text="0.00" wrappingWidth="70.13671875" />
+                  <Text fx:id="median_number_requestExtension" layoutX="202.0" layoutY="198.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="styleTexts" text="0.00" wrappingWidth="52.13671875" />
+                  <Text layoutX="202.0" layoutY="402.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="styleTexts" wrappingWidth="149.0" />
+                  <Separator layoutX="11.0" layoutY="370.0" prefWidth="200.0" />
+                  <Text layoutX="21.0" layoutY="139.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="styleTexts" text="Median" wrappingWidth="100.13671875">
+                     <font>
+                        <Font name="System Bold Italic" size="18.0" />
+                     </font>
+                  </Text>
+                  <Text layoutX="14.0" layoutY="260.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="styleTexts" text="Standart Devision" wrappingWidth="180.0">
+                     <font>
+                        <Font name="System Bold Italic" size="18.0" />
+                     </font>
+                  </Text>
+                  <Text layoutX="16.0" layoutY="308.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="styleTexts" text=" number day  extension:" wrappingWidth="164.0">
+                     <font>
+                        <Font size="14.0" />
+                     </font>
+                  </Text>
+                  <Text layoutX="8.0" layoutY="346.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="styleTexts" text="number request extension:" wrappingWidth="180.0">
+                     <font>
+                        <Font size="14.0" />
+                     </font>
+                  </Text>
+                  <Text fx:id="sd_dayExtension" layoutX="193.0" layoutY="307.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="styleTexts" text="0.00" wrappingWidth="70.13671875" />
+                  <Text fx:id="sd_number_request_extension" layoutX="193.0" layoutY="345.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="styleTexts" text="0.00" wrappingWidth="70.13671875" />
+               </children>
+            </AnchorPane>
+         </items>
+      </SplitPane>
+   </children>
+</Pane>

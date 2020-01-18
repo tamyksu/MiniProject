@@ -41,7 +41,11 @@ public enum OptionsOfAction {
 	RECOVER_PASSWORD,
 	SEND_EXTENSION_REQUEST,
 	GET_TEMPORARY_WORKERS_FROM_DB,
-	GET_PERMANENT_WORKERS_FROM_DB;
+	GET_PERMANENT_WORKERS_FROM_DB,
+	Get_All_Change_Board_Members,
+	Appoint_Examiner,
+	SelectDelayReport,
+	SelectExtensionReport;
 }
 
 

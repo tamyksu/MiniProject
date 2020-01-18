@@ -69,7 +69,7 @@
                      </font>
                   </Label>
                   <ComboBox fx:id="secondIE_comboBox" layoutX="955.0" layoutY="466.0" prefHeight="31.0" prefWidth="295.0" promptText="Select Change Board Member:" />
-                  <Label layoutX="151.0" layoutY="609.0" styleClass="brightText" text="Appoint Supervisor">
+                  <Label layoutX="151.0" layoutY="631.0" styleClass="brightText" text="Appoint Supervisor">
                      <font>
                         <Font name="System Bold" size="20.0" />
                      </font>
@@ -81,18 +81,17 @@
                   </Label>
                   <ComboBox fx:id="supervisor_comboBox" layoutX="87.0" layoutY="682.0" prefHeight="31.0" prefWidth="295.0" promptText="Select Supervisor" />
                   <Button fx:id="AppointSupervisor" layoutX="179.0" layoutY="726.0" mnemonicParsing="false" onAction="#AppointSupervisor_click" text="Appoint Supervisor" />
-                  <Button fx:id="log_out_btn" layoutX="1116.0" layoutY="22.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="148.0" text="Log out" />
                   <Button fx:id="Appoint_Chiarman" layoutX="159.0" layoutY="519.0" mnemonicParsing="false" onAction="#Appoint_Chiarman_click" text="Appoint Chiarman" />
                   <Button fx:id="Appoint_firstIE" layoutX="515.0" layoutY="519.0" mnemonicParsing="false" onAction="#AppointfirstIEclick" prefHeight="31.0" prefWidth="295.0" text="Appoint #1 Change Board Member" />
-                  <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#1f93ff00" height="192.0" layoutX="165.0" layoutY="610.0" opacity="0.18" stroke="BLACK" strokeType="INSIDE" width="400.0" x="300.0" />
-                  <Label layoutX="586.0" layoutY="609.0" styleClass="brightText" text="Statistic Reports">
+                  <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#1f93ff00" height="192.0" layoutX="265.0" layoutY="610.0" opacity="0.18" stroke="BLACK" strokeType="INSIDE" width="400.0" x="300.0" />
+                  <Label layoutX="748.0" layoutY="629.0" styleClass="brightText" text="Statistic Reports">
                      <font>
                         <Font name="System Bold" size="20.0" />
                      </font>
                   </Label>
-                  <Button layoutX="559.0" layoutY="667.0" mnemonicParsing="false" onAction="#active_reports_button" prefHeight="24.0" prefWidth="208.0" text="Active Reports " />
-                  <Button layoutX="559.0" layoutY="706.0" mnemonicParsing="false" onAction="#execution_reports" prefHeight="24.0" prefWidth="208.0" text="Execution Reports " />
-                  <Button layoutX="559.0" layoutY="745.0" mnemonicParsing="false" onAction="#delay_execution" prefHeight="24.0" prefWidth="208.0" text="Delay Execution" />
+                  <Button layoutX="721.0" layoutY="667.0" mnemonicParsing="false" onAction="#active_reports_button" prefHeight="24.0" prefWidth="208.0" text="Active Reports " />
+                  <Button layoutX="721.0" layoutY="706.0" mnemonicParsing="false" onAction="#execution_reports" prefHeight="24.0" prefWidth="208.0" text="Execution Reports " />
+                  <Button layoutX="721.0" layoutY="745.0" mnemonicParsing="false" onAction="#delay_execution" prefHeight="24.0" prefWidth="208.0" text="Delay Execution" />
                   <Text fx:id="print_message" fill="#f3f8fc" layoutX="34.0" layoutY="836.0" strokeType="OUTSIDE" strokeWidth="0.0" text="fff" visible="false" wrappingWidth="415.13671875">
                      <font>
                         <Font size="18.0" />

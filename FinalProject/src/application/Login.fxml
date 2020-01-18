@@ -1,9 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
-<?import javafx.scene.text.*?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.PasswordField?>
 <?import javafx.scene.control.SplitPane?>
@@ -11,9 +7,10 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Pane?>
+<?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<Pane xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.LoginController">
+<Pane xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.LoginController">
    <children>
       <SplitPane id="StyleLogin" dividerPositions="0.5" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" orientation="VERTICAL" prefHeight="900.0" prefWidth="1400.0">
         <items>
@@ -38,11 +35,11 @@
                            <font>
                               <Font size="18.0" />
                            </font></Text>
-                        <PasswordField fx:id="password" layoutX="281.0" layoutY="336.0">
+                        <PasswordField fx:id="password" layoutX="281.0" layoutY="336.0" promptText="********">
                            <font>
                               <Font size="18.0" />
                            </font></PasswordField>
-                        <TextField fx:id="userName" layoutX="281.0" layoutY="265.0">
+                        <TextField fx:id="userName" layoutX="281.0" layoutY="265.0" promptText="User ID">
                            <font>
                               <Font size="18.0" />
                            </font></TextField>
@@ -58,7 +55,20 @@
                            <font>
                               <Font size="18.0" />
                            </font></TextField>
-                        <Button fx:id="recoverPassword_btn" layoutX="300.0" layoutY="435.0" mnemonicParsing="false" onAction="#recoverPasswordFromDB" opacity="0.71" prefHeight="1.0" prefWidth="185.0" text="Recover Password" />
+                        <Button fx:id="recoverPassword_btn" layoutX="300.0" layoutY="435.0" mnemonicParsing="false" onAction="#recoverPasswordFromDB" prefHeight="1.0" prefWidth="185.0" text="Recover Password">
+                           <font>
+                              <Font size="13.0" />
+                           </font></Button>
+                        <TextField fx:id="ip_text" layoutX="208.0" layoutY="573.0" prefHeight="39.0" prefWidth="198.0" promptText="Server IP">
+                           <font>
+                              <Font size="18.0" />
+                           </font>
+                        </TextField>
+                        <TextField fx:id="port_text" layoutX="427.0" layoutY="573.0" prefHeight="39.0" prefWidth="109.0" promptText="Port">
+                           <font>
+                              <Font size="18.0" />
+                           </font>
+                        </TextField>
                      </children></Pane>
                   <Pane prefHeight="838.0" prefWidth="233.0" />
                </children>

@@ -15,6 +15,9 @@ public class Main extends Application {
 	public static Stage primaryStage;
 	Scene baseScene;
 	
+	public static String ip = "localhost";
+	public static int port = 25565;
+	
 	@Override
 	public void start(Stage primaryStage) {
 		try {
@@ -82,6 +85,10 @@ public class Main extends Application {
 			ScreenController.getScreenController().addScreen("staffMain", FXMLLoader.load(getClass().getResource("/application/StaffMain.fxml")));
 			ScreenController.getScreenController().addScreen("supervisor_processesMain", FXMLLoader.load(getClass().getResource("/application/Supervisor_ProcessesMain.fxml")));
 			ScreenController.getScreenController().addScreen("active_reports", FXMLLoader.load(getClass().getResource("/application/ActiveReports.fxml")));
+			ScreenController.getScreenController().addScreen("delay_reports", FXMLLoader.load(getClass().getResource("/application/DelayReports.fxml")));
+			ScreenController.getScreenController().addScreen("extension_reports", FXMLLoader.load(getClass().getResource("/application/ExtensionReports.fxml")));
+
+		
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -89,8 +96,12 @@ public class Main extends Application {
 	}
 	
 	public static void main(String[] args) {
+		if(args.length>0)
+		{
+			Main.ip=args[0];
+			Main.port=Integer.parseInt(args[1]);
+		}
 		launch(args);
-		///launch(args);
 	}
 	
 }

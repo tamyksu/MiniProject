@@ -89,6 +89,8 @@ public class ExaminationController implements Initializable{
    		instance = this;
    	}
     
+    
+    
     public void initializeChosenProcessScreen(String processStage)
     {
     	System.out.println("ExaminationController: initializeChosenProcessScreen: Stage: " + processStage);
@@ -131,6 +133,10 @@ public class ExaminationController implements Initializable{
     	
     }
     
+    /**
+     * Go back to previous screen
+     * @param event
+     */
     @FXML
     void back_click(ActionEvent event) {
     	ScreenController.getScreenController().activate(ScreenController.getScreenController().getLastScreen());
@@ -154,6 +160,10 @@ public class ExaminationController implements Initializable{
     	submit_failure_report_btn.setDisable(true);
     }
 
+    /**
+     * Submit the failure report
+     * @param event
+     */
     @FXML
     void submit_failure_report_click(ActionEvent event) {
     	
@@ -187,6 +197,10 @@ public class ExaminationController implements Initializable{
 		client.handleMessageFromClientGUI(translator);
     }
 
+    /**
+     * Enable filling the failure report
+     * @param event
+     */
     @FXML
     void fill_failure_report_click(ActionEvent event) {
     	
@@ -205,6 +219,11 @@ public class ExaminationController implements Initializable{
     }
 
 
+    
+    /**
+     * Examination completed
+     * @param event
+     */
     @FXML
     void examination_completed_click(ActionEvent event) {
     	
@@ -213,10 +232,11 @@ public class ExaminationController implements Initializable{
 
     	ArrayList<Object> check = new ArrayList<Object>();
     	check.add(this.processID);
-    	
+    	check.add(Client.getInstance().getUserID());
     	Translator translator = new Translator(OptionsOfAction.EXAMINATION_COMPLETED, check);
 		client.handleMessageFromClientGUI(translator);
     }
+    
     
     void setProcessID(int id)
     {
@@ -226,6 +246,9 @@ public class ExaminationController implements Initializable{
     		System.out.println("ExaminationController: setProcessID: Wrong process ID was given.");
     }
     
+    /**
+     * Update the table of process's information
+     */
     public void updateProcessInformation()
     {
 		UserProcess process = Client.getInstance().getProcesses().getMyProcess().get(Integer.parseInt(ControllerProcessMain.getInstance().getRequestID()));
