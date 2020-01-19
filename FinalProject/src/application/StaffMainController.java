@@ -206,9 +206,9 @@ public class StaffMainController implements Initializable{
 	}
 /*******************************************getChairManData****************************************************************/
 	/**
-	 * Get the chairman data
+	 * Get the data
 	 */
-	public void getChairManData() {
+	public void getData() {
 		try {
 			print_message.setVisible(false);
 		ArrayList<String> check= new ArrayList<String>();
@@ -219,10 +219,10 @@ public class StaffMainController implements Initializable{
 	}
 /*********************************************setDataChairMan***********************************************************/	
 	/**
-	 * Set the chairman data
+	 * Set the  data
 	 * @param WorkersName
 	 */
-	public void setDataChairMan(ArrayList<String> WorkersName)
+	public void setData(ArrayList<String> WorkersName)
 	{
 		print_message.setVisible(false);
 		ObservableList<String> data = FXCollections.observableArrayList();

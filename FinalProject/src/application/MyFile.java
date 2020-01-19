@@ -52,7 +52,6 @@ public class MyFile implements Serializable {
 
 	/**
 	 * Set the size of the file
-	 * @return
 	 */
 	public void setSize(int size) {
 		this.size = size;
@@ -75,7 +74,6 @@ public class MyFile implements Serializable {
 
 	/**
 	 * Set the ByteArray
-	 * @return
 	 */
 	public void setMybytearray(byte[] mybytearray) {
 		
@@ -91,10 +89,10 @@ public class MyFile implements Serializable {
 		return Description;
 	}
 	
-	/**
-	 * Set Description
-	 * @return
-	 */
+/**
+ * 
+ * @param description
+ */
 	public void setDescription(String description) {
 		Description = description;
 	}	

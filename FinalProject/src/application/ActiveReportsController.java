@@ -259,11 +259,11 @@ public class ActiveReportsController extends StatisticReports implements Initial
 			
 					DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-LLLL-yyyy");
 		
-					 arr= status_counter.get(4);
+					// arr= status_counter.get(4);
 				
 /**************************************************************median		*/		
 
-					for(int i=0;i<6;i++)	
+					for(int i=0;i<4;i++)	
 					{
 						 arr= status_counter.get(i);
 				
@@ -275,14 +275,14 @@ public class ActiveReportsController extends StatisticReports implements Initial
 					String suspend =String.format("%.2f", median.get(1));
 					String closed =String.format("%.2f", median.get(2));
 					String rejected =String.format("%.2f", median.get(3));
-					String count_work =String.format("%.2f", median.get(4));
-					String days_work =String.format("%.2f", median.get(5));
+					//String count_work =String.format("%.2f", median.get(4));
+					//String days_work =String.format("%.2f", median.get(5));
 					active_median_txt.setText(active );
 					suspended_median_txt.setText(suspend);
 					closed_median.setText(closed);
 					rejected_median_txt.setText(rejected);
-					total_workdays_txt.setText(days_work);
-					median_workdays_count.setText(count_work);
+					//total_workdays_txt.setText(days_work);
+					//median_workdays_count.setText(count_work);
 					//the total days dosent have the same arr size
 					
 			
@@ -293,12 +293,12 @@ public class ActiveReportsController extends StatisticReports implements Initial
 					XYChart.Series xySuspend = new XYChart.Series();
 					XYChart.Series xyShutdown = new XYChart.Series();
 					XYChart.Series xyRejected = new XYChart.Series();
-					XYChart.Series xyTotalDays = new XYChart.Series();
+					//XYChart.Series xyTotalDays = new XYChart.Series();
 					xyActive.setName("Active Requests");
 					xySuspend.setName("Suspended Requests");
 					xyShutdown.setName("Closed Requests");
 					xyRejected.setName("Rejected Requests");
-					xyTotalDays.setName("Workdays");
+					//xyTotalDays.setName("Workdays");
 					 formatter = DateTimeFormatter.ofPattern("dd-LLLL-yyyy");
 	/*****************************************Active***************************************************/	
 	
@@ -364,7 +364,7 @@ public class ActiveReportsController extends StatisticReports implements Initial
     		// sdRejected_txt.setText(Double. toString(standard_deviation_rejected));
     		rejected =String.format("%.2f",standard_deviation_rejected);
     		sdRejected_txt.setText(rejected);
-   /**************************************************TotalDays***************************************************************/
+   /**************************************************TotalDays***************************************************************
     		arr= status_counter.get(4);
     		ArrayList<Integer>days_workdays= status_counter.get(5);
     		
@@ -384,10 +384,10 @@ public class ActiveReportsController extends StatisticReports implements Initial
    		standard_deviation_TotslDsys_count= standard_deviation(days_workdays);
    		//sdWorkdays_count.setText(Double. toString(standard_deviation_TotslDsys_count));
    		count_work =String.format("%.2f",standard_deviation_TotslDsys_count);
-   		sdWorkdays_count.setText(count_work);
+   		sdWorkdays_count.setText(count_work);*/
     	/*****************************************************************************************************/
     		active_reports.getData().addAll(xyActive,xySuspend,xyShutdown,xyRejected);
-    		work_days_report.getData().addAll(xyTotalDays);
+    		//work_days_report.getData().addAll(xyTotalDays);
     	}
     			
     

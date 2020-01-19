@@ -411,7 +411,10 @@ public class Supervisor_ProcessMain_Controller implements Initializable{
      */
     public void setDueTimeRequest(ArrayList<Object> msgData)
     {
-    	
+    	try
+    	{
+    		
+
     	if(msgData==null)
     	{
     		System.out.println("msgData is empty");
@@ -436,6 +439,11 @@ public class Supervisor_ProcessMain_Controller implements Initializable{
 	    			}
 	    		}
 	    	}
+    	}
+    	}
+    	catch(ClassCastException ex)
+    	{
+    		
     	}
     }
     

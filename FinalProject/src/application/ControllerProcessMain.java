@@ -456,7 +456,7 @@ public class ControllerProcessMain implements Initializable {
 	 */
 	private void fitAppraiser() {
 	
-		if(Integer.parseInt(this.procStage) == Constants.STAGE_OF_APPRAISER_EVALUATION)
+		if(Double.parseDouble(this.procStage) == Constants.STAGE_OF_APPRAISER_EVALUATION)
 		{
 			newRequestBtn.setDisable(false);
 			extension_btn.setDisable(false);
@@ -472,7 +472,7 @@ public class ControllerProcessMain implements Initializable {
 		else
 		{
 			if(procStage.compareTo("4.5") == 0 || procStage.compareTo("4.6") == 0 || 
-					Integer.parseInt(this.procStage) == Constants.STAGE_OF_APPRAISER_EVALUATION_DUE_TIME ||
+					Double.parseDouble(this.procStage) == Constants.STAGE_OF_APPRAISER_EVALUATION_DUE_TIME ||
 					procStage.compareTo("2.5") == 0)
 			{
 				newRequestBtn.setDisable(false);
@@ -786,7 +786,10 @@ public class ControllerProcessMain implements Initializable {
 	@FXML
 	void director_click(ActionEvent event) {
 		ScreenController.getScreenController().activate("staffMain");
-		StaffMainController.instance.getChairManData();
+		StaffMainController.instance.getData();
+		StaffMainController.instance.getPermanentWorkersFromDB();
+		StaffMainController.instance.getTemporaryWorkersFromDB();
+
 	}
 	
 	/**

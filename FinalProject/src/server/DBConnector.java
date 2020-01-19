@@ -413,7 +413,7 @@ public class DBConnector {
 		}
 			
 			arr.add(rejected);
-/*********************************************************************************/	
+/*********************************************************************************
 			 start_index=start_date;
 			 ArrayList<Integer>TotalDays=new ArrayList<Integer>();
 			 ArrayList<Date> CreateDate=new ArrayList<Date>();
@@ -528,6 +528,7 @@ public class DBConnector {
 				
 				arr.add(counter_arr);
 				arr.add(total_days_arr);
+				*/
 			/***************************************************************************************/
 		//0-active 1-suspend 2-shutdown 3-rejected 4-total days
 				Translator newTranslator = new Translator(translator.getRequest(), arr);
@@ -916,14 +917,18 @@ System.out.println("id "+translator.getParmas().get(0));
 		case SET_EVALUATION_OR_EXECUTION_DUE_TIME:
 			try {
 				java.sql.Date date = new java.sql.Date(new java.util.Date().getTime());
-				/*********************tamy***********************************/
-				
-				stmt = conn.prepareStatement(" insert into icmdb.extension_report (request_id,number_days_extension) values(?,?)");
-				stmt.setInt(1,  (int)translator.getParmas().get(0));
-				stmt.setInt(2, (Integer.parseInt(translator.getParmas().get(1).toString())));
-				stmt.executeUpdate();
-				
-				/*************************tamy********************************/
+//				/*********************tamy***********************************/
+//				try {
+//				stmt = conn.prepareStatement(" insert into icmdb.extension_report (request_id,number_days_extension) values(?,?)");
+//				stmt.setInt(1,  (int)translator.getParmas().get(0));
+//				stmt.setInt(2, (Integer.parseInt(translator.getParmas().get(1).toString())));
+//				stmt.executeUpdate();}
+//				catch(SQLException ex)
+//				{
+//					
+//				}
+//				
+//				/*************************tamy********************************/
 			
 				date = date.valueOf(date.toLocalDate().plusDays(Integer.parseInt(translator.getParmas().get(1).toString())));
 				
@@ -986,8 +991,14 @@ System.out.println("id "+translator.getParmas().get(0));
 					}
 				System.out.println(date);
 				/*********************tamy***********************************/
-				
-				
+				stmt = conn.prepareStatement("SELECT count(*) FROM icmdb.extension_report where request_id=? ");
+				stmt.setInt(1,(int)translator.getParmas().get(0));
+				 rs = stmt.executeQuery();
+				rs.next();
+			
+				int flag= (rs.getInt(1));//result if 1 or 0
+				if(flag==1)
+				{
 			     stmt = conn.prepareStatement(" select number_days_extension from  icmdb.extension_report where request_id=?");
 			     stmt.setInt(1, (int)translator.getParmas().get(0));
 			      rs = stmt.executeQuery();
@@ -1003,6 +1014,15 @@ System.out.println("id "+translator.getParmas().get(0));
 				stmt.setInt(1, days);
 				stmt.setInt(2, (int)translator.getParmas().get(0));
 				stmt.executeUpdate();
+				}
+				else {
+					stmt = conn.prepareStatement(" insert into icmdb.extension_report (request_id,number_days_extension) values(?,?)");
+					stmt.setInt(1,  (int)translator.getParmas().get(0));
+					stmt.setInt(2, (Integer.parseInt(translator.getParmas().get(1).toString())));
+					stmt.executeUpdate();
+					
+					
+				}
 				
 		/*************************tamy********************************/
 				

@@ -199,7 +199,7 @@
                      </font>
                   </Label>
                   <Button layoutX="1227.0" layoutY="20.0" mnemonicParsing="false" onAction="#back_click" prefHeight="25.0" prefWidth="112.0" text="Log out" />
-                  <Label layoutX="108.0" layoutY="682.0" prefHeight="31.0" prefWidth="151.0" text="Appoint Examiner:">
+                  <Label layoutX="108.0" layoutY="682.0" prefHeight="31.0" prefWidth="151.0" styleClass="textstyle" text="Appoint Examiner:">
                      <font>
                         <Font size="18.0" />
                      </font>

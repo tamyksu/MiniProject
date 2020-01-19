@@ -62,7 +62,6 @@ public class ScreenController {
 	/**
 	 * Remove a screen to the ScreenController instance
 	 * @param name
-	 * @param pane
 	 */
     public void removeScreen(String name){
         screenMap.remove(name);

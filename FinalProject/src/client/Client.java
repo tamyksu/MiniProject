@@ -57,7 +57,7 @@ public class Client extends AbstractClient {
 	/**
 	 * This method handles all data that comes in from the server.
 	 *
-	 * @param msg The message from the server.
+	 * @param rs The message from the server.
 	 */
 	public void handleMessageFromServer(Object rs) {
 		Translator result = (Translator)rs; 
@@ -438,7 +438,7 @@ public class Client extends AbstractClient {
 	{
 		ArrayList<String> arr= (ArrayList<String>)message;
 
-		StaffMainController.instance.setDataChairMan(arr);
+		StaffMainController.instance.setData(arr);
 
 
 	}
