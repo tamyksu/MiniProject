@@ -41,7 +41,7 @@ public class ActiveReportsController extends StatisticReports implements Initial
     @FXML
     private DatePicker end_date_button;
     @FXML
-    private Text sdActive_txt;
+    public Text sdActive_txt;
     @FXML
     private Text sdWorkdays_txt;
     @FXML
@@ -96,7 +96,6 @@ public class ActiveReportsController extends StatisticReports implements Initial
 	LocalDate end_date;
 	LocalDate start_date;
 	
-   
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) 
@@ -133,7 +132,7 @@ public class ActiveReportsController extends StatisticReports implements Initial
     void done_button(ActionEvent event) 
     {
     	active_reports.getData().clear();
-    	work_days_report.getData().clear();
+    	//work_days_report.getData().clear();
     	 ArrayList<Object> all= new ArrayList<>();
     	 ArrayList<LocalDate> dates= new ArrayList<LocalDate>();
 
