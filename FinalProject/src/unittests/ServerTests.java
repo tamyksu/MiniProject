@@ -29,7 +29,7 @@ public class ServerTests {
    	 	ArrayList<Long> days = new ArrayList<Long>();
    	 	
    	 	dates.add(LocalDate.of(2020, 02, 01));
-   	 	dates.add(LocalDate.of(2020, 02, 30));
+   	 	dates.add(LocalDate.of(2020, 02, 29));
    	 	days.add((long) 10);
    	 	
    	 	input.add(dates);

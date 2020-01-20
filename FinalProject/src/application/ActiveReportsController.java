@@ -106,6 +106,11 @@ public class ActiveReportsController extends StatisticReports implements Initial
 
 	}
 	
+    @FXML
+    public void initialize() {
+        System.out.println("second");
+    }
+	
 	@FXML
 	public void back_click(ActionEvent event) {
     	active_reports.getData().clear();

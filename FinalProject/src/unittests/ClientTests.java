@@ -13,8 +13,8 @@ import org.junit.runners.Suite.SuiteClasses;
 
 import application.ActiveReportsController;
 
-@RunWith(Suite.class)
-@SuiteClasses({})
+//@RunWith(Suite.class)
+//@SuiteClasses({})
 public class ClientTests {
 	
 	ActiveReportsController activeReports;
@@ -23,6 +23,7 @@ public class ClientTests {
 	@Before
 	public void init() {
 		activeReports = new ActiveReportsController();
+		activeReports.initialize();
 		status_counter = new ArrayList<>();
 	}
 	
@@ -38,7 +39,6 @@ public class ClientTests {
 	public void testEmptyInput() {
 	
 		activeReports.calaulate(status_counter);
-		fail("Not yet implemented");
 
 	}
 	
@@ -46,7 +46,6 @@ public class ClientTests {
 	public void testDateIsNull() {
 	
 		activeReports.calaulate(status_counter);
-		fail("Not yet implemented");
 
 	}
 	
@@ -54,7 +53,6 @@ public class ClientTests {
 	public void testDateIsWrong() {
 	
 		activeReports.calaulate(status_counter);
-		fail("Not yet implemented");
 
 	}
 	
