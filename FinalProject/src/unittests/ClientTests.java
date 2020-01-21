@@ -12,19 +12,21 @@ import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 import application.ActiveReportsController;
+import application.StatisticReports;
 
 //@RunWith(Suite.class)
 //@SuiteClasses({})
 public class ClientTests {
 	
-	ActiveReportsController activeReports;
-	ArrayList<ArrayList<Integer>> status_counter;
-	
+	StatisticReports statisticReport;
+	ArrayList<Integer> status_counter;
+	ArrayList<ArrayList<Integer>> checkData;
 	@Before
 	public void init() {
-		activeReports = new ActiveReportsController();
-		activeReports.initialize();
+		 statisticReport = new StatisticReports();
+	
 		status_counter = new ArrayList<>();
+		
 	}
 	
 	/**
@@ -32,53 +34,99 @@ public class ClientTests {
 	 */
 	@Test(expected=NullPointerException.class)
 	public void testNullInput() {	
-			activeReports.calaulate(null);		
+		statisticReport.medianALL(null);		
 	}
 	
 	@Test
 	public void testEmptyInput() {
 	
-		activeReports.calaulate(status_counter);
+		statisticReport.medianALL(status_counter);
 
 	}
 	
 	@Test
 	public void testDateIsNull() {
 	
-		activeReports.calaulate(status_counter);
+		statisticReport.medianALL(status_counter);
 
 	}
 	
 	@Test
 	public void testDateIsWrong() {
 	
-		activeReports.calaulate(status_counter);
+		statisticReport.medianALL(status_counter);
+		
+		
 
 	}
 	
 	@Test
-	public void testNumOfDaysZero() {
-		activeReports.calaulate(status_counter);
+	public void testMediansZero() {
+		String expected = "0";
+		status_counter.add(0);
+		status_counter.add(0);
+		status_counter.add(0);
+		status_counter.add(0);
+		status_counter.add(0);
+		Double result=statisticReport.medianALL(status_counter);
+		
+		assertEquals(expected,result);
+
 	}
 	
+	@Test
+	public void testStandartDevisionZero() {
+		String expected = "0";
+		status_counter.add(0);
+		status_counter.add(0);
+		status_counter.add(0);
+		status_counter.add(0);
+		status_counter.add(0);
+		Double result=statisticReport.standard_deviation(status_counter);
+		assertEquals(expected,result);
+
+	}
 	/**
 	 * Check the calculate function when days input  is null
 	 */
 	@Test(expected=NullPointerException.class)
-	public void testNumOfDaysNull() {
-			activeReports.calaulate(status_counter);
+	public void testMedianNull() {
+		
+		statisticReport.medianALL(status_counter);
+	}
+	@Test(expected=NullPointerException.class)
+	public void testStandartDevisonNull() {
+		
+	
+		statisticReport.standard_deviation(status_counter);
 	}
 
 	@Test
-	public void testNormalInput() {
-		//TODO: ADD regular data to status_counter before calling the calculate 
-		//status_counter.add(...);
+	public void testMedianInput() {
+		String expected = "3";
+		status_counter.add(1);
+		status_counter.add(2);
+		status_counter.add(3);
+		status_counter.add(4);
+		status_counter.add(5);
+		Double result=statisticReport.medianALL(status_counter);
 		
-		//TODO: make here the calculation of the expected value of "activeReports.sdActive_txt" label:
-		String expected = "0";
-		
-		activeReports.calaulate(status_counter);
-		
-		assertEquals(expected,activeReports.sdActive_txt.getText());
+		assertEquals(expected,result);
 	}
+
+	public void testStandartDevisonInput() {
+	
+		String expected = "3";
+		status_counter.add(1);
+		status_counter.add(2);
+		status_counter.add(3);
+		status_counter.add(4);
+		status_counter.add(5);
+		Double result=statisticReport.standard_deviation(status_counter);
+		
+		assertEquals(expected,result);
+	}
+	
+
+
 }
