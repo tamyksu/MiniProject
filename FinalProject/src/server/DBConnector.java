@@ -35,17 +35,6 @@ public class DBConnector implements IDBConnector{
 
 	private  Connection conn;
 	
-	//private static IDBConnector instance;
-
-//	public DBConnector() {
-//		if(instance == null)
-//			instance = new DBConnector();
-//	}
-//	
-//	public static IDBConnector getInstance() {
-//		return instance;
-//	}
-	
 	@Override
 	public  void establishDBConnection() {
 		try 

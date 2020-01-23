@@ -117,7 +117,7 @@ public class ActiveReportsController extends StatisticReports implements Initial
 	@FXML
 	public void back_click(ActionEvent event) {
     	active_reports.getData().clear();
-    	work_days_report.getData().clear();
+    	//work_days_report.getData().clear();
     	start_date_button.setValue(null);
     	end_date_button.setValue(null);
     	num_days.clear();
