@@ -2,55 +2,82 @@ package unittests;
 
 import static org.junit.Assert.*;
 
-import java.io.IOException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 
-import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
-import client.Client;
-import server.DBConnector;
+import server.IDBConnector;
 import server.Server;
-import translator.OptionsOfAction;
-import translator.Translator;
 
 public class ServerTests {
-	
-	Client client;
-	
-	@Before
-	public void init()
-	{
-		Server.main(new String[2]);
-		try {
-			client.openConnection();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+
+	static Server server;
+	static IDBConnector fakeDbConnector;
+
+	/**
+	 * Initialization of the fake DB connector and injecting it to the server
+	 * To be used in the following tests
+	 */
+	@BeforeClass
+	public static void init() {
+		fakeDbConnector = new FakeDBConnector();
+		server = new Server(25565, fakeDbConnector);
 	}
 	
+	/**
+	 * Tests the function that gets reports of specific date from server with normal input
+	 */
 	@Test
-	public void getActiveStatisticTest() {
-
-   	 	ArrayList<Object> input= new ArrayList<>();
-   	 	ArrayList<LocalDate> dates= new ArrayList<LocalDate>();
-   	 	ArrayList<Long> days = new ArrayList<Long>();
-   	 	
-   	 	dates.add(LocalDate.of(2020, 02, 01));
-   	 	dates.add(LocalDate.of(2020, 02, 29));
-   	 	days.add((long) 10);
-   	 	
-   	 	input.add(dates);
-   	 	input.add(days);
-   	 	
-		Translator translator= new Translator(OptionsOfAction.Get_Active_Statistic,input);
-
-    	Object rs = DBConnector.accessToDB(translator);
-    	if(rs != null)	
-    		System.out.println(rs);
-
+	public void GetReportsFromServerNormalInput()
+	{
+		ArrayList<ArrayList<Double>> actual = server.getReportsFromServer(LocalDate.of(2020, 03, 01));
+		
+		assertFalse(actual == null);
+		assertFalse(actual.isEmpty());
+		
+	}
+	
+	/**
+	 * Tests the function that gets reports of specific date from server with null date
+	 */
+	@Test
+	public void GetReportsFromServerNullDate()
+	{
+		ArrayList<ArrayList<Double>> actual = server.getReportsFromServer(null);
+		assertEquals(null, actual);
+	}
+	
+	/**
+	 * Tests the function that saves reports to server with null input
+	 */
+	@Test
+	public void SaveReportsToServerNullInput()
+	{
+		assertFalse(server.saveReportsToServer(null));
+	}
+	
+	/**
+	 * Tests the function that saves reports to server with normal input
+	 */
+	@Test
+	public void SaveReportsToServerNormalnput()
+	{
+		ArrayList<ArrayList<Double>> data = new ArrayList<>();
+		ArrayList<Double> arr  = new  ArrayList<>();
+		
+		arr.add(2.6);
+		arr.add(2.9);
+		arr.add(0.3);
+		arr.add(1.4);
+		
+		data.add(arr);
+		data.add(arr);
+		data.add(arr);
+		data.add(arr);
+		
+		assertTrue(server.saveReportsToServer(data));
 	}
 
 }

@@ -35,6 +35,7 @@ public class Server extends AbstractServer
 {
 	Client client = Client.getInstance();
 	private static Connection conn;
+	private static IDBConnector dbConnector;
   //Class variables *************************************************
   
   /**
@@ -48,10 +49,21 @@ public class Server extends AbstractServer
    * Constructs an instance of the echo server.
    *
    * @param port The port number to connect on.
+   * @param dbConnector - injection of a fake dbConnector for testing
    */
+  public Server(int port, IDBConnector dbConnector) 
+  {
+    super(port);
+    Server.dbConnector = dbConnector;
+  }
+  
   public Server(int port) 
   {
     super(port);
+	  if(Server.dbConnector==null)
+	  {
+    Server.dbConnector = new DBConnector();
+	  }
   }
 
   
@@ -68,7 +80,7 @@ public class Server extends AbstractServer
   	{
 	    System.out.println("Message received: " + msg + " from " + client);
 	    try {
-	    	Object rs = DBConnector.accessToDB(msg);
+	    	Object rs = dbConnector.accessToDB(msg);
 	    	if(rs != null)	
 	    		client.sendToClient(rs);
 	    	}
@@ -98,9 +110,31 @@ public class Server extends AbstractServer
   {
     System.out.println("Server has stopped listening for connections.");
   }
-  
+
   //Class methods ***************************************************
   
+  /**
+   * This function should return the reports of a specific date  - NO YET IMPLEMENTED
+   * So it returns null
+   * @param date
+   * @return
+   */
+ public ArrayList<ArrayList<Double>> getReportsFromServer(LocalDate date)
+ {
+	 //Go to DB and ask for reports of a specific date
+	 return null;
+ }
+ 
+ /**
+  * This function should save the reports to the DB - NO YET IMPLEMENTED
+  * @param data - the reports to save
+  * @return answer if the reports were saved successfully or not.
+  */
+ public boolean saveReportsToServer(ArrayList<ArrayList<Double>> data)
+ {
+	 return false;
+ }
+ 
   /**
    * This method is responsible for the creation of 
    * the server instance (there is no UI in this phase).
@@ -108,7 +142,7 @@ public class Server extends AbstractServer
    * @param args[0] The port number to listen on.  Defaults to 5555 
    *          if no argument is entered.
    */
-  public static void main(String[] args) 
+  public  static void main(String[] args) 
   {
     int port = 0; //Port to listen on
 
@@ -123,7 +157,7 @@ public class Server extends AbstractServer
 	
     Server sv = new Server(port);
     
-    DBConnector.establishDBConnection();
+    dbConnector.establishDBConnection();
     
     try 
     {
@@ -153,11 +187,11 @@ public class Server extends AbstractServer
    * @author amirgroi
    *
    */
-  static class checkDueDateOfProcessesTask extends TimerTask{
+   static class checkDueDateOfProcessesTask extends TimerTask{
 	  @Override
 	public void run() {
 		  
-  		 ArrayList<ArrayList<?>> result = DBConnector.getActiveProcesses();
+  		 ArrayList<ArrayList<?>> result = dbConnector.getActiveProcesses();
 		  
   		Processes processes = new Processes();
 		if(!(result.get(0).get(0).toString().equals("No processes")))
@@ -207,11 +241,11 @@ public class Server extends AbstractServer
 				    }
 				    /********************************tamy***********************/
 				    	//Send a notification to handler
-						DBConnector.sendNotification(process.getRequest_id(), "You exceeded due time for this stage",Math.abs(days),DBConnector.getHandlerRole(process.getRequest_id()), "ICM", "");
+						dbConnector.sendNotification(process.getRequest_id(), "You exceeded due time for this stage",Math.abs(days),dbConnector.getHandlerRole(process.getRequest_id()), "ICM", "");
 				    	//Send a notification to supervisor
-						DBConnector.sendNotification(process.getRequest_id(), DBConnector.getHandlerRole(process.getRequest_id())+" exceeded due time for this stage!",Math.abs(days),"Supervisor", "ICM", "");
+						dbConnector.sendNotification(process.getRequest_id(), dbConnector.getHandlerRole(process.getRequest_id())+" exceeded due time for this stage!",Math.abs(days),"Supervisor", "ICM", "");
 				    	//Send a notification to manager
-						DBConnector.sendNotification(process.getRequest_id(), DBConnector.getHandlerRole(process.getRequest_id())+" exceeded due time for this stage!",Math.abs(days),"Manager", "ICM", "");
+						dbConnector.sendNotification(process.getRequest_id(), dbConnector.getHandlerRole(process.getRequest_id())+" exceeded due time for this stage!",Math.abs(days),"Manager", "ICM", "");
 				    }
 				    
 				    //a couple of days left for this stage till due time
@@ -219,7 +253,7 @@ public class Server extends AbstractServer
 				    	if(days>=0 && days < 3)
 				    	{
 				    		//Send notification to handler
-							DBConnector.sendNotification(process.getRequest_id(), "You have "+days+" days to complete the stage!",0,DBConnector.getHandlerRole(process.getRequest_id()), "ICM", "");
+				    		dbConnector.sendNotification(process.getRequest_id(), "You have "+days+" days to complete the stage!",0,dbConnector.getHandlerRole(process.getRequest_id()), "ICM", "");
 				    	}
 					
 				} catch (ParseException e) {

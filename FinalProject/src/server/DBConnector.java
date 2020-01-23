@@ -31,11 +31,23 @@ import java.sql.ResultSet;
  * This class is responsible for interacting with the DB
  *
  */
-public class DBConnector{
+public class DBConnector implements IDBConnector{
 
-	private static Connection conn;
+	private  Connection conn;
+	
+	//private static IDBConnector instance;
 
-	protected static void establishDBConnection() {
+//	public DBConnector() {
+//		if(instance == null)
+//			instance = new DBConnector();
+//	}
+//	
+//	public static IDBConnector getInstance() {
+//		return instance;
+//	}
+	
+	@Override
+	public  void establishDBConnection() {
 		try 
 		{
 			Class.forName("com.mysql.cj.jdbc.Driver").newInstance();
@@ -59,7 +71,8 @@ public class DBConnector{
 		}
 	}
 
-	public static Object accessToDB(Object data) {
+	@Override
+	public  Object accessToDB(Object data) {
 		Translator translator = (Translator) data;
 		PreparedStatement stmt;
 		ArrayList<String> ar = new ArrayList<String>() ;
@@ -2086,7 +2099,7 @@ System.out.println("id "+translator.getParmas().get(0));
 	}
 
 	//Another function aimed at getting the initiator information from the database
-	protected static ResultSet getInitiatorInfo(String initiatorId)  {
+	protected  ResultSet getInitiatorInfo(String initiatorId)  {
 		PreparedStatement stmt;
 		try {
 			stmt = conn.prepareStatement(""
@@ -2116,7 +2129,7 @@ System.out.println("id "+translator.getParmas().get(0));
 		return null;
 	}
 	
-	private static void setNextStageByOne(int procID)//for the "approve" buttons
+	private  void setNextStageByOne(int procID)//for the "approve" buttons
 	{
 		PreparedStatement stmt;
 		String procStage;
@@ -2220,7 +2233,7 @@ System.out.println("id "+translator.getParmas().get(0));
 		}	
 	}
 	
-	private static void setNextStageByInput(int procID, String nextStage)//for the non "approve" buttons
+	private  void setNextStageByInput(int procID, String nextStage)//for the non "approve" buttons
 	{
 		try
 		{
@@ -2246,7 +2259,7 @@ System.out.println("id "+translator.getParmas().get(0));
 		
 	}
 	
-	public static void sendNotification(int procID, String content, int days, String toWho, String fromWho, String reason)
+	public  void sendNotification(int procID, String content, int days, String toWho, String fromWho, String reason)
 	{
 		System.out.println(procID+" "+content+" "+days+" "+toWho+" "+fromWho+" "+reason);
 		
@@ -2286,7 +2299,7 @@ System.out.println("id "+translator.getParmas().get(0));
 		
 	}
 	
-	public static void deleteNotification(int procID, String content, int days, String toWho, String fromWho)
+	public  void deleteNotification(int procID, String content, int days, String toWho, String fromWho)
 	{
 		try
 		{
@@ -2319,7 +2332,7 @@ System.out.println("id "+translator.getParmas().get(0));
 
 	}
 	
-	public static ArrayList<ArrayList<?>> getActiveProcesses()
+	public  ArrayList<ArrayList<?>> getActiveProcesses()
 	{
 		try {
 			ArrayList<String> ar = new ArrayList<String>() ;
@@ -2374,7 +2387,7 @@ System.out.println("id "+translator.getParmas().get(0));
 		}	
 	}
 	
-	private static ArrayList<String> getRelatedFilesName(int requestID) {
+	private  ArrayList<String> getRelatedFilesName(int requestID) {
 		ArrayList<String> filesNames = new ArrayList<String>();
 		String tempString;
 		PreparedStatement stmt;
@@ -2398,7 +2411,7 @@ System.out.println("id "+translator.getParmas().get(0));
 		return null;
 	}
 	
-	public static int getHandlerId(int requestID)
+	public  int getHandlerId(int requestID)
 	{
 		try {
 			PreparedStatement stmt = conn.prepareStatement("SELECT process_stage FROM processes WHERE request_id=?");
@@ -2454,7 +2467,7 @@ System.out.println("id "+translator.getParmas().get(0));
 		return -1;
 	}
 	
-	public static String getHandlerRole(int requestID)
+	public  String getHandlerRole(int requestID)
 	{
 		try {
 			PreparedStatement stmt = conn.prepareStatement("SELECT process_stage FROM processes WHERE request_id=?");

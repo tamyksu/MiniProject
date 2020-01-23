@@ -1,6 +1,8 @@
 package unittests;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.io.IOException;
@@ -13,6 +15,7 @@ import org.junit.Test;
 import application.ActiveReportsController;
 import application.ScreenController;
 import application.StatisticReports;
+import client.Client;
 import application.*;
 import javafx.application.Application;
 import javafx.application.Platform;
@@ -20,6 +23,10 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import server.IDBConnector;
+import server.Server;
+import translator.OptionsOfAction;
+import translator.Translator;
 
 //@RunWith(Suite.class)
 //@SuiteClasses({})
@@ -28,10 +35,28 @@ public class ClientTests extends Application{
 	ArrayList<Integer> status_counter;
 	ArrayList<ArrayList<Integer>> checkData;
 	
+	static IDBConnector fakeDbConnector;
+	static Server server;
+	
+	/**
+	 * Initializes a server and a client for all of the tests
+	 * @throws InterruptedException
+	 */
 	@BeforeClass
 	public static void setUpClass() throws InterruptedException {
 	    // Initialise Java FX
 
+		fakeDbConnector = new FakeDBConnector();
+		server = new Server(25565, fakeDbConnector);
+		Server.main(new String[2]);		
+		
+		try {
+			new Client("localhost", 25565);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 	    System.out.printf("About to launch FX App\n");
 
 	    new Thread() {
@@ -45,6 +70,9 @@ public class ClientTests extends Application{
 	    Thread.sleep(4000);
 	}
 	
+	/**
+	 *Initializes the required attributes for each test
+	 */
 	@Before
 	public void init() {
 		
@@ -53,9 +81,8 @@ public class ClientTests extends Application{
 		
 	}
 	
-	
 	/**
-	 * Test calculate function with normal input
+	 * Test calculate function in the controller with normal input
 	 */
 	@Test
 	public void testCalculateNormal()
@@ -97,23 +124,9 @@ public class ClientTests extends Application{
 		statisticReport.medianALL(null);		
 	}
 	
-	@Test
-	public void testEmptyInputMedian() {
-	
-		double actual = statisticReport.medianALL(status_counter);
-		assertEquals(0.0, actual,0);
-	}
-	
-	@Test(expected=NullPointerException.class)
-	public void testStandardDeviationNull() {
-		statisticReport.standard_deviation(null);
-	}
-	
-	@Test
-	public void testStandardDeviationEmpty() {
-		statisticReport.standard_deviation(status_counter);
-	}
-	
+	/**
+	 * Tests the median calculation when input is array of zeroes.
+	 */
 	@Test
 	public void testMediansZero() {
 		double expected = 0.0;
@@ -127,35 +140,22 @@ public class ClientTests extends Application{
 		assertEquals(expected,result,0);
 
 	}
-	
-	@Test
-	public void testStandartDevisionZero() {
-		double expected = 0.0;
-		status_counter.add(0);
-		status_counter.add(0);
-		status_counter.add(0);
-		status_counter.add(0);
-		status_counter.add(0);
-		Double result=statisticReport.standard_deviation(status_counter);
-		assertEquals(expected,result,0);
 
-	}
 	/**
-	 * Check the calculate function when days input  is null
+	 * Tests the median calculation when the input is an empty array.
 	 */
-	@Test(expected=NullPointerException.class)
-	public void testMedianNull() {
-		statisticReport.medianALL(null);
+	@Test
+	public void testEmptyInputMedian() {
+	
+		double actual = statisticReport.medianALL(status_counter);
+		assertEquals(0.0, actual,0);
 	}
 	
-	@Test(expected=NullPointerException.class)
-	public void testStandartDevisonNull() {
-		
-		statisticReport.standard_deviation(null);
-	}
-
+	/**
+	 * Tests of median calculation with a normal input
+	 */
 	@Test
-	public void testMedianInput() {
+	public void testMedianNormalInput() {
 		double expected = 3.0;
 		status_counter.add(1);
 		status_counter.add(2);
@@ -167,7 +167,27 @@ public class ClientTests extends Application{
 		assertEquals(expected,result,0);
 	}
 
-	public void testStandartDevisonInput() {
+	/**
+	 * Tests the standard deviation calculation when the input is null
+	 */
+	@Test(expected=NullPointerException.class)
+	public void testStandardDeviationNull() {
+		statisticReport.standard_deviation(null);
+	}
+	
+	/**
+	 * Tests the standard deviation when the input is an empty array.
+	 */
+	@Test
+	public void testStandardDeviationEmpty() {
+		statisticReport.standard_deviation(status_counter);
+	}
+	
+	/**
+	 * Tests the standardDeviation calculation with a normal input
+	 */
+	@Test
+	public void testStandartDevisonNormalInput() {
 	
 		double expected = 1.41;
 		status_counter.add(1);
@@ -177,9 +197,48 @@ public class ClientTests extends Application{
 		status_counter.add(5);
 		Double result=statisticReport.standard_deviation(status_counter);
 		
-		assertEquals(expected,result,0);
+		assertEquals(expected,result,0.2);
+	}
+	
+	/**
+	 * Tests the saveReportToServer function when recieves a null input, and expects a negative response from server.
+	 */
+	@Test
+	public void saveReportToServerTestNullInput()
+	{    	
+    	assertFalse(ActiveReportsController.instance.saveReportToServer(null));
+	}
+	
+	/**
+	 * Test the saveReportToServer function is sending a report to the server and expect to get a positive response from server.
+	 */
+	@Test
+	public void saveReportToServerTestNormalInput()
+	{
+		
+		ArrayList<ArrayList<Double>> data = new ArrayList<>();
+		
+		ArrayList<Double> array = new ArrayList<>();
+		
+		array.add(0.2);
+		array.add(0.7);
+		array.add(2.7);
+		array.add(2.4);
+		array.add(3.1);
+		
+		data.add(array);
+		data.add(array);
+		data.add(array);
+		data.add(array);
+		
+		boolean result = ActiveReportsController.instance.saveReportToServer(data);
+    	assertTrue(result);
 	}
 
+	/**
+	 * This function is called after launch of the main screen is finished.
+	 * We are initializing and showing only one window - active reports because its the only window under test
+	 */
 	@Override
 	public void start(Stage primaryStage) throws Exception {
 		try {
@@ -201,6 +260,8 @@ public class ClientTests extends Application{
 			System.out.println(e);
 		}
 	}
+	
+	
 	
 
 
