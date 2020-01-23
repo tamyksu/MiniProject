@@ -1,5 +1,6 @@
 package client;
 import ocsf.client.*;
+import server.DBConnector;
 import translator.OptionsOfAction;
 import translator.Translator;
 import java.io.*;
@@ -160,10 +161,17 @@ public class Client extends AbstractClient {
 			break;
 		case SelectExtensionReport:
 			handleMessageSelectExtensionReport(result.getParmas());
+		case SaveReportToServer:
+			handleSaveReportToServer(result.getParmas());
 		default:
 			break;
 		}
 
+	}
+
+	private void handleSaveReportToServer(Object rs) {
+		ArrayList<Boolean> answer = (ArrayList<Boolean>) rs;
+		ActiveReportsController.instance.dataSaved = answer.get(0);
 	}
 
 	/**

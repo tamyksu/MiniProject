@@ -31,7 +31,7 @@ import java.sql.ResultSet;
  * This class is responsible for interacting with the DB
  *
  */
-public class DBConnector {
+public class DBConnector{
 
 	private static Connection conn;
 

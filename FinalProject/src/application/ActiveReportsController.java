@@ -15,6 +15,7 @@ import javafx.scene.control.Alert.AlertType;
 import javafx.scene.text.Text;
 import application.StatisticReports;
 import java.lang.Runnable;
+import java.lang.reflect.AnnotatedArrayType;
 import java.lang.reflect.InvocationTargetException;
 import java.time.Duration;
 import java.time.LocalDate;
@@ -35,7 +36,7 @@ import translator.OptionsOfAction;
 import translator.Translator;
 public class ActiveReportsController extends StatisticReports implements Initializable { 
 	
-	  ArrayList<LocalDate> date_graph;
+	  public ArrayList<LocalDate> date_graph;
 		private static Connection conn;
 		
     @FXML
@@ -66,7 +67,7 @@ public class ActiveReportsController extends StatisticReports implements Initial
     @FXML
     private Text suspended_median_txt;
     @FXML
-    private Text active_median_txt;
+    public Text active_median_txt;
     @FXML
     private DatePicker start_date_button;
     @FXML
@@ -95,6 +96,8 @@ public class ActiveReportsController extends StatisticReports implements Initial
 	LocalDate start_index;
 	LocalDate end_date;
 	LocalDate start_date;
+	
+	public static boolean dataSaved = false;
 	
 
 	@Override
@@ -133,6 +136,23 @@ public class ActiveReportsController extends StatisticReports implements Initial
 		}
    	
 	}
+	
+	public void updateDateGraph(LocalDate start_date, LocalDate end_date, long num)
+	{
+		date_graph= new ArrayList<LocalDate>();
+	    start_index=start_date;
+		 end_index=start_index.plusDays(num);
+		 System.out.println("start date" +start_date );
+		while(!start_index.isAfter(end_date))
+		{
+			 date_graph.add(start_index);
+				start_index=end_index;
+				end_index= end_index.plusDays(num);
+		}
+		System.out.println(date_graph+"date graph size");
+		 date_graph.add(end_date);
+	}
+	
     @FXML
     void done_button(ActionEvent event) 
     {
@@ -183,19 +203,9 @@ public class ActiveReportsController extends StatisticReports implements Initial
     	    	 dates.add(end_date);
     	    	   all.add(dates);
     	    	   all.add(days);
-    	    		date_graph= new ArrayList<LocalDate>();
-    				    	    start_index=start_date;
-    							 end_index=start_index.plusDays(num);
-    							 System.out.println("start date" +start_date );
-    							while(!start_index.isAfter(end_date))
-    							{
-    								 date_graph.add(start_index);
-    									start_index=end_index;
-    									end_index= end_index.plusDays(num);
-    							}
-    							System.out.println(date_graph+"date graph size");
-    							 date_graph.add(end_date);
 
+    	    	   updateDateGraph(start_date,end_date,num);
+    	    	   
     	 		Translator translator= new Translator(OptionsOfAction.Get_Active_Statistic,all);
     	 		Client.getInstance().handleMessageFromClientGUI(translator);
     			
@@ -244,6 +254,21 @@ public class ActiveReportsController extends StatisticReports implements Initial
  		/***********************************************************/
     }
     
+    public boolean saveReportToServer(ArrayList<ArrayList<Double>> data)
+    {
+    	Translator translator= new Translator(OptionsOfAction.SaveReportToServer,data);
+    	Client.getInstance().handleMessageFromClientGUI(translator);
+    	
+    	try {
+			Thread.sleep(3000);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+    	
+    	return dataSaved;
+    	
+    }
     
    /*****************************************calaulate**************************************************/ 
     @SuppressWarnings({ "rawtypes", "unchecked" })
@@ -252,10 +277,10 @@ public class ActiveReportsController extends StatisticReports implements Initial
     	
     //	active_reports.getData().clear();
   
-    	Platform.runLater(new Runnable(){
+    	//Platform.runLater(new Runnable(){
 
-				@Override
-				public void run() {
+				//@Override
+				//public void run() {
 				
 				ArrayList<Integer> arr= status_counter.get(0);
 			
@@ -314,6 +339,8 @@ public class ActiveReportsController extends StatisticReports implements Initial
 		double standard_deviation_TotslDsys_count;
 				arr= status_counter.get(0);
 				
+			if(date_graph != null)
+			{
     		for(int i=0;i<arr.size();i++) 
     		{
     		
@@ -368,6 +395,7 @@ public class ActiveReportsController extends StatisticReports implements Initial
     		// sdRejected_txt.setText(Double. toString(standard_deviation_rejected));
     		rejected =String.format("%.2f",standard_deviation_rejected);
     		sdRejected_txt.setText(rejected);
+			
    /**************************************************TotalDays***************************************************************
     		arr= status_counter.get(4);
     		ArrayList<Integer>days_workdays= status_counter.get(5);
@@ -390,13 +418,19 @@ public class ActiveReportsController extends StatisticReports implements Initial
    		count_work =String.format("%.2f",standard_deviation_TotslDsys_count);
    		sdWorkdays_count.setText(count_work);*/
     	/*****************************************************************************************************/
-    		active_reports.getData().addAll(xyActive,xySuspend,xyShutdown,xyRejected);
+//        	Platform.runLater(new Runnable(){
+//
+//    				@Override
+//    				public void run() {
+//    		active_reports.getData().addAll(xyActive,xySuspend,xyShutdown,xyRejected);
+//    				}});
+			}
     		//work_days_report.getData().addAll(xyTotalDays);
     	}
     			
     
- 	});
-    }
+ 	//});
+  //  }
 
 	
 }	

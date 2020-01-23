@@ -47,6 +47,7 @@ public enum OptionsOfAction {
 	SelectDelayReport,
 	SelectExtensionReport,
 	GET_HANDLER_ID_OF_PROCESS_ID,
+	SaveReportToServer
 }
 
 

@@ -17,6 +17,9 @@ public class StatisticReports  implements Initializable {
 
 	{
 	
+		if(!arr.isEmpty())
+		{
+			
 	
 			if(arr.size()%2==1)
 			{
@@ -30,6 +33,8 @@ public class StatisticReports  implements Initializable {
 				return (((Double)(sum/2.0)));
 				
 			}
+		}
+		return 0.0;
 			
 			
 		}}
@@ -38,7 +43,9 @@ public class StatisticReports  implements Initializable {
 	public Double standard_deviation(ArrayList<Integer> arr)
 	{
 		
-	
+		
+		if(!arr.isEmpty())
+		{
 		
 		int sum=0;
 		for(int i=0;i<arr.size();i++) 
@@ -55,7 +62,8 @@ public class StatisticReports  implements Initializable {
 			System.out.println("active sum what in root"+sum);
 		}
 		 return (Math.sqrt(sum/arr.size()));
-		
+		}
+		return 0.0;
 	}
 
 	@Override

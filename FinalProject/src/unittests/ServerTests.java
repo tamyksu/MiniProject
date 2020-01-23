@@ -2,12 +2,14 @@ package unittests;
 
 import static org.junit.Assert.*;
 
+import java.io.IOException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 
 import org.junit.Before;
 import org.junit.Test;
 
+import client.Client;
 import server.DBConnector;
 import server.Server;
 import translator.OptionsOfAction;
@@ -15,10 +17,18 @@ import translator.Translator;
 
 public class ServerTests {
 	
+	Client client;
+	
 	@Before
 	public void init()
 	{
 		Server.main(new String[2]);
+		try {
+			client.openConnection();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	
 	@Test
